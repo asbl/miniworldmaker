@@ -1,0 +1,542 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gamegridp.gamegrid &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="../../genindex.html" />
+    <link rel="search" title="Suche" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Erste Schritte</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Modul-Quellcode</a> &raquo;</li>
+        
+      <li>gamegridp.gamegrid</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Quellcode für gamegridp.gamegrid</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Apr 16 21:49:29 2018</span>
+
+<span class="sd">@author: asieb</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gamegridp.keys</span> <span class="k">as</span> <span class="nn">keys</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">gamegridp</span>
+<span class="kn">import</span> <span class="nn">gamegridp.gamegrid_window</span> <span class="k">as</span> <span class="nn">gamegrid_window</span>
+<span class="kn">import</span> <span class="nn">gamegridp.container</span> <span class="k">as</span> <span class="nn">container</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">gamegridp</span> <span class="k">import</span> <span class="n">image_renderer</span>
+
+
+<div class="viewcode-block" id="GameGrid"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid">[Doku]</a><span class="k">class</span> <span class="nc">GameGrid</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">cell_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="n">container</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="o">=</span> <span class="n">gamegrid_window</span><span class="o">.</span><span class="n">GameGridWindow</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__window_top_left_x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__window_top_left_y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">add_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;top_left&quot;</span><span class="p">)</span>
+        <span class="c1"># public</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">60</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_actor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_action</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="c1"># private</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="o">=</span> <span class="n">image_renderer</span><span class="o">.</span><span class="n">ImageRenderer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_show_info_overlay</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_actors</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">LayeredDirty</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key_pressed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_animated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">=</span> <span class="n">cell_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span> <span class="o">=</span> <span class="n">margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_columns</span> <span class="o">=</span> <span class="n">columns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_rows</span> <span class="o">=</span> <span class="n">rows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_grid_size</span><span class="p">(</span><span class="n">cell_size</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">)</span>
+        <span class="c1"># protected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__tick</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__clock</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Clock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__last_update</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">get_ticks</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># Init graphics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="GameGrid.filter_actor_list"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.filter_actor_list">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">filter_actor_list</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">actor</span> <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="nb">list</span> <span class="k">if</span> <span class="n">actor</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">class_name</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_grid_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_size</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">columns</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="p">):</span>
+        <span class="c1"># grid and grid-dimensions</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">columns</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">[</span><span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_rows</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_rows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_height</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cell_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;die Größe der einzelne Zellen des Grids.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cell_margin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the margin between cells</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+
+    <span class="nd">@cell_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">cell_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the cell-size&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span>
+
+    <span class="nd">@speed</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the margin between cells</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_rows</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the margin between cells</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_columns</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">actors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns all actors in grid</span>
+<span class="sd">        :return: a list of all actors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_actors</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the actual frame</span>
+<span class="sd">        :return: the value of actual frame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+<div class="viewcode-block" id="GameGrid.add_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.add_image">[Doku]</a>    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">get_image</span><span class="p">()</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">scale_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">image</span>
+
+<div class="viewcode-block" id="GameGrid.act"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.act">[Doku]</a>    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Überschreibe diese Methode in deinen Kind-Klassen</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GameGrid.add_actor"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.add_actor">[Doku]</a>    <span class="k">def</span> <span class="nf">add_actor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fügt einen Actor zum Grid hinzu</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        actor : gamegridp.Actor</span>
+<span class="sd">            Der Actor, der hinzugefügt werden soll</span>
+<span class="sd">        cell :</span>
+<span class="sd">            Der Ort, an dem der Actor hinzugefügt werden soll.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">actor</span><span class="p">)</span>
+        <span class="n">actor</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="GameGrid.get_actors_by_pixel"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.get_actors_by_pixel">[Doku]</a>    <span class="k">def</span> <span class="nf">get_actors_by_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+        <span class="n">actors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">actor</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+                <span class="n">actors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">actor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">actors</span></div>
+
+    <span class="k">def</span> <span class="nf">_call_collision_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="GameGrid.all_collisions"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.all_collisions">[Doku]</a>    <span class="k">def</span> <span class="nf">all_collisions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GameGrid.test_collision"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.test_collision">[Doku]</a>    <span class="k">def</span> <span class="nf">test_collision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor1</span><span class="p">,</span> <span class="n">actor2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GameGrid.remove_actor"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.remove_actor">[Doku]</a>    <span class="k">def</span> <span class="nf">remove_actor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">actor</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">actor</span><span class="p">)</span>
+            <span class="n">actor</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="GameGrid.remove_all_actors"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.remove_all_actors">[Doku]</a>    <span class="k">def</span> <span class="nf">remove_all_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Entfernt alle Akteure aus dem Grid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_actor</span><span class="p">(</span><span class="n">actor</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameGrid.reset"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.reset">[Doku]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="GameGrid.stop"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.stop">[Doku]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stoppt die Ausführung (siehe auch run)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="GameGrid.run"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.run">[Doku]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Startet die Ausführung (equivalent zum Drücken des Run-Buttons).</span>
+<span class="sd">        Wenn das Spiel läuft handeln die Akteure mit jedem Durchlauf der mainloop genau einmal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__running</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="GameGrid.setup"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.setup">[Doku]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sollte in deiner Kind-Klasse überschrieben werden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="nf">_pixel_to_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        transforms a pixel-coordinate into a cell coordinate in grid</span>
+<span class="sd">        :param pos: the position in pixels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">column</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">=</span> \
+            <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">column</span><span class="p">,</span> <span class="n">row</span>
+
+<div class="viewcode-block" id="GameGrid.cell_to_rect"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.cell_to_rect">[Doku]</a>    <span class="k">def</span> <span class="nf">cell_to_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt das Rechteck zurück, dass eine Zelle umschließt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameGrid.cell_to_pixel"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.cell_to_pixel">[Doku]</a>    <span class="k">def</span> <span class="nf">cell_to_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt die obere-linke Koordinate einer Zelle zurück.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span> <span class="o">+</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_margin</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameGrid.map_rect_to_cell"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.map_rect_to_cell">[Doku]</a>    <span class="k">def</span> <span class="nf">map_rect_to_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
+        <span class="n">column</span><span class="p">,</span> <span class="n">row</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">overlapping_x</span><span class="p">,</span> <span class="n">overlapping_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">cell_margin</span><span class="p">,</span> <span class="n">cell_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_size</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;</span> <span class="n">cell_size</span><span class="p">:</span>
+            <span class="n">overlapping_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">cell_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">height</span> <span class="o">&gt;</span> <span class="n">cell_size</span><span class="p">:</span>
+            <span class="n">overlapping_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">height</span> <span class="o">-</span> <span class="n">cell_size</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">cell_margin</span> <span class="o">+</span> <span class="p">(</span><span class="n">cell_margin</span> <span class="o">+</span> <span class="n">cell_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">column</span> <span class="o">-</span> <span class="n">overlapping_x</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">cell_margin</span> <span class="o">+</span> <span class="p">(</span><span class="n">cell_margin</span> <span class="o">+</span> <span class="n">cell_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">row</span> <span class="o">-</span> <span class="n">overlapping_y</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">show_info_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_show_info_overlay</span>
+
+    <span class="nd">@show_info_overlay</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">show_info_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="nb">bool</span> <span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_info_overlay</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_show_info_overlay</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="GameGrid.is_in_grid"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.is_in_grid">[Doku]</a>    <span class="k">def</span> <span class="nf">is_in_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GameGrid.get_touching_borders"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.get_touching_borders">[Doku]</a>    <span class="k">def</span> <span class="nf">get_touching_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="GameGrid.is_at_border"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.is_at_border">[Doku]</a>    <span class="k">def</span> <span class="nf">is_at_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">):</span>
+        <span class="n">borders</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_touching_borders</span><span class="p">(</span><span class="n">actor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">borders</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="GameGrid.is_colliding"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.is_colliding">[Doku]</a>    <span class="k">def</span> <span class="nf">is_colliding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">colliding_actors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_colliding_actors</span><span class="p">(</span><span class="n">actor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">colliding_actors</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="GameGrid.get_colliding_actors"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.get_colliding_actors">[Doku]</a>    <span class="k">def</span> <span class="nf">get_colliding_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="GameGrid.repaint"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.repaint">[Doku]</a>    <span class="k">def</span> <span class="nf">repaint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;i am dirty&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="GameGrid.show"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.show">[Doku]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Startet das Programm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surface</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GameGrid.update"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.update">[Doku]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__running</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__act_all</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="p">:</span>
+            <span class="n">actor</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__clock</span><span class="o">.</span><span class="n">tick</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__act_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__tick</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tick</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tick</span> <span class="o">&gt;</span> <span class="mi">60</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="p">:</span>
+                <span class="n">actor</span><span class="o">.</span><span class="n">act</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__tick</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="GameGrid.pass_event"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.pass_event">[Doku]</a>    <span class="k">def</span> <span class="nf">pass_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">actor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">actors</span><span class="p">:</span>
+            <span class="n">actor</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameGrid.get_event"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.gamegrid.GameGrid.get_event">[Doku]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

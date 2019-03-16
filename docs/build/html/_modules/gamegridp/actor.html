@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gamegridp.actor &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="../../genindex.html" />
+    <link rel="search" title="Suche" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Erste Schritte</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Modul-Quellcode</a> &raquo;</li>
+        
+      <li>gamegridp.actor</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Quellcode für gamegridp.actor</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Mon Apr 16 21:50:48 2018</span>
+
+<span class="sd">@author: asieb</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">gamegridp</span>
+<span class="kn">from</span> <span class="nn">gamegridp</span> <span class="k">import</span> <span class="n">image_renderer</span>
+
+
+<div class="viewcode-block" id="Actor"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor">[Doku]</a><span class="k">class</span> <span class="nc">Actor</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">DirtySprite</span><span class="p">):</span>
+
+    <span class="n">actor_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># private</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="o">=</span> <span class="n">image_renderer</span><span class="o">.</span><span class="n">ImageRenderer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">get_image</span><span class="p">()</span>
+        <span class="c1">#protected</span>
+        <span class="c1"># protected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flip_x</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_in_grid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_at_border</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_touching_borders</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__is_colliding</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__collision_partners</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Group</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__colliding_actors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># public</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_speed</span> <span class="o">=</span> <span class="mi">60</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;flip&quot;</span><span class="p">,</span> <span class="s2">&quot;rotate&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>  <span class="c1"># Tuple with size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__actor_id</span> <span class="o">=</span> <span class="n">Actor</span><span class="o">.</span><span class="n">actor_count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">Actor</span><span class="o">.</span><span class="n">actor_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">add_actor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Actor.add_collision_partner"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.add_collision_partner">[Doku]</a>    <span class="k">def</span> <span class="nf">add_collision_partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">partner</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__collision_partners</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">partner</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span> <span class="o">+</span><span class="s2">&quot;,id:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__actor_id</span><span class="p">)</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">get_image</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">show_info_overlay</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">draw_direction_overlay</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;scale&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image_renderer</span><span class="o">.</span><span class="n">ImageRenderer</span><span class="o">.</span><span class="n">scale_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;center&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image_renderer</span><span class="o">.</span><span class="n">ImageRenderer</span><span class="o">.</span><span class="n">center_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">cell_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;flip&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image_renderer</span><span class="o">.</span><span class="n">ImageRenderer</span><span class="o">.</span><span class="n">flip_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip_x</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;rotate&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image_renderer</span><span class="o">.</span><span class="n">ImageRenderer</span><span class="o">.</span><span class="n">rotate_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">image</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">map_rect_to_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">())</span>
+
+<div class="viewcode-block" id="Actor.add_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.add_image">[Doku]</a>    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_next_sprite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">frame</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">animation_speed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">next_sprite</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;int: Legt die Richtung fest, in die der Akteur &quot;schaut&quot;</span>
+<span class="sd">            0° bezeichnet dabei nach Osten, andere Winkel werden gegen den Uhrzeigersinn angegeben.</span>
+<span class="sd">            Die Direction kann alternativ auch als String (&quot;left&quot;, &quot;right&quot;, &quot;top&quot;, &quot;bottom&quot;  festgelegt werden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span>
+
+    <span class="nd">@direction</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_to_direction</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Legt die Richtung fest, in die der Akteur &quot;schaut&quot;</span>
+<span class="sd">            0° bezeichnet dabei nach Osten, andere Winkel werden gegen den Uhrzeigersinn angegeben.</span>
+<span class="sd">            Die Direction kann alternativ auch als String (&quot;left&quot;, &quot;right&quot;, &quot;top&quot;, &quot;bottom&quot;  festgelegt werden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+
+    <span class="nd">@size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Actor.animate"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.animate">[Doku]</a>    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Startet eine Animation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span>
+
+    <span class="nd">@position</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="c1"># Methoden</span>
+<div class="viewcode-block" id="Actor.act"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.act">[Doku]</a>    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Überschreibe diese Methode in deinen eigenen Actor-Klassen</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Actor.stop"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.stop">[Doku]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stopt die Animation eines Akteurs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Actor.flip_x"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.flip_x">[Doku]</a>    <span class="k">def</span> <span class="nf">flip_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Spiegelt das Bild des Akteurs über die y-Achse.</span>
+<span class="sd">        Der Akteur selbst wird dabei um 180° gedreht.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip_x</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flip_x</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_flip_x</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">turn_left</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.set_bounding_box_size"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.set_bounding_box_size">[Doku]</a>    <span class="k">def</span> <span class="nf">set_bounding_box_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Legt die Größe der umgebenen Bounding-Box fest.</span>
+
+<span class="sd">        :param value: Eine Größe (width, height) als Tupel.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__bounding_box_size</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Actor.listen"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.listen">[Doku]</a>    <span class="k">def</span> <span class="nf">listen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Diese Methode sollte in deiner Kind-Klasse überschrieben werden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt die x-Koordinate des Akteuers zurück.</span>
+
+<span class="sd">        :param x: Gibt die x-Koordinate des Akteurs zurück.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@x</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setzt die x-Koordinate der Akteurs.</span>
+<span class="sd">        :param x: Die x-Koordinate die gesetzt werden soll.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gibt die y-Koordinate des Akteuers zurück.</span>
+
+<span class="sd">        :param y: Gibt die y-Koordinate des Akteurs zurück</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@y</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Setzt die y-Koordinate der Akteurs.</span>
+<span class="sd">        :param y: Die y-Koordinate die gesetzt werden soll.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Actor.setup"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.setup">[Doku]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sollte in deiner Kind-Klasse überschrieben werden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Actor.turn_left"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.turn_left">[Doku]</a>    <span class="k">def</span> <span class="nf">turn_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dreht den Akteur um degrees Grad nach links.</span>
+
+<span class="sd">        :param degrees: Die Gradzahl um die der Akteur gedreht wird.</span>
+
+<span class="sd">        :return: Die neue Richtung in Grad.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">+</span> <span class="n">degrees</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span></div>
+
+<div class="viewcode-block" id="Actor.turn_right"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.turn_right">[Doku]</a>    <span class="k">def</span> <span class="nf">turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dreht den Akteur um degrees Grad nach links.</span>
+
+<span class="sd">        :param degrees: Die Gradzahl um die der Akteur gedreht wird.</span>
+
+<span class="sd">        :return: Die neue Richtung in Grad.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">-</span> <span class="n">degrees</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span></div>
+
+
+<div class="viewcode-block" id="Actor.move_back"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.move_back">[Doku]</a>    <span class="k">def</span> <span class="nf">move_back</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">look_back</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">destination</span></div>
+
+<div class="viewcode-block" id="Actor.move"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.move">[Doku]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="s2">&quot;forward&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_to_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">destination</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">look_forward</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">destination</span></div>
+
+<div class="viewcode-block" id="Actor.look"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.look">[Doku]</a>    <span class="k">def</span> <span class="nf">look</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;forward&quot;</span><span class="p">):</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value_to_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span> <span class="o">*</span> <span class="n">distance</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span> <span class="o">*</span> <span class="n">distance</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="Actor.look_forward"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.look_forward">[Doku]</a>    <span class="k">def</span> <span class="nf">look_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">look</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="s2">&quot;forward&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.look_back"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.look_back">[Doku]</a>    <span class="k">def</span> <span class="nf">look_back</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">look</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="s2">&quot;back&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.look_up"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.look_up">[Doku]</a>    <span class="k">def</span> <span class="nf">look_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">look</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.look_down"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.look_down">[Doku]</a>    <span class="k">def</span> <span class="nf">look_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">return</span>  <span class="bp">self</span><span class="o">.</span><span class="n">look</span><span class="p">(</span><span class="n">distance</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.get_all_actors_in_my_cell"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.get_all_actors_in_my_cell">[Doku]</a>    <span class="k">def</span> <span class="nf">get_all_actors_in_my_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the first Actor in my cell</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_name Filter actors by class_name</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Returns the found actor or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">get_all_actors_in_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span> <span class="ow">in</span> <span class="n">actors</span><span class="p">:</span>
+            <span class="n">actors</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">actors</span></div>
+
+<div class="viewcode-block" id="Actor.get_one_actor_in_my_cell"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.get_one_actor_in_my_cell">[Doku]</a>    <span class="k">def</span> <span class="nf">get_one_actor_in_my_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span> <span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the first Actor in my cell</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_name Filter actors by class name</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Returns the found actor or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actor_in_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">get_actor_in_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">actor_in_cell</span></div>
+
+<div class="viewcode-block" id="Actor.get_actor_in_front"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.get_actor_in_front">[Doku]</a>    <span class="k">def</span> <span class="nf">get_actor_in_front</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets all Actors in front</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        class_name Filter actors by class name</span>
+<span class="sd">        distance The distance of fields to look forward</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Returns the found actor or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actor_in_front</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">get_actor_in_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">look_forward</span><span class="p">(</span><span class="n">distance</span><span class="p">),</span> <span class="n">class_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">actor_in_front</span></div>
+
+<div class="viewcode-block" id="Actor.update"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.update">[Doku]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_next_sprite</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Actor.changed"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.changed">[Doku]</a>    <span class="k">def</span> <span class="nf">changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__update_status</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_value_to_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">180</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">90</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">270</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;forward&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;back&quot;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">%</span> <span class="mi">360</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Actor.remove"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.remove">[Doku]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Entfernt den Akteur vom Grid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">remove_actor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">del</span> <span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span>
+
+    <span class="k">def</span> <span class="nf">__update_status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">in_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_in_grid</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">in_grid</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_in_grid</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__is_in_grid</span> <span class="o">=</span> <span class="n">in_grid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="s2">&quot;in_grid&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">at_border</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_at_border</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">at_border</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_at_border</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__is_at_border</span> <span class="o">=</span> <span class="n">at_border</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="s2">&quot;at_border&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">colliding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_colliding</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">colliding</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__is_colliding</span><span class="p">:</span>
+            <span class="n">colliding_actors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_colliding_actors</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colliding_actors</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__is_colliding</span> <span class="o">=</span> <span class="n">colliding</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__collision_partners</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">col_partner</span> <span class="ow">in</span> <span class="n">colliding_actors</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">col_partner</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__colliding_actors</span><span class="p">:</span>
+                    <span class="n">col_partner</span><span class="o">.</span><span class="n">__colliding_actors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="s2">&quot;collision&quot;</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_partner</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Actor.is_colliding"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.is_colliding">[Doku]</a>    <span class="k">def</span> <span class="nf">is_colliding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">is_colliding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.get_colliding_actors"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.get_colliding_actors">[Doku]</a>    <span class="k">def</span> <span class="nf">get_colliding_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">get_colliding_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.is_colliding_with"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.is_colliding_with">[Doku]</a>    <span class="k">def</span> <span class="nf">is_colliding_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">class_name</span><span class="p">):</span>
+        <span class="n">colliding_actors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">get_colliding_actors</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gamegridp</span><span class="o">.</span><span class="n">GameGrid</span><span class="o">.</span><span class="n">filter_actor_list</span><span class="p">(</span><span class="n">colliding_actors</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.is_at_border"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.is_at_border">[Doku]</a>    <span class="k">def</span> <span class="nf">is_at_border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">is_at_border</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.is_in_grid"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.is_in_grid">[Doku]</a>    <span class="k">def</span> <span class="nf">is_in_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">is_in_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Actor.get_event"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.actor.Actor.get_event">[Doku]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

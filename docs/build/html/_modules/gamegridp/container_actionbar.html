@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gamegridp.container_actionbar &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="../../genindex.html" />
+    <link rel="search" title="Suche" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Erste Schritte</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Modul-Quellcode</a> &raquo;</li>
+        
+      <li>gamegridp.container_actionbar</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Quellcode für gamegridp.container_actionbar</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">from</span> <span class="nn">gamegridp</span> <span class="k">import</span> <span class="n">container</span>
+
+<div class="viewcode-block" id="Actionbar"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_actionbar.Actionbar">[Doku]</a><span class="k">class</span> <span class="nc">Actionbar</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span>
+
+<div class="viewcode-block" id="Actionbar.add_to_grid"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_actionbar.Actionbar.add_to_grid">[Doku]</a>    <span class="k">def</span> <span class="nf">add_to_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_to_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_draw_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Draws the action bar</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container_surface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_surface</span><span class="p">()</span>
+        <span class="n">surface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_surface</span>
+        <span class="n">package_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">myfont</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">SysFont</span><span class="p">(</span><span class="s2">&quot;monospace&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+        <span class="c1"># Act Button:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;play.png&#39;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">myfont</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;Act&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="c1"># Run Button:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;run.png&#39;</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">myfont</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;Run&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;pause.png&#39;</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">myfont</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;Pause&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+            <span class="c1"># Reset Button:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;reset.png&#39;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">140</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">myfont</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;Reset&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">165</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="c1"># Info-Button</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;question.png&#39;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">225</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">myfont</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;Info&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">245</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="c1"># Info-Button</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;left.png&#39;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">285</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">myfont</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;Speed:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">305</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">package_directory</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s1">&#39;right.png&#39;</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">380</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Actionbar.call_click_event"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_actionbar.Actionbar.call_click_event">[Doku]</a>    <span class="k">def</span> <span class="nf">call_click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="ow">and</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
+            <span class="c1"># Click on Button Act</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">_act_all</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="mi">60</span> <span class="ow">and</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">:</span>
+            <span class="c1"># Click on Button Run</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">is_running</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="mi">120</span> <span class="ow">and</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="mi">220</span><span class="p">:</span>
+            <span class="c1"># Click on Button Reset</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="mi">220</span> <span class="ow">and</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="mi">280</span><span class="p">:</span>
+            <span class="c1"># Click on Button Info</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">show_info_overlay</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">show_info_overlay</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">show_info_overlay</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="mi">285</span> <span class="ow">and</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="mi">345</span><span class="p">:</span>
+            <span class="c1"># Click on Button Speed down</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">pos_x</span> <span class="o">&gt;</span> <span class="mi">345</span> <span class="ow">and</span> <span class="n">pos_x</span> <span class="o">&lt;</span> <span class="mi">395</span><span class="p">:</span>
+            <span class="c1"># Click on Button Speed up</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span> <span class="o">&lt;</span> <span class="mi">60</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__grid</span><span class="o">.</span><span class="n">speed</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

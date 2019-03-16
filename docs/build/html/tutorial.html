@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Erste Schritte &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="genindex.html" />
+    <link rel="search" title="Suche" href="search.html" />
+    <link rel="next" title="gamegridp" href="modules.html" />
+    <link rel="prev" title="GameGridP - Dokumentation" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Erste Schritte</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#die-spielwelt">Die Spielwelt</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">gamegridp</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Erste Schritte</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="erste-schritte">
+<h1>Erste Schritte<a class="headerlink" href="#erste-schritte" title="Link zu dieser Überschrift">¶</a></h1>
+<p>GameGridP besteht aus zwei Arten von Klassen:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Das <strong>Grid</strong> umfasst den Hintergrund auf dem die Akteure agieren. Es gibt zwei Arten von Grids.
+Es gibt zwei Arten von Grids, je nachdem ob du pixelgenaue Spiele erstellen möchtest,
+oder ob die Spiele ähnlich wie ein Brettspiel auf einem Raster spielen sollen.</li>
+<li>Die Klasse <strong>Actor</strong> bezeichnet alle Arten von Objekten, die innerhalb der Spielwelt leben.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="die-spielwelt">
+<h2>Die Spielwelt<a class="headerlink" href="#die-spielwelt" title="Link zu dieser Überschrift">¶</a></h2>
+<p>Die Spielwelt ist entweder ein CellGrid für Spiele, die auf einzelnen Zellen basieren oder ein PixelGrid für Pixelgenaue Spiele.</p>
+<img src="_images/inheritance-9d3aeefd3ffd16d835926e97bd338c61fecdc4d1.png" alt="Inheritance diagram of gamegridp.GameGrid, gamegridp.CellGrid, gamegridp.PixelGrid" usemap="#inheritancec8c4872dfd" class="inheritance"/>
+<map id="inheritancec8c4872dfd" name="inheritancec8c4872dfd">
+<area shape="rect" id="node2" href="gamegridp.html#gamegridp.gamegrid.GameGrid" target="_top" title="GameGrid" alt="" coords="137,31,224,56"/>
+<area shape="rect" id="node4" href="gamegridp.html#gamegridp.gamegrid_pixelgrid.PixelGrid" target="_top" title="Das Pixel&#45;Grid ist gedacht für Grids, deren Zellen genau 1 Pixel groß sind, d.h." alt="" coords="272,55,349,80"/>
+<area shape="rect" id="node3" href="gamegridp.html#gamegridp.container.Container" target="_top" title="Container" alt="" coords="5,31,89,56"/>
+</map><p>Um eine neue Spielwelt zu erstellen, musst du zunächst eine Kindklasse von CellGrid oder von PixelGrid erstellen.</p>
+<blockquote>
+<div>Dies geht folgendermaßen:</div></blockquote>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span> <span class="k">class</span> <span class="nc">MyGrid</span><span class="p">(</span><span class="n">CellGrid</span><span class="p">):</span>
+     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cell_size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">img_path</span><span class="o">=</span><span class="s2">&quot;images/soccer_green.jpg&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="modules.html" class="btn btn-neutral float-right" title="gamegridp" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="GameGridP - Dokumentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

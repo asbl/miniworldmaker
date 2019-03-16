@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gamegridp.image_renderer &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="../../genindex.html" />
+    <link rel="search" title="Suche" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Erste Schritte</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Modul-Quellcode</a> &raquo;</li>
+        
+      <li>gamegridp.image_renderer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Quellcode für gamegridp.image_renderer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<div class="viewcode-block" id="ImageRenderer"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer">[Doku]</a><span class="k">class</span> <span class="nc">ImageRenderer</span> <span class="p">():</span>
+
+    <span class="n">images_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># not mutable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_images_list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Original images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># current_image index (for animations)</span>
+
+<div class="viewcode-block" id="ImageRenderer.add_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.add_image">[Doku]</a>    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ergänzt ein einzelnes Bild zu einem Actor. Auf diese Weise können mehrere Bilder hinzugefügt werden.</span>
+<span class="sd">        Die Animation kann dann mit *animate()* gestartet werdeb</span>
+
+<span class="sd">        :param img_path: Der Pfad des Bildes relativ zum eigenen Dateipfad.</span>
+<span class="sd">        :param img_action: Die Aktion die durchgeführt werden soll: *scale*, *crop*, *do_nothing*</span>
+<span class="sd">        :param size: scale/crop : Die Größe des veränderten Bildes as 2-Tupel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">img_path</span> <span class="ow">in</span> <span class="n">ImageRenderer</span><span class="o">.</span><span class="n">images_dict</span><span class="p">:</span>
+            <span class="c1"># load image from img_dict</span>
+            <span class="n">_image</span> <span class="o">=</span> <span class="n">ImageRenderer</span><span class="o">.</span><span class="n">images_dict</span><span class="p">[</span><span class="n">img_path</span><span class="p">]</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="c1"># create new image and add to img_dict</span>
+            <span class="n">_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span><span class="o">.</span><span class="n">convert_alpha</span><span class="p">()</span>
+            <span class="n">ImageRenderer</span><span class="o">.</span><span class="n">images_dict</span><span class="p">[</span><span class="n">img_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">_image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_images_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_image</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_image</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.get_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.get_image">[Doku]</a>    <span class="k">def</span> <span class="nf">get_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zeichnet den Akteur auf das Spielfeld.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images_list</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">_image</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.flip_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.flip_image">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">flip_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">flip_x</span><span class="p">,</span> <span class="n">flip_y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">flip_y</span><span class="p">,</span> <span class="n">flip_x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.rotate_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.rotate_image">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">rotate_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.scale_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.scale_image">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">scale_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.upscale_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.upscale_image">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">upscale_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">ImageRenderer</span><span class="o">.</span><span class="n">scale_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.center_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.center_image">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">center_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">cell_size</span><span class="p">):</span>
+        <span class="n">cropped_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">cell_size</span><span class="p">,</span> <span class="n">cell_size</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">SRCALPHA</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">x_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_size</span> <span class="o">-</span> <span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">y_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">cell_size</span> <span class="o">-</span> <span class="n">height</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">cropped_surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cell_size</span><span class="p">,</span> <span class="n">cell_size</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">cropped_surface</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.crop_image"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.crop_image">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">crop_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">cropped_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">cropped_surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+        <span class="n">cropped_surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">cropped_surface</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.draw_direction_overlay"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.draw_direction_overlay">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">draw_direction_overlay</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span>
+                         <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">(),</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># draw direction marker on image</span>
+        <span class="n">center_x</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">center_y</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
+                  <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">())</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">direction</span><span class="p">))</span>
+                  <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">())</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="p">(</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">width</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.draw_grid_overlay"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.draw_grid_overlay">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">draw_grid_overlay</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">cell_width</span><span class="p">,</span> <span class="n">cell_height</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">cell_margin</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">width</span><span class="p">:</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cell_margin</span><span class="p">,</span> <span class="n">height</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="n">cell_height</span> <span class="o">+</span> <span class="n">cell_margin</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">height</span><span class="p">:</span>
+                <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">cell_margin</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="n">cell_width</span> <span class="o">+</span> <span class="n">cell_margin</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.set_text"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.set_text">[Doku]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">my_font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">SysFont</span><span class="p">(</span><span class="s2">&quot;monospace&quot;</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">my_font</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__images_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.delete_images"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.delete_images">[Doku]</a>    <span class="k">def</span> <span class="nf">delete_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Löscht alle Bilder eines Akteurs. Dies kann z.B. sinnvoll sein,</span>
+<span class="sd">        wenn eine neue Animation festgelegt werden soll und dafür die alte</span>
+<span class="sd">        Animation zuvor gelöscht werden muss.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_images_list</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="ImageRenderer.next_sprite"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.image_renderer.ImageRenderer.next_sprite">[Doku]</a>    <span class="k">def</span> <span class="nf">next_sprite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_images_list</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="mi">0</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

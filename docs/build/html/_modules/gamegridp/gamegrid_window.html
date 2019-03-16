@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gamegridp.gamegrid_window &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="../../genindex.html" />
+    <link rel="search" title="Suche" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Erste Schritte</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Modul-Quellcode</a> &raquo;</li>
+        
+      <li>gamegridp.gamegrid_window</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Quellcode für gamegridp.gamegrid_window</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">gamegridp</span>
+<span class="kn">from</span> <span class="nn">gamegridp</span> <span class="k">import</span> <span class="n">keys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="GameGridWindow"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow">[Doku]</a><span class="k">class</span> <span class="nc">GameGridWindow</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repaint_areas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_res</span><span class="p">))</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_caption</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GameGridWindow.show"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.show">[Doku]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">window_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">set_mode</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">x_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_res</span><span class="p">))</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="GameGridWindow.update"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.update">[Doku]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_pygame_events</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repaint_areas</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_res</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="p">:</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">blit_surface_to_window_suface</span><span class="p">()</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">repaint_areas</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repaint_areas</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="GameGridWindow.add_container"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.add_container">[Doku]</a>    <span class="k">def</span> <span class="nf">add_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">docking_position</span><span class="p">):</span>
+        <span class="n">container</span><span class="o">.</span><span class="n">add_to_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docking_position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">container</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameGridWindow.remove_container"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.remove_container">[Doku]</a>    <span class="k">def</span> <span class="nf">remove_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">container</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GameGridWindow.reset"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.reset">[Doku]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Entfernt alle Akteure aus dem Grid und setzt sie an ihre Ursprungspositionen.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="p">:</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_container</span><span class="p">(</span><span class="n">container</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x_res</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">containers_width</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">window_docking_position</span> <span class="o">==</span> <span class="s2">&quot;top_left&quot;</span><span class="p">:</span>
+                <span class="n">containers_width</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">width</span>
+            <span class="k">elif</span> <span class="n">container</span><span class="o">.</span><span class="n">window_docking_position</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+                <span class="n">containers_width</span> <span class="o">+=</span> <span class="n">container</span><span class="o">.</span><span class="n">width</span>
+        <span class="k">return</span> <span class="n">containers_width</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y_res</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">containers_height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">window_docking_position</span> <span class="o">==</span> <span class="s2">&quot;top_left&quot;</span><span class="p">:</span>
+                <span class="n">containers_height</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">height</span>
+            <span class="k">elif</span> <span class="n">container</span><span class="o">.</span><span class="n">window_docking_position</span> <span class="o">==</span> <span class="s2">&quot;bottom&quot;</span><span class="p">:</span>
+                <span class="n">containers_height</span> <span class="o">+=</span> <span class="n">container</span><span class="o">.</span><span class="n">height</span>
+        <span class="k">return</span> <span class="n">containers_height</span>
+
+<div class="viewcode-block" id="GameGridWindow.get_container_by_pixel"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.get_container_by_pixel">[Doku]</a>    <span class="k">def</span> <span class="nf">get_container_by_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">container</span><span class="o">.</span><span class="n">rect</span><span class="p">()</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">((</span><span class="n">pixel_x</span><span class="p">,</span> <span class="n">pixel_y</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">container</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="GameGridWindow.send_pygame_events"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.send_pygame_events">[Doku]</a>    <span class="k">def</span> <span class="nf">send_pygame_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">pygame</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">get</span><span class="p">():</span>
+            <span class="c1"># Event: Quit</span>
+            <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">QUIT</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_call_quit_event</span><span class="p">()</span>
+            <span class="c1"># Event: Mouse-Button Down</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">MOUSEBUTTONDOWN</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
+                <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container_by_pixel</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">container</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="s2">&quot;mouse_left&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">container</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="s2">&quot;mouse_right&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">pygame</span><span class="o">.</span><span class="n">KEYDOWN</span><span class="p">:</span>
+                <span class="c1"># key-events</span>
+                <span class="n">keys_pressed</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;key down!!!&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">&quot;key_down&quot;</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">key_codes_to_keys</span><span class="p">(</span><span class="n">keys_pressed</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">keys_pressed</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">&quot;key&quot;</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">key_codes_to_keys</span><span class="p">(</span><span class="n">keys_pressed</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">&quot;key_pressed&quot;</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">key_codes_to_keys</span><span class="p">(</span><span class="n">keys_pressed</span><span class="p">))</span>
+        <span class="n">mouse_x</span><span class="p">,</span> <span class="n">mouse_y</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mouse</span><span class="o">.</span><span class="n">get_pos</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="GameGridWindow.send_event_to_containers"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.GameGridWindow.send_event_to_containers">[Doku]</a>    <span class="k">def</span> <span class="nf">send_event_to_containers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__containers</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;send event:&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="s2">&quot;to container&quot;</span><span class="p">,</span> <span class="n">container</span><span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">pass_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="n">container</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">data</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_call_quit_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_quit</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

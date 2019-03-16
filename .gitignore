@@ -1,0 +1,13 @@
+.idea/workspace.xml
+*.xml
+.idea/
+.idea/workspace.xml
+.idea/workspace.xml
+install.bat
+upload.bat
+venv_gamegridp
+venv_windows
+source/gamegridp.egg-info
+source/dist
+source/build
+source/__pycache__

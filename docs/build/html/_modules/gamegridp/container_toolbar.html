@@ -1,0 +1,303 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="de" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="de" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gamegridp.container_toolbar &mdash; gamegridp  Dokumentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Stichwortverzeichnis" href="../../genindex.html" />
+    <link rel="search" title="Suche" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gamegridp
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Inhalte</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Erste Schritte</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gamegridp</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Modul-Quellcode</a> &raquo;</li>
+        
+      <li>gamegridp.container_toolbar</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Quellcode für gamegridp.container_toolbar</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gamegridp</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+
+
+<div class="viewcode-block" id="Toolbar"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_toolbar.Toolbar">[Doku]</a><span class="k">class</span> <span class="nc">Toolbar</span><span class="p">(</span><span class="n">gamegridp</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="s2">&quot;right&quot;</span>
+
+<div class="viewcode-block" id="Toolbar.get_element"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_toolbar.Toolbar.get_element">[Doku]</a>    <span class="k">def</span> <span class="nf">get_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_draw_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a toolbar on the left side of the window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_actual_height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">dirty</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">element</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
+                <span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">_actual_height</span><span class="p">))</span>
+                <span class="n">element</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">_actual_height</span> <span class="o">=</span> <span class="n">_actual_height</span> <span class="o">+</span> <span class="n">element</span><span class="o">.</span><span class="n">height</span>
+
+<div class="viewcode-block" id="Toolbar.add_button"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_toolbar.Toolbar.add_button">[Doku]</a>    <span class="k">def</span> <span class="nf">add_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">img_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span> <span class="n">border</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">          Fügt einen Button zur Toolbar hinzu.</span>
+<span class="sd">          Parameters</span>
+<span class="sd">          ----------</span>
+<span class="sd">          text</span>
+<span class="sd">              Der Text</span>
+<span class="sd">          img_path</span>
+<span class="sd">              Pfad zum Bild vor dem Text (optional)</span>
+<span class="sd">          color</span>
+<span class="sd">              Die Hintergrundfarbe</span>
+<span class="sd">          border</span>
+<span class="sd">              Die Rahmenfarbe</span>
+<span class="sd">          Returns</span>
+<span class="sd">              Der erstellte Button</span>
+<span class="sd">          &quot;&quot;&quot;</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">gamegridp</span><span class="o">.</span><span class="n">ToolbarButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">img_path</span><span class="o">=</span><span class="n">img_path</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">button</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">button</span></div>
+
+<div class="viewcode-block" id="Toolbar.add_label"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_toolbar.Toolbar.add_label">[Doku]</a>    <span class="k">def</span> <span class="nf">add_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">img_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">),</span> <span class="n">border</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fügt ein Label zur Toolbar hinzu</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        text</span>
+<span class="sd">            Der Text</span>
+<span class="sd">        img_path</span>
+<span class="sd">            Pfad zum Bild vor dem Text (optional)</span>
+<span class="sd">        color</span>
+<span class="sd">            Die Hintergrundfarbe</span>
+<span class="sd">        border</span>
+<span class="sd">            Die Rahmenfarbe</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">            Das erstellte Label</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">gamegridp</span><span class="o">.</span><span class="n">ToolbarLabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">img_path</span><span class="o">=</span><span class="n">img_path</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">)</span>
+        <span class="n">label</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">label</span></div>
+
+    <span class="k">def</span> <span class="nf">_elements_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">+=</span> <span class="n">element</span><span class="o">.</span><span class="n">height</span>
+        <span class="k">return</span> <span class="n">height</span>
+
+<div class="viewcode-block" id="Toolbar.call_click_event"><a class="viewcode-back" href="../../gamegridp.html#gamegridp.container_toolbar.Toolbar.call_click_event">[Doku]</a>    <span class="k">def</span> <span class="nf">call_click_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">button</span> <span class="o">==</span> <span class="s2">&quot;mouse_left&quot;</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pos_y</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements_height</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">height</span> <span class="o">+</span> <span class="n">element</span><span class="o">.</span><span class="n">height</span> <span class="o">&gt;</span> <span class="n">pos_y</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">element</span><span class="o">.</span><span class="n">call_click_event</span><span class="p">(</span><span class="n">button</span><span class="p">,</span> <span class="n">pos_x</span><span class="p">,</span> <span class="n">pos_y</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">height</span> <span class="o">=</span> <span class="n">height</span> <span class="o">+</span> <span class="n">element</span><span class="o">.</span><span class="n">height</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;no toolbar event&quot;</span></div></div>
+
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Andreas Siebel.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            LANGUAGE:'de',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
