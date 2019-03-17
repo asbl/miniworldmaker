@@ -1,7 +1,7 @@
-gamegridp
+MiniWorldMaker
 ---------
 
-**Achtung**: Zur Zeit wird gamegridp überarbeitet. Der alte lauffähige Code findet sich im Rep gamegridp_old
+![Logo](miniworldmaker/ressources/logo_big.png)
 
 gamegridp ist eine in Python programmierte 2D-Grafikengine die für Bildungszwecke gedacht ist.
 
