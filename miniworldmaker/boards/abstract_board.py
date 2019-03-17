@@ -1,11 +1,14 @@
 import pygame
 from miniworldmaker import *
+from miniworldmaker.boards.features.gui import Gui
+from miniworldmaker.boards.features.audio import Audio
+from miniworldmaker.boards.features.database import Database
 from miniworldmaker.actors.actor import Actor
 import logging
 from typing import Union
 
 
-class AbstractBoard(AbstractContainer):
+class Board(AbstractContainer, Gui, Audio, Database):
 
     log = logging.getLogger("GameGrid")
 
@@ -32,6 +35,7 @@ class AbstractBoard(AbstractContainer):
         self.set_image_action("info_overlay", False)
         self.set_image_action("scale_x", True)
         self.set_image_action("scale_y", True)
+        self.set_image_action("upscale", False)
         self._actors = pygame.sprite.LayeredDirty()
         self._key_pressed = False
         self._key = 0

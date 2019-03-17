@@ -6,7 +6,9 @@ class MyBoard(TileBasedBoard):
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
         player1 = Player()
-        self.add_actor(player1, position=(1, 1))
+        player = self.add_actor(player1, position=(1, 1))
+        print(player.image.get_rect())
+        print(player.size)
         self.add_image(path="images/soccer_green.jpg")
 
 
@@ -14,8 +16,9 @@ class Player(Actor):
 
     def __init__(self):
         super().__init__()
-        self.size = (40, 40)
         self.add_image(path="images/char_blue.png")
+        self.set_upscale()
+
 
     def act(self):
         if self.grid.is_in_grid(self.look_forward()):

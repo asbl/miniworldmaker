@@ -49,7 +49,12 @@ class Actor(pygame.sprite.DirtySprite):
             return "Klasse: {0}; ID: {1}".format(self.class_name, self.actor_id)
 
     def image_action(self, attribute : str, value : bool):
-            self._renderer.image_actions[attribute] = value
+         self._renderer.image_actions[attribute] = value
+
+    def set_upscale(self):
+        self._renderer.image_actions["scale_x"] = False
+        self._renderer.image_actions["scale_y"] = False
+        self._renderer.image_actions["upscale"] = True
 
     @property
     def image(self) -> pygame.Surface:
@@ -153,14 +158,6 @@ class Actor(pygame.sprite.DirtySprite):
         else:
             self.__flip_x = False
         self.turn_left(180)
-
-    def set_bounding_box_size(self, value):
-        """
-        Legt die Größe der umgebenen Bounding-Box fest.
-
-        :param value: Eine Größe (width, height) als Tupel.
-        """
-        self.__bounding_box_size = value
 
     def listen(self, key, data = None):
         """
@@ -317,7 +314,7 @@ class Actor(pygame.sprite.DirtySprite):
 
     def is_colliding_with(self, class_name):
         colliding_actors = self.grid.get_colliding_actors(self)
-        return AbstractBoard.filter_actor_list(colliding_actors, class_name)
+        return Board.filter_actor_list(colliding_actors, class_name)
 
     def is_at_border(self):
         return self.grid.is_at_border(self.rect)

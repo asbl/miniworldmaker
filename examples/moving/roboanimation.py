@@ -1,9 +1,9 @@
-from gamegridp import *
+from miniworldmaker import *
 
-class MyGrid(PixelGrid):
-    """My Grid with custom setup method."""
+class MyBoard(PixelBoard):
+
     def __init__(self):
-        super().__init__(cell_size=1, columns=500, rows=75, margin=0)
+        super().__init__(columns=500, rows=75)
         self.add_image("images/water.png")
         player1 = Robot()
         self.add_actor(player1, position=(0, 0))
@@ -20,13 +20,13 @@ class Robot(Actor):
         self.animate()
 
     def act(self):
-        if self.grid.is_in_grid(self.look(direction = "forward")):
+        if self.grid.is_in_grid(self.look_forward()):
             self.move(direction = "forward")
         else:
             self.flip_x()
 
 
-my_grid = MyGrid()
-my_grid.show_log()
-my_grid.speed = 50
-my_grid.show()
+board = MyBoard()
+board.show_log()
+board.speed = 50
+board.show()

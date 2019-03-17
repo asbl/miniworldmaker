@@ -1,9 +1,9 @@
-from gamegridp import *
+from miniworldmaker import *
 
 
-class MyGrid(CellGrid):
+class MyBoard(TileBasedBoard):
     def __init__(self):
-        super().__init__(cell_size=40, columns=29, rows=1, margin=0)
+        super().__init__(tile_size=40, columns=29, rows=1, tile_margin=0)
         robot1 = Robot()
         robot1.add_image("images/robo_green.png")
         self.add_actor(robot1, position=(0, 0))
@@ -11,7 +11,7 @@ class MyGrid(CellGrid):
         robot2.add_image("images/robo_yellow.png")
         robot2.turn_left(180)
         self.add_actor(robot2, position=(28, 0))
-        self.add_image(img_path="images/water.png")
+        self.add_image(path="images/water.png")
 
     def act(self):
         pass
@@ -22,7 +22,6 @@ class MyGrid(CellGrid):
                 robot.remove()
             explosion = Explosion()
             self.add_actor(explosion, position=data[0].position)
-
 
 
 class Explosion(Actor):
@@ -38,6 +37,6 @@ class Robot(Actor):
     def act(self):
         self.move()
 
-my_grid = MyGrid()
-my_grid.speed = 50
-my_grid.show()
+board = MyBoard()
+board.speed = 50
+board.show()

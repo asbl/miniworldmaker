@@ -1,12 +1,12 @@
-from gamegrid import *
+from miniworldmaker import *
 
 
-class MyGrid(PixelGrid, GUIGrid):
+class MyGrid(PixelBoard):
 
     def __init__(self):
-        super().__init__(cell_size=1, columns=200, rows=240, margin=0)
+        super().__init__(columns=200, rows=240)
         self.window.add_container(MyToolbar(), dock="right")
-        self.rocket = self.add_actor(Rocket(), position = (100, 60))
+        self.rocket = self.add_actor(Rocket(), position = (100, 200))
         self.add_image("images/galaxy.jpg")
 
 

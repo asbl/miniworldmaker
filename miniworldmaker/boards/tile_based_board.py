@@ -5,7 +5,7 @@ from collections import defaultdict
 from typing import Union
 
 
-class TileBasedBoard(AbstractBoard):
+class TileBasedBoard(Board):
 
     def __init__(self, columns=20, rows=16, tile_size=20, tile_margin=0):
         super().__init__(columns=columns, rows=rows)
@@ -75,10 +75,7 @@ class TileBasedBoard(AbstractBoard):
         super().add_actor(actor, position)
         if actor.size == (0, 0):
             actor.size = (self.tile_size, self.tile_size)
-        actor.image_action("scale_x", False)
-        actor.image_action("scale_y", False)
-        actor.image_action("upscale_x", True)
-        actor.image_action("upscale_y", True)
+        actor.changed()
         return actor
 
     def update_actor(self, actor: Actor, attribute, value):

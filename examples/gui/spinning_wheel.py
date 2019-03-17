@@ -1,11 +1,11 @@
-from gamegridp import *
+from miniworldmaker import *
 import random
 
 
-class MyGrid(CellGrid, GUIGrid):
+class MyBoard(TileBasedBoard):
 
     def __init__(self):
-        super().__init__(cell_size=100, columns=3, rows=3, margin=1)
+        super().__init__(tile_size=100, columns=3, rows=3, tile_margin=1)
         self.window.add_container(MyToolbar(), dock="right")
         self.arrow = Arrow()
         self.add_actor(self.arrow, (1, 1))
@@ -19,10 +19,10 @@ class MyGrid(CellGrid, GUIGrid):
             if data == "Spin":
                 self.arrow.spin()
         if event == "mouse_left" and self.placed is False:
-            cell = self.pixel_to_cell(data)
-            if not cell == (1, 1):
+            position = self.pixel_to_grid_position(data)
+            if not position == (1, 1):
                 self.chip = Chip()
-                self.add_actor(self.chip, cell)
+                self.add_actor(self.chip, position)
                 self.placed = True
         print(self.actors)
 
@@ -65,5 +65,5 @@ class MyToolbar(Toolbar):
         print("size", button.width, button.height)
 
 
-my_grid = MyGrid()
+my_grid = MyBoard()
 my_grid.show()

@@ -2,7 +2,7 @@ from miniworldmaker import *
 from miniworldmaker.actors.actor import Actor
 import pygame
 
-class PixelBoard(AbstractBoard):
+class PixelBoard(Board):
 
     def __init__(self, columns=40, rows=40):
         super().__init__(columns=columns, rows=rows)

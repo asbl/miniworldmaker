@@ -1,5 +1,6 @@
 import pygame
 import logging
+import math
 
 
 class ImageRenderer():
@@ -16,15 +17,14 @@ class ImageRenderer():
         self._image_index = 0 # current_image index (for animations)
         self.image_actions = {  "flip" : True,
                                 "rotate" : True,
-                                "upscale_x" : False,
-                                "upscale_y" : False,
-                                "scale_x" : True,
-                                "scale_y" : True,
+                                "upscale" : True,
+                                "scale_x" : False,
+                                "scale_y" : False,
                                 "info_overlay": False,
                                 "center" : False,
                                 "grid_overlay": False}
         self.direction = 0
-        self.size = (0,0)
+        self.size = (0, 0)
         self.margin = 0
         self.tile_size = 0
         self.orientation = 0
@@ -58,6 +58,7 @@ class ImageRenderer():
         try:
             if self._images_list:
                 image = self.load_image_by_index(self._image_index)
+
             else:
                 image = pygame.Surface((1,1))
             image = self.rotate_image(image, self.orientation)
@@ -69,10 +70,8 @@ class ImageRenderer():
                 image = self.scale_x_image(image, self.size[0])
             if self.image_actions["scale_y"] is True:
                 image = self.scale_y_image(image, self.size[1])
-            if self.image_actions["upscale_x"] is True:
-                image = self.upscale_x_image(image, self.size[0])
-            if self.image_actions["upscale_y"] is True:
-                image = self.upscale_y_image(image, self.size[1])
+            if self.image_actions["upscale"] is True:
+                image = self.upscale_image(image, self.size[0])
             if self.image_actions["center"] is True:
                 image = self.center_image(image, self.size[0])
             if self.image_actions["flip"] is True:
@@ -95,16 +94,19 @@ class ImageRenderer():
         return image
 
     def scale_y_image(self, image, size):
+        image = pygame.transform.scale(image, (image.get_width(), size ))
         return image
 
-    def upscale_x_image(self, image, size):
-        if image.get_width() < size:
-            self.scale_x_image(image, size)
-        return image
-
-    def upscale_y_image(self, image, size):
-        if image.get_height() < size:
-                self.scale_y_image(image, size)
+    def upscale_image(self, image, size):
+        print(image)
+        if size != 0:
+            scale_factor_x = size / image.get_width()
+            scale_factor_y = size / image.get_height()
+            max_scale = max(scale_factor_x, scale_factor_y)
+            scale_factor = min(scale_factor_x, scale_factor_y)
+            new_width = int(image.get_width() * scale_factor)
+            new_height = int(image.get_height() * scale_factor)
+            image = pygame.transform.scale(image, (new_width, new_height))
         return image
 
     def center_image(self, image, size):

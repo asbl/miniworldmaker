@@ -1,7 +1,7 @@
-from miniworldmaker.boards.abstract_board import AbstractBoard
+from miniworldmaker.boards.abstract_board import Board
 from miniworldmaker.actors.actor import Actor
 
-__all__ = [ 'AbstractBoard',
+__all__ = ['Board',
             'Actor'
-            ]
+           ]
 
