@@ -1,7 +1,7 @@
 MiniWorldMaker
 ---------
 
-<img align="right" src="miniworldmaker/ressources/logo_big.png" alt="logo"/>
+<img align="right" src="miniworldmaker/resources/logo_big.png" alt="logo"/>
 MiniWorldMaker erlaubt dir 2D Miniwelten und Spiele zu erstellen.
 
 ### Eigenschaften
