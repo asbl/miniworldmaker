@@ -27,7 +27,7 @@ class Rocket(Actor):
 
     def act(self):
         if self.started:
-            if not self.grid.is_in_grid(self.look(direction="up")):
+            if not self.board.on_the_board(self.look(direction="up")):
                 self.remove()
             else:
                 self.move(distance = 1, direction = "up")

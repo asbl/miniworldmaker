@@ -1,7 +1,7 @@
 from miniworldmaker import *
 
 
-class MyBoard(TileBasedBoard):
+class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
@@ -21,7 +21,7 @@ class Player(Actor):
         self.add_image(path="images/char_blue.png")
 
     def act(self):
-        if not self.grid.is_in_grid(self.look_forward()):
+        if not self.board.on_the_board(self.look_forward()):
             self.turn_left(90)
         self.move()
 

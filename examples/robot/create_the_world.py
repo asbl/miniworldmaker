@@ -1,12 +1,12 @@
 import sqlite3 as lite
-from gamegridp import *
+from miniworldmaker import *
 
 
-class MyGrid(CellGrid, DatabaseGrid, GUIGrid):
+class MyBoard(TiledBoard):
 
     def __init__(self):
-        super().__init__(cell_size=60, columns=10, rows=10,
-                margin=0)
+        super().__init__(tile_size=60, columns=10, rows=10,
+                         tile_margin=0)
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
         self.toolbar.add_widget(ToolbarButton("Speichern", "images/save.png", ))
@@ -17,11 +17,11 @@ class MyGrid(CellGrid, DatabaseGrid, GUIGrid):
         self.toolbar.add_widget(ToolbarButton("Diamond", "images/stone_blue.png", ))
         self.toolbar.add_widget(ToolbarButton("Emerald", "images/stone_green.png",))
         self.state= "wall"
-        self.add_image( img_path="images/stone.jpg")
+        self.add_image(path="images/stone.jpg")
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            position = self.pixel_to_cell(data)
+            position = self.pixel_to_grid_position(data)
             if self.is_empty_cell((data[0], data[1])):
                 if self.state=="wall":
                     actor = self.add_actor(Wall(), position = (position))
@@ -121,5 +121,5 @@ class Emerald(Actor):
         self.add_image("images/stone_green.png")
 
 
-mygrid = MyGrid()
+mygrid = MyBoard()
 mygrid.show()

@@ -2,7 +2,7 @@ from miniworldmaker import *
 import random
 
 
-class MyBoard(TileBasedBoard):
+class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(tile_size=100, columns=3, rows=3, tile_margin=1)
@@ -39,14 +39,14 @@ class Arrow(Actor):
             self.turn_left((self.spinning/800)*20)
             self.spinning = self.spinning - 1
             if self.spinning == 0:
-                if self.grid.get_actors_at_location(self.look(direction = "forward")):
-                    self.grid.message_box("Du hast gewonnen")
+                if self.board.get_actors_in_area(self.look(direction="forward")):
+                    self.board.message_box("Du hast gewonnen")
                 else:
-                    self.grid.message_box("Du hast verloren")
+                    self.board.message_box("Du hast verloren")
 
     def spin(self):
         self.spinning = random.randint(600, 800)
-        self.grid.places = False
+        self.board.places = False
 
 
 class Chip(Actor):

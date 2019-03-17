@@ -1,4 +1,4 @@
-from miniworldmaker import *
+from source import *
 
 
 class MyBoard(TileBasedBoard):

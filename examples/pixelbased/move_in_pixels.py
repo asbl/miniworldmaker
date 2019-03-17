@@ -1,11 +1,10 @@
-from gamegridp import *
+from miniworldmaker import *
 
 
-class MyGrid(PixelGrid):
-    """My Grid with custom setup method."""
+class MyBoard(PixelBoard):
 
     def __init__(self):
-        super().__init__(cell_size=1, columns=200, rows=200, margin=0)
+        super().__init__(columns=200, rows=200)
         player1 = Player()
         self.add_actor(player1, position=(30, 30))
         self.add_image("images/soccer_green.jpg")
@@ -23,15 +22,15 @@ class Player(Actor):
     def get_event(self, event, data):
         if event == "key":
             if "W" in data:
-                self.move("up")
+                self.move(direction="up")
             elif "S" in data:
-                self.move("down")
+                self.move(direction="down")
             elif "A" in data:
-                self.move("left")
+                self.move(direction="left")
             elif "D" in data:
-                self.move("right")
+                self.move(direction="right")
 
 
-mygrid = MyGrid()
+mygrid = MyBoard()
 mygrid.title="My Grid"
 mygrid.show()

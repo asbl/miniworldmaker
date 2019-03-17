@@ -50,7 +50,7 @@ class Player(Actor):
                 self.move(direction = "left")
             elif "D" in data:
                 self.move(direction = "right")
-        actors_at_position = self.grid.get_actors_at_location(self.look())
+        actors_at_position = self.grid.get_actors_in_area(self.look())
         print(actors_at_position)
         if event == "button" and data == "Fackel":
             if self.grid.fireplace in actors_at_position:
@@ -66,7 +66,7 @@ class Player(Actor):
                 self.grid.console.print("Du hebst die Fackel auf.")
                 self.grid.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
-        actors_in_front = self.grid.get_actors_at_location(self.look(direction = "forward"))
+        actors_in_front = self.grid.get_actors_in_area(self.look(direction="forward"))
         if self.grid.door in actors_in_front:
             if self.grid.door.closed:
                 message = "Die Tür ist geschlossen... möchtest du sie öffnen"

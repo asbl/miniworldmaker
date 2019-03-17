@@ -11,3 +11,4 @@ source/gamegridp.egg-info
 source/dist
 source/build
 source/__pycache__
+venv*

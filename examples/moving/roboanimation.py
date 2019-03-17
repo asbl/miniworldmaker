@@ -1,4 +1,4 @@
-from miniworldmaker import *
+from source import *
 
 class MyBoard(PixelBoard):
 
@@ -20,7 +20,7 @@ class Robot(Actor):
         self.animate()
 
     def act(self):
-        if self.grid.is_in_grid(self.look_forward()):
+        if self.grid.on_the_board(self.look_forward()):
             self.move(direction = "forward")
         else:
             self.flip_x()

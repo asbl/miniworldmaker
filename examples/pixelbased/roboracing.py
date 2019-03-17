@@ -1,10 +1,10 @@
-from gamegridp import *
+from miniworldmaker import *
 
 
-class MyGrid(PixelGrid):
+class MyGrid(PixelBoard):
 
     def __init__(self):
-        super().__init__(cell_size=1, columns=400, rows=400, margin=0,)
+        super().__init__(columns=400, rows=400)
         robo1 = self.add_actor(Robot(), (20, 20))
         self.add_image("images/stone.jpg")
 
