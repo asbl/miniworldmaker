@@ -21,7 +21,7 @@ class Player(Actor):
 
 
     def act(self):
-        if self.board.on_the_board(self.look_forward()):
+        if self.board.on_board(self.look_forward()):
             self.move()
 
     def get_event(self, event, data):

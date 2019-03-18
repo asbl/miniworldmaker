@@ -1,7 +1,7 @@
-from source import *
+from miniworldmaker import *
 
 
-class MyBoard(TileBasedBoard):
+class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(tile_size=50, columns=10, rows=1, tile_margin=1)
@@ -17,7 +17,7 @@ class Player(Actor):
         self.add_image(path="images/fish.png")
 
     def act(self):
-        if self.grid.on_the_board(self.look_forward()):
+        if self.look_on_board(direction="forward"):
             self.move()
         else:
             self.flip_x()

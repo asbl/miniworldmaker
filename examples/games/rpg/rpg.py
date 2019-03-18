@@ -1,10 +1,10 @@
-from gamegridp import *
+from miniworldmaker import *
 
 
-class MyGrid(CellGrid, GUIGrid,  AudioGrid):
+class MyGrid(TiledBoard):
 
     def __init__(self):
-        super().__init__(cell_size=20, columns=30, rows=20, margin=1)
+        super().__init__(columns=30, rows=20, tile_size=20, tile_margin=1)
         for i in range(self.rows):
             for j in range(self.columns):
                 self.add_actor(Grass(), (j, i))
@@ -43,38 +43,44 @@ class Player(Actor):
     def get_event(self, event, data):
         if event == "key_down":
             if "W" in data:
-                self.move(direction = "up")
+                direction = "up"
             elif "S" in data:
-                self.move(direction = "down")
+                direction = "down"
             elif "A" in data:
-                self.move(direction = "left")
+                direction = "left"
             elif "D" in data:
-                self.move(direction = "right")
-        actors_at_position = self.grid.get_actors_in_area(self.look())
+                direction = "right"
+            actors_in_front = self.look_for_actors(direction=direction)
+            blocking = False
+            for actor in actors_in_front:
+                if actor.is_blocking:
+                    blocking = True
+            self.move(direction=direction)
+        actors_at_position = self.look_for_actors(direction="here")
         print(actors_at_position)
         if event == "button" and data == "Fackel":
-            if self.grid.fireplace in actors_at_position:
-                self.grid.console.print("Du zündest die Feuerstelle an.")
-                self.grid.fireplace.burn()
-        if self.grid.torch in actors_at_position:
+            if self.board.fireplace in actors_at_position:
+                self.board.console.print("Du zündest die Feuerstelle an.")
+                self.board.fireplace.burn()
+        if self.board.torch in actors_at_position:
             message = "Du findest eine Fackel. Möchtest du sie aufheben?"
             choices = ["Ja", "Nein"]
-            reply = self.grid.button_box(message, choices)
+            reply = self.board.button_box(message, choices)
             if reply == "Ja":
                 self.inventory.append("Torch")
-                self.grid.torch.remove()
-                self.grid.console.print("Du hebst die Fackel auf.")
-                self.grid.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+                self.board.torch.remove()
+                self.board.console.print("Du hebst die Fackel auf.")
+                self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
-        actors_in_front = self.grid.get_actors_in_area(self.look(direction="forward"))
-        if self.grid.door in actors_in_front:
-            if self.grid.door.closed:
+        actors_in_front = self.look_for_actors(direction="forward")
+        if self.board.door in actors_in_front:
+            if self.board.door.closed:
                 message = "Die Tür ist geschlossen... möchtest du sie öffnen"
                 choices = ["Ja", "Nein"]
-                reply = self.grid.button_box(message, choices)
+                reply = self.board.button_box(message, choices)
                 if reply == "Ja":
-                    self.grid.door.open()
-                    self.grid.console.print("Du hast das Tor geöffnet.")
+                    self.board.door.open()
+                    self.board.console.print("Du hast das Tor geöffnet.")
 
 
 class Wall(Actor):
@@ -112,7 +118,7 @@ class Fireplace(Actor):
             self.clear()
             self.add_image("rpgimages/fireplace_1.png")
             self.add_image("rpgimages/fireplace_2.png")
-            self.grid.play_sound("rpgsounds/fireplace.wav")
+            self.board.play_sound("rpgsounds/fireplace.wav")
             self.animate()
             self.burning = True
 
@@ -122,7 +128,6 @@ class Door(Actor):
     def __init__(self):
         super().__init__()
         self.add_image("rpgimages/door_closed.png")
-        self.is_blocking = True
         self.closed = True
         self.is_static = True
 
@@ -130,9 +135,8 @@ class Door(Actor):
         if self.closed == True:
             self.clear()
             self.add_image("rpgimages/door_open.png")
-            self.grid.play_sound("rpgsounds/olddoor.wav")
+            self.board.play_sound("rpgsounds/olddoor.wav")
             self.closed = False
-            self.is_blocking = False
 
 
 my_grid = MyGrid()

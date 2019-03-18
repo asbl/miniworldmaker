@@ -56,7 +56,7 @@ class PixelBoard(Board):
             else:
                 return False
 
-    def is_at_border(self, rect):
+    def borders(self, rect):
         """
         Überprüfe, ob das Rechteck über den entsprechenden Rand hinausragt
 

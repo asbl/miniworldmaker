@@ -58,10 +58,49 @@
                     <li class="toctree-l1 current"><a class="current reference internal" href="#">Erste Schritte</a>
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="#eine-erste-welt">Eine erste Welt</a>
+                        <ul>
+                            <li class="toctree-l2"><a class="reference internal" href="#das-grid-anzeigen">Das Grid
+                                anzeigen</a></li>
+                        </ul>
                     </li>
+                    <li class="toctree-l1"><a class="reference internal" href="#einen-akteur-erstellen">Einen Akteur
+                        erstellen</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="#den-akteur-zum-spielfeld-hinzufugen">Den
+                        Akteur zum Spielfeld hinzufügen</a></li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="modules.html">miniworldmaker</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="modules.html">miniworldmaker</a>
+                        <ul>
+                            <li class="toctree-l2"><a class="reference internal" href="miniworldmaker.html">miniworldmaker
+                                package</a>
+                                <ul>
+                                    <li class="toctree-l3"><a class="reference internal"
+                                                              href="miniworldmaker.html#subpackages">Subpackages</a>
+                                        <ul>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.actors.html">miniworldmaker.actors
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.boards.html">miniworldmaker.boards
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.containers.html">miniworldmaker.containers
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.tools.html">miniworldmaker.tools
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.windows.html">miniworldmaker.windows
+                                                package</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="toctree-l3"><a class="reference internal"
+                                                              href="miniworldmaker.html#module-miniworldmaker">Module
+                                        contents</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
 
 
@@ -156,34 +195,109 @@
                             <p>Zunächst wird eine eigene <em>Klasse</em> MyBoard erstellt. Diese ist eine Kindklasse von
                                 TiledBoard
                                 und erlaubt es dir, alle möglichen Spiele zu bauen, die auf Tiles basieren.</p>
-                            <p>Tiles sind Kacheln mit fester Größe wie du sie oft in Brettspielen verwendest.</p>
-                            <p><img alt="tiles" src="_images/tiles.jpg"/></p>
-                            <p>Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen lassen.
-                                Ändere dazu die Methode <strong>init</strong>() in der Klasse MyBoard ab:</p>
-                            <div class="highlight-default notranslate">
-                                <div class="highlight"><pre><span></span>    <span class="k">def</span> <span
-                                        class="nf">__init__</span><span class="p">(</span><span
-                                        class="bp">self</span><span class="p">):</span>
+                            <ul class="simple">
+                                <li>Zeile 1: Mit der <strong>import</strong> Anweisung wird die Bibliothek
+                                    miniworldmaker importiert.
+                                </li>
+                                <li>Zeile 3: Das eigene Spielfeld wird als Kindklasse der Klasse Tiledboard erstellt.
+                                </li>
+                                <li>Zeile 5-6: Die <strong>init</strong>() - Methode wird bei Erstellen eines neuen
+                                    Objektes aufgerufen (d.h. hier in Zeile 7).
+                                    Am Anfang der <strong>init</strong>() - Methode wird zunächst mit super().<strong>init</strong>()
+                                    die Methode der Vaterklasse aufgerufen,
+                                    welche die Größe des Spielfeldes und der einzelnen Kacheln festlegt.
+                                </li>
+                                <li>Zeile 7: Deinem Board wird ein Hintergrund hinzugefügt. Achte darauf, dass die Datei
+                                    an dem angegebenen Pfad liegt.
+                                </li>
+                            </ul>
+                            <p>Je nach Hintergrundbild sieht das Ergebnis bei dir so aus:</p>
+                            <p><img alt="tiles" src="_images/first.jpg"/></p>
+                            <div class="section" id="das-grid-anzeigen">
+                                <span id="das-grid-anzeigen"></span>
+                                <h2>Das Grid anzeigen<a class="headerlink" href="#das-grid-anzeigen"
+                                                        title="Link zu dieser Überschrift">¶</a></h2>
+                                <p>Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen lassen.
+                                    Ändere dazu die Methode <strong>init</strong>() in der Klasse MyBoard ab:</p>
+                                <div class="highlight-default notranslate">
+                                    <div class="highlight"><pre><span></span>    <span class="k">def</span> <span
+                                            class="nf">__init__</span><span class="p">(</span><span
+                                            class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
-                                            class="fm">__init__</span><span class="p">(</span><span
-                                            class="n">columns</span><span class="o">=</span><span
-                                            class="mi">20</span><span class="p">,</span> <span
-                                            class="n">rows</span><span class="o">=</span><span class="mi">8</span><span
-                                            class="p">,</span> <span class="n">tile_size</span><span
-                                            class="o">=</span><span class="mi">42</span><span class="p">,</span> <span
-                                            class="n">tile_margin</span><span class="o">=</span><span
-                                            class="mi">1</span><span class="p">)</span>
+                                                class="fm">__init__</span><span class="p">(</span><span class="n">columns</span><span
+                                                class="o">=</span><span class="mi">20</span><span
+                                                class="p">,</span> <span class="n">rows</span><span
+                                                class="o">=</span><span class="mi">8</span><span
+                                                class="p">,</span> <span class="n">tile_size</span><span
+                                                class="o">=</span><span class="mi">42</span><span
+                                                class="p">,</span> <span class="n">tile_margin</span><span
+                                                class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_grid</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span
+                                                class="p">(</span><span class="n">path</span><span
+                                                class="o">=</span><span
+                                                class="s2">&quot;images/soccer_green.jpg&quot;</span><span
+                                                class="p">)</span>
+</pre>
+                                    </div>
+                                </div>
+                                <p>So sieht es dann aus:</p>
+                                <p><img alt="tiles" src="_images/grid.jpg"/></p>
+                            </div>
+                        </div>
+                        <div class="section" id="einen-akteur-erstellen">
+                            <span id="einen-akteur-erstellen"></span>
+                            <h1>Einen Akteur erstellen<a class="headerlink" href="#einen-akteur-erstellen"
+                                                         title="Link zu dieser Überschrift">¶</a></h1>
+                            <p>Als nächtes wird ein Akteur auf dem Board platziert.</p>
+                            <p>Dies geht prinzipiell ähnlich wie das Erstellen des Spielfeldes:</p>
+                            <div class="highlight-default notranslate">
+                                <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Player</span><span
+                                        class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span
+                                            class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+                                            class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span
                                             class="p">(</span><span class="n">path</span><span class="o">=</span><span
-                                            class="s2">&quot;images/soccer_green.jpg&quot;</span><span
-                                            class="p">)</span>
+                                            class="s2">&quot;images/char_blue.png&quot;</span><span class="p">)</span>
 </pre>
                                 </div>
                             </div>
-                            <p>So sieht es dann aus:</p>
-                            <p><img alt="tiles" src="_images/grid.jpg"/></p>
-                            <p>Als nächtes wird ein Akteur auf dem Board platziert.</p>
+                            <ul class="simple">
+                                <li>Die erste Zeile erstellt eine neue Klasse als Kindklasse der Klasse Actor.</li>
+                                <li>In der dritten Zeile wird wieder die <strong>init</strong>()-Methode erstellt, die
+                                    beim Erstellen eines neuen Player-Objektes aufgerufen wird.
+                                </li>
+                                <li>Zeile 4 ruft die init()-Methode der Vaterklasse auf, die zahlreiche Dinge hinter den
+                                    Kulissen initialisiert.
+                                </li>
+                                <li>In Zeile 5 wird dann zu dem Player-Objekt ein Bild hinzugefügt.</li>
+                            </ul>
+                        </div>
+                        <div class="section" id="den-akteur-zum-spielfeld-hinzufugen">
+                            <span id="den-akteur-zum-spielfeld-hinzufugen"></span>
+                            <h1>Den Akteur zum Spielfeld hinzufügen<a class="headerlink"
+                                                                      href="#den-akteur-zum-spielfeld-hinzufugen"
+                                                                      title="Link zu dieser Überschrift">¶</a></h1>
+                            <p>Bis jetzt haben wir nur eine Schablone erstellt, um Player-Objekte zu erzeugen.
+                                Jetzt sollen konkrete Objekte erzeugt und zum Spielfeld hinzugefügt werden.
+                                Ergänze dazu die <strong>init</strong>() - Methode der Spielfeld-Klasse:</p>
+                            <div class="highlight- notranslate">
+                                <div class="highlight"><pre><span></span>    def __init__(self):
+        super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
+        player1 = Player( )
+        self.add_actor(player1, position=(3, 3))
+</pre>
+                                </div>
+                            </div>
+                            <ul class="simple">
+                                <li>Zeile 3 erstellt das Player Objekt (und ruft die init()-Methode auf.</li>
+                                <li>Zeile 4 fügt das erstellte Objekt dem Spielfeld hinzu, damit die Figur nicht im
+                                    „Niemandsland“ lebt.
+                                </li>
+                            </ul>
                         </div>
 
 

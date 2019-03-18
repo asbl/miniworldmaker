@@ -230,14 +230,29 @@ class Actor(pygame.sprite.DirtySprite):
         self.direction = direction
         return self.direction
 
-    def move(self, *, distance: int = 1, direction: Union[str, int] = "forward") -> tuple:
+    def move(self, *, direction: Union[str, int] = "forward", distance: int = 1) -> tuple:
         self.direction = self._value_to_direction(direction)
         destination = self.look(distance=distance, direction=direction)
         self.position = self.board.pixel_to_grid_position(destination.topleft)
         self.log.info("Move to position {0}; Direction {1}".format(self.position, self.direction))
         return self.position
 
-    def look(self, distance: int = 1, direction: Union[str, int] = "here", ) -> pygame.Rect:
+    def look_for_actors(self, direction: Union[str, int] = "here", distance: int = 1, actor_type=None):
+        position = self.look(distance=distance, direction=direction)
+        actors = self.board.get_actors_in_area(position, actor_type)
+        return actors
+
+    def look_for_borders(self, direction: Union[str, int] = "here", distance: int = 1) -> list:
+        position = self.look(distance=distance, direction=direction)
+        borders = self.board.borders(position)
+        return borders
+
+    def look_on_board(self, direction: Union[str, int] = "here", distance: int = 1) -> bool:
+        position = self.look(distance=distance, direction=direction)
+        on_board = self.board.on_board(position)
+        return on_board
+
+    def look(self, direction: Union[str, int] = "here", distance: int = 1) -> pygame.Rect:
         if direction == "here":
             return self.rect
         else:
@@ -315,10 +330,10 @@ class Actor(pygame.sprite.DirtySprite):
         return Board.filter_actor_list(colliding_actors, class_name)
 
     def is_at_border(self):
-        return self.board.is_at_border(self.rect)
+        return self.board.borders(self.rect)
 
     def on_the_board(self):
-        return self.board.on_the_board(self.rect)
+        return self.board.on_board(self.rect)
 
     def get_event(self, event, data):
         pass

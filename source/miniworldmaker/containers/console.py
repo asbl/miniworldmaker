@@ -1,10 +1,9 @@
 import os
-
+from miniworldmaker.containers.container import Container
 import pygame
-from gamegridp import container
 
 
-class Console(container.Container):
+class Console(Container):
     def __init__(self, lines=5, size=100):
         super().__init__(size=100)
         self._lines = lines

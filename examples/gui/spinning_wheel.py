@@ -39,7 +39,7 @@ class Arrow(Actor):
             self.turn_left((self.spinning/800)*20)
             self.spinning = self.spinning - 1
             if self.spinning == 0:
-                if self.board.get_actors_in_area(self.look(direction="forward")):
+                if self.look_for_actors(direction="forward", actor_type=Chip):
                     self.board.message_box("Du hast gewonnen")
                 else:
                     self.board.message_box("Du hast verloren")

@@ -99,7 +99,6 @@ class ImageRenderer():
         return image
 
     def upscale_image(self, image, size):
-        print(image)
         if size != 0:
             scale_factor_x = size / image.get_width()
             scale_factor_y = size / image.get_height()

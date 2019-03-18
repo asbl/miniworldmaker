@@ -31,6 +31,5 @@ class Player(Actor):
                 self.move(direction="right")
 
 
-mygrid = MyBoard()
-mygrid.title="My Grid"
-mygrid.show()
+board = MyBoard()
+board.show()

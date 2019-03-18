@@ -28,7 +28,7 @@ class Robot(Actor):
         self.add_image(path="images/robo_green.png")
 
     def act(self):
-        actors = self.board.get_actors_in_area(self.look_forward())
+        actors = self.look_for_actors(direction="forward", distance=1, actor_type=Wall)
         if not actors:
             self.move()
         else:

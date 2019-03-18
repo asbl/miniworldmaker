@@ -55,10 +55,51 @@
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Erste Schritte</a></li>
                     <li class="toctree-l1"><a class="reference internal" href="tutorial.html#eine-erste-welt">Eine erste
-                        Welt</a></li>
+                        Welt</a>
+                        <ul>
+                            <li class="toctree-l2"><a class="reference internal" href="tutorial.html#das-grid-anzeigen">Das
+                                Grid anzeigen</a></li>
+                        </ul>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="tutorial.html#einen-akteur-erstellen">Einen
+                        Akteur erstellen</a></li>
+                    <li class="toctree-l1"><a class="reference internal"
+                                              href="tutorial.html#den-akteur-zum-spielfeld-hinzufugen">Den Akteur zum
+                        Spielfeld hinzufügen</a></li>
                 </ul>
                 <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="modules.html">miniworldmaker</a></li>
+                    <li class="toctree-l1"><a class="reference internal" href="modules.html">miniworldmaker</a>
+                        <ul>
+                            <li class="toctree-l2"><a class="reference internal" href="miniworldmaker.html">miniworldmaker
+                                package</a>
+                                <ul>
+                                    <li class="toctree-l3"><a class="reference internal"
+                                                              href="miniworldmaker.html#subpackages">Subpackages</a>
+                                        <ul>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.actors.html">miniworldmaker.actors
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.boards.html">miniworldmaker.boards
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.containers.html">miniworldmaker.containers
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.tools.html">miniworldmaker.tools
+                                                package</a></li>
+                                            <li class="toctree-l4"><a class="reference internal"
+                                                                      href="miniworldmaker.windows.html">miniworldmaker.windows
+                                                package</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="toctree-l3"><a class="reference internal"
+                                                              href="miniworldmaker.html#module-miniworldmaker">Module
+                                        contents</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
 
 
@@ -121,6 +162,7 @@
                             | <a href="#L"><strong>L</strong></a>
                             | <a href="#M"><strong>M</strong></a>
                             | <a href="#N"><strong>N</strong></a>
+                            | <a href="#O"><strong>O</strong></a>
                             | <a href="#P"><strong>P</strong></a>
                             | <a href="#R"><strong>R</strong></a>
                             | <a href="#S"><strong>S</strong></a>
@@ -141,9 +183,6 @@
                                             miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.act">(Methode von
-                                                    miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.act">(Methode
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -178,30 +217,24 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.actors">actors (Attribut
-                                            von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.actors">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.actors">actors
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.containers.html#miniworldmaker.containers.container_actor_toolbar.ActorToolbar">ActorToolbar
                                                 (Klasse in miniworldmaker.containers.container_actor_toolbar)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.add_actor">add_actor()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.add_actor">add_actor()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
+                                                <li><a href="miniworldmaker.html#miniworldmaker.PixelBoard.add_actor">(Methode
+                                                    von miniworldmaker.PixelBoard)</a>
+                                                </li>
                                                 <li><a href="miniworldmaker.html#miniworldmaker.TiledBoard.add_actor">(Methode
                                                     von miniworldmaker.TiledBoard)</a>
-                                                </li>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.add_actor">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard.add_actor">(Methode
@@ -220,6 +253,13 @@
                                         <li>
                                             <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard.add_collision_partner">add_collision_partner()
                                                 (Methode von miniworldmaker.boards.pixel_board.PixelBoard)</a>
+
+                                            <ul>
+                                                <li>
+                                                    <a href="miniworldmaker.html#miniworldmaker.PixelBoard.add_collision_partner">(Methode
+                                                        von miniworldmaker.PixelBoard)</a>
+                                                </li>
+                                            </ul>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.windows.html#miniworldmaker.windows.miniworldwindow.MiniWorldWindow.add_container">add_container()
@@ -229,9 +269,6 @@
                                             (Methode von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.add_image">(Methode
-                                                    von miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.add_image">(Methode
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -258,6 +295,12 @@
                                         <li>
                                             <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar.Toolbar.add_widget">add_widget()
                                                 (Methode von miniworldmaker.containers.toolbar.Toolbar)</a>
+
+                                            <ul>
+                                                <li><a href="miniworldmaker.html#miniworldmaker.Toolbar.add_widget">(Methode
+                                                    von miniworldmaker.Toolbar)</a>
+                                                </li>
+                                            </ul>
                                         </li>
                                         <li><a href="miniworldmaker.html#miniworldmaker.Actor.animate">animate()
                                             (Methode von miniworldmaker.Actor)</a>
@@ -287,24 +330,17 @@
                                             <a href="miniworldmaker.containers.html#miniworldmaker.containers.container.Container.blit_surface_to_window_surface">blit_surface_to_window_surface()
                                                 (Methode von miniworldmaker.containers.container.Container)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board">Board (Klasse in
-                                            miniworldmaker)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board">(Klasse
-                                                        in miniworldmaker.boards.board)</a>
-                                                </li>
-                                            </ul>
+                                        <li><a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board">Board
+                                            (Klasse in miniworldmaker.boards.board)</a>
+                                        </li>
+                                        <li>
+                                            <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor_physics_actor.PhysicsActor.bounce_from_actor">bounce_from_actor()
+                                                (Methode von miniworldmaker.actors.actor_physics_actor.PhysicsActor)</a>
                                         </li>
                                     </ul>
                                 </td>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li>
-                                            <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor_physics_actor.PhysicsActor.bounce_from_actor">bounce_from_actor()
-                                                (Methode von miniworldmaker.actors.actor_physics_actor.PhysicsActor)</a>
-                                        </li>
                                         <li>
                                             <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor_physics_actor.PhysicsActor.bounce_from_border">bounce_from_border()
                                                 (Methode von miniworldmaker.actors.actor_physics_actor.PhysicsActor)</a>
@@ -358,9 +394,6 @@
                                             (Attribut von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.class_name">(Attribut
-                                                    von miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.class_name">(Attribut
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -397,15 +430,9 @@
                                             <a href="miniworldmaker.boards.features.html#miniworldmaker.boards.features.database.Database.close_connection">close_connection()
                                                 (Methode von miniworldmaker.boards.features.database.Database)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.columns">columns (Attribut
-                                            von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.columns">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.columns">columns
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.boards.features.html#miniworldmaker.boards.features.database.Database.commit">commit()
@@ -501,15 +528,9 @@
                             <tr>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.filter_actor_list">filter_actor_list()
-                                            (statische Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.filter_actor_list">(statische
-                                                        Methode von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.filter_actor_list">filter_actor_list()
+                                                (statische Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.tools.html#miniworldmaker.tools.image_renderer.ImageRenderer.flip_image">flip_image()
@@ -529,15 +550,9 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.frame">frame (Attribut von
-                                            miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.frame">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.frame">frame
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                     </ul>
                                 </td>
@@ -549,31 +564,22 @@
                             <tr>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.get_actors_at_location">get_actors_at_location()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.get_actors_by_pixel">get_actors_by_pixel()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
+                                        </li>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.get_actors_in_area">get_actors_in_area()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
                                                 <li>
-                                                    <a href="miniworldmaker.html#miniworldmaker.TiledBoard.get_actors_at_location">(Methode
+                                                    <a href="miniworldmaker.html#miniworldmaker.TiledBoard.get_actors_in_area">(Methode
                                                         von miniworldmaker.TiledBoard)</a>
                                                 </li>
                                                 <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.get_actors_at_location">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.tiled_board.TiledBoard.get_actors_at_location">(Methode
+                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.tiled_board.TiledBoard.get_actors_in_area">(Methode
                                                         von miniworldmaker.boards.tiled_board.TiledBoard)</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.get_actors_by_pixel">get_actors_by_pixel()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.get_actors_by_pixel">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -581,10 +587,6 @@
                                             (Methode von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.html#miniworldmaker.Board.get_colliding_actors">(Methode
-                                                        von miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.html#miniworldmaker.TiledBoard.get_colliding_actors">(Methode
                                                         von miniworldmaker.TiledBoard)</a>
@@ -611,8 +613,12 @@
                                             (Methode von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.get_event">(Methode
-                                                    von miniworldmaker.Board)</a>
+                                                <li><a href="miniworldmaker.html#miniworldmaker.Toolbar.get_event">(Methode
+                                                    von miniworldmaker.Toolbar)</a>
+                                                </li>
+                                                <li>
+                                                    <a href="miniworldmaker.html#miniworldmaker.ToolbarButton.get_event">(Methode
+                                                        von miniworldmaker.ToolbarButton)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.get_event">(Methode
@@ -659,13 +665,14 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.get_touching_borders">get_touching_borders()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.get_touching_borders">get_touching_borders()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
                                                 <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.get_touching_borders">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
+                                                    <a href="miniworldmaker.html#miniworldmaker.PixelBoard.get_touching_borders">(Methode
+                                                        von miniworldmaker.PixelBoard)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard.get_touching_borders">(Methode
@@ -680,6 +687,12 @@
                                         <li>
                                             <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar.Toolbar.get_widget">get_widget()
                                                 (Methode von miniworldmaker.containers.toolbar.Toolbar)</a>
+
+                                            <ul>
+                                                <li><a href="miniworldmaker.html#miniworldmaker.Toolbar.get_widget">(Methode
+                                                    von miniworldmaker.Toolbar)</a>
+                                                </li>
+                                            </ul>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.tools.html#miniworldmaker.tools.image_renderer.ImageRenderer.grid_overlay">grid_overlay()
@@ -700,14 +713,11 @@
                             <tr>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.height">height (Attribut
-                                            von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.height">height
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.height">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.containers.html#miniworldmaker.containers.container.Container.height">(Attribut
                                                         von miniworldmaker.containers.container.Container)</a>
@@ -728,9 +738,6 @@
                                             miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.image">(Attribut
-                                                    von miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.image">(Attribut
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -779,8 +786,9 @@
                                             (Methode von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.is_at_border">(Methode
-                                                    von miniworldmaker.Board)</a>
+                                                <li>
+                                                    <a href="miniworldmaker.html#miniworldmaker.PixelBoard.is_at_border">(Methode
+                                                        von miniworldmaker.PixelBoard)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.html#miniworldmaker.TiledBoard.is_at_border">(Methode
@@ -812,9 +820,6 @@
                                             (Methode von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.is_colliding">(Methode
-                                                    von miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.is_colliding">(Methode
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -843,30 +848,6 @@
                                                 <li>
                                                     <a href="miniworldmaker.html#miniworldmaker.TiledBoard.is_empty_cell">(Methode
                                                         von miniworldmaker.TiledBoard)</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Actor.is_in_grid">is_in_grid()
-                                            (Methode von miniworldmaker.Actor)</a>
-
-                                            <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.is_in_grid">(Methode
-                                                    von miniworldmaker.Board)</a>
-                                                </li>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.TiledBoard.is_in_grid">(Methode
-                                                    von miniworldmaker.TiledBoard)</a>
-                                                </li>
-                                                <li>
-                                                    <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.is_in_grid">(Methode
-                                                        von miniworldmaker.actors.actor.Actor)</a>
-                                                </li>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.is_in_grid">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.tiled_board.TiledBoard.is_in_grid">(Methode
-                                                        von miniworldmaker.boards.tiled_board.TiledBoard)</a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -922,8 +903,8 @@
                                             miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.log">(Attribut von
-                                                    miniworldmaker.Board)</a>
+                                                <li><a href="miniworldmaker.html#miniworldmaker.ToolbarButton.log">(Attribut
+                                                    von miniworldmaker.ToolbarButton)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.log">(Attribut
@@ -1121,19 +1102,48 @@
                             </tr>
                         </table>
 
+                        <h2 id="O">O</h2>
+                        <table style="width: 100%" class="indextable genindextable">
+                            <tr>
+                                <td style="width: 33%; vertical-align: top;">
+                                    <ul>
+                                        <li><a href="miniworldmaker.html#miniworldmaker.Actor.on_the_board">on_the_board()
+                                            (Methode von miniworldmaker.Actor)</a>
+
+                                            <ul>
+                                                <li>
+                                                    <a href="miniworldmaker.html#miniworldmaker.TiledBoard.on_the_board">(Methode
+                                                        von miniworldmaker.TiledBoard)</a>
+                                                </li>
+                                                <li>
+                                                    <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.on_the_board">(Methode
+                                                        von miniworldmaker.actors.actor.Actor)</a>
+                                                </li>
+                                                <li>
+                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.on_the_board">(Methode
+                                                        von miniworldmaker.boards.board.Board)</a>
+                                                </li>
+                                                <li>
+                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.tiled_board.TiledBoard.on_the_board">(Methode
+                                                        von miniworldmaker.boards.tiled_board.TiledBoard)</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+
                         <h2 id="P">P</h2>
                         <table style="width: 100%" class="indextable genindextable">
                             <tr>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.pass_event">pass_event()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.pass_event">pass_event()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.pass_event">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.containers.html#miniworldmaker.containers.container.Container.pass_event">(Methode
                                                         von miniworldmaker.containers.container.Container)</a>
@@ -1144,13 +1154,17 @@
                                             <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor_physics_actor.PhysicsActor">PhysicsActor
                                                 (Klasse in miniworldmaker.actors.actor_physics_actor)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.pixel_to_grid_position">pixel_to_grid_position()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.pixel_to_grid_position">pixel_to_grid_position()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
+                                        </li>
+                                        <li><a href="miniworldmaker.html#miniworldmaker.PixelBoard">PixelBoard (Klasse
+                                            in miniworldmaker)</a>
 
                                             <ul>
                                                 <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.pixel_to_grid_position">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
+                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard">(Klasse
+                                                        in miniworldmaker.boards.pixel_board)</a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -1158,10 +1172,6 @@
                                 </td>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li>
-                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard">PixelBoard
-                                                (Klasse in miniworldmaker.boards.pixel_board)</a>
-                                        </li>
                                         <li>
                                             <a href="miniworldmaker.boards.features.html#miniworldmaker.boards.features.audio.Audio.play_music">play_music()
                                                 (Methode von miniworldmaker.boards.features.audio.Audio)</a>
@@ -1208,15 +1218,9 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.rect_to_position">rect_to_position()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.rect_to_position">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.rect_to_position">rect_to_position()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li><a href="miniworldmaker.html#miniworldmaker.Actor.remove">remove() (Methode
                                             von miniworldmaker.Actor)</a>
@@ -1232,17 +1236,18 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.remove_actor">remove_actor()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.remove_actor">remove_actor()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
                                                 <li>
-                                                    <a href="miniworldmaker.html#miniworldmaker.TiledBoard.remove_actor">(Methode
-                                                        von miniworldmaker.TiledBoard)</a>
+                                                    <a href="miniworldmaker.html#miniworldmaker.PixelBoard.remove_actor">(Methode
+                                                        von miniworldmaker.PixelBoard)</a>
                                                 </li>
                                                 <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.remove_actor">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
+                                                    <a href="miniworldmaker.html#miniworldmaker.TiledBoard.remove_actor">(Methode
+                                                        von miniworldmaker.TiledBoard)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard.remove_actor">(Methode
@@ -1266,41 +1271,28 @@
                                             </ul>
                                         </li>
                                         <li>
-                                            <a href="miniworldmaker.html#miniworldmaker.Board.remove_actors_from_location">remove_actors_from_location()
-                                                (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.remove_actors_from_location">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.remove_all_actors">remove_all_actors()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.remove_all_actors">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.remove_actors_from_location">remove_actors_from_location()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                     </ul>
                                 </td>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
                                         <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.remove_all_actors">remove_all_actors()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
+                                        </li>
+                                        <li>
                                             <a href="miniworldmaker.windows.html#miniworldmaker.windows.miniworldwindow.MiniWorldWindow.remove_container">remove_container()
                                                 (Methode von miniworldmaker.windows.miniworldwindow.MiniWorldWindow)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.repaint">repaint()
-                                            (Methode von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.repaint">repaint()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.repaint">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
+                                                <li><a href="miniworldmaker.html#miniworldmaker.Toolbar.repaint">(Methode
+                                                    von miniworldmaker.Toolbar)</a>
                                                 </li>
                                                 <li>
                                                     <a href="miniworldmaker.containers.html#miniworldmaker.containers.container.Container.repaint">(Methode
@@ -1320,14 +1312,11 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.reset">reset() (Methode
-                                            von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.reset">reset()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.reset">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.containers.html#miniworldmaker.containers.container_actor_toolbar.ActorToolbar.reset">(Methode
                                                         von
@@ -1348,25 +1337,11 @@
                                                 (statische Methode von
                                                 miniworldmaker.actors.actor_physics_actor.PhysicsActor)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.rows">rows (Attribut von
-                                            miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.rows">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li><a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.rows">rows
+                                            (Attribut von miniworldmaker.boards.board.Board)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.run">run() (Methode von
-                                            miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.run">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li><a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.run">run()
+                                            (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                     </ul>
                                 </td>
@@ -1416,25 +1391,13 @@
                                                 (Methode von
                                                 miniworldmaker.containers.toolbar_widgets.ToolbarWidget)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.set_image_action">set_image_action()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.set_image_action">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.set_image_action">set_image_action()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.set_size">set_size()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.set_size">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.set_size">set_size()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar_widgets.ToolbarWidget.set_text">set_text()
@@ -1477,14 +1440,10 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.show">show() (Methode von
-                                            miniworldmaker.Board)</a>
+                                        <li><a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.show">show()
+                                            (Methode von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.show">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.windows.html#miniworldmaker.windows.miniworldwindow.MiniWorldWindow.show">(Methode
                                                         von miniworldmaker.windows.miniworldwindow.MiniWorldWindow)</a>
@@ -1501,15 +1460,9 @@
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.show_log">show_log()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.show_log">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.show_log">show_log()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li><a href="miniworldmaker.html#miniworldmaker.Actor.size">size (Attribut von
                                             miniworldmaker.Actor)</a>
@@ -1525,9 +1478,6 @@
                                             miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.stop">(Methode von
-                                                    miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.stop">(Methode
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -1559,46 +1509,29 @@
                                         <li>
                                             <a href="miniworldmaker.boards.html#miniworldmaker.boards.pixel_board.PixelBoard.test_collision">test_collision()
                                                 (Methode von miniworldmaker.boards.pixel_board.PixelBoard)</a>
-                                        </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.tile_margin">tile_margin
-                                            (Attribut von miniworldmaker.Board)</a>
 
                                             <ul>
                                                 <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_margin">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
+                                                    <a href="miniworldmaker.html#miniworldmaker.PixelBoard.test_collision">(Methode
+                                                        von miniworldmaker.PixelBoard)</a>
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.tile_size">tile_size
-                                            (Attribut von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_size">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_margin">tile_margin
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.tile_to_rect">tile_to_rect()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_to_rect">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_size">tile_size
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.tile_top_left">tile_top_left()
-                                            (Methode von miniworldmaker.Board)</a>
-
-                                            <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_top_left">(Methode
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
-                                            </ul>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_to_rect">tile_to_rect()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
+                                        </li>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.tile_top_left">tile_top_left()
+                                                (Methode von miniworldmaker.boards.board.Board)</a>
                                         </li>
                                         <li><a href="miniworldmaker.html#miniworldmaker.TiledBoard">TiledBoard (Klasse
                                             in miniworldmaker)</a>
@@ -1610,21 +1543,39 @@
                                                 </li>
                                             </ul>
                                         </li>
+                                        <li><a href="miniworldmaker.html#miniworldmaker.Toolbar">Toolbar (Klasse in
+                                            miniworldmaker)</a>
+
+                                            <ul>
+                                                <li>
+                                                    <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar.Toolbar">(Klasse
+                                                        in miniworldmaker.containers.toolbar)</a>
+                                                </li>
+                                            </ul>
+                                        </li>
                                     </ul>
                                 </td>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li>
-                                            <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar.Toolbar">Toolbar
-                                                (Klasse in miniworldmaker.containers.toolbar)</a>
+                                        <li><a href="miniworldmaker.html#miniworldmaker.ToolbarButton">ToolbarButton
+                                            (Klasse in miniworldmaker)</a>
+
+                                            <ul>
+                                                <li>
+                                                    <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar_widgets.ToolbarButton">(Klasse
+                                                        in miniworldmaker.containers.toolbar_widgets)</a>
+                                                </li>
+                                            </ul>
                                         </li>
-                                        <li>
-                                            <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar_widgets.ToolbarButton">ToolbarButton
-                                                (Klasse in miniworldmaker.containers.toolbar_widgets)</a>
-                                        </li>
-                                        <li>
-                                            <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar_widgets.ToolbarLabel">ToolbarLabel
-                                                (Klasse in miniworldmaker.containers.toolbar_widgets)</a>
+                                        <li><a href="miniworldmaker.html#miniworldmaker.ToolbarLabel">ToolbarLabel
+                                            (Klasse in miniworldmaker)</a>
+
+                                            <ul>
+                                                <li>
+                                                    <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar_widgets.ToolbarLabel">(Klasse
+                                                        in miniworldmaker.containers.toolbar_widgets)</a>
+                                                </li>
+                                            </ul>
                                         </li>
                                         <li>
                                             <a href="miniworldmaker.containers.html#miniworldmaker.containers.toolbar_widgets.ToolbarWidget">ToolbarWidget
@@ -1672,9 +1623,6 @@
                                             von miniworldmaker.Actor)</a>
 
                                             <ul>
-                                                <li><a href="miniworldmaker.html#miniworldmaker.Board.update">(Methode
-                                                    von miniworldmaker.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.actors.html#miniworldmaker.actors.actor.Actor.update">(Methode
                                                         von miniworldmaker.actors.actor.Actor)</a>
@@ -1737,28 +1685,22 @@
                             <tr>
                                 <td style="width: 33%; vertical-align: top;">
                                     <ul>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.width">width (Attribut von
-                                            miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.width">width
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.width">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.containers.html#miniworldmaker.containers.container.Container.width">(Attribut
                                                         von miniworldmaker.containers.container.Container)</a>
                                                 </li>
                                             </ul>
                                         </li>
-                                        <li><a href="miniworldmaker.html#miniworldmaker.Board.window">window (Attribut
-                                            von miniworldmaker.Board)</a>
+                                        <li>
+                                            <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.window">window
+                                                (Attribut von miniworldmaker.boards.board.Board)</a>
 
                                             <ul>
-                                                <li>
-                                                    <a href="miniworldmaker.boards.html#miniworldmaker.boards.board.Board.window">(Attribut
-                                                        von miniworldmaker.boards.board.Board)</a>
-                                                </li>
                                                 <li>
                                                     <a href="miniworldmaker.containers.html#miniworldmaker.containers.container.Container.window">(Attribut
                                                         von miniworldmaker.containers.container.Container)</a>

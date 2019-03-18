@@ -53,7 +53,7 @@ class Asteroid(Actor):
         self.image_action("info_overlay", True)
 
     def act(self):
-        if not self.grid.on_the_board(self.look(distance=4, direction="forward", )):
+        if not self.grid.on_board(self.look(distance=4, direction="forward", )):
             self.turn_left(180)
         else:
             self.move(distance = 4, direction = "forward")

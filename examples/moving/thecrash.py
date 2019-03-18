@@ -1,7 +1,7 @@
-from source import *
+from miniworldmaker import *
 
 
-class MyBoard(TileBasedBoard):
+class MyBoard(TiledBoard):
     def __init__(self):
         super().__init__(tile_size=40, columns=29, rows=1, tile_margin=0)
         robot1 = Robot()

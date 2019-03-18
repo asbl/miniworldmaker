@@ -35,7 +35,7 @@ class TiledBoard(Board):
             colliding_actors.remove(actor)
         return colliding_actors
 
-    def get_actors_in_area(self, value: Union[pygame.Rect, tuple]) -> list:
+    def get_actors_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
         self._dynamic_actors_dict.clear()
         self._update_actors_positions()
         if type(value) == tuple:
@@ -43,11 +43,13 @@ class TiledBoard(Board):
         else:
             x, y = self.pixel_to_grid_position(value.topleft)
         actors = []
-        if self.on_the_board(self.rect):
+        if self.on_board(self.rect):
             if self._dynamic_actors_dict[x, y]:
                 actors.extend(self._dynamic_actors_dict[(x, y)])
             if self._static_actors_dict[x, y]:
                 actors.extend(self._static_actors_dict[(x, y)])
+        if actor_type is not None:
+            actors = self.filter_actor_list(actors, actor_type)
         return actors
 
     def remove_actor(self, actor: Actor) -> None:
@@ -123,7 +125,7 @@ class TiledBoard(Board):
         cells.append([x_pos + 1, y_pos - 1])
         return cells
 
-    def on_the_board(self, value: Union[tuple, pygame.Rect]) -> bool:
+    def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
             value = self.tile_to_rect(value)
         x, y = self.pixel_to_grid_position(value.center)
@@ -136,14 +138,17 @@ class TiledBoard(Board):
         else:
             return True
 
-    def is_at_border(self, actor: Actor) -> str:
-        if actor.x == self.columns - 1:
-            return "right"
-        elif actor.y == self.rows - 1:
-            return "bottom"
-        elif actor.x == 0:
-            return "left"
-        elif actor.y == 0:
-            return "top"
-        else:
-            return None
+    def borders(self, value: Union[tuple, pygame.Rect]) -> list:
+        borders = []
+        if type(value) == tuple:
+            value = self.tile_to_rect(value)
+        x, y = self.pixel_to_grid_position(value.center)
+        if x == self.columns - 1:
+            borders.append("right")
+        if y == self.rows - 1:
+            borders.append("bottom")
+        if x == 0:
+            borders.append("right")
+        if y == 0:
+            borders.append("top")
+        return borders

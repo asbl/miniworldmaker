@@ -304,7 +304,7 @@ class Board(Container, Gui, Audio, Database):
     def run(self):
         self.__running = True
 
-    def on_the_board(self, value: Union[tuple, pygame.Rect]) -> bool:
+    def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
             value = self.tile_to_rect(value)
         top_left_x, top_left_y, right, top = value.topleft[0], \
@@ -316,15 +316,8 @@ class Board(Container, Gui, Audio, Database):
         else:
             return True
 
-    def get_touching_borders(self, actor) -> list:
-        return []
-
-    def is_at_border(self, actor):
-        borders = self.get_touching_borders(actor)
-        if borders:
-            return True
-        else:
-            return False
+    def borders(self, actor):
+        pass
 
     def get_colliding_actors(self, actor) -> list:
         pass

@@ -21,7 +21,7 @@ class Player(Actor):
         self.add_image(path="images/char_blue.png")
 
     def act(self):
-        if not self.board.on_the_board(self.look_forward()):
+        if not self.board.on_board(self.look_forward()):
             self.turn_left(90)
         self.move()
 

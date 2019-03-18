@@ -24,13 +24,13 @@ class ActorToolbar(Toolbar):
             self.actor = data
             self.label_id.set_text("ID:" + str(self.actor.id))
             self.label_direction.set_text("Direction:" + str(self.actor.direction))
-            self.label_border.set_text("Is at Border:" + str(self.actor.is_at_border))
-            self.label_grid.set_text("Is in Grid:" + str(self.actor.on_the_board))
+            self.label_border.set_text("Is at Border:" + str(self.actor.borders))
+            self.label_grid.set_text("Is in Grid:" + str(self.actor.on_board))
         if event == "out of grid" and data == self.actor:
-            self.label_grid.set_text("Is in Grid:" + str(self.actor.on_the_board))
+            self.label_grid.set_text("Is in Grid:" + str(self.actor.on_board))
         if event == "border-event" and data == self.actor:
             print("is_At_border")
-            self.label_border.set_text("is at Border:" + str(self.actor.is_at_border))
+            self.label_border.set_text("is at Border:" + str(self.actor.borders))
             self.label_borders.set_text("Borders:" + str(self.actor.touching_borders))
             self.label_direction.set_text("Direction:" + str(self.actor.direction))
 

@@ -1,7 +1,7 @@
 from miniworldmaker import *
 
 
-class MyGrid(PixelBoard):
+class MyBoard(PixelBoard):
 
     def __init__(self):
         super().__init__(columns=200, rows=200)
@@ -29,5 +29,5 @@ class Robot(Actor):
                 self.move(distance = 3)
 
 
-mygrid = MyGrid()
-mygrid.show()
+board = MyBoard()
+board.show()

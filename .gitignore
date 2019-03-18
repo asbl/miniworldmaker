@@ -7,7 +7,7 @@ install.bat
 upload.bat
 venv_gamegridp
 venv_windows
-source/gamegridp.egg-info
+source/miniworldmaker/*egg*
 source/docs/build
 source/dist
 source/build
