@@ -42,6 +42,7 @@ class Player(Actor):
 
     def get_event(self, event, data):
         if event == "key_down":
+            direction = None
             if "W" in data:
                 direction = "up"
             elif "S" in data:
@@ -50,14 +51,13 @@ class Player(Actor):
                 direction = "left"
             elif "D" in data:
                 direction = "right"
-            actors_in_front = self.look_for_actors(direction=direction)
-            blocking = False
-            for actor in actors_in_front:
-                if actor.is_blocking:
-                    blocking = True
-            self.move(direction=direction)
+            if direction in ["up", "down", "left", "right"]:
+                walls = self.look_for_actors(direction=direction, actor_type=Wall)
+                doors = self.look_for_actors(direction=direction, actor_type=Door)
+                closed_doors = [door for door in doors if door.closed is True]
+                if not walls and not closed_doors and self.look_on_board(direction=direction):
+                    self.move(direction=direction)
         actors_at_position = self.look_for_actors(direction="here")
-        print(actors_at_position)
         if event == "button" and data == "Fackel":
             if self.board.fireplace in actors_at_position:
                 self.board.console.print("Du zündest die Feuerstelle an.")
