@@ -1,10 +1,9 @@
 import os
-
 import pygame
-from gamegridp import container
+from miniworldmaker.containers.container import Container
 
 
-class EventConsole(container.Container):
+class EventConsole(Container):
     def __init__(self, lines=5, **kwargs):
         super().__init__(**kwargs)
         self._lines = lines

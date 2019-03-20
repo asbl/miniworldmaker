@@ -12,6 +12,9 @@ from miniworldmaker.tools.image_renderer import ImageRenderer
 
 
 class Board(Container, Gui, Audio, Database):
+    """
+    Base class for creating boards
+    """
     log = logging.getLogger("GameGrid")
 
     def __init__(self,
@@ -20,10 +23,9 @@ class Board(Container, Gui, Audio, Database):
                  ):
         """
         initializes a new GameGrid
-        :param tile_size: The tile-size in pixels
-        :param columns: The number of columns
-        :param rows: The number of rows
-        :param margin: the margin between tiles
+        Args:
+            columns: The number of columns
+            rows: The number of rows
         """
         super().__init__(self)
         pygame.init()

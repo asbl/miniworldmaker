@@ -1,16 +1,15 @@
 import sqlite3 as lite
 from miniworldmaker import *
-
+import easygui
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(tile_size=60, columns=10, rows=10,
-                         tile_margin=0)
+    def __init__(self, file, **kwargs):
+        super().__init__(**kwargs)
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
         self.toolbar.add_widget(ToolbarButton("Speichern", "images/save.png", ))
-        self.toolbar.add_widget(ToolbarButton("Laden", "images/save.png", ))
+        # self.toolbar.add_widget(ToolbarButton("Laden", "images/save.png", ))
         self.toolbar.add_widget(ToolbarButton("Wall", "images/rock.png", ))
         self.toolbar.add_widget(ToolbarButton("Robot", "images/robo_green.png", ))
         self.toolbar.add_widget(ToolbarButton("Gold", "images/stone_gold.png", ))
@@ -18,6 +17,30 @@ class MyBoard(TiledBoard):
         self.toolbar.add_widget(ToolbarButton("Emerald", "images/stone_green.png",))
         self.state= "wall"
         self.add_image(path="images/stone.jpg")
+        self.file = file
+        self.init_database()
+
+    def init_database(self):
+        query1 = """     CREATE TABLE IF NOT EXISTS `Actors` (
+                        `id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                        `column`		INTEGER,
+                        `row`			INTEGER,
+                        `actor_class`	TEXT
+                        );
+                        """
+        query2 = """     CREATE TABLE IF NOT EXISTS `board` (
+                        `tile_size`		ITEGER
+                        `rows`			INTEGER
+                        `columns`		INTEGER,
+                        `row`			INTEGER,
+                        `margin`	    INTEGER
+                        );
+                        """
+        with lite.connect(self.file) as db:
+            cur = db.cursor()
+            cur.execute(query1)
+            cur.execute(query2)
+            db.commit()
 
     def get_event(self, event, data):
         if event == "mouse_left":
@@ -33,9 +56,10 @@ class MyBoard(TiledBoard):
                     actor =  self.add_actor(Diamond(), position = (position))
                 elif self.state=="emerald":
                     actor =  self.add_actor(Emerald(), position = (position))
-            else:
-                self.remove_actors_from_location(position)
-            print(position)
+        elif event == "mouse_right":
+            position = self.pixel_to_grid_position(data)
+            self.remove_actors_in_area(position)
+            print("mouse-right", position)
         elif event == "button":
             if data == "Robot":
                 self.state="robot"
@@ -49,37 +73,31 @@ class MyBoard(TiledBoard):
                 self.state="diamond"
             elif data=="Speichern":
                 game_id = self.save()
-                self.message_box("Neues Spiel mit id "+str(game_id)+" erstellt")
+                easygui.msgbox("Spiel wurde in Datei {0} gespeichert".format(self.file))
             if data=="Laden":
-                game_id=self.integer_box("Gebe das Spiel ein, das geladen werden soll")
+                game_id = easygui.fileopenbox("Gebe das Spiel ein, das geladen werden soll")
                 if game_id:
                     self.remove_all_actors()
-                    self.load(game_id)
+                    self.load()
 
-    def save(self) -> int:
-        self.connect("robodatabase.db")
-        row = self.select_single_row('SELECT id FROM Game ORDER BY id DESC LIMIT 1')
-        gameid = row[0]
-        gameid=gameid+1
+    def save(self):
+        self.connect(self.file)
         for actor in self.actors:
-            dict = {"column":actor.position[0],
-                                  "row": actor.position[1],
-                                  "GameID": gameid,
-                                  "Actor" : actor.title}
+            dict = {"column": actor.position[0],
+                    "row": actor.position[1],
+                    "actor_class": actor.class_name}
             self.insert("Actors", dict )
-        self.insert("Game",{"ID": gameid})
         self.commit()
         self.close_connection()
-        return gameid
 
-    def load(self, game_id):
-        connection = lite.connect('robodatabase.db')
+    def load(self):
+        connection = lite.connect(self.file)
         cursor = connection.cursor()
-        cursor.execute('SELECT * FROM Actors WHERE GameID=' + str(game_id))
+        cursor.execute('SELECT * FROM Actors')
         for actordata in cursor.fetchall():
-            if actordata[4]=="Wall":
+            if actordata[3] == "Wall":
                 self.add_actor(Wall(), position=(actordata[1],actordata[2]))
-            elif actordata[4]=="Robot":
+            elif actordata[3] == "Robot":
                 self.add_actor(Robot(), position=(actordata[1], actordata[2]))
         actors=cursor.fetchall()
         print("Load Actors: "+str(actors))
@@ -121,5 +139,20 @@ class Emerald(Actor):
         self.add_image("images/stone_green.png")
 
 
-mygrid = MyBoard()
+modus = easygui.buttonbox("Neue Welt erstellen oder alte Welt laden",
+                          "Neue Welt / Laden", ["Neue Welt", "Laden"])
+print(modus)
+if modus == "Neue Welt":
+    file = easygui.filesavebox("Gebe an, in welcher Datei das Spiel gespeichert werden soll.",
+                               "Speicherort auswählen", "database.db", ".db")
+    rows = easygui.integerbox("Gebe die Anzahl an *Zeilen* ein", "Zeilen")
+    columns = easygui.integerbox("Gebe die Anzahl an *Spalen* ein", "Spalten")
+    tile_size = easygui.integerbox("Gebe die Größe der Kacheln an", "Tile-Size", 64)
+    margin = easygui.integerbox("Gebe den Abstand zwischen den Kacheln an", "Margin", 1)
+    mygrid = MyBoard(rows=rows, columns=columns, tile_size=tile_size, file=file, tile_margin=margin)
+else:
+    file = easygui.fileopenbox("Gebe die Datei an", "Datei auswählen", "database.db", ".db", False)
+    mygrid = MyBoard(file=file)
+    mygrid.load()
+
 mygrid.show()

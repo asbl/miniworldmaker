@@ -6,7 +6,6 @@ MiniWorldMaker
 
        tutorial
 
-
 Die Klassenbibliothek
 =====================
 
@@ -16,6 +15,17 @@ Hier findest du alle Informationen, wenn du direkt auf Klassen, Methoden und Att
 
        modules
 
+
+Status
+=====================
+
+Hier findest du alle Informationen, wenn du direkt auf Klassen, Methoden und Attribute zugreifen möchtest.
+
+.. toctree::
+
+       status
+
+.. automodule:: miniworldmaker
 
 
 

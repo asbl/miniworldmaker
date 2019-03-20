@@ -53,26 +53,24 @@ class TiledBoard(Board):
         return actors
 
     def remove_actor(self, actor: Actor) -> None:
+        print("remove", actor)
         if actor in self._dynamic_actors:
             self._dynamic_actors.remove(actor)
         if actor in self._static_actors_dict[(actor.x, actor.y)]:
             self._static_actors_dict[(actor.x, actor.y)].remove(actor)
         super().remove_actor(actor)
 
-    def remove_actors_from_cell(self, cell: tuple) -> None:
+    def remove_actors_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
         """
-        Entfernt alle Actors aus einer Zelle
-        Parameters
-        ----------
-        cell : Die Zelle aus der der Akteur entfernt werden soll.
+        Removes all actors in an area
+        Args:
+            value: Either rectangle or grid-position
+            actor_type: The actor type which should be removed
 
-        Returns
-        -------
-
+        Returns: true if any actor was removed
         """
-        for actor in self._dynamic_actors_dict[cell[0], cell[1]]:
-            self.remove_actor(actor)
-        for actor in self._static_actors_dict[cell[0], cell[1]]:
+        actors = self.get_actors_in_area(value, actor_type)
+        for actor in actors:
             self.remove_actor(actor)
 
     def add_actor(self, actor: Actor, position: tuple = None) -> Actor:

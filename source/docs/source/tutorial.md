@@ -1,4 +1,4 @@
-Erste Schritte
+Tutorial
 ==============
 
 Los geht es!
@@ -8,7 +8,7 @@ MiniWorldMaker ist eine Engine, die dir erlaubt, eigene Miniwelten und Spiele zu
 In den folgenden Schritten wird dir gezeigt, wie du eigene Miniwelten erstellst und Akteure in den Welten erschaffst.
 
 Eine erste Welt
-===============
+---------------
 
 Wir erschaffen die erste Welt. Dies geht mit folgendem Code:
 
@@ -55,7 +55,7 @@ So sieht es dann aus:
 ![tiles](_images/grid.jpg)
 
 Einen Akteur erstellen
-======================
+----------------------
 
 Als nächtes wird ein Akteur auf dem Board platziert. 
 
@@ -75,8 +75,8 @@ class Player(Actor):
   * Zeile 4 ruft die init()-Methode der Vaterklasse auf, die zahlreiche Dinge hinter den Kulissen initialisiert.
   * In Zeile 5 wird dann zu dem Player-Objekt ein Bild hinzugefügt.
   
-  Den Akteur zum Spielfeld hinzufügen
-  ===================================
+Den Akteur zum Spielfeld hinzufügen
+-------------------------------------
   
   Bis jetzt haben wir nur eine Schablone erstellt, um Player-Objekte zu erzeugen.
   Jetzt sollen konkrete Objekte erzeugt und zum Spielfeld hinzugefügt werden.
@@ -91,3 +91,57 @@ class Player(Actor):
 
   * Zeile 3 erstellt das Player Objekt (und ruft die init()-Methode auf.
   * Zeile 4 fügt das erstellte Objekt dem Spielfeld hinzu, damit die Figur nicht im "Niemandsland" lebt.
+  
+  Zeile 3 und 4 kann man auch kombinieren:
+```   
+  player1 = self.add_actor(Player(), position=(3, 3))
+```
+
+Den Akteur bewegen
+------------------
+
+Es gibt zwei wichtige Methoden, die du mit Inhalten füllen kannst:
+
+### Die act() - Methode
+
+Die Act-Methode wird in kurzen Abständen immer wieder aufrufen. 
+Hier kannst du Code platzieren, der immer wieder ausgeführt werden soll, z.B.:
+```
+    def act(self):
+        if not self.look_on_board(direction = "forward"):
+            self.turn_left(90)
+        self.move()
+```
+
+Der Actor schaut ein Feld nach vorne und überprüft, ob dieses noch auf dem Spielfeld liegt. 
+Wenn ja, geht er ein Feld vorwärts. Andernfalls dreht er sich um 90° nach links.
+
+### Die get_event(event, data)-Methode
+
+Die get_event(event, data)-Methode) dient dazu, auf Ereignisse verschiedener Art zu reagieren.
+
+  * Der Parameter **event** enthält immer einen String mit dem Ereignis, z.B.:
+    * "mouse-left": Es wurde die linke Maustaste gedrückt.
+    * ...
+    
+  * Der Parameter **data** enthält Infos, die zu dem Ereignis passen.
+    * "mouse-left", "mouse-right" : Die Kachel im Board auf die geklickt wurde.
+    
+#### Beispiel:
+
+```
+    def get_event(self, event, data):
+        if event == "key_down":
+            if "W" in data:
+                self.move(direction="up")
+            elif "S" in data:
+                self.move(direction="down")
+            elif "A" in data:
+                self.move(direction="left")
+            elif "D" in data:
+                self.move(direction="right")
+```
+
+Der Code überprüft, ob das Ereignis "key_down geworfen wurde.
+Im Parameter data wird hier eine Liste mit allen in diesem Moment gedrückten Buttons zurückgegeben.
+Es kann daher überprüft werden: **Wenn* der Button X gedrückt wurde, tue ... 
