@@ -6,7 +6,7 @@ class MyBoard(PixelBoard):
     def __init__(self):
         super().__init__(columns=200, rows=200)
         player1 = Player()
-        self.add_actor(player1, position=(30, 30))
+        self.add_to_board(player1, position=(30, 30))
         self.add_image("images/soccer_green.jpg")
 
 

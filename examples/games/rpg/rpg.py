@@ -7,21 +7,21 @@ class MyGrid(TiledBoard):
         super().__init__(columns=30, rows=20, tile_size=20, tile_margin=1)
         for i in range(self.rows):
             for j in range(self.columns):
-                self.add_actor(Grass(), (j, i))
-        wall = self.add_actor(Wall(),(0,4))
-        self.add_actor(Wall(), (1, 4))
-        self.add_actor(Wall(), (2, 4))
-        self.add_actor(Wall(), (3, 4))
-        self.add_actor(Wall(), (4, 4))
-        self.add_actor(Wall(), (5, 4))
-        self.add_actor(Wall(), (6, 4))
-        self.add_actor(Wall(), (6, 0))
-        self.add_actor(Wall(), (6, 1))
-        self.add_actor(Wall(), (6, 3))
-        self.torch = self.add_actor(Torch(), (10, 4))
-        self.fireplace = self.add_actor(Fireplace(), (10, 14))
-        self.door = self.add_actor(Door(), (6,2))
-        self.add_actor(Player(), (8, 2))
+                self.add_to_board(Grass(), (j, i))
+        wall = self.add_to_board(Wall(), (0, 4))
+        self.add_to_board(Wall(), (1, 4))
+        self.add_to_board(Wall(), (2, 4))
+        self.add_to_board(Wall(), (3, 4))
+        self.add_to_board(Wall(), (4, 4))
+        self.add_to_board(Wall(), (5, 4))
+        self.add_to_board(Wall(), (6, 4))
+        self.add_to_board(Wall(), (6, 0))
+        self.add_to_board(Wall(), (6, 1))
+        self.add_to_board(Wall(), (6, 3))
+        self.torch = self.add_to_board(Torch(), (10, 4))
+        self.fireplace = self.add_to_board(Fireplace(), (10, 14))
+        self.door = self.add_to_board(Door(), (6, 2))
+        self.add_to_board(Player(), (8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
@@ -52,12 +52,12 @@ class Player(Actor):
             elif "D" in data:
                 direction = "right"
             if direction in ["up", "down", "left", "right"]:
-                walls = self.look_for_actors(direction=direction, actor_type=Wall)
-                doors = self.look_for_actors(direction=direction, actor_type=Door)
+                walls = self.is_looking_at_tokens(direction=direction, actor_type=Wall)
+                doors = self.is_looking_at_tokens(direction=direction, actor_type=Door)
                 closed_doors = [door for door in doors if door.closed is True]
-                if not walls and not closed_doors and self.look_on_board(direction=direction):
+                if not walls and not closed_doors and self.is_looking_on_board(direction=direction):
                     self.move(direction=direction)
-        actors_at_position = self.look_for_actors(direction="here")
+        actors_at_position = self.is_looking_at_tokens(direction="here")
         if event == "button" and data == "Fackel":
             if self.board.fireplace in actors_at_position:
                 self.board.console.print("Du zündest die Feuerstelle an.")
@@ -72,7 +72,7 @@ class Player(Actor):
                 self.board.console.print("Du hebst die Fackel auf.")
                 self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
-        actors_in_front = self.look_for_actors(direction="forward")
+        actors_in_front = self.is_looking_at_tokens(direction="forward")
         if self.board.door in actors_in_front:
             if self.board.door.closed:
                 message = "Die Tür ist geschlossen... möchtest du sie öffnen"
@@ -83,7 +83,7 @@ class Player(Actor):
                     self.board.console.print("Du hast das Tor geöffnet.")
 
 
-class Wall(Actor):
+class Wall(Token):
 
     def __init__(self):
         super().__init__()
@@ -91,21 +91,21 @@ class Wall(Actor):
         self.add_image("rpgimages/wall.png")
 
 
-class Grass(Actor):
+class Grass(Token):
 
     def __init__(self):
         super().__init__()
         self.add_image("rpgimages/grass.png")
 
 
-class Torch(Actor):
+class Torch(Token):
 
     def __init__(self):
         super().__init__()
         self.add_image("rpgimages/torch.png")
 
 
-class Fireplace(Actor):
+class Fireplace(Token):
 
     def __init__(self):
         super().__init__()
@@ -123,7 +123,7 @@ class Fireplace(Actor):
             self.burning = True
 
 
-class Door(Actor):
+class Door(Token):
 
     def __init__(self):
         super().__init__()

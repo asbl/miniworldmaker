@@ -11,7 +11,7 @@ class MyBoard(TiledBoard):
                          rows=10,
                          tile_margin=0)
         self.add_image(path="images/stone.jpg")
-        self.file = test.db
+        self.file = "robot01.db"
         self.load()
 
     def load(self):
@@ -20,14 +20,14 @@ class MyBoard(TiledBoard):
         cursor.execute('SELECT * FROM Actors')
         for actordata in cursor.fetchall():
             if actordata[3] == "Wall":
-                self.add_actor(Wall(), position=(actordata[1], actordata[2]))
+                self.add_to_board(Wall(), position=(actordata[1], actordata[2]))
             elif actordata[3] == "Robot":
-                self.add_actor(Robot(), position=(actordata[1], actordata[2]))
+                self.add_to_board(Robot(), position=(actordata[1], actordata[2]))
         actors = cursor.fetchall()
         print("Load Actors: " + str(actors))
 
 
-class Robot(Actor):
+class Robot(Token):
 
     def __init__(self):
         super().__init__()
@@ -36,7 +36,7 @@ class Robot(Actor):
         self.add_image("images/robo_green.png")
 
 
-class Wall(Actor):
+class Wall(Token):
 
     def __init__(self):
         super().__init__()
@@ -45,7 +45,7 @@ class Wall(Actor):
         self.add_image("images/rock.png")
 
 
-class Gold(Actor):
+class Gold(Token):
 
     def __init__(self):
         super().__init__()
@@ -53,14 +53,14 @@ class Gold(Actor):
         self.add_image("images/stone_gold.png")
 
 
-class Diamond(Actor):
+class Diamond(Token):
     def __init__(self):
         super().__init__()
         self.title = "Wall"
         self.add_image("images/stone_blue.png", )
 
 
-class Emerald(Actor):
+class Emerald(Token):
     def __init__(self):
         super().__init__()
         self.title = "Wall"

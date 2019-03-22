@@ -6,7 +6,7 @@ class MyBoard(PixelBoard):
     def __init__(self):
         super().__init__(columns=200, rows=200)
         self.add_image(path="images/stone.jpg")
-        self.add_actor(Robot(), position = (50,50))
+        self.add_to_board(Robot(), position=(50, 50))
 
 
 class Robot(Actor):

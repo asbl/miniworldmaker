@@ -1,6 +1,7 @@
 import pygame
 from miniworldmaker.boards.board import Board
-from miniworldmaker.actors.actor import Actor
+from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.actor import Actor
 
 
 class PixelBoard(Board):
@@ -15,30 +16,30 @@ class PixelBoard(Board):
         self._collision_parnters_dict[partner1.actor_id].add(partner2)
         self._collision_parnters_dict[partner2.actor_id].add(partner1)
 
-    def add_actor(self, actor: Actor, position) -> Actor:
+    def add_to_board(self, actor: Token, position) -> Token:
         """
         Overwrites add_actor in gamegrid
         :param actor: The actor to be added
         :param position: The position where the actor should be placed in the grid
         :return: The reference to the Actor object
         """
-        super().add_actor(actor, position)
+        super().add_to_board(actor, position)
         if actor.size == (0, 0):
             actor.size = (30, 30)
-        self._collision_parnters_dict[actor.actor_id] = pygame.sprite.Group()
+        self._collision_parnters_dict[actor.token_id] = pygame.sprite.Group()
         return actor
 
-    def remove_actor(self, actor: Actor):
-        actor_id = actor.actor_id
-        del self._collision_parnters_dict[actor_id]
-        super().remove_actor(actor)
+    def remove_from_board(self, actor: Token):
+        token_id = actor.token_id
+        del self._collision_parnters_dict[token_id]
+        super().remove_from_board(actor)
 
     def _call_collision_events(self):
         new_col_pairs = []
         for partner1 in self.actors:
-            if partner1.actor_id in self._collision_parnters_dict:
+            if partner1.token_id in self._collision_parnters_dict:
                 collisions = pygame.sprite.spritecollide(partner1,
-                                                         self._collision_parnters_dict[partner1.actor_id], False)
+                                                         self._collision_parnters_dict[partner1.token_id], False)
                 if collisions:
                     print(collisions)
                 for partner2 in collisions:

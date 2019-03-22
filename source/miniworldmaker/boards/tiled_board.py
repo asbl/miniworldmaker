@@ -2,7 +2,8 @@ from collections import defaultdict
 from typing import Union
 import pygame
 from miniworldmaker.boards.board import Board
-from miniworldmaker.actors.actor import Actor
+from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.actor import Actor
 
 
 class TiledBoard(Board):
@@ -14,7 +15,7 @@ class TiledBoard(Board):
         self.set_size(self.tile_size, columns, rows, tile_margin)
         self._dynamic_actors_dict = defaultdict(list)  # the dict is regularly updated
         self._dynamic_actors = []  # List with all dynamic actors
-        self._static_actors_dict = defaultdict(list)
+        self._static_tokens_dict = defaultdict(list)
 
     def show_grid(self):
         """
@@ -22,45 +23,45 @@ class TiledBoard(Board):
         """
         self.set_image_action("grid_overlay", True)
 
-    def _update_actors_positions(self) -> None:
+    def _update_token_positions(self) -> None:
         self._dynamic_actors_dict.clear()
         for actor in self._dynamic_actors:
             x, y = actor.position[0], actor.position[1]
             self._dynamic_actors_dict[(x, y)].append(actor)
 
-    def get_colliding_actors(self, actor: Actor) -> list:
-        self._update_actors_positions()
-        colliding_actors = self.get_actors_in_area(actor.rect)
-        if actor in colliding_actors:
-            colliding_actors.remove(actor)
-        return colliding_actors
+    def get_colliding_tokens(self, token: Token) -> list:
+        self._update_token_positions()
+        colliding_tokens = self.get_tokens_in_area(token.rect)
+        if token in colliding_tokens:
+            colliding_tokens.remove(token)
+        return colliding_tokens
 
-    def get_actors_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
+    def get_tokens_in_area(self, value: Union[pygame.Rect, tuple], token_type=None) -> list:
         self._dynamic_actors_dict.clear()
-        self._update_actors_positions()
+        self._update_token_positions()
         if type(value) == tuple:
             x, y = value[0], value[1]
         else:
             x, y = self.pixel_to_grid_position(value.topleft)
-        actors = []
+        tokens_in_area = []
         if self.on_board(self.rect):
             if self._dynamic_actors_dict[x, y]:
-                actors.extend(self._dynamic_actors_dict[(x, y)])
-            if self._static_actors_dict[x, y]:
-                actors.extend(self._static_actors_dict[(x, y)])
-        if actor_type is not None:
-            actors = self.filter_actor_list(actors, actor_type)
-        return actors
+                tokens_in_area.extend(self._dynamic_actors_dict[(x, y)])
+            if self._static_tokens_dict[x, y]:
+                tokens_in_area.extend(self._static_tokens_dict[(x, y)])
+        if token_type is not None:
+            tokens_in_area = self.filter_actor_list(tokens_in_area, token_type)
+        return tokens_in_area
 
-    def remove_actor(self, actor: Actor) -> None:
-        print("remove", actor)
-        if actor in self._dynamic_actors:
-            self._dynamic_actors.remove(actor)
-        if actor in self._static_actors_dict[(actor.x, actor.y)]:
-            self._static_actors_dict[(actor.x, actor.y)].remove(actor)
-        super().remove_actor(actor)
+    def remove_from_board(self, token: Token) -> None:
+        print("remove", token)
+        if token in self._dynamic_actors:
+            self._dynamic_actors.remove(token)
+        if token in self._static_tokens_dict[(token.x, token.y)]:
+            self._static_tokens_dict[(token.x, token.y)].remove(token)
+        super().remove_from_board(token)
 
-    def remove_actors_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
+    def remove_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
         """
         Removes all actors in an area
         Args:
@@ -69,28 +70,28 @@ class TiledBoard(Board):
 
         Returns: true if any actor was removed
         """
-        actors = self.get_actors_in_area(value, actor_type)
+        actors = self.get_tokens_in_area(value, actor_type)
         for actor in actors:
-            self.remove_actor(actor)
+            self.remove_from_board(actor)
 
-    def add_actor(self, actor: Actor, position: tuple = None) -> Actor:
-        if actor.is_static:
-            self._static_actors_dict[(position[0], position[1])].append(actor)
+    def add_to_board(self, token: Token, position: tuple = None) -> Token:
+        if token.is_static:
+            self._static_tokens_dict[(position[0], position[1])].append(token)
         else:
-            self._dynamic_actors.append(actor)
-        super().add_actor(actor, position)
-        if actor.size == (0, 0):
-            actor.size = (self.tile_size, self.tile_size)
-        actor.changed()
-        return actor
+            self._dynamic_actors.append(token)
+        super().add_to_board(token, position)
+        if token.size == (0, 0):
+            token.size = (self.tile_size, self.tile_size)
+        token.changed()
+        return token
 
-    def update_actor(self, actor: Actor, attribute, value):
+    def update_token(self, token: Token, attribute, value):
         if attribute == "is_static" and value is True:
-            self._static_actors_dict[(actor.x(), actor.y())].append(actor)
-            if actor in self._dynamic_actors_dict:
-                self._dynamic_actors_dict.pop(actor)
+            self._static_tokens_dict[(token.x(), token.y())].append(token)
+            if token in self._dynamic_actors_dict:
+                self._dynamic_actors_dict.pop(token)
         else:
-            self._dynamic_actors.append(actor)
+            self._dynamic_actors.append(token)
 
     def is_empty_cell(self, position: tuple) -> bool:
         """
@@ -98,7 +99,7 @@ class TiledBoard(Board):
         :param position: the position of the cell
         :return: True if cell is empty
         """
-        if not self.get_actors_in_area(position):
+        if not self.get_tokens_in_area(position):
             return True
         else:
             return False

@@ -2,6 +2,7 @@ import sqlite3 as lite
 from miniworldmaker import *
 import easygui
 
+
 class MyBoard(TiledBoard):
 
     def __init__(self, file, **kwargs):
@@ -47,18 +48,18 @@ class MyBoard(TiledBoard):
             position = self.pixel_to_grid_position(data)
             if self.is_empty_cell((data[0], data[1])):
                 if self.state=="wall":
-                    actor = self.add_actor(Wall(), position = (position))
+                    actor = self.add_to_board(Wall(), position=(position))
                 elif self.state=="robot":
-                    actor =  self.add_actor(Robot(), position = (position))
+                    actor = self.add_to_board(Robot(), position=(position))
                 elif self.state=="gold":
-                    actor =  self.add_actor(Gold(), position = (position))
+                    actor = self.add_to_board(Gold(), position=(position))
                 elif self.state=="diamond":
-                    actor =  self.add_actor(Diamond(), position = (position))
+                    actor = self.add_to_board(Diamond(), position=(position))
                 elif self.state=="emerald":
-                    actor =  self.add_actor(Emerald(), position = (position))
+                    actor = self.add_to_board(Emerald(), position=(position))
         elif event == "mouse_right":
             position = self.pixel_to_grid_position(data)
-            self.remove_actors_in_area(position)
+            self.remove_tokens_in_area(position)
             print("mouse-right", position)
         elif event == "button":
             if data == "Robot":
@@ -96,9 +97,9 @@ class MyBoard(TiledBoard):
         cursor.execute('SELECT * FROM Actors')
         for actordata in cursor.fetchall():
             if actordata[3] == "Wall":
-                self.add_actor(Wall(), position=(actordata[1],actordata[2]))
+                self.add_to_board(Wall(), position=(actordata[1], actordata[2]))
             elif actordata[3] == "Robot":
-                self.add_actor(Robot(), position=(actordata[1], actordata[2]))
+                self.add_to_board(Robot(), position=(actordata[1], actordata[2]))
         actors=cursor.fetchall()
         print("Load Actors: "+str(actors))
 
@@ -110,7 +111,8 @@ class Robot(Actor):
         self.is_rotatable = True
         self.add_image("images/robo_green.png")
 
-class Wall(Actor):
+
+class Wall(Token):
     def __init__(self):
         super().__init__()
         self.title="Wall"
@@ -118,21 +120,21 @@ class Wall(Actor):
         self.add_image("images/rock.png")
 
 
-class Gold(Actor):
+class Gold(Token):
     def __init__(self):
         super().__init__()
         self.title="Wall"
         self.add_image("images/stone_gold.png")
 
 
-class Diamond(Actor):
+class Diamond(Token):
     def __init__(self):
         super().__init__()
         self.title="Wall"
         self.add_image("images/stone_blue.png",)
 
 
-class Emerald(Actor):
+class Emerald(Token):
     def __init__(self):
         super().__init__()
         self.title="Wall"

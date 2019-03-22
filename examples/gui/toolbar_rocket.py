@@ -6,7 +6,7 @@ class MyGrid(PixelBoard):
     def __init__(self):
         super().__init__(columns=200, rows=240)
         self.window.add_container(MyToolbar(), dock="right")
-        self.rocket = self.add_actor(Rocket(), position = (100, 200))
+        self.rocket = self.add_to_board(Rocket(), position=(100, 200))
         self.add_image("images/galaxy.jpg")
 
 
@@ -27,7 +27,7 @@ class Rocket(Actor):
 
     def act(self):
         if self.started:
-            if not self.look_on_board(direction="forward"):
+            if not self.is_looking_on_board(direction="forward"):
                 self.remove()
             else:
                 self.move(distance = 1, direction = "up")

@@ -7,7 +7,8 @@ from miniworldmaker.boards.features.gui import Gui
 from miniworldmaker.boards.features.audio import Audio
 from miniworldmaker.boards.features.database import Database
 from miniworldmaker.windows.miniworldwindow import MiniWorldWindow
-from miniworldmaker.actors.actor import Actor
+from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.tools.image_renderer import ImageRenderer
 
 
@@ -33,7 +34,6 @@ class Board(Container, Gui, Audio, Database):
         self.is_running = False
         self.speed = 60
         self.active_actor = None
-        self.is_static = False
         # private
         self._renderer = ImageRenderer()
         self.set_image_action("info_overlay", False)
@@ -102,8 +102,8 @@ class Board(Container, Gui, Audio, Database):
         pass
 
     def is_colliding(self, actor) -> bool:
-        colliding_actors = self.get_colliding_actors(actor)
-        if colliding_actors:
+        colliding_tokens = self.get_colliding_tokens(actor)
+        if colliding_tokens:
             return True
         else:
             return False
@@ -214,7 +214,7 @@ class Board(Container, Gui, Audio, Database):
             self._image = _image
             return _image
 
-    def add_actor(self, actor: Actor, position: tuple) -> Actor:
+    def add_to_board(self, actor: Token, position: tuple) -> Token:
         """
         adds actor to grid
         :param actor: the actor as subclass of Actor
@@ -247,10 +247,7 @@ class Board(Container, Gui, Audio, Database):
                 actors.append(actor)
         return actors
 
-    def _call_collision_events(self):
-        pass
-
-    def get_actors_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
+    def get_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
         """
         Gets all actors at location
         :param value: Either a tuple with cordinates in the grid or a Rect
@@ -276,13 +273,13 @@ class Board(Container, Gui, Audio, Database):
         actors = []
         if type(location) == tuple:
             location = pygame.Rect(location[0], location[1], 1, 1)
-        actors = self.get_actors_in_area(location)
+        actors = self.get_tokens_in_area(location)
         if actor_type is not None:
             actors = self.filter_actor_list(actors, actor_type)
         for actor in actors:
-            self.remove_actor(actor)
+            self.remove_from_board(actor)
 
-    def remove_actor(self, actor: Actor):
+    def remove_from_board(self, actor: Token):
         if actor:
             self.actors.remove(actor)
             actor.board = None
@@ -292,7 +289,7 @@ class Board(Container, Gui, Audio, Database):
         Entfernt alle Akteure aus dem Grid.
         """
         for actor in self.actors:
-            self.remove_actor(actor)
+            self.remove_from_board(actor)
 
     def reset(self):
         self.dirty = 1
@@ -321,7 +318,7 @@ class Board(Container, Gui, Audio, Database):
     def borders(self, actor):
         pass
 
-    def get_colliding_actors(self, actor) -> list:
+    def get_colliding_tokens(self, actor) -> list:
         pass
 
     def repaint(self):
@@ -350,6 +347,9 @@ class Board(Container, Gui, Audio, Database):
             self.__frame = 0
         self.__clock.tick(60)
 
+    def _call_collision_events(self):
+        pass
+
     def _act_all(self):
         self.__tick = self.__tick + 1
         if self.__tick > 60 - self.speed:
@@ -359,6 +359,7 @@ class Board(Container, Gui, Audio, Database):
             self.__tick = 0
 
     def pass_event(self, event, data=None):
+        print(event)
         if event != "collision":
             for actor in self.actors:
                 actor.get_event(event, data)

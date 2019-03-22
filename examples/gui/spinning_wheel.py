@@ -8,7 +8,7 @@ class MyBoard(TiledBoard):
         super().__init__(tile_size=100, columns=3, rows=3, tile_margin=1)
         self.window.add_container(MyToolbar(), dock="right")
         self.arrow = Arrow()
-        self.add_actor(self.arrow, (1, 1))
+        self.add_to_board(self.arrow, (1, 1))
         self.chip = None
         self.placed = False
         self.add_image("images/greenfield.jpg")
@@ -22,7 +22,7 @@ class MyBoard(TiledBoard):
             position = self.pixel_to_grid_position(data)
             if not position == (1, 1):
                 self.chip = Chip()
-                self.add_actor(self.chip, position)
+                self.add_to_board(self.chip, position)
                 self.placed = True
         print(self.actors)
 
@@ -39,7 +39,7 @@ class Arrow(Actor):
             self.turn_left((self.spinning/800)*20)
             self.spinning = self.spinning - 1
             if self.spinning == 0:
-                if self.look_for_actors(direction="forward", actor_type=Chip):
+                if self.is_looking_at_tokens(direction="forward", actor_type=Chip):
                     self.board.message_box("Du hast gewonnen")
                 else:
                     self.board.message_box("Du hast verloren")
@@ -49,7 +49,7 @@ class Arrow(Actor):
         self.board.places = False
 
 
-class Chip(Actor):
+class Chip(Token):
 
     def __init__(self):
         super().__init__()

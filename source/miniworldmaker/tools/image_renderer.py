@@ -22,7 +22,8 @@ class ImageRenderer():
                               "scale_y": False,
                               "info_overlay": False,
                               "center": False,
-                              "grid_overlay": False}
+                              "grid_overlay": False,
+                              "texture": False}
         self.direction = 0
         self.size = (0, 0)
         self.margin = 0
@@ -70,6 +71,8 @@ class ImageRenderer():
                 image = self.scale_y_image(image, self.size[1])
             if self.image_actions["upscale"] is True:
                 image = self.upscale_image(image, self.size[0])
+            if self.image_actions["texture"] is True:
+                image = self.texture_image(image, self.size[0], self.size[1], self.tile_size, self.margin)
             if self.image_actions["center"] is True:
                 image = self.center_image(image, self.size[0])
             if self.image_actions["flip"] is True:
@@ -84,6 +87,14 @@ class ImageRenderer():
             self.log.error("Invalid  value {0} for image_action in ImageRenderer".format(self.image_actions))
             raise
 
+    def set_image_action(self, action, value):
+        self.image_actions[action] = value
+        if action == "texture":
+            self.image_actions["scale_x"] = False
+            self.image_actions["scale_y"] = False
+            self.image_actions["upscale"] = False
+
+
     def flip_image(self, image, flip_x: bool, flip_y: bool) -> pygame.Surface:
         return pygame.transform.flip(image, flip_y, flip_x)
 
@@ -96,6 +107,17 @@ class ImageRenderer():
 
     def scale_y_image(self, image, size):
         image = pygame.transform.scale(image, (image.get_width(), size))
+        return image
+
+    def texture_image(self, image, width, height, tile_margin, tile_size):
+        surface = pygame.Surface()
+        tile_surface = pygame.transform.scale(image, (tile_size, tile_size))
+        for i in range(width):
+            for j in range(height):
+                surface.blit(tile_surface, pygame.Rect(width * tile_size + tile_margin,
+                                                       height * tile_size + tile_margin,
+                                                       width * tile_size + tile_margin + tile_size,
+                                                       height * tile_size + tile_margin, tile_size))
         return image
 
     def upscale_image(self, image, size):
