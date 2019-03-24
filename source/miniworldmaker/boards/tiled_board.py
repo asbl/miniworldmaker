@@ -3,16 +3,15 @@ from typing import Union
 import pygame
 from miniworldmaker.boards.board import Board
 from miniworldmaker.tokens.token import Token
-from miniworldmaker.tokens.actor import Actor
 
 
 class TiledBoard(Board):
 
-    def __init__(self, columns=20, rows=16, tile_size=20, tile_margin=0):
+    def __init__(self, columns: int = 20, rows: int = 16, tile_size=16, tile_margin=0):
         super().__init__(columns=columns, rows=rows)
         self._tile_size = tile_size
         self._tile_margin = tile_margin
-        self.set_size(self.tile_size, columns, rows, tile_margin)
+        self.set_size(self.tile_size, columns, rows, self._tile_margin)
         self._dynamic_actors_dict = defaultdict(list)  # the dict is regularly updated
         self._dynamic_actors = []  # List with all dynamic actors
         self._static_tokens_dict = defaultdict(list)
@@ -61,7 +60,7 @@ class TiledBoard(Board):
             self._static_tokens_dict[(token.x, token.y)].remove(token)
         super().remove_from_board(token)
 
-    def remove_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
+    def remove_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> None:
         """
         Removes all actors in an area
         Args:

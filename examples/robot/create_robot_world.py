@@ -83,7 +83,7 @@ class MyBoard(TiledBoard):
 
     def save(self):
         self.connect(self.file)
-        for actor in self.actors:
+        for actor in self.tokens:
             dict = {"column": actor.position[0],
                     "row": actor.position[1],
                     "actor_class": actor.class_name}

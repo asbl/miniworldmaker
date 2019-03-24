@@ -1,22 +1,21 @@
 import logging
 from typing import Union
-
+import os
 import pygame
 from miniworldmaker.containers.container import Container
-from miniworldmaker.boards.features.gui import Gui
-from miniworldmaker.boards.features.audio import Audio
-from miniworldmaker.boards.features.database import Database
 from miniworldmaker.windows.miniworldwindow import MiniWorldWindow
 from miniworldmaker.tokens.token import Token
-from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.tools.image_renderer import ImageRenderer
+from miniworldmaker.tools.db_manager import DBManager
 
 
-class Board(Container, Gui, Audio, Database):
+class Board(Container):
     """
     Base class for creating boards
     """
     log = logging.getLogger("GameGrid")
+    token_classes = {}
+    lookup = True
 
     def __init__(self,
                  columns: int = 40,
@@ -31,16 +30,16 @@ class Board(Container, Gui, Audio, Database):
         super().__init__(self)
         pygame.init()
         # public
-        self.is_running = False
         self.speed = 60
         self.active_actor = None
+        self.is_running = True
         # private
         self._renderer = ImageRenderer()
         self.set_image_action("info_overlay", False)
         self.set_image_action("scale_x", True)
         self.set_image_action("scale_y", True)
         self.set_image_action("upscale", False)
-        self._actors = pygame.sprite.LayeredDirty()
+        self._tokens = pygame.sprite.LayeredDirty()
         self._key_pressed = False
         self._key = 0
         self._animated = False
@@ -55,7 +54,7 @@ class Board(Container, Gui, Audio, Database):
         self.__tick = 0
         self.__clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
-        self.__running = True
+
         # Init graphics
         self._image = pygame.Surface((0, 0))
         self.dirty = 1
@@ -87,7 +86,7 @@ class Board(Container, Gui, Audio, Database):
         self.dirty = 1
 
     def __str__(self):
-        return "Board with {0} columns and {1} rows".format(self.columns, self.rows)
+        return "{0} with {1} columns and {2} rows".format(self.__class__.__name__, self.columns, self.rows)
 
     @staticmethod
     def filter_actor_list(a_list, actor_type):
@@ -171,11 +170,11 @@ class Board(Container, Gui, Audio, Database):
         return self._columns
 
     @property
-    def actors(self) -> list:
+    def tokens(self):
         """
         :return: A list of all actors
         """
-        return self._actors
+        return self._tokens
 
     @property
     def frame(self) -> int:
@@ -222,7 +221,7 @@ class Board(Container, Gui, Audio, Database):
         :return: The Actor
         """
         try:
-            self.actors.add(actor)
+            self.tokens.add(actor)
             actor.position = position
             actor.board = self
             actor.dirty = 1
@@ -242,7 +241,7 @@ class Board(Container, Gui, Audio, Database):
         :return: All actors as list
         """
         actors = []
-        for actor in self.actors:
+        for actor in self.tokens:
             if actor.rect.collidepoint(pixel):
                 actors.append(actor)
         return actors
@@ -281,14 +280,14 @@ class Board(Container, Gui, Audio, Database):
 
     def remove_from_board(self, actor: Token):
         if actor:
-            self.actors.remove(actor)
+            self.tokens.remove(actor)
             actor.board = None
 
     def remove_all_actors(self):
         """
         Entfernt alle Akteure aus dem Grid.
         """
-        for actor in self.actors:
+        for actor in self.tokens:
             self.remove_from_board(actor)
 
     def reset(self):
@@ -298,10 +297,10 @@ class Board(Container, Gui, Audio, Database):
         """
         Stoppt die Ausführung (siehe auch run)
         """
-        self.__running = False
+        self.is_running = False
 
     def run(self):
-        self.__running = True
+        self.is_running = True
 
     def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
@@ -322,7 +321,7 @@ class Board(Container, Gui, Audio, Database):
         pass
 
     def repaint(self):
-        self._window.repaint_areas.extend(self.actors.draw(self.image))
+        self._window.repaint_areas.extend(self.tokens.draw(self.image))
         if self.dirty == 1:
             self._window.repaint_areas.append(self.rect)
             self.dirty = 0
@@ -331,16 +330,16 @@ class Board(Container, Gui, Audio, Database):
         """
         Starts the program
         """
-        self.actors.clear(self.image, self.image)
+        self.tokens.clear(self.image, self.image)
         self.dirty = 1
         logging.basicConfig(level=logging.WARNING)
         self.window.show()
 
     def update(self):
-        if self.__running:
+        if self.is_running:
             self._act_all()
         self.__frame = self.__frame + 1
-        for actor in self.actors:
+        for actor in self.tokens:
             actor.update()
         self._call_collision_events()
         if self.__frame == 100:
@@ -353,7 +352,7 @@ class Board(Container, Gui, Audio, Database):
     def _act_all(self):
         self.__tick = self.__tick + 1
         if self.__tick > 60 - self.speed:
-            for actor in self.actors:
+            for actor in self.tokens:
                 actor.act()
             self.act()
             self.__tick = 0
@@ -361,10 +360,10 @@ class Board(Container, Gui, Audio, Database):
     def pass_event(self, event, data=None):
         print(event)
         if event != "collision":
-            for actor in self.actors:
+            for actor in self.tokens:
                 actor.get_event(event, data)
         if event == "collision":
-            for actor in self.actors:
+            for actor in self.tokens:
                 if data[0] == actor:
                     actor.get_event("collision", data[1])
                 elif data[1] == actor:
@@ -414,3 +413,71 @@ class Board(Container, Gui, Audio, Database):
 
     def show_log(self):
         logging.basicConfig(level=logging.INFO)
+
+    def save_to_db(self, file):
+        os.remove(file)
+        db = DBManager(file)
+        self.log.info("Create db...")
+        query_actors = """     CREATE TABLE `token` (
+                        `token_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                        `column`		INTEGER,
+                        `row`			INTEGER,
+                        `token_class`	TEXT,
+                        `parent_class`  TEXT
+                        );
+                        """
+        query_board = """     CREATE TABLE `board` (
+                        `tile_size`		INTEGER,
+                        `rows`			INTEGER,
+                        `columns`		INTEGER,
+                        `tile_margin`	INTEGER,
+                        `board_class`	TEXT
+                        );
+                        """
+        cur = db.cursor
+        cur.execute(query_actors)
+        cur.execute(query_board)
+        db.commit()
+        self.log.info("Save to db...")
+        for token in self.tokens:
+            token_dict = {"column": token.position[0],
+                          "row": token.position[1],
+                          "token_class": token.__class__.__name__}
+            db.insert(table="token", row=token_dict)
+        board_dict = {"rows": self.rows,
+                      "columns": self.columns,
+                      "tile_margin": self.tile_margin,
+                      "tile_size": self.tile_size,
+                      "board_class": self.__class__.__name__}
+        db.insert(table="board", row=board_dict)
+        db.commit()
+        db.close_connection()
+
+    @classmethod
+    def from_db(cls, file):
+        db = DBManager(file)
+        data = db.select_single_row("SELECT rows, columns, tile_size, tile_margin, board_class FROM Board")
+        board = cls(rows=data[0], columns=data[1])
+        board._tile_size = data[2]
+        board._tile_margin = data[3]
+        rows, columns, margin, size, board_class = data[0], data[1], data[2], data[3], data[4]
+        data = db.select_all_rows("SELECT token_id, column, row, token_class FROM token")
+        if data:
+            for tokens in data:
+                token_class_name = tokens[3]
+                if token_class_name in Board.token_classes.keys():
+                    token_instance = Board.token_classes[token_class_name]()
+                    board.add_to_board(token_instance, position=(tokens[1], tokens[2]))
+        return board
+
+    @staticmethod
+    def register_token_type(class_name):
+        Board.token_classes[class_name.__name__] = class_name
+
+    def play_sound(self, sound_path):
+        effect = pygame.mixer.Sound(sound_path)
+        effect.play()
+
+    def play_music(self, music_path):
+        pygame.mixer.music.load(music_path)
+        pygame.mixer.music.play(-1)

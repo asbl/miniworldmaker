@@ -13,7 +13,7 @@ class Robot(Actor):
 
     def __init__(self):
         super().__init__()
-        self.size= (30,30)
+        self.size = (30, 30)
         self.add_image("images/robo_green.png")
 
     def act(self):
@@ -26,7 +26,7 @@ class Robot(Actor):
             if "D" in data:
                 self.turn_right(10)
             if "W" in data:
-                self.move(distance = 3)
+                self.move(distance=3)
 
 
 board = MyBoard()

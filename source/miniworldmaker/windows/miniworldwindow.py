@@ -37,9 +37,9 @@ class MiniWorldWindow:
         pygame.display.update(self.repaint_areas)
         self.repaint_areas = []
 
-    def add_container(self, container, dock):
+    def add_container(self, container, dock, size=None):
         self._containers.append(container)
-        container.add_to_window(self, dock)
+        container._add_to_window(self, dock, size)
 
     def remove_container(self, container):
         self._containers.remove(container)
@@ -90,11 +90,16 @@ class MiniWorldWindow:
             # Event: Mouse-Button Down
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                container = self.get_container_by_pixel(pos[0], pos[1])
-                if event.button == 1:
-                    container.get_event("mouse_left", (pos[0], pos[1]))
-                if event.button == 3:
-                    container.get_event("mouse_right", (pos[0], pos[1]))
+                containers = []
+                containers.append(self.get_container_by_pixel(pos[0], pos[1]))
+                for container in self._containers:
+                    if container.listen_to_all_events:
+                        containers.append(container)
+                for container in containers:
+                    if event.button == 1:
+                        container.get_event("mouse_left", (pos[0], pos[1]))
+                    if event.button == 3:
+                        container.get_event("mouse_right", (pos[0], pos[1]))
             elif event.type == pygame.KEYDOWN:
                 # key-events
                 keys_pressed = pygame.key.get_pressed()

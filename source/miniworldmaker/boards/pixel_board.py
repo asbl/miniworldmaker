@@ -36,7 +36,7 @@ class PixelBoard(Board):
 
     def _call_collision_events(self):
         new_col_pairs = []
-        for partner1 in self.actors:
+        for partner1 in self.tokens:
             if partner1.token_id in self._collision_parnters_dict:
                 collisions = pygame.sprite.spritecollide(partner1,
                                                          self._collision_parnters_dict[partner1.token_id], False)

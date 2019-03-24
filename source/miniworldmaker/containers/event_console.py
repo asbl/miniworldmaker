@@ -1,15 +1,17 @@
 import os
-from miniworldmaker.containers.container import Container
 import pygame
+from miniworldmaker.containers.container import Container
 
 
-class Console(Container):
+class EventConsole(Container):
+    event_id = 0
 
-    def __init__(self, lines=5):
-        super().__init__(size=100)
+    def __init__(self, lines=5, size=100):
+        super().__init__(size=size)
         self._lines = lines
         self._height = self._lines * 20
         self._text_queue = []
+        self.listen_to_all_events = True
         self.margin_first = 10
         self.margin_last = 5
         self.row_height = 25
@@ -17,7 +19,6 @@ class Console(Container):
         self.margin_left = 10
         self.margin_right = 10
         self._dirty = 1
-
 
     def repaint(self):
         if self.dirty:
@@ -31,18 +32,15 @@ class Console(Container):
                 row.blit(label, (10, 5))
                 self.surface.blit(row, (self.margin_left, self.margin_first + i * 20 + i * self.row_margin))
 
-    def max_height(self):
-        width = self.margin_first
-        for widget in self.widgets:
-            width += widget.width + 5
-        return width - 5
-
     @property
     def lines(self):
         _lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height)
+        print(_lines)
         return _lines
 
-    def print(self, text):
+    def get_event(self, event, data):
+        text = "Nr: {0}, Event: {1}, Data: {2}".format(self.event_id, str(event), str(data))
+        self.event_id += 1
         self._text_queue.append(text)
         if len(self._text_queue) > self.lines:
             self._text_queue.pop(0)

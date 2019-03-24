@@ -1,7 +1,8 @@
 from miniworldmaker import *
+import easygui
 
 
-class MyGrid(TiledBoard):
+class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(columns=30, rows=20, tile_size=20, tile_margin=1)
@@ -65,7 +66,7 @@ class Player(Actor):
         if self.board.torch in actors_at_position:
             message = "Du findest eine Fackel. Möchtest du sie aufheben?"
             choices = ["Ja", "Nein"]
-            reply = self.board.button_box(message, choices)
+            reply = easygui.buttonbox(message, "RPG", choices)
             if reply == "Ja":
                 self.inventory.append("Torch")
                 self.board.torch.remove()
@@ -77,7 +78,7 @@ class Player(Actor):
             if self.board.door.closed:
                 message = "Die Tür ist geschlossen... möchtest du sie öffnen"
                 choices = ["Ja", "Nein"]
-                reply = self.board.button_box(message, choices)
+                reply = easygui.buttonbox(message, "RPG", choices)
                 if reply == "Ja":
                     self.board.door.open()
                     self.board.console.print("Du hast das Tor geöffnet.")
@@ -139,6 +140,6 @@ class Door(Token):
             self.closed = False
 
 
-my_grid = MyGrid()
+my_grid = MyBoard()
 my_grid.show_log()
 my_grid.show()

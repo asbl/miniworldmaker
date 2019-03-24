@@ -24,7 +24,7 @@ class MyBoard(TiledBoard):
                 self.chip = Chip()
                 self.add_to_board(self.chip, position)
                 self.placed = True
-        print(self.actors)
+        print(self.tokens)
 
 
 class Arrow(Actor):

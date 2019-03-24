@@ -10,21 +10,24 @@ class Container:
         self.dirty = 1
         self.background_color = (255, 255, 255)
         self.size = size
-        # Not mutable
+        self.listen_to_all_events = False
+        # private
         self._window = None  # Set in add_to_window
         self._container_width = 0  # Set in add_to_window
         self._container_height = 0  # Set in add_to_window
         self._container_top_left_x = 0  # Set in add_to_window
         self._container_top_left_y = 0  # Set in add_to_window
-        self._docking_position = None  # Set in add_to_window
+        self._docking_position = None  # Set in add_to_windows
         self._image = None
 
     @property
     def window(self):
         return self._window
 
-    def add_to_window(self, window, dock):
+    def _add_to_window(self, window, dock, size=None):
         self._window = window
+        if size != None:
+            self.size = size
         if dock == "main":
             self._docking_position = dock
         if dock == "top_left":

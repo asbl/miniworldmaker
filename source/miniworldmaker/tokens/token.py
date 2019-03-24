@@ -6,8 +6,10 @@ import pygame
 
 
 class Token(pygame.sprite.DirtySprite):
+
     token_count = 0
     log = getLogger("Token")
+    lookup = True
 
     def __init__(self):
         super().__init__()
@@ -258,3 +260,11 @@ class Token(pygame.sprite.DirtySprite):
 
     def get_event(self, event, data):
         pass
+
+    @classmethod
+    def register_subclasses(base):
+        d = {}
+        for cls in base.__subclasses__():
+            d[cls.__name__] = cls
+        print(d)
+        return d

@@ -14,10 +14,8 @@ MiniWorldMaker erlaubt dir 2D Miniwelten und Spiele zu erstellen.
   * Musik und Soundeffekte
   
   * Integrierte Konsole für Ausgaben
-  
-  * Einfaches Erstellen von GUI-Elementen und Popups
-  
-  * Einfache Datenbankanbindung
+    
+  * Laden und Speichern in SQLite Datenbanken
   
   * Open Source
 

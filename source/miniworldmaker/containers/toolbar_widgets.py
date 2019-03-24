@@ -8,7 +8,7 @@ class ToolbarWidget():
 
     def __init__(self):
         self.myfont = pygame.font.SysFont("monospace", 15)
-        self.background_color = (0, 255, 0)
+        self.background_color = (200, 220, 220)
         self.event = "no event"
         self.width = 0  # Set in Toolbar repaint
         self.height = 0  # Set in Toolbar repaint()

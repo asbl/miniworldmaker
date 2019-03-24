@@ -3,10 +3,16 @@ from miniworldmaker.containers.container import Container
 
 class Toolbar(Container):
 
-    def __init__(self, size=100):
+    def __init__(self, size=150):
         super().__init__(size)
         self.widgets = []
         self.position = "right"
+        self.margin_first = 10
+        self.margin_last = 5
+        self.row_height = 25
+        self.row_margin = 10
+        self.margin_left = 10
+        self.margin_right = 10
         self.dirty = 1
 
     def get_widget(self, index):
@@ -26,13 +32,13 @@ class Toolbar(Container):
         if self.dirty:
             self.surface.fill((255, 255, 255))
             if self.widgets:
-                height = 0
+                height = self.margin_first
                 for widget in self.widgets:
                     if widget.dirty == 1:
-                        widget.width = self._container_width
-                        widget.height = 30
+                        widget.width = self._container_width - self.margin_left - self.margin_right
+                        widget.height = self.row_height
                         widget.repaint()
-                        self.surface.blit(widget.surface, (0, height))
+                        self.surface.blit(widget.surface, (5, height))
                         widget.dirty = 0
                     height += widget.height
                 self.dirty = 0
