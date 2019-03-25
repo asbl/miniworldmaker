@@ -53,7 +53,7 @@ class Toolbar(Container):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            height = 0
+            height = self.margin_first
             x, y = data[0], data[1]
             if not y > self._widgets_total_height():
                 for widget in self.widgets:

@@ -55,9 +55,10 @@ class Actor(Token):
         """
         self.direction = self._value_to_direction(direction)
         destination = self.look(distance=distance, direction=direction)
-        self.position = self.board.pixel_to_grid_position(destination.topleft)
+        self.position = self.board.to_board_position(destination.topleft)
+        if self.board:
+            self.board.window.send_event_to_containers("actor_moved", self)
         self.log.info("Move to position {0}; Direction {1}".format(self.position, self.direction))
-        self.board.window.send_event_to_containers("actor_moved", self)
         return self.position
 
     def look(self, direction: Union[str, int] = "here", distance: int = 1, ) -> pygame.Rect:

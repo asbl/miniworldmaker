@@ -41,7 +41,7 @@ class TiledBoard(Board):
         if type(value) == tuple:
             x, y = value[0], value[1]
         else:
-            x, y = self.pixel_to_grid_position(value.topleft)
+            x, y = self.to_board_position(value.topleft)
         tokens_in_area = []
         if self.on_board(self.rect):
             if self._dynamic_actors_dict[x, y]:
@@ -126,7 +126,7 @@ class TiledBoard(Board):
     def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
             value = self.tile_to_rect(value)
-        x, y = self.pixel_to_grid_position(value.center)
+        x, y = self.to_board_position(value.center)
         if x > self.columns - 1:
             return False
         elif y > self.rows - 1:
@@ -140,7 +140,7 @@ class TiledBoard(Board):
         borders = []
         if type(value) == tuple:
             value = self.tile_to_rect(value)
-        x, y = self.pixel_to_grid_position(value.center)
+        x, y = self.to_board_position(value.center)
         if x == self.columns - 1:
             borders.append("right")
         if y == self.rows - 1:

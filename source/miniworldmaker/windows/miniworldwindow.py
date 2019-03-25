@@ -2,6 +2,7 @@ import logging
 import os
 import pygame
 from miniworldmaker.tools import keys
+from miniworldmaker.containers.container import Container
 
 
 class MiniWorldWindow:
@@ -37,9 +38,10 @@ class MiniWorldWindow:
         pygame.display.update(self.repaint_areas)
         self.repaint_areas = []
 
-    def add_container(self, container, dock, size=None):
+    def add_container(self, container, dock, size=None) -> Container:
         self._containers.append(container)
         container._add_to_window(self, dock, size)
+        return container
 
     def remove_container(self, container):
         self._containers.remove(container)

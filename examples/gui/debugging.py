@@ -11,8 +11,7 @@ class MyBoard(TiledBoard):
         event_console = EventConsole()
         self.window.add_container(event_console, dock="right", size=400)
         event_console.register_events = {"actor_moved"}
-        action_bar = ActionBar(self)
-        self.window.add_container(action_bar, dock="bottom")
+        self.window.add_container(ActionBar(self), dock="bottom")
         actor_toolbar = TokenToolbar(self)
         self.window.add_container(actor_toolbar, dock="right", size=400)
 

@@ -45,7 +45,7 @@ class MyBoard(TiledBoard):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            position = self.pixel_to_grid_position(data)
+            position = self.to_board_position(data)
             if self.is_empty_cell((data[0], data[1])):
                 if self.state=="wall":
                     actor = self.add_to_board(Wall(), position=(position))
@@ -58,7 +58,7 @@ class MyBoard(TiledBoard):
                 elif self.state=="emerald":
                     actor = self.add_to_board(Emerald(), position=(position))
         elif event == "mouse_right":
-            position = self.pixel_to_grid_position(data)
+            position = self.to_board_position(data)
             self.remove_tokens_in_area(position)
             print("mouse-right", position)
         elif event == "button":

@@ -26,8 +26,7 @@ class MyBoard(TiledBoard):
         self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
-        self.console = Console()
-        self._window.add_container(self.console, "bottom")
+        self.console = self._window.add_container(Console(), "bottom")
 
 
 class Player(Actor):
@@ -58,30 +57,32 @@ class Player(Actor):
                 closed_doors = [door for door in doors if door.closed is True]
                 if not walls and not closed_doors and self.is_looking_on_board(direction=direction):
                     self.move(direction=direction)
-        actors_at_position = self.is_looking_at_tokens(direction="here")
         if event == "button" and data == "Fackel":
+            actors_at_position = self.is_looking_at_tokens(direction="here")
             if self.board.fireplace in actors_at_position:
                 self.board.console.print("Du zündest die Feuerstelle an.")
                 self.board.fireplace.burn()
-        if self.board.torch in actors_at_position:
-            message = "Du findest eine Fackel. Möchtest du sie aufheben?"
-            choices = ["Ja", "Nein"]
-            reply = easygui.buttonbox(message, "RPG", choices)
-            if reply == "Ja":
-                self.inventory.append("Torch")
-                self.board.torch.remove()
-                self.board.console.print("Du hebst die Fackel auf.")
-                self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
-        # look forward
-        actors_in_front = self.is_looking_at_tokens(direction="forward")
-        if self.board.door in actors_in_front:
-            if self.board.door.closed:
-                message = "Die Tür ist geschlossen... möchtest du sie öffnen"
+        if event == "actor_moved":
+            actors_at_position = self.is_looking_at_tokens(direction="here")
+            if self.board.torch in actors_at_position:
+                message = "Du findest eine Fackel. Möchtest du sie aufheben?"
                 choices = ["Ja", "Nein"]
                 reply = easygui.buttonbox(message, "RPG", choices)
                 if reply == "Ja":
-                    self.board.door.open()
-                    self.board.console.print("Du hast das Tor geöffnet.")
+                    self.inventory.append("Torch")
+                    self.board.torch.remove()
+                    self.board.console.print("Du hebst die Fackel auf.")
+                self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+            # look forward
+            actors_in_front = self.is_looking_at_tokens(direction="forward")
+            if self.board.door in actors_in_front:
+                if self.board.door.closed:
+                    message = "Die Tür ist geschlossen... möchtest du sie öffnen"
+                    choices = ["Ja", "Nein"]
+                    reply = easygui.buttonbox(message, "RPG", choices)
+                    if reply == "Ja":
+                        self.board.door.open()
+                        self.board.console.print("Du hast das Tor geöffnet.")
 
 
 class Wall(Token):

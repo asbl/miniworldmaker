@@ -32,3 +32,7 @@ Lege die Geschwindigkeit fest und starte die Animation:
         self.animation_speed = 30
         self.is_animated = True
 ```
+
+Schaue dir dazu auch das Beispiel [roboanimation](https://github.com/asbl/miniworldmaker/blob/master/examples/moving/roboanimation.py) auf github an:
+
+![_images/roboanimation.gif](_images/roboanimation.gif)

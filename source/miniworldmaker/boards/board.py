@@ -395,15 +395,23 @@ class Board(Container):
         new_rect.topleft = top_left
         return new_rect
 
-    def pixel_to_grid_position(self, position: tuple) -> tuple:
-        """
-        Returns the position in the grid by pixel pixel coordcinates
-        :param position: (x, y), pixel coordinates
-        :return: (x,y) position in grid
-        """
+    def to_board_position(self, position: Union[tuple, pygame.Rect]) -> tuple:
+        if type(position) == tuple:
+            return self._pixel_to_board_position(position)
+        elif type(position) == pygame.Rect:
+            position = position.center
+            return self._pixel_to_board_position(position)
+        else:
+            raise (AttributeError("No valid type for position in board.to_board_position"))
+
+    def _pixel_to_board_position(self, position):
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
         row = (position[1] - self.tile_margin) // (self.tile_size + self.tile_margin)
         return column, row
+
+    def tile_top_left(self, position: tuple) -> tuple:
+        rect = self.tile_to_rect(position)
+        return rect.topleft
 
     def tile_to_rect(self, position: tuple) -> pygame.Rect:
         """
@@ -414,10 +422,6 @@ class Board(Container):
         x = position[0] * self.tile_size + position[0] * self.tile_margin + self.tile_margin
         y = position[1] * self.tile_size + position[1] * self.tile_margin + self.tile_margin
         return pygame.Rect(x, y, self.tile_size, self.tile_size)
-
-    def tile_top_left(self, position: tuple) -> tuple:
-        rect = self.tile_to_rect(position)
-        return rect.topleft
 
     def show_log(self):
         logging.basicConfig(level=logging.INFO)
