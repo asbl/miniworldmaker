@@ -57,6 +57,7 @@ class Actor(Token):
         destination = self.look(distance=distance, direction=direction)
         self.position = self.board.pixel_to_grid_position(destination.topleft)
         self.log.info("Move to position {0}; Direction {1}".format(self.position, self.direction))
+        self.board.window.send_event_to_containers("actor_moved", self)
         return self.position
 
     def look(self, direction: Union[str, int] = "here", distance: int = 1, ) -> pygame.Rect:
@@ -70,6 +71,7 @@ class Actor(Token):
 
         """
         if direction == "here":
+            self.board.window.send_event_to_containers("actor_looked", self.rect)
             return self.rect
         else:
             direction = self._value_to_direction(direction)
@@ -90,6 +92,7 @@ class Actor(Token):
         """
         position = self.look(distance=distance, direction=direction)
         actors = self.board.get_tokens_in_area(position, actor_type)
+        self.board.window.send_event_to_containers("actor_looked_at_tokens", (self, actors))
         return actors
 
     def is_looking_at_border(self, direction: Union[str, int] = "forward", distance: int = 1) -> list:
@@ -104,6 +107,7 @@ class Actor(Token):
         """
         position = self.look(distance=distance, direction=direction)
         borders = self.board.borders(position)
+        self.board.window.send_event_to_containers("actor_is_looking_at_border", (self, borders))
         return borders
 
     def is_looking_on_board(self, direction: Union[str, int] = "forward", distance: int = 1) -> bool:
@@ -118,6 +122,7 @@ class Actor(Token):
         """
         position = self.look(distance=distance, direction=direction)
         on_board = self.board.on_board(position)
+        self.board.window.send_event_to_containers("actor_is_looking_on_board", (self, on_board))
         return on_board
 
     def flip_x(self):

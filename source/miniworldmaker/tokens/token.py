@@ -18,18 +18,19 @@ class Token(pygame.sprite.DirtySprite):
         self._image = self._renderer.get_image()
         self._size = (0, 0)  # Tuple with size
         self._position = (0, 0)  # set by gamegrid.add_actor
-        self._is_in_grid = False
+        self._on_board = False
         self._is_at_border = False
-        self._is_touching_borders = False
+        self._at_borders_list = False
         self._is_colliding = False
         self._colliding_tokens = []
         self._flip_x = False
+        self._is_animated = False
         Token.token_count += 1
         # public
         self.token_id = Token.token_count + 1
         self.animation_speed = 60
         self.is_static = True
-        self.is_animated = False
+
         self.direction = 0
         self.orientation = 0
         self.board = None
@@ -42,7 +43,14 @@ class Token(pygame.sprite.DirtySprite):
             return "Klasse: {0}; ID: {1}".format(self.class_name, self.token_id)
 
     def image_action(self, attribute: str, value: bool):
-        self._renderer.image_actions[attribute] = value
+        try:
+            if attribute not in ImageRenderer.actions:
+                raise ValueError("Error in image_action. Action '{0}' not in actions list: {1}".format(attribute,
+                                                                                                       ImageRenderer.actions))
+            self._renderer.image_actions[attribute] = value
+            self.changed()
+        except ValueError:
+            raise
 
     def set_upscale(self):
         self._renderer.image_actions["scale_x"] = False
@@ -108,12 +116,14 @@ class Token(pygame.sprite.DirtySprite):
         self._size = value
         self.changed()
 
-    def animate(self):
-        """
-        Startet eine Animation.
-        """
-        if not self.is_animated:
-            self.is_animated = True
+    @property
+    def is_animated(self):
+        return self._is_animated
+
+    @is_animated.setter
+    def is_animated(self, value):
+        self._is_animated = value
+        self.changed()
 
     @property
     def position(self) -> tuple:
@@ -134,12 +144,6 @@ class Token(pygame.sprite.DirtySprite):
         Überschreibe diese Methode in deinen eigenen Actor-Klassen
         """
         pass
-
-    def stop(self):
-        """
-        Stopt die Animation eines Akteurs.
-        """
-        self.is_animated = False
 
     def listen(self, key, data=None):
         """
@@ -222,9 +226,9 @@ class Token(pygame.sprite.DirtySprite):
 
     def _update_status(self):
         try:
-            in_grid = self.on_the_board()
-            if in_grid != self._is_in_grid:
-                self._is_in_grid = in_grid
+            in_grid = self.is_on_the_board()
+            if in_grid != self._on_board:
+                self._on_board = in_grid
                 self.board.get_event("in_grid", self)
             at_border = self.is_at_border()
             if at_border != self._is_at_border:
@@ -255,7 +259,7 @@ class Token(pygame.sprite.DirtySprite):
     def is_at_border(self):
         return self.board.borders(self.rect)
 
-    def on_the_board(self):
+    def is_on_the_board(self):
         return self.board.on_board(self.rect)
 
     def get_event(self, event, data):

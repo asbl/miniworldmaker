@@ -16,8 +16,8 @@ miniworldmaker/containers/actionbar.py
 miniworldmaker/containers/actionbar_widgets.py
 miniworldmaker/containers/console.py
 miniworldmaker/containers/container.py
-miniworldmaker/containers/container_actor_toolbar.py
 miniworldmaker/containers/event_console.py
+miniworldmaker/containers/token_toolbar.py
 miniworldmaker/containers/toolbar.py
 miniworldmaker/containers/toolbar_widgets.py
 miniworldmaker/resources/down.png

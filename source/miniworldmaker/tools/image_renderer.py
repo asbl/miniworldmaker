@@ -9,6 +9,7 @@ class ImageRenderer():
     """
     log = logging.getLogger("image_renderer")
     images_dict = {}
+    actions = ["flip", "rotate", "upscale", "scale_x", "scale_y", "info_overlay", "center", "grid_overlay", "texture"]
 
     def __init__(self):
         # not mutable

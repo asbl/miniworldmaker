@@ -19,6 +19,7 @@ class Container:
         self._container_top_left_y = 0  # Set in add_to_window
         self._docking_position = None  # Set in add_to_windows
         self._image = None
+        self.register_events = {"all"}
 
     @property
     def window(self):
@@ -49,6 +50,7 @@ class Container:
             self._container_width = self._window.window_width
             self._container_height = self.size
         self.clog.info("Added Container {0} with width: {1} and height {2}".format(self, self.width, self.height))
+        print("size,", self.width, self.height)
         self._image = pygame.Surface((self.width, self.height))
 
     def repaint(self):

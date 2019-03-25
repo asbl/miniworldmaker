@@ -8,6 +8,7 @@ from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.toolbar_widgets import ToolbarButton
 from miniworldmaker.containers.toolbar_widgets import ToolbarLabel
+from miniworldmaker.containers.token_toolbar import TokenToolbar
 
 __all__ = ['Token',
            'Actor',
@@ -19,4 +20,5 @@ __all__ = ['Token',
            'Console',
            'EventConsole',
            'ActionBar',
+           'TokenToolbar',
            ]

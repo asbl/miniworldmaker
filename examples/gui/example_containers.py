@@ -8,7 +8,16 @@ class MyBoard(TiledBoard):
         super().__init__(tile_size=100, columns=6, rows=6, tile_margin=1)
         self.add_to_board(Ship(), (1, 1))
         self.add_image("images/galaxy.jpg")
+        event_console = EventConsole()
+        self.window.add_container(event_console, dock="right", size=400)
+        event_console.register_events = {"actor_moved"}
+        action_bar = ActionBar(self)
+        self.window.add_container(action_bar, dock="bottom")
+        actor_toolbar = TokenToolbar(self)
+        self.window.add_container(actor_toolbar, dock="right", size=400)
 
+    def get_event(self, event, data):
+        print(self.active_token)
 
 class Ship(Actor):
 
@@ -34,8 +43,5 @@ class Ship(Actor):
 
 
 board = MyBoard()
-eventConsole = EventConsole()
-board.window.add_container(eventConsole, dock="right", size=600)
-eventConsole = ActionBar(board)
-board.window.add_container(eventConsole, dock="bottom")
+
 board.show()

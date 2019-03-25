@@ -17,7 +17,7 @@ class Robot(Actor):
         self.add_image("images/robot_blue2.png")
         self.size = (75,75)
         self.animation_speed = 30
-        self.animate()
+        self.is_animated = True
 
     def act(self):
         if self.is_looking_on_board():

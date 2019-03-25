@@ -90,16 +90,17 @@ class MiniWorldWindow:
             # Event: Mouse-Button Down
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                containers = []
-                containers.append(self.get_container_by_pixel(pos[0], pos[1]))
+                container_set = set()
+                clicked_container = self.get_container_by_pixel(pos[0], pos[1])
+                container_set.add(clicked_container)  # add container which was clicked
                 for container in self._containers:
-                    if container.listen_to_all_events:
-                        containers.append(container)
-                for container in containers:
+                    if container.listen_to_all_events:  # add containers which want to receive all events
+                        container_set.add(container)
+                for container in container_set:
                     if event.button == 1:
-                        container.get_event("mouse_left", (pos[0], pos[1]))
+                        self._send_event_to_container(container, "mouse_left", (pos[0], pos[1]))
                     if event.button == 3:
-                        container.get_event("mouse_right", (pos[0], pos[1]))
+                        self._send_event_to_container(container, "mouse_right", (pos[0], pos[1]))
             elif event.type == pygame.KEYDOWN:
                 # key-events
                 keys_pressed = pygame.key.get_pressed()
@@ -111,8 +112,12 @@ class MiniWorldWindow:
         return False
 
     def send_event_to_containers(self, event, data):
-        self.log.info("Send event '{0}' with key list: {1}".format(event, data))
+        self.log.info("Send event '{0}' with data: {1}".format(event, data))
         for container in self._containers:
+            self._send_event_to_container(container, event, data)
+
+    def _send_event_to_container(self, container, event, data):
+        if event in container.register_events or "all" in container.register_events:
             container.pass_event(event, data)
             container.get_event(event, data)
 

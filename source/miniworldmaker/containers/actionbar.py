@@ -11,6 +11,7 @@ class ActionBar(Container):
         self.widgets = []
         self.position = "right"
         self.board = board
+        self.listen_to_all_events = False
         self.add_widget(PlayButton(self.board))
         self.add_widget(RunButton(self.board))
         self.add_widget(ResetButton(self.board))
@@ -52,15 +53,18 @@ class ActionBar(Container):
         return width - 5
 
     def get_event(self, event, data):
-        print("actionbar - get event")
         if event == "mouse_left":
             actual_position = 5
             x, y = data[0], data[1]
             if not x > self._widgets_total_width():
                 for widget in self.widgets:
                     if actual_position + widget.width + 5 > x:
+                        print(widget)
                         return widget.get_event(event, data)
                     else:
-                        actual_position = actual_position + widget.height + 5
+                        actual_position = actual_position + widget.width + 5
+        elif event == "board_speed_changed":
+            for widget in self.widgets:
+                widget.get_event(event, data)
         else:
             return "no toolbar event"

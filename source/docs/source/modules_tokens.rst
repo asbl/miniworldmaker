@@ -1,7 +1,6 @@
 Tokens
 ------
 
-
 .. inheritance-diagram:: miniworldmaker.tokens.actor.Actor
 :top-classes: miniworldmaker.tokens.token.Token
 

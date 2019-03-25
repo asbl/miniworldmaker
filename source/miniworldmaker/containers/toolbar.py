@@ -1,5 +1,5 @@
 from miniworldmaker.containers.container import Container
-
+from miniworldmaker.containers.toolbar_widgets import ToolbarWidget
 
 class Toolbar(Container):
 
@@ -10,7 +10,7 @@ class Toolbar(Container):
         self.margin_first = 10
         self.margin_last = 5
         self.row_height = 25
-        self.row_margin = 10
+        self.row_margin = 4
         self.margin_left = 10
         self.margin_right = 10
         self.dirty = 1
@@ -18,7 +18,7 @@ class Toolbar(Container):
     def get_widget(self, index):
         return self.widgets[index]
 
-    def add_widget(self, widget):
+    def add_widget(self, widget) -> ToolbarWidget:
         """
         adds a widget to the toolbar
         :param widget: A toolbar widget
@@ -27,6 +27,7 @@ class Toolbar(Container):
         widget.clear()
         widget.parent = self
         self.widgets.append(widget)
+        return widget
 
     def repaint(self):
         if self.dirty:
@@ -40,7 +41,7 @@ class Toolbar(Container):
                         widget.repaint()
                         self.surface.blit(widget.surface, (5, height))
                         widget.dirty = 0
-                    height += widget.height
+                    height += widget.height + self.row_margin
                 self.dirty = 0
                 self._window.repaint_areas.append(self.rect)
 
@@ -59,6 +60,6 @@ class Toolbar(Container):
                     if height + widget.height > y:
                         return widget.get_event(event, data)
                     else:
-                        height = height + widget.height
+                        height = height + widget.height + self.row_margin
         else:
             return "no toolbar event"

@@ -19,6 +19,8 @@ Mitte Februar: Version 1.0
 Changelog
 =========
 
+  * 25.03.2019 : Arbeiten an den Containern, insbesondere wurde die ActorToolbar hinzugefügt.
+
   * 23.03.2019 : Es wurde eine Neue Klasse token hinzugefügt, die als Vaterklasse der Klasse actor fungiert.
   Außerdem wurden die Abhängigkeiten zu den Features (Sound, Datenbanken, GUI) gerändert:
     * Easygui ist herausgeflogen, da die saubere Lösung ist die eigenen Programme direkt mit easygui zu schreiben.

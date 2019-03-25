@@ -30,10 +30,10 @@ class Board(Container):
         super().__init__(self)
         pygame.init()
         # public
-        self.speed = 60
-        self.active_actor = None
+        self.active_token = None
         self.is_running = True
         # private
+        self._speed = 60
         self._renderer = ImageRenderer()
         self.set_image_action("info_overlay", False)
         self.set_image_action("scale_x", True)
@@ -54,12 +54,20 @@ class Board(Container):
         self.__tick = 0
         self.__clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
-
         # Init graphics
         self._image = pygame.Surface((0, 0))
         self.dirty = 1
         self._window = MiniWorldWindow("MiniWorldMaker")
         self._window.add_container(self, "main")
+
+    @property
+    def speed(self) -> int:
+        return self._speed
+
+    @speed.setter
+    def speed(self, value: int):
+        self._speed = value
+        self.window.send_event_to_containers("board_speed_changed", self._speed)
 
     def set_size(self,
                  tile_size: int = 1,
@@ -234,7 +242,7 @@ class Board(Container):
             self.log.error("super().__init__() of actor: {0} was not called".format(actor))
             raise
 
-    def get_actors_by_pixel(self, pixel: tuple) -> list:
+    def get_token_by_pixel(self, pixel: tuple) -> list:
         """
         Returns all players who have a certain pixel in common
         :param pixel: The pixel-coordinates
@@ -293,15 +301,6 @@ class Board(Container):
     def reset(self):
         self.dirty = 1
 
-    def stop(self):
-        """
-        Stoppt die Ausführung (siehe auch run)
-        """
-        self.is_running = False
-
-    def run(self):
-        self.is_running = True
-
     def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
             value = self.tile_to_rect(value)
@@ -358,7 +357,6 @@ class Board(Container):
             self.__tick = 0
 
     def pass_event(self, event, data=None):
-        print(event)
         if event != "collision":
             for actor in self.tokens:
                 actor.get_event(event, data)
@@ -368,6 +366,16 @@ class Board(Container):
                     actor.get_event("collision", data[1])
                 elif data[1] == actor:
                     actor.get_event("collision", data[0])
+        if event == "mouse_left":
+            if self.get_token_by_pixel(data):
+                print(self.get_token_by_pixel(data)[0])
+                self.set_active_token(self.get_token_by_pixel(data)[0])
+
+    def set_active_token(self, token: Token):
+        self.active_token = token
+        token.changed()
+        self.window.send_event_to_containers("active_token", token)
+        return token
 
     def act(self):
         """
