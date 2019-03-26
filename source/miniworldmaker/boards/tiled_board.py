@@ -73,12 +73,12 @@ class TiledBoard(Board):
         for actor in actors:
             self.remove_from_board(actor)
 
-    def add_to_board(self, token: Token, position: tuple = None) -> Token:
+    def add_to_board(self, token: Token, board_position: tuple = None) -> Token:
         if token.is_static:
-            self._static_tokens_dict[position].append(token)
+            self._static_tokens_dict[board_position].append(token)
         else:
             self._dynamic_actors.append(token)
-        super().add_to_board(token, position)
+        super().add_to_board(token, board_position)
         if token.size == (0, 0):
             token.size = (self.tile_size, self.tile_size)
         token.changed()

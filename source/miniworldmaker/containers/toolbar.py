@@ -27,6 +27,9 @@ class Toolbar(Container):
         widget.clear()
         widget.parent = self
         self.widgets.append(widget)
+        widget.height = self.row_height
+        self.dirty = 1
+        widget.dirty = 1
         return widget
 
     def repaint(self):
@@ -37,7 +40,7 @@ class Toolbar(Container):
                 for widget in self.widgets:
                     if widget.dirty == 1:
                         widget.width = self._container_width - self.margin_left - self.margin_right
-                        widget.height = self.row_height
+
                         widget.repaint()
                         self.surface.blit(widget.surface, (5, height))
                         widget.dirty = 0
@@ -48,7 +51,7 @@ class Toolbar(Container):
     def _widgets_total_height(self):
         height = self.margin_first
         for widget in self.widgets:
-            height += widget.height
+            height += widget.height + self.row_margin
         return height
 
     def get_event(self, event, data):

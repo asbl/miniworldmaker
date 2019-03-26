@@ -235,22 +235,17 @@ class Board(container.Container):
         :param board_position: the position in the grid
         :return: The Actor
         """
-        try:
-            self.tokens.add(token)
-            if type(board_position) == tuple:
-                token.position = board_position
-            else:
-                raise AttributeError("Position has wrong type" + str(type(board_position)))
-            token.board = self
-            token.dirty = 1
-            if token.init != 1:
-                raise UnboundLocalError("Init was not called")
-            self.log.info(
-                "Added actor {0} to {1} at position {2} with rect {3}".format(token, self, token.position, token.rect))
-            return token
-        except UnboundLocalError as e:
-            self.log.error("super().__init__() of actor: {0} was not called".format(token))
-            raise
+        self.tokens.add(token)
+        if type(board_position) == tuple:
+            token.position = board_position
+        else:
+            raise AttributeError("Position has wrong type" + str(type(board_position)))
+        token.board = self
+        token.dirty = 1
+        if token.init != 1:
+            raise UnboundLocalError("Init was not called")
+        self.window.send_event_to_containers("Added token", token)
+        return token
 
     def get_token_by_pixel(self, pixel: tuple) -> list:
         """
@@ -378,7 +373,6 @@ class Board(container.Container):
                     actor.get_event("collision", data[0])
         if event == "mouse_left":
             if self.get_token_by_pixel(data):
-                print(self.get_token_by_pixel(data)[0])
                 self.set_active_token(self.get_token_by_pixel(data)[0])
 
     def set_active_token(self, token: board_token.Token):
@@ -434,6 +428,7 @@ class Board(container.Container):
         db.insert(table="board", row=board_dict)
         db.commit()
         db.close_connection()
+        self.window.send_event_to_containers("Saved to db", file)
 
     @classmethod
     def from_db(cls, file):
@@ -444,14 +439,15 @@ class Board(container.Container):
         board.columns = data[1]
         board._tile_size = data[2]
         board._tile_margin = data[3]
-        rows, columns, margin, size, board_class = data[0], data[1], data[2], data[3], data[4]
         data = db.select_all_rows("SELECT token_id, column, row, token_class FROM token")
         if data:
             for tokens in data:
                 token_class_name = tokens[3]
                 if token_class_name in Board.registered_token_types.keys():
                     token_instance = Board.registered_token_types[token_class_name]()
-                    board.add_to_board(token_instance, board_position=(tokens[1], tokens[2]))
+                    board.add_to_board(token=token_instance, board_position=(tokens[1], tokens[2]))
+        print(board)
+        board.window.send_event_to_containers("Loaded from db", board)
         return board
 
     @staticmethod

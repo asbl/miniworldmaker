@@ -11,7 +11,6 @@ miniworldmaker/boards/__init__.py
 miniworldmaker/boards/board.py
 miniworldmaker/boards/pixel_board.py
 miniworldmaker/boards/tiled_board.py
-miniworldmaker/containers/__init__.py
 miniworldmaker/containers/actionbar.py
 miniworldmaker/containers/actionbar_widgets.py
 miniworldmaker/containers/console.py
@@ -35,7 +34,7 @@ miniworldmaker/resources/up.png
 miniworldmaker/tokens/__init__.py
 miniworldmaker/tokens/actor.py
 miniworldmaker/tokens/actor_physics_actor.py
-miniworldmaker/tokens/token.py
+miniworldmaker/tokens/board_token.py
 miniworldmaker/tools/__init__.py
 miniworldmaker/tools/db_manager.py
 miniworldmaker/tools/image_renderer.py

@@ -20,9 +20,9 @@ class MyBoard(TiledBoard):
         cursor.execute('SELECT * FROM Actors')
         for actordata in cursor.fetchall():
             if actordata[3] == "Wall":
-                self.add_to_board(Wall(), position=(actordata[1], actordata[2]))
+                self.add_to_board(Wall(), board_position=(actordata[1], actordata[2]))
             elif actordata[3] == "Robot":
-                self.add_to_board(Robot(), position=(actordata[1], actordata[2]))
+                self.add_to_board(Robot(), board_position=(actordata[1], actordata[2]))
         actors = cursor.fetchall()
         print("Load Actors: " + str(actors))
 

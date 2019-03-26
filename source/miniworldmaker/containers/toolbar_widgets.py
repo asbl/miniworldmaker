@@ -1,5 +1,5 @@
 import logging
-
+from miniworldmaker.boards.board import Board
 import pygame
 
 
@@ -43,9 +43,6 @@ class ToolbarWidget():
 
     def repaint(self):
         self.clear()
-        self.draw_surface()
-
-    def draw_surface(self):
         self.surface.fill(self.background_color)
         label = self.myfont.render(self._text, 1, (0, 0, 0))
         self.surface.blit(label, (self._text_padding, 5))
@@ -96,3 +93,39 @@ class ToolbarLabel(ToolbarWidget):
         self.set_text(text)
         self.event = "label"
         self.data = text
+
+
+class SaveButton(ToolbarWidget):
+
+    def __init__(self, filename, board, text, img_path=None, ):
+        super().__init__()
+        if img_path != None:
+            self.set_image(img_path)
+        self.set_text(text)
+        self.event = "label"
+        self.data = text
+        self.board = board
+        self.file = filename
+
+    def set_file(self):
+        pass
+
+    def get_event(self, event, data):
+        if event == "mouse_left":
+            self.board.save_to_db(self.file)
+
+
+class LoadButton(ToolbarWidget):
+
+    def __init__(self, filename, board, text, img_path=None, ):
+        super().__init__()
+        if img_path != None:
+            self.set_image(img_path)
+        self.set_text(text)
+        self.file = filename
+        self.board = board
+
+    def get_event(self, event, data):
+        if event == "mouse_left":
+            self.board = self.board.__class__.from_db(self.file)
+            self.board.show()

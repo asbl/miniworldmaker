@@ -9,11 +9,9 @@ class SelectActorToolbar(Toolbar):
         for token_type in board.registered_token_types:
             self.add_widget(ActorButton(token_type, board, self))
         self.selected_actor = board.registered_token_types[list(board.registered_token_types.keys())[0]]
-        print(self.selected_actor)
 
 
 class ActorButton(ToolbarWidget):
-    log = logging.getLogger("toolbar-button")
 
     def __init__(self, token_type, board, parent):
         super().__init__()

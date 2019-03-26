@@ -6,7 +6,7 @@ class MyBoard(TiledBoard):
     def __init__(self):
         super().__init__(tile_size=50, columns=10, rows=1, tile_margin=1)
         player1 = Player()
-        self.add_to_board(player1, position=(0, 0))
+        self.add_to_board(player1, board_position=(0, 0))
         self.add_image("images/water.png")
 
 
