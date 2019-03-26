@@ -1,6 +1,6 @@
 import pygame
 from miniworldmaker.boards.board import Board
-from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.board_token import Token
 from miniworldmaker.tokens.actor import Actor
 
 
@@ -16,18 +16,18 @@ class PixelBoard(Board):
         self._collision_parnters_dict[partner1.actor_id].add(partner2)
         self._collision_parnters_dict[partner2.actor_id].add(partner1)
 
-    def add_to_board(self, actor: Token, position) -> Token:
+    def add_to_board(self, token: Token, board_position) -> Token:
         """
         Overwrites add_actor in gamegrid
-        :param actor: The actor to be added
-        :param position: The position where the actor should be placed in the grid
+        :param token: The actor to be added
+        :param board_position: The position where the actor should be placed in the grid
         :return: The reference to the Actor object
         """
-        super().add_to_board(actor, position)
-        if actor.size == (0, 0):
-            actor.size = (30, 30)
-        self._collision_parnters_dict[actor.token_id] = pygame.sprite.Group()
-        return actor
+        super().add_to_board(token, board_position)
+        if token.size == (0, 0):
+            token.size = (30, 30)
+        self._collision_parnters_dict[token.token_id] = pygame.sprite.Group()
+        return token
 
     def remove_from_board(self, actor: Token):
         token_id = actor.token_id

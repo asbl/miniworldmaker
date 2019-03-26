@@ -6,7 +6,7 @@ class MyGrid(PixelBoard):
     def __init__(self):
         super().__init__(columns=200, rows=240)
         self.window.add_container(MyToolbar(), dock="right")
-        self.rocket = self.add_to_board(Rocket(), position=(100, 200))
+        self.rocket = self.add_to_board(Rocket(), board_position=(100, 200))
         self.add_image("images/galaxy.jpg")
 
 

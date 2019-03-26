@@ -1,5 +1,5 @@
 import numpy as np
-from gamegridp import actor
+from tokens import actor
 
 
 class PhysicsActor(actor.Actor):

@@ -6,7 +6,7 @@ class MyBoard(PixelBoard):
         super().__init__(columns=280, rows=100)
         self.add_image("images/water.png")
         player1 = Robot()
-        self.add_to_board(player1, position=(0, 0))
+        self.add_to_board(player1, board_position=(0, 0))
 
 
 class Robot(Actor):

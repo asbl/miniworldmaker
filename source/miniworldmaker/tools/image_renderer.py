@@ -31,6 +31,7 @@ class ImageRenderer():
         self.tile_size = 0
         self.orientation = 0
         self.flipped = True
+        self.image = None
 
     def add_image(self, img_path: str) -> pygame.Surface:
         """
@@ -54,6 +55,7 @@ class ImageRenderer():
             image = pygame.image.load(self._image_paths[index]).convert_alpha()
         else:
             image = self._images_list[self._image_index]
+        self.image = image
         return image
 
     def get_image(self) -> pygame.Surface:
@@ -190,3 +192,6 @@ class ImageRenderer():
             self._image_index = self._image_index + 1
         else:
             self._image_index = 0
+
+    def color_at(self, position):
+        return self.image.get_at(position)

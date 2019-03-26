@@ -1,11 +1,11 @@
-from miniworldmaker.tokens.token import Token
 from logging import *
 from typing import Union
 import pygame
 import math
+from miniworldmaker import tokens
 
 
-class Actor(Token):
+class Actor(tokens.board_token.Token):
     log = getLogger("Actor")
 
     def __init__(self):
@@ -55,7 +55,7 @@ class Actor(Token):
         """
         self.direction = self._value_to_direction(direction)
         destination = self.look(distance=distance, direction=direction)
-        self.position = self.board.to_board_position(destination.topleft)
+        self.position = self.board.get_board_position_from_pixel(destination.topleft)
         if self.board:
             self.board.window.send_event_to_containers("actor_moved", self)
         self.log.info("Move to position {0}; Direction {1}".format(self.position, self.direction))
@@ -78,7 +78,7 @@ class Actor(Token):
             direction = self._value_to_direction(direction)
             x = self.position[0] + round(math.cos(math.radians(direction)) * distance)
             y = self.position[1] - round(math.sin(math.radians(direction)) * distance)
-            return self.board.rect_to_position((x, y), self.rect)
+            return self.board.get_rect_from_board_position((x, y), self.rect)
 
     def is_looking_at_tokens(self, direction: Union[str, int] = "forward", distance: int = 1, actor_type=None):
         """

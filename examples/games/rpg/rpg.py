@@ -121,7 +121,7 @@ class Fireplace(Token):
             self.add_image("rpgimages/fireplace_1.png")
             self.add_image("rpgimages/fireplace_2.png")
             self.board.play_sound("rpgsounds/fireplace.wav")
-            self.animate()
+            self.is_animated = True
             self.burning = True
 
 

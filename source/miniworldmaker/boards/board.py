@@ -2,19 +2,19 @@ import logging
 from typing import Union
 import os
 import pygame
-from miniworldmaker.containers.container import Container
-from miniworldmaker.windows.miniworldwindow import MiniWorldWindow
-from miniworldmaker.tokens.token import Token
-from miniworldmaker.tools.image_renderer import ImageRenderer
-from miniworldmaker.tools.db_manager import DBManager
+from containers import container
+from windows import miniworldwindow as window
+from tools import image_renderer
+from tools import db_manager
+from tokens import board_token
 
 
-class Board(Container):
+class Board(container.Container):
     """
     Base class for creating boards
     """
     log = logging.getLogger("GameGrid")
-    token_classes = {}
+    registered_token_types = {}
     lookup = True
 
     def __init__(self,
@@ -34,7 +34,7 @@ class Board(Container):
         self.is_running = True
         # private
         self._speed = 60
-        self._renderer = ImageRenderer()
+        self._renderer = image_renderer.ImageRenderer()
         self.set_image_action("info_overlay", False)
         self.set_image_action("scale_x", True)
         self.set_image_action("scale_y", True)
@@ -57,7 +57,7 @@ class Board(Container):
         # Init graphics
         self._image = pygame.Surface((0, 0))
         self.dirty = 1
-        self._window = MiniWorldWindow("MiniWorldMaker")
+        self._window = window.MiniWorldWindow("MiniWorldMaker")
         self._window.add_container(self, "main")
 
     @property
@@ -138,7 +138,7 @@ class Board(Container):
             return self._container_height
 
     @property
-    def window(self) -> MiniWorldWindow:
+    def window(self) -> window.MiniWorldWindow:
         """
         :return: returns the parent windows
         """
@@ -165,10 +165,12 @@ class Board(Container):
 
     @property
     def rows(self) -> int:
-        """
-        :return: number of rows of the grid
-        """
         return self._rows
+
+    @rows.setter
+    def rows(self, value):
+        self._rows = value
+        self.dirty = 1
 
     @property
     def columns(self) -> int:
@@ -176,6 +178,11 @@ class Board(Container):
         :return: number of columns of the grid
         """
         return self._columns
+
+    @columns.setter
+    def columns(self, value):
+        self._columns = value
+        self.dirty = 1
 
     @property
     def tokens(self):
@@ -221,25 +228,28 @@ class Board(Container):
             self._image = _image
             return _image
 
-    def add_to_board(self, actor: Token, position: tuple) -> Token:
+    def add_to_board(self, token: board_token.Token, board_position: tuple) -> board_token.Token:
         """
         adds actor to grid
-        :param actor: the actor as subclass of Actor
-        :param position: the position in the grid
+        :param token: the actor as subclass of Actor
+        :param board_position: the position in the grid
         :return: The Actor
         """
         try:
-            self.tokens.add(actor)
-            actor.position = position
-            actor.board = self
-            actor.dirty = 1
-            if actor.init != 1:
+            self.tokens.add(token)
+            if type(board_position) == tuple:
+                token.position = board_position
+            else:
+                raise AttributeError("Position has wrong type" + str(type(board_position)))
+            token.board = self
+            token.dirty = 1
+            if token.init != 1:
                 raise UnboundLocalError("Init was not called")
             self.log.info(
-                "Added actor {0} to {1} at position {2} with rect {3}".format(actor, self, actor.position, actor.rect))
-            return actor
+                "Added actor {0} to {1} at position {2} with rect {3}".format(token, self, token.position, token.rect))
+            return token
         except UnboundLocalError as e:
-            self.log.error("super().__init__() of actor: {0} was not called".format(actor))
+            self.log.error("super().__init__() of actor: {0} was not called".format(token))
             raise
 
     def get_token_by_pixel(self, pixel: tuple) -> list:
@@ -286,7 +296,7 @@ class Board(Container):
         for actor in actors:
             self.remove_from_board(actor)
 
-    def remove_from_board(self, actor: Token):
+    def remove_from_board(self, actor: board_token.Token):
         if actor:
             self.tokens.remove(actor)
             actor.board = None
@@ -303,7 +313,7 @@ class Board(Container):
 
     def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
-            value = self.tile_to_rect(value)
+            value = self.get_rect_from_board_position(value)
         top_left_x, top_left_y, right, top = value.topleft[0], \
                                              value.topleft[1], \
                                              value.right, \
@@ -371,7 +381,7 @@ class Board(Container):
                 print(self.get_token_by_pixel(data)[0])
                 self.set_active_token(self.get_token_by_pixel(data)[0])
 
-    def set_active_token(self, token: Token):
+    def set_active_token(self, token: board_token.Token):
         self.active_token = token
         token.changed()
         self.window.send_event_to_containers("active_token", token)
@@ -383,52 +393,12 @@ class Board(Container):
         """
         pass
 
-    def rect_to_position(self, position: tuple, rect: pygame.Rect) -> pygame.Rect:
-        """
-        Centers a rectangle above a tile
-        :param position: (x, y): Position of rectangle
-        :param rect: the rectangle
-        :return: centered rectangle
-        """
-        top_left = self.tile_top_left((position[0], position[1]))
-        new_rect = pygame.Rect(0, 0, rect.width, rect.height)
-        new_rect.topleft = top_left
-        return new_rect
-
-    def to_board_position(self, position: Union[tuple, pygame.Rect]) -> tuple:
-        if type(position) == tuple:
-            return self._pixel_to_board_position(position)
-        elif type(position) == pygame.Rect:
-            position = position.center
-            return self._pixel_to_board_position(position)
-        else:
-            raise (AttributeError("No valid type for position in board.to_board_position"))
-
-    def _pixel_to_board_position(self, position):
-        column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
-        row = (position[1] - self.tile_margin) // (self.tile_size + self.tile_margin)
-        return column, row
-
-    def tile_top_left(self, position: tuple) -> tuple:
-        rect = self.tile_to_rect(position)
-        return rect.topleft
-
-    def tile_to_rect(self, position: tuple) -> pygame.Rect:
-        """
-        Returns the enclosing rectangle.
-        :param position: (x, y), grid coordinates
-        :return: the enclosing rectangle
-        """
-        x = position[0] * self.tile_size + position[0] * self.tile_margin + self.tile_margin
-        y = position[1] * self.tile_size + position[1] * self.tile_margin + self.tile_margin
-        return pygame.Rect(x, y, self.tile_size, self.tile_size)
-
     def show_log(self):
         logging.basicConfig(level=logging.INFO)
 
     def save_to_db(self, file):
         os.remove(file)
-        db = DBManager(file)
+        db = db_manager.DBManager(file)
         self.log.info("Create db...")
         query_actors = """     CREATE TABLE `token` (
                         `token_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -467,9 +437,11 @@ class Board(Container):
 
     @classmethod
     def from_db(cls, file):
-        db = DBManager(file)
+        db = db_manager.DBManager(file)
         data = db.select_single_row("SELECT rows, columns, tile_size, tile_margin, board_class FROM Board")
-        board = cls(rows=data[0], columns=data[1])
+        board = cls()
+        board.rows = data[0]
+        board.columns = data[1]
         board._tile_size = data[2]
         board._tile_margin = data[3]
         rows, columns, margin, size, board_class = data[0], data[1], data[2], data[3], data[4]
@@ -477,14 +449,14 @@ class Board(Container):
         if data:
             for tokens in data:
                 token_class_name = tokens[3]
-                if token_class_name in Board.token_classes.keys():
-                    token_instance = Board.token_classes[token_class_name]()
-                    board.add_to_board(token_instance, position=(tokens[1], tokens[2]))
+                if token_class_name in Board.registered_token_types.keys():
+                    token_instance = Board.registered_token_types[token_class_name]()
+                    board.add_to_board(token_instance, board_position=(tokens[1], tokens[2]))
         return board
 
     @staticmethod
     def register_token_type(class_name):
-        Board.token_classes[class_name.__name__] = class_name
+        Board.registered_token_types[class_name.__name__] = class_name
 
     def play_sound(self, sound_path):
         effect = pygame.mixer.Sound(sound_path)
@@ -493,3 +465,26 @@ class Board(Container):
     def play_music(self, music_path):
         pygame.mixer.music.load(music_path)
         pygame.mixer.music.play(-1)
+
+    def get_rect_from_board_position(self, board_position: tuple, rect: pygame.Rect = None) -> pygame.Rect:
+        if rect == None:
+            new_rect = pygame.Rect(0, 0, self.tile_size, self.tile_size)
+        else:
+            new_rect = pygame.Rect(0, 0, rect.width, rect.height)
+        # board position to pixel
+        pixel_x = board_position[0] * self.tile_size + board_position[0] * self.tile_margin + self.tile_margin
+        pixel_y = board_position[1] * self.tile_size + board_position[1] * self.tile_margin + self.tile_margin
+        new_rect.topleft = (pixel_x, pixel_y)
+        return pygame.Rect(pixel_x, pixel_y, self.tile_size, self.tile_size)
+
+    def get_board_position_from_pixel(self, position: tuple) -> tuple:
+        column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
+        row = (position[1] - self.tile_margin) // (self.tile_size + self.tile_margin)
+        return column, row
+
+    def get_board_position_from_rect(self, position: pygame.Rect) -> tuple:
+        position = position.topleft
+        return self.get_board_position_from_pixel(position)
+
+    def get_color(self, board_position):
+        return image_renderer.color_at(board_position)

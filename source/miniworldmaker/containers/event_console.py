@@ -4,11 +4,12 @@ from miniworldmaker.containers.container import Container
 
 
 class EventConsole(Container):
+
     event_id = 0
 
-    def __init__(self, lines=5, size=100):
-        super().__init__(size=size)
-        self._lines = lines
+    def __init__(self):
+        super().__init__()
+        self._lines = 0
         self._height = self._lines * 20
         self._text_queue = []
         self.listen_to_all_events = True

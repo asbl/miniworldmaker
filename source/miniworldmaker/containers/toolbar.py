@@ -46,7 +46,7 @@ class Toolbar(Container):
                 self._window.repaint_areas.append(self.rect)
 
     def _widgets_total_height(self):
-        height = 0
+        height = self.margin_first
         for widget in self.widgets:
             height += widget.height
         return height

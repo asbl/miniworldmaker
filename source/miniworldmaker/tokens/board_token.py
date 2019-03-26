@@ -1,8 +1,8 @@
 import math
 from logging import *
 from typing import Union
-from miniworldmaker.tools.image_renderer import ImageRenderer
 import pygame
+from tools import image_renderer
 
 
 class Token(pygame.sprite.DirtySprite):
@@ -14,10 +14,10 @@ class Token(pygame.sprite.DirtySprite):
     def __init__(self):
         super().__init__()
         # private
-        self._renderer = ImageRenderer()
+        self._renderer = image_renderer.ImageRenderer()
         self._image = self._renderer.get_image()
         self._size = (0, 0)  # Tuple with size
-        self._position = (0, 0)  # set by gamegrid.add_actor
+        self._position: tuple = None
         self._on_board = False
         self._is_at_border = False
         self._at_borders_list = False
@@ -44,9 +44,9 @@ class Token(pygame.sprite.DirtySprite):
 
     def image_action(self, attribute: str, value: bool):
         try:
-            if attribute not in ImageRenderer.actions:
+            if attribute not in image_renderer.ImageRenderer.actions:
                 raise ValueError("Error in image_action. Action '{0}' not in actions list: {1}".format(attribute,
-                                                                                                       ImageRenderer.actions))
+                                                                                                       image_renderer.ImageRenderer.actions))
             self._renderer.image_actions[attribute] = value
             self.changed()
         except ValueError:
@@ -72,7 +72,7 @@ class Token(pygame.sprite.DirtySprite):
     @property
     def rect(self):
         try:
-            return self.board.rect_to_position(self.position, self.image.get_rect())
+            return self.board.get_rect_from_board_position(self.position, self.image.get_rect())
         except AttributeError as e:
             if self.board is None:
                 self.log.error("ERROR: The actor {0} is not attached to a Board\n"
@@ -83,7 +83,7 @@ class Token(pygame.sprite.DirtySprite):
         return self._renderer.add_image(path)
 
     def clear(self):
-        self._renderer = ImageRenderer()
+        self._renderer = image_renderer.ImageRenderer()
 
     def _next_sprite(self):
         if self.board.frame % self.animation_speed == 0:
@@ -254,7 +254,8 @@ class Token(pygame.sprite.DirtySprite):
 
     def is_colliding_with(self, class_name):
         colliding_tokens = self.board.get_colliding_tokens(self)
-        return Board.filter_actor_list(colliding_tokens, class_name)
+        from boards import board
+        return board.Board.filter_actor_list(colliding_tokens, class_name)
 
     def is_at_border(self):
         return self.board.borders(self.rect)

@@ -18,6 +18,5 @@ class Robot(Actor):
 
 
 board = MyBoard()
-board.show_log()
 board.save_to_db("db_test.db")
 board.show()

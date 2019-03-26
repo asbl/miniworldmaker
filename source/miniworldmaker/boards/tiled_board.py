@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Union
 import pygame
 from miniworldmaker.boards.board import Board
-from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.board_token import Token
 
 
 class TiledBoard(Board):
@@ -41,7 +41,7 @@ class TiledBoard(Board):
         if type(value) == tuple:
             x, y = value[0], value[1]
         else:
-            x, y = self.to_board_position(value.topleft)
+            x, y = self.get_board_position_from_pixel(value.topleft)
         tokens_in_area = []
         if self.on_board(self.rect):
             if self._dynamic_actors_dict[x, y]:
@@ -75,7 +75,7 @@ class TiledBoard(Board):
 
     def add_to_board(self, token: Token, position: tuple = None) -> Token:
         if token.is_static:
-            self._static_tokens_dict[(position[0], position[1])].append(token)
+            self._static_tokens_dict[position].append(token)
         else:
             self._dynamic_actors.append(token)
         super().add_to_board(token, position)
@@ -125,8 +125,8 @@ class TiledBoard(Board):
 
     def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
         if type(value) == tuple:
-            value = self.tile_to_rect(value)
-        x, y = self.to_board_position(value.center)
+            value = self.get_rect_from_board_position(value)
+        x, y = self.get_board_position_from_pixel(value.center)
         if x > self.columns - 1:
             return False
         elif y > self.rows - 1:
@@ -139,8 +139,8 @@ class TiledBoard(Board):
     def borders(self, value: Union[tuple, pygame.Rect]) -> list:
         borders = []
         if type(value) == tuple:
-            value = self.tile_to_rect(value)
-        x, y = self.to_board_position(value.center)
+            value = self.get_rect_from_board_position(value)
+        x, y = self.get_board_position_from_pixel(value.center)
         if x == self.columns - 1:
             borders.append("right")
         if y == self.rows - 1:
