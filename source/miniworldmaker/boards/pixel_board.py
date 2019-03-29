@@ -13,8 +13,8 @@ class PixelBoard(Board):
         self._last_collisions = set()
 
     def add_collision_partner(self, partner1, partner2):
-        self._collision_parnters_dict[partner1.actor_id].add(partner2)
-        self._collision_parnters_dict[partner2.actor_id].add(partner1)
+        self._collision_parnters_dict[partner1.token_id].add(partner2)
+        self._collision_parnters_dict[partner2.token_id].add(partner1)
 
     def add_to_board(self, token: Token, board_position) -> Token:
         """
@@ -40,14 +40,16 @@ class PixelBoard(Board):
             if partner1.token_id in self._collision_parnters_dict:
                 collisions = pygame.sprite.spritecollide(partner1,
                                                          self._collision_parnters_dict[partner1.token_id], False)
-                if collisions:
-                    print(collisions)
                 for partner2 in collisions:
                     if (partner1, partner2) not in self._last_collisions:
-                        partner1.listen("collision", partner2)
+                        partner1.get_event("collision", partner2)
                     new_col_pairs.append((partner1, partner2))
+                if collisions:
+                    pass
+                print(new_col_pairs, collisions, partner1, self._collision_parnters_dict[partner1.token_id])
                 for pair in new_col_pairs:
                     self.window.send_event_to_containers("collision", pair)
+
         self._last_collisions = set(new_col_pairs)
 
     def test_collision(self, actor1, actor2) -> bool:

@@ -72,7 +72,7 @@ class Token(pygame.sprite.DirtySprite):
     @property
     def rect(self):
         try:
-            return self.board.get_rect_from_board_position(self.position, self.image.get_rect())
+            return self.board.get_rect_from_board_position(board_position=self.position, rect=self.image.get_rect())
         except AttributeError as e:
             if self.board is None:
                 self.log.error("ERROR: The actor {0} is not attached to a Board\n"

@@ -463,7 +463,7 @@ class Board(container.Container):
         pygame.mixer.music.play(-1)
 
     def get_rect_from_board_position(self, board_position: tuple, rect: pygame.Rect = None) -> pygame.Rect:
-        if rect == None:
+        if rect is None:
             new_rect = pygame.Rect(0, 0, self.tile_size, self.tile_size)
         else:
             new_rect = pygame.Rect(0, 0, rect.width, rect.height)
@@ -471,7 +471,7 @@ class Board(container.Container):
         pixel_x = board_position[0] * self.tile_size + board_position[0] * self.tile_margin + self.tile_margin
         pixel_y = board_position[1] * self.tile_size + board_position[1] * self.tile_margin + self.tile_margin
         new_rect.topleft = (pixel_x, pixel_y)
-        return pygame.Rect(pixel_x, pixel_y, self.tile_size, self.tile_size)
+        return new_rect
 
     def get_board_position_from_pixel(self, position: tuple) -> tuple:
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
