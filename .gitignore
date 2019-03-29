@@ -13,3 +13,4 @@ source/dist
 source/build
 source/__pycache__
 venv*
+source/docs/build/*

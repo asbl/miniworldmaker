@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.params=position
+comment0.target=Ship(int)
+comment0.text=\nCreate\ a\ space\ ship.\ The\ parameter\ specifies\ at\ what\ height\ to\ land.\n\n
+comment1.target=void\ act()
+comment1.text=\nLet\ the\ ship\ act\:\ move\ or\ release\ greeps.\n\n
+comment2.target=boolean\ isEmpty()
+comment2.text=\nTrue\ if\ all\ passengers\ are\ out.\n\n
+comment3.target=void\ move()
+comment3.text=\nMove\ the\ ship\ down\ (for\ movement\ before\ landing).\n\n
+comment4.target=boolean\ inPosition()
+comment4.text=\nTrue\ if\ we\ have\ reached\ the\ intended\ landing\ position.\n\n
+comment5.target=void\ releasePassenger()
+comment5.text=\nPossibly\:\ Let\ one\ of\ the\ passengers\ out.\ Passengers\ appear\ at\ intervals,\ \nso\ this\ may\ or\ may\ not\ release\ the\ passenger.\n\n
+comment6.params=cr
+comment6.target=void\ storeTomato(Creature)
+comment6.text=\nRecord\ that\ we\ have\ collected\ another\ tomato.\n\n
+comment7.target=int\ getTomatoCount()
+comment7.text=\nReturn\ the\ current\ count\ of\ tomatos\ collected.\n\n
+comment8.target=void\ startTimer()
+comment8.text=\nStart\ the\ timer\ that\ counts\ time\ elapsed.\n\n
+numComments=9
