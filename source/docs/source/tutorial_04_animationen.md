@@ -19,6 +19,12 @@ Füge in der __init__()-Methode einfach mehrere Bilder hinzu:
         self.add_image("images/robot_blue2.png")
 ```
 
+### Das Kostüm
+
+Die Bilder werden automatisch zu einem *Kostüm* hinzugefügt. 
+Ein Kostüm sammelt mehrere Bilder und erlaubt es dir damit, Animationen zusammenzufassen.
+
+Später wirst du auch lernen, Kostüme zu wechseln, um z.B. zwischen Animationen zu springen. 
 
 ### 2. Animation starten
  
@@ -29,9 +35,12 @@ Lege die Geschwindigkeit fest und starte die Animation:
         self.add_image("images/robot_blue1.png")
         self.add_image("images/robot_blue2.png")
         [...]
-        self.animation_speed = 30
-        self.is_animated = True
+        self.costume.animation_speed = 30
+        self.costume.is_animated = True
 ```
+
+In den letzten beiden Zeilen wird angegeben, dass das Kostüm des Actors mit der Geschwindigkeit 30 wechseln soll 
+(probiere hier unterschiedliche Werte aus) und ganz am Ende wird die Animation gestartet.
 
 Schaue dir dazu auch das Beispiel [roboanimation](https://github.com/asbl/miniworldmaker/blob/master/examples/moving/roboanimation.py) auf github an:
 

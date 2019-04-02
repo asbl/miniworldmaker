@@ -24,7 +24,7 @@ class MyBoard(TiledBoard):
     def get_event(self, event, data):
         if event == "mouse_left":
             position = self.get_board_position_from_pixel(data)
-            actor = self.add_to_board(self.create_world_toolbar.selected_actor(), board_position=position)
+            actor = self.add_to_board(self.create_world_toolbar.selected_actor(), position=position)
         elif event == "mouse_right":
             position = self.get_board_position_from_pixel(data)
             self.remove_tokens_in_area(position)

@@ -4,9 +4,9 @@ from miniworldmaker import *
 class MyBoard(PixelBoard):
 
     def __init__(self):
-        super().__init__(columns=200, rows=200)
+        super().__init__(columns=400, rows=200)
         self.add_image(path="images/stone.jpg")
-        self.add_to_board(Robot(), board_position=(50, 50))
+        self.add_to_board(Robot(), position=(50, 50))
 
 
 class Robot(Actor):
@@ -17,7 +17,8 @@ class Robot(Actor):
         self.add_image("images/robo_green.png")
 
     def act(self):
-        pass
+        if not self.sensing_on_board():
+            self.turn_left(270)
 
     def get_event(self, event, data):
         if event == "key":
@@ -26,7 +27,7 @@ class Robot(Actor):
             if "D" in data:
                 self.turn_right(10)
             if "W" in data:
-                self.move(distance=3)
+                self.move()
 
 
 board = MyBoard()

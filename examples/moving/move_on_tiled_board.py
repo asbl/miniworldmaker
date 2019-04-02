@@ -6,7 +6,7 @@ class MyBoard(TiledBoard):
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
         player1 = Player()
-        player = self.add_to_board(player1, board_position=(1, 1))
+        player = self.add_to_board(player1, position=(1, 1))
         print(player.image.get_rect())
         print(player.size)
         self.add_image(path="images/soccer_green.jpg")
@@ -17,10 +17,10 @@ class Player(Actor):
     def __init__(self):
         super().__init__()
         self.add_image(path="images/char_blue.png")
-        self.set_upscale()
+        self.costume.upscale = True
 
     def act(self):
-        if self.is_looking_on_board():
+        if self.sensing_on_board():
             self.move()
 
     def get_event(self, event, data):

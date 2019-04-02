@@ -1,3 +1,6 @@
+Modules
+^^^^^^^^
+
 API
 ======
 
@@ -5,7 +8,3 @@ API
 
    modules_boards
    modules_tokens
-
-
-
-

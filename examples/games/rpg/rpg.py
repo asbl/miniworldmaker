@@ -34,36 +34,41 @@ class Player(Actor):
     def __init__(self):
         super().__init__()
         self.add_image("rpgimages/knight.png")
-        self.image_action("rotate", False)
+        self.costume.is_rotatable = False
         self.inventory = []
 
     def act(self):
         pass
 
+    def move(self, distance=1):
+        walls = self.sensing_tokens(token=Wall)
+        doors = self.sensing_tokens(token=Door)
+        closed_doors = [door for door in doors if door.closed is True]
+        if not walls and not closed_doors and self.sensing_on_board():
+            super().move()
+
     def get_event(self, event, data):
         if event == "key_down":
             direction = None
             if "W" in data:
-                direction = "up"
+                self.point_in_direction("up")
+                self.move()
             elif "S" in data:
-                direction = "down"
+                self.point_in_direction("down")
+                self.move()
             elif "A" in data:
-                direction = "left"
+                self.point_in_direction("left")
+                self.move()
             elif "D" in data:
-                direction = "right"
-            if direction in ["up", "down", "left", "right"]:
-                walls = self.is_looking_at_tokens(direction=direction, actor_type=Wall)
-                doors = self.is_looking_at_tokens(direction=direction, actor_type=Door)
-                closed_doors = [door for door in doors if door.closed is True]
-                if not walls and not closed_doors and self.is_looking_on_board(direction=direction):
-                    self.move(direction=direction)
+                self.point_in_direction("right")
+                self.move()
         if event == "button" and data == "Fackel":
-            actors_at_position = self.is_looking_at_tokens(direction="here")
+            actors_at_position = self.sensing_tokens(distance=0)
             if self.board.fireplace in actors_at_position:
                 self.board.console.print("Du zündest die Feuerstelle an.")
                 self.board.fireplace.burn()
         if event == "actor_moved":
-            actors_at_position = self.is_looking_at_tokens(direction="here")
+            actors_at_position = self.sensing_tokens(distance=0)
             if self.board.torch in actors_at_position:
                 message = "Du findest eine Fackel. Möchtest du sie aufheben?"
                 choices = ["Ja", "Nein"]
@@ -74,7 +79,7 @@ class Player(Actor):
                     self.board.console.print("Du hebst die Fackel auf.")
                 self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
             # look forward
-            actors_in_front = self.is_looking_at_tokens(direction="forward")
+            actors_in_front = self.sensing_tokens()
             if self.board.door in actors_in_front:
                 if self.board.door.closed:
                     message = "Die Tür ist geschlossen... möchtest du sie öffnen"
@@ -117,7 +122,6 @@ class Fireplace(Token):
 
     def burn(self):
         if self.burning == False:
-            self.clear()
             self.add_image("rpgimages/fireplace_1.png")
             self.add_image("rpgimages/fireplace_2.png")
             self.board.play_sound("rpgsounds/fireplace.wav")
@@ -135,7 +139,6 @@ class Door(Token):
 
     def open(self):
         if self.closed == True:
-            self.clear()
             self.add_image("rpgimages/door_open.png")
             self.board.play_sound("rpgsounds/olddoor.wav")
             self.closed = False

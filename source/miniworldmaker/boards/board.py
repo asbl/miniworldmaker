@@ -4,9 +4,10 @@ import os
 import pygame
 from containers import container
 from windows import miniworldwindow as window
-from tools import image_renderer
 from tools import db_manager
-from tokens import board_token
+from tokens import token
+from boards import board_position
+from boards import background
 
 
 class Board(container.Container):
@@ -22,23 +23,19 @@ class Board(container.Container):
                  rows: int = 40,
                  ):
         """
-        initializes a new GameGrid
+        Creates a new board
         Args:
-            columns: The number of columns
-            rows: The number of rows
+            columns: columns of new board
+            rows: rows of new board
         """
         super().__init__(self)
         pygame.init()
         # public
         self.active_token = None
         self.is_running = True
+        self.steps = 1
         # private
         self._speed = 60
-        self._renderer = image_renderer.ImageRenderer()
-        self.set_image_action("info_overlay", False)
-        self.set_image_action("scale_x", True)
-        self.set_image_action("scale_y", True)
-        self.set_image_action("upscale", False)
         self._tokens = pygame.sprite.LayeredDirty()
         self._key_pressed = False
         self._key = 0
@@ -48,17 +45,19 @@ class Board(container.Container):
         self._tile_margin = 0
         self._columns, self._rows = columns, rows
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
+        self.background = background.Background(self)
+        self._image = self.background.image
         # protected
         self.dirty = 1
-        self.__frame = 0
-        self.__tick = 0
-        self.__clock = pygame.time.Clock()
+        self._frame = 0
+        self._tick = 0
+        self._clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
-        self._image = pygame.Surface((0, 0))
         self.dirty = 1
         self._window = window.MiniWorldWindow("MiniWorldMaker")
         self._window.add_container(self, "main")
+        window.MiniWorldWindow.board = self
 
     @property
     def speed(self) -> int:
@@ -75,7 +74,7 @@ class Board(container.Container):
                  rows: int = 40,
                  margin: int = 0):
         """
-        Sets size of a gamegrid
+        Sets size of a Board
         :param tile_size: The tile_size in pixels
         :param columns: The number of columns
         :param rows: The number of rows
@@ -107,13 +106,6 @@ class Board(container.Container):
         :param data: The data of the event
         """
         pass
-
-    def is_colliding(self, actor) -> bool:
-        colliding_tokens = self.get_colliding_tokens(actor)
-        if colliding_tokens:
-            return True
-        else:
-            return False
 
     @property
     def width(self) -> int:
@@ -186,60 +178,54 @@ class Board(container.Container):
 
     @property
     def tokens(self):
-        """
-        :return: A list of all actors
-        """
         return self._tokens
 
     @property
     def frame(self) -> int:
-        """
-        Returns the actual frame
-        :return: the value of actual frame
-        """
-        return self.__frame
+        return self._frame
 
     @property
     def class_name(self) -> str:
-        """
-        :return: The Class Name of Actor
-        """
         return self.__class__.__name__
 
-    def set_image_action(self, attribute: str, value: bool):
-        self._renderer.image_actions[attribute] = value
+    def add_image(self, path: str) -> int:
+        """
+        Adds image to current costume
 
-    def add_image(self, path: str) -> pygame.Surface:
+        Args:
+            path: The path to the image as relative path
+
+        Returns: The index of the image.
+
         """
-        :param img_path: The path to the image
-        :return: The image
-        """
-        return self._renderer.add_image(path)
+        return self.background.add_image(path)
 
     @property
     def image(self) -> pygame.Surface:
         if not self.dirty:
             return self._image
         else:
-            self._renderer.size = (self._container_width, self._container_height)
-            self._renderer.tile_size = self.tile_size
-            self._renderer.margin = self.tile_margin
-            _image = self._renderer.get_image()
-            self._image = _image
-            return _image
+            self._image = self.background.image
+            return self.background.image
 
-    def add_to_board(self, token: board_token.Token, board_position: tuple) -> board_token.Token:
+    def add_to_board(self, token: token.Token, position: Union[tuple, board_position.BoardPosition]) -> token.Token:
         """
-        adds actor to grid
-        :param token: the actor as subclass of Actor
-        :param board_position: the position in the grid
-        :return: The Actor
+        Adds token to board
+
+        Args:
+            token: The token which should be added
+            position: The position the token should be added
+
+        Returns: The Token
+
         """
         self.tokens.add(token)
-        if type(board_position) == tuple:
-            token.position = board_position
+        if type(position) == tuple:
+            token.position = board_position.BoardPosition(position[0], position[1])
+        elif type(position) == board_position.BoardPosition:
+            token.position = position
         else:
-            raise AttributeError("Position has wrong type" + str(type(board_position)))
+            raise AttributeError("Position has wrong type" + str(type(position)))
         token.board = self
         token.dirty = 1
         if token.init != 1:
@@ -249,9 +235,13 @@ class Board(container.Container):
 
     def get_token_by_pixel(self, pixel: tuple) -> list:
         """
-        Returns all players who have a certain pixel in common
-        :param pixel: The pixel-coordinates
-        :return: All actors as list
+        Gets all tokens by Pixel. This method can be used, if you want to get a token by mouse-clock
+
+        Args:
+            pixel: the pixel-coordinates
+
+        Returns: The toke
+
         """
         actors = []
         for actor in self.tokens:
@@ -259,69 +249,103 @@ class Board(container.Container):
                 actors.append(actor)
         return actors
 
-    def get_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> list:
+    def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token=None, exlude=None) -> list:
         """
-        Gets all actors at location
-        :param value: Either a tuple with cordinates in the grid or a Rect
-        :param actor_type: Filters actor by type (e.g. all <Player>-Objects at position)
-        :return:
-        """
-        actors = []
-        if type(value) == tuple:
-            value = pygame.Rect(value[0], value[1], 1, 1)
-        for actor in actors:
-            if actor.rect.colliderect(value):
-                actors.append(actor)
-        if actor_type is not None:
-            actors = self.filter_actor_list(actors, actor_type)
-        return actors
+        Gets all tokens in area
 
-    def remove_actors_from_location(self, location: Union[tuple, pygame.Rect], actor_type=None):
+        Args:
+            area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
+            token: The class of the tokens which should be added
+            exluded: A token which should not be returned e.g. the actor itself
+
+        Returns: all tokens in the area
+
         """
-        Removes actor from an area or position
-        :param location: The location can be either a Rect or a tuple with grid coordinates
-        :param actor_type: Filters actor by type (e.g. all <Player>-Objects at position)
+        tokens = []
+        if type(area) == tuple:
+            area = pygame.Rect(area[0], area[1], self.tile_size, self.tile_size)
+        if token is not None:
+            token_list = self.filter_actor_list(self.tokens, token)
+        else:
+            token_list = self.tokens
+        for token in token_list:
+            if token.rect.colliderect(area) and token != exlude:
+                tokens.append(token)
+
+        return tokens
+
+    def get_token_in_area(self, area: Union[pygame.Rect, tuple], token=None, exclude=None) -> token.Token:
         """
-        actors = []
-        if type(location) == tuple:
-            location = pygame.Rect(location[0], location[1], 1, 1)
-        actors = self.get_tokens_in_area(location)
-        if actor_type is not None:
-            actors = self.filter_actor_list(actors, actor_type)
-        for actor in actors:
+        Gets all tokens in area
+
+        Args:
+            area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
+            token: The class of the tokens which should be added
+            exluded: A token which should not be returned e.g. the actor itself
+
+        Returns: One token
+
+        """
+        if type(area) == tuple:
+            area = pygame.Rect(area[0], area[1], 1, 1)
+        if token is not None:
+            token_list = self.filter_actor_list(self.tokens, token)
+        else:
+            token_list = self.tokens
+        for token in token_list:
+            if token.rect.colliderect(area) and token != exclude:
+                return token
+
+    def remove_actors_from_area(self, area: Union[tuple, pygame.Rect], token=None, exclude=None):
+        """
+        Removes all tokens in an area
+
+        Args:
+            area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
+            token: The class of the tokens which should be removed
+            exluded: A token which should not be removed e.g. the actor itself
+
+        Returns: all tokens in the area
+
+        """
+        if type(area) == tuple:
+            area = pygame.Rect(area[0], area[1], 1, 1)
+        tokens = self.get_tokens_in_area(area)
+        if token is not None:
+            tokens = self.filter_actor_list(tokens, token)
+        for actor in tokens:
             self.remove_from_board(actor)
 
-    def remove_from_board(self, actor: board_token.Token):
-        if actor:
-            self.tokens.remove(actor)
-            actor.board = None
-
-    def remove_all_actors(self):
+    def remove_from_board(self, token: token.Token):
         """
-        Entfernt alle Akteure aus dem Grid.
+        Removes a single token from board
+
+        Args:
+            token: The token which should be removed
+
+        Returns:
+
         """
-        for actor in self.tokens:
-            self.remove_from_board(actor)
+        if token:
+            self.tokens.remove(token)
+            token.board = None
 
-    def reset(self):
-        self.dirty = 1
+    def is_on_board(self, area: Union[board_position.BoardPosition, pygame.Rect]) -> bool:
+        if type(area) == tuple:
+            area = board_position.BoardPosition(area[0], area[1])
+        if type(area) == board_position.BoardPosition:
+            area = area.to_rect()
 
-    def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
-        if type(value) == tuple:
-            value = self.get_rect_from_board_position(value)
-        top_left_x, top_left_y, right, top = value.topleft[0], \
-                                             value.topleft[1], \
-                                             value.right, \
-                                             value.top
-        if top_left_x < 0 or top_left_y < 0 or right > self.width or top > self.height:
+        top_left_x, top_left_y, right, top = area.topleft[0], \
+                                             area.topleft[1], \
+                                             area.right, \
+                                             area.top
+        if top_left_x < 0 or top_left_y < 0 or area.right >= self.width or area.bottom >= self.height:
             return False
         else:
             return True
 
     def borders(self, actor):
-        pass
-
-    def get_colliding_tokens(self, actor) -> list:
         pass
 
     def repaint(self):
@@ -342,42 +366,39 @@ class Board(container.Container):
     def update(self):
         if self.is_running:
             self._act_all()
-        self.__frame = self.__frame + 1
-        for actor in self.tokens:
-            actor.update()
-        self._call_collision_events()
-        if self.__frame == 100:
-            self.__frame = 0
-        self.__clock.tick(60)
-
-    def _call_collision_events(self):
-        pass
+        self._frame = self._frame + 1
+        for token in self.tokens:
+            token.update()
+        if self._frame == 100:
+            self._frame = 0
+        self._clock.tick(60)
 
     def _act_all(self):
-        self.__tick = self.__tick + 1
-        if self.__tick > 60 - self.speed:
+        self._tick = self._tick + 1
+        if self._tick > 60 - self.speed:
             for actor in self.tokens:
                 actor.act()
             self.act()
-            self.__tick = 0
+            self._tick = 0
 
     def pass_event(self, event, data=None):
-        if event != "collision":
-            for actor in self.tokens:
-                actor.get_event(event, data)
         if event == "collision":
             for actor in self.tokens:
                 if data[0] == actor:
                     actor.get_event("collision", data[1])
                 elif data[1] == actor:
                     actor.get_event("collision", data[0])
-        if event == "mouse_left":
+        elif event == "mouse_left":
             if self.get_token_by_pixel(data):
                 self.set_active_token(self.get_token_by_pixel(data)[0])
+        else:
+            for actor in self.tokens:
+                actor.get_event(event, data)
+            pass
 
-    def set_active_token(self, token: board_token.Token):
+    def set_active_token(self, token: token.Token):
         self.active_token = token
-        token.changed()
+        token.dirty = 1
         self.window.send_event_to_containers("active_token", token)
         return token
 
@@ -445,8 +466,7 @@ class Board(container.Container):
                 token_class_name = tokens[3]
                 if token_class_name in Board.registered_token_types.keys():
                     token_instance = Board.registered_token_types[token_class_name]()
-                    board.add_to_board(token=token_instance, board_position=(tokens[1], tokens[2]))
-        print(board)
+                    board.add_to_board(token=token_instance, position=(tokens[1], tokens[2]))
         board.window.send_event_to_containers("Loaded from db", board)
         return board
 
@@ -462,16 +482,9 @@ class Board(container.Container):
         pygame.mixer.music.load(music_path)
         pygame.mixer.music.play(-1)
 
-    def get_rect_from_board_position(self, board_position: tuple, rect: pygame.Rect = None) -> pygame.Rect:
-        if rect is None:
-            new_rect = pygame.Rect(0, 0, self.tile_size, self.tile_size)
-        else:
-            new_rect = pygame.Rect(0, 0, rect.width, rect.height)
-        # board position to pixel
-        pixel_x = board_position[0] * self.tile_size + board_position[0] * self.tile_margin + self.tile_margin
-        pixel_y = board_position[1] * self.tile_size + board_position[1] * self.tile_margin + self.tile_margin
-        new_rect.topleft = (pixel_x, pixel_y)
-        return new_rect
+    def get_pixel_from_board_position(self, pos: board_position.BoardPosition) -> pygame.Rect:
+        rect = pos.to_rect()
+        return rect.topleft
 
     def get_board_position_from_pixel(self, position: tuple) -> tuple:
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
@@ -482,5 +495,11 @@ class Board(container.Container):
         position = position.topleft
         return self.get_board_position_from_pixel(position)
 
-    def get_color(self, board_position):
-        return image_renderer.color_at(board_position)
+    def get_color_at_board_position(self, position: Union[tuple, board_position.BoardPosition]) -> list:
+        if type(position == tuple):
+            position = board_position.BoardPosition(position[1], position[0])
+        self.dirty = 1
+        return self.background._renderer.color_at(self.get_pixel_from_board_position(pos=position))
+
+    def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
+        return self.background._renderer.color_at_rect(rect, color, threshold)

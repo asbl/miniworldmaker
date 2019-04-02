@@ -1,4 +1,3 @@
-
 MiniWorldMaker
 ==========================================
 
@@ -26,6 +25,7 @@ Hier findest du alle Informationen, wenn du direkt auf Klassen, Methoden und Att
        status
 
 .. automodule:: miniworldmaker
+:members:
 
 
 

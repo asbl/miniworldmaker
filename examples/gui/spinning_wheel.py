@@ -25,7 +25,7 @@ class MyBoard(TiledBoard):
                     easygui.msgbox("Du musst zuerst einen Chip setzen")
         if event == "mouse_left" and self.placed is False:
             position = self.get_board_position_from_pixel(data)
-            if not position.pos == (1, 1):
+            if not position == (1, 1):
                 self.chip = Chip()
                 self.add_to_board(self.chip, position)
                 self.placed = True
@@ -45,7 +45,7 @@ class Arrow(Actor):
             self.spinning = self.spinning - 1
             if self.spinning == 0:
                 print("Look at :", self.board.get_board_position_from_pixel(self.look(direction="forward")))
-                if self.is_looking_at_tokens(direction="forward", actor_type=Chip):
+                if self.sensing_tokens(token=Chip):
                     easygui.msgbox("Du hast gewonnen", "Spinning Wheel")
                     self.board.chip.remove()
                     self.board.placed = False

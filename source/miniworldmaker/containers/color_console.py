@@ -3,11 +3,10 @@ import pygame
 from miniworldmaker.containers.container import Container
 
 
-class EventConsole(Container):
-
+class ColorConsole(Container):
     event_id = 0
 
-    def __init__(self):
+    def __init__(self, board):
         super().__init__()
         self._lines = 0
         self._height = self._lines * 20
@@ -20,6 +19,7 @@ class EventConsole(Container):
         self.margin_left = 10
         self.margin_right = 10
         self._dirty = 1
+        self.board = board
 
     def repaint(self):
         if self.dirty:
@@ -32,18 +32,18 @@ class EventConsole(Container):
                 label = myfont.render(text, 1, (0, 0, 0))
                 row.blit(label, (10, 5))
                 self.surface.blit(row, (self.margin_left, self.margin_first + i * 20 + i * self.row_margin))
-            self.window.repaint_areas.append(self.surface.get_rect())
-            self.dirty = 0
 
     @property
     def lines(self):
-        _lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height + self.row_margin)
+        _lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height)
+        print(_lines)
         return _lines
 
     def get_event(self, event, data):
-        text = "Nr: {0}, Event: {1}, Data: {2}".format(self.event_id, str(event), str(data))
-        self.event_id += 1
-        self._text_queue.append(text)
-        if len(self._text_queue) > self.lines:
-            self._text_queue.pop(0)
-        self.dirty = 1
+        if event == "mouse_left":
+            self.event_id += 1
+            text = self.board.get_color_at_board_position(self.board.get_board_position_from_pixel(data))
+            self._text_queue.append(str(text))
+            if len(self._text_queue) > self.lines:
+                self._text_queue.pop(0)
+            self.dirty = 1

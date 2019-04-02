@@ -16,7 +16,9 @@ class Robot(Actor):
         self.size=(30, 30)
 
     def act(self):
-        self.move(distance=3)
+        self.move()
+        if not self.sensing_on_board():
+            self.turn_left(180)
 
     def get_event(self, event, data):
         if event == "key":

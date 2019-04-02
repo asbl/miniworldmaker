@@ -10,7 +10,7 @@ class PhysicsActor(actor.Actor):
         self._exact_coordinates = np.array([self.cell[0] + 0.0, self.cell[1] + 0.0])
 
     def bounce_from_border(self):
-        borders = self.touching_borders
+        borders = self.sensing_borders
         if "top" in borders:
             self._vector[1] *= -1
         elif "bottom" in borders:

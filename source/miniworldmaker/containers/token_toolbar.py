@@ -27,8 +27,8 @@ class TokenToolbar(Toolbar):
                 self.label_border.set_text("Is at Border:" + str(self.token.is_at_border()))
                 self.label_grid.set_text("Is on Board:" + str(self.token.is_on_the_board()))
             if event == "out of grid" and data == self.token:
-                self.label_grid.set_text("Is in Grid:" + str(self.token.on_board))
+                self.label_grid.set_text("Is in Grid:" + str(self.token.is_on_board))
             if event == "border-event" and data == self.token:
                 self.label_border.set_text("is at Border:" + str(self.token.borders))
-                self.label_border.set_text("Borders:" + str(self.token.touching_borders))
+                self.label_border.set_text("Borders:" + str(self.token.sensing_borders))
                 self.label_direction.set_text("Direction:" + str(self.token.direction))

@@ -182,11 +182,11 @@ class InfoButton(ActionBarWidget):
         if event == "mouse_left":
             if self.state is False:
                 for token in self.board.tokens:
-                    token.image_action("info_overlay", True)
+                    token.costume.overlay = True
                     self.state = True
             else:
                 for token in self.board.tokens:
-                    token.image_action("info_overlay", False)
+                    token.costume.overlay = False
                     self.state = False
 
 

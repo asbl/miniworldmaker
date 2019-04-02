@@ -54,10 +54,10 @@ Du kannst die Konsole folgendermaßen initialisieren:
 
 Du wirst feststellen, dass die Ausgabe aber schnell unübersichtlich ist. Daher kannst du entscheiden, auf welche Art von Ereignissen die Konsole reagieren soll.
 ```
-        event_console.register_events = {"actor_moved"}
+        event_console.register_events = {"key pressed"}
 ```
 
-Diese Zeile Code bedeutet z.B., dass die Konsole nur auf das Ereignis actor_moved reagiert. 
+Diese Zeile Code bedeutet z.B., dass die Konsole nur auf das Ereigniss key_pressed reagiert. 
 
 ### Die Actionbar
 

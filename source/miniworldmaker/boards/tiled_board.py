@@ -2,7 +2,8 @@ from collections import defaultdict
 from typing import Union
 import pygame
 from miniworldmaker.boards.board import Board
-from miniworldmaker.tokens.board_token import Token
+from miniworldmaker.tokens.token import Token
+from boards import board_position
 
 
 class TiledBoard(Board):
@@ -20,7 +21,7 @@ class TiledBoard(Board):
         """
         Draws the grid on the background
         """
-        self.set_image_action("grid_overlay", True)
+        self.background._renderer.set_image_action("grid_overlay", True)
 
     def _update_token_positions(self) -> None:
         self._dynamic_actors_dict.clear()
@@ -35,15 +36,15 @@ class TiledBoard(Board):
             colliding_tokens.remove(token)
         return colliding_tokens
 
-    def get_tokens_in_area(self, value: Union[pygame.Rect, tuple], token_type=None) -> list:
+    def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token_type=None, exclude=None) -> list:
         self._dynamic_actors_dict.clear()
         self._update_token_positions()
-        if type(value) == tuple:
-            x, y = value[0], value[1]
+        if type(area) == tuple:
+            x, y = area[0], area[1]
         else:
-            x, y = self.get_board_position_from_pixel(value.topleft)
+            x, y = self.get_board_position_from_pixel(area.topleft)
         tokens_in_area = []
-        if self.on_board(self.rect):
+        if self.is_on_board(self.rect):
             if self._dynamic_actors_dict[x, y]:
                 tokens_in_area.extend(self._dynamic_actors_dict[(x, y)])
             if self._static_tokens_dict[x, y]:
@@ -73,15 +74,17 @@ class TiledBoard(Board):
         for actor in actors:
             self.remove_from_board(actor)
 
-    def add_to_board(self, token: Token, board_position: tuple = None) -> Token:
+    def add_to_board(self, token: Token, position: Union[tuple, board_position.BoardPosition]) -> Token:
+        if type(position) == board_position.BoardPosition:
+            position = position.to_tuple()
         if token.is_static:
-            self._static_tokens_dict[board_position].append(token)
+            self._static_tokens_dict[position].append(token)
         else:
             self._dynamic_actors.append(token)
-        super().add_to_board(token, board_position)
+        super().add_to_board(token, position)
         if token.size == (0, 0):
             token.size = (self.tile_size, self.tile_size)
-        token.changed()
+        token.dirty = 1
         return token
 
     def update_token(self, token: Token, attribute, value):
@@ -123,10 +126,12 @@ class TiledBoard(Board):
         cells.append([x_pos + 1, y_pos - 1])
         return cells
 
-    def on_board(self, value: Union[tuple, pygame.Rect]) -> bool:
-        if type(value) == tuple:
-            value = self.get_rect_from_board_position(value)
-        x, y = self.get_board_position_from_pixel(value.center)
+    def is_on_board(self, area: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> bool:
+        if type(area) == tuple:
+            area = board_position.BoardPosition(area[0], area[1])
+        if type(area) == board_position.BoardPosition:
+            area = area.to_rect()
+        x, y = self.get_board_position_from_pixel(area.center)
         if x > self.columns - 1:
             return False
         elif y > self.rows - 1:
@@ -136,10 +141,12 @@ class TiledBoard(Board):
         else:
             return True
 
-    def borders(self, value: Union[tuple, pygame.Rect]) -> list:
+    def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
         borders = []
         if type(value) == tuple:
-            value = self.get_rect_from_board_position(value)
+            value = board_position.BoardPosition(value[0], value[1])
+        if type(value) == board_position.BoardPosition:
+            value = value.to_rect()
         x, y = self.get_board_position_from_pixel(value.center)
         if x == self.columns - 1:
             borders.append("right")

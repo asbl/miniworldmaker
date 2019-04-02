@@ -3,6 +3,8 @@ from logging import *
 from typing import Union
 import pygame
 from tools import image_renderer
+from boards import board_position
+from tokens import costume
 
 
 class Token(pygame.sprite.DirtySprite):
@@ -14,26 +16,23 @@ class Token(pygame.sprite.DirtySprite):
     def __init__(self):
         super().__init__()
         # private
-        self._renderer = image_renderer.ImageRenderer()
-        self._image = self._renderer.get_image()
         self._size = (0, 0)  # Tuple with size
-        self._position: tuple = None
+        self._position: board_position = None
         self._on_board = False
         self._is_at_border = False
         self._at_borders_list = False
-        self._is_colliding = False
-        self._colliding_tokens = []
         self._flip_x = False
-        self._is_animated = False
         Token.token_count += 1
         # public
         self.token_id = Token.token_count + 1
-        self.animation_speed = 60
         self.is_static = True
-
         self.direction = 0
         self.orientation = 0
         self.board = None
+        # costume
+        self.costume = costume.Costume(self)
+        self._image = self.costume.image
+        self.costumes = [self.costume]
         self.init = 1
 
     def __str__(self):
@@ -42,52 +41,48 @@ class Token(pygame.sprite.DirtySprite):
         else:
             return "Klasse: {0}; ID: {1}".format(self.class_name, self.token_id)
 
-    def image_action(self, attribute: str, value: bool):
-        try:
-            if attribute not in image_renderer.ImageRenderer.actions:
-                raise ValueError("Error in image_action. Action '{0}' not in actions list: {1}".format(attribute,
-                                                                                                       image_renderer.ImageRenderer.actions))
-            self._renderer.image_actions[attribute] = value
-            self.changed()
-        except ValueError:
-            raise
-
-    def set_upscale(self):
-        self._renderer.image_actions["scale_x"] = False
-        self._renderer.image_actions["scale_y"] = False
-        self._renderer.image_actions["upscale"] = True
-
     @property
     def image(self) -> pygame.Surface:
         if not self.dirty:
             return self._image
         else:
-            self._renderer.direction = self.direction
-            self._renderer.size = self.size
-            self._renderer.orientation = self.orientation
-            self._renderer.flipped = self._flip_x
-            self._image = self._renderer.get_image()
-            return self._image
+            self._image = self.costume.image
+            return self.costume.image
 
     @property
     def rect(self):
         try:
-            return self.board.get_rect_from_board_position(board_position=self.position, rect=self.image.get_rect())
+            if type(self.position == board_position.BoardPosition):
+                return self.position.to_rect(rect=self.image.get_rect())
+            else:
+                raise TypeError("Wrong type for board position")
         except AttributeError as e:
             if self.board is None:
-                self.log.error("ERROR: The actor {0} is not attached to a Board\n"
+                raise ("ERROR: The actor {0} is not attached to a Board\n"
                                "Maybe you forgot to add the actor with the board.add_actor function ".format(self))
-            raise
 
-    def add_image(self, path: str) -> pygame.Surface:
-        return self._renderer.add_image(path)
+    def add_image(self, path: str) -> int:
+        return self.costume.add_image(path)
 
-    def clear(self):
-        self._renderer = image_renderer.ImageRenderer()
+    def add_costume(self, path: str) -> int:
+        new_costume = costume.Costume(self)
+        new_costume.add_image(path)
+        self.costumes.append(new_costume)
+        return len(self.costumes) - 1
+
+    def switch_costume(self):
+        index = self.costumes.index(self.costume)
+        if index < len(self.costumes) - 1:
+            index += 1
+        else:
+            index = 0
+        self.costume = self.costumes[index]
+        return self.costume
 
     def _next_sprite(self):
-        if self.board.frame % self.animation_speed == 0:
-            self._renderer.next_sprite()
+        if self.costume.is_animated:
+            if self.board.frame % self.costume.animation_speed == 0:
+                self.costume.next_sprite()
 
     @property
     def direction(self) -> int:
@@ -101,7 +96,7 @@ class Token(pygame.sprite.DirtySprite):
     def direction(self, value):
         direction = self._value_to_direction(value)
         self._direction = direction
-        self.changed()
+        self.dirty = 1
 
     @property
     def size(self):
@@ -114,25 +109,18 @@ class Token(pygame.sprite.DirtySprite):
     @size.setter
     def size(self, value):
         self._size = value
-        self.changed()
-
-    @property
-    def is_animated(self):
-        return self._is_animated
-
-    @is_animated.setter
-    def is_animated(self, value):
-        self._is_animated = value
-        self.changed()
+        self.dirty = 1
 
     @property
     def position(self) -> tuple:
         return self._position
 
     @position.setter
-    def position(self, value: tuple):
+    def position(self, value: Union[board_position.BoardPosition, tuple]):
+        if type(value) == tuple:
+            value = board_position.BoardPosition(value[0], value[1])
         self._position = value
-        self.changed()
+        self.dirty = 1
 
     @property
     def class_name(self) -> str:
@@ -195,10 +183,6 @@ class Token(pygame.sprite.DirtySprite):
     def update(self):
         self._next_sprite()
 
-    def changed(self):
-        self.dirty = 1
-        self._update_status()
-
     def _value_to_direction(self, value) -> int:
         if value == "right":
             value = 0
@@ -224,28 +208,6 @@ class Token(pygame.sprite.DirtySprite):
         self.kill()
         del (self)
 
-    def _update_status(self):
-        try:
-            in_grid = self.is_on_the_board()
-            if in_grid != self._on_board:
-                self._on_board = in_grid
-                self.board.get_event("in_grid", self)
-            at_border = self.is_at_border()
-            if at_border != self._is_at_border:
-                self._is_at_border = at_border
-                self.board.get_event("at_border", self)
-            colliding = self.is_colliding()
-            if colliding != self._is_colliding:
-                new_colliding_tokens = self.get_colliding_tokens()
-                self._is_colliding = colliding
-                for col_partner in new_colliding_tokens:
-                    if col_partner not in self._colliding_tokens:
-                        col_partner._colliding_tokens.append(self)
-                        self.get_event("collision", (self, col_partner))
-                        self.board.get_event("collision", (self, col_partner))
-        except AttributeError:
-            pass
-
     def is_colliding(self):
         return self.board.is_colliding(self)
 
@@ -261,7 +223,7 @@ class Token(pygame.sprite.DirtySprite):
         return self.board.borders(self.rect)
 
     def is_on_the_board(self):
-        return self.board.on_board(self.rect)
+        return self.board.is_on_board(self.rect)
 
     def get_event(self, event, data):
         pass

@@ -3,18 +3,24 @@ import os
 import pygame
 from miniworldmaker.tools import keys
 from miniworldmaker.containers.container import Container
+from pygame.locals import *
 
+flags = FULLSCREEN | DOUBLEBUF
 
 class MiniWorldWindow:
     log = logging.getLogger("Window")
+    board = None
+    window = None
 
     def __init__(self, title):
         self.title = title
         self._containers = []
+        MiniWorldWindow.window = self
         self._quit = False
         self.dirty = 1
         self.repaint_areas = []
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
+        self.window_surface.set_alpha(None)
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         path = os.path.join(my_path, "../resources/logo_small_32.png")
@@ -31,6 +37,7 @@ class MiniWorldWindow:
         self.repaint_areas = []
         if self.dirty:
             self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
+            self.dirty = 0
         for container in self._containers:
             container.update()
             container.repaint()

@@ -6,7 +6,7 @@ class MyBoard(PixelBoard):
     def __init__(self):
         super().__init__(columns=200, rows=200)
         player1 = Player()
-        self.add_to_board(player1, board_position=(30, 30))
+        self.add_to_board(player1, position=(30, 30))
         self.add_image("images/soccer_green.jpg")
 
 
@@ -22,13 +22,15 @@ class Player(Actor):
     def get_event(self, event, data):
         if event == "key":
             if "W" in data:
-                self.move(direction="up")
+                self.point_in_direction("up")
             elif "S" in data:
-                self.move(direction="down")
+                self.point_in_direction("down")
             elif "A" in data:
-                self.move(direction="left")
+                self.point_in_direction("left")
             elif "D" in data:
-                self.move(direction="right")
+                self.point_in_direction("right")
+            if self.sensing_on_board():
+                self.move()
 
 
 board = MyBoard()
