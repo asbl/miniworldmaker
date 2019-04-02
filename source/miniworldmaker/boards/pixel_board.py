@@ -17,12 +17,6 @@ class PixelBoard(Board):
         self._collision_partners_dict[partner2.token_id].add(partner1)
 
     def add_to_board(self, token: Token, position) -> Token:
-        """
-        Overwrites add_actor in gamegrid
-        :param token: The actor to be added
-        :param position: The position where the actor should be placed in the grid
-        :return: The reference to the Actor object
-        """
         super().add_to_board(token, position)
         if token.size == (0, 0):
             token.size = (30, 30)

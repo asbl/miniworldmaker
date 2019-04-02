@@ -9,6 +9,14 @@ from boards import board_position
 class TiledBoard(Board):
 
     def __init__(self, columns: int = 20, rows: int = 16, tile_size=16, tile_margin=0):
+        """Initializes the TiledBoard
+
+        Args:
+            columns: The number of columns
+            rows: The number of rows
+            tile_size: The size of a tile
+            tile_margin: The margin between tiles
+        """
         super().__init__(columns=columns, rows=rows)
         self._tile_size = tile_size
         self._tile_margin = tile_margin
@@ -18,8 +26,7 @@ class TiledBoard(Board):
         self._static_tokens_dict = defaultdict(list)
 
     def show_grid(self):
-        """
-        Draws the grid on the background
+        """Draws the grid on the background
         """
         self.background._renderer.set_image_action("grid_overlay", True)
 
@@ -54,7 +61,6 @@ class TiledBoard(Board):
         return tokens_in_area
 
     def remove_from_board(self, token: Token) -> None:
-        print("remove", token)
         if token in self._dynamic_actors:
             self._dynamic_actors.remove(token)
         if token in self._static_tokens_dict[(token.x, token.y)]:
@@ -62,14 +68,6 @@ class TiledBoard(Board):
         super().remove_from_board(token)
 
     def remove_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> None:
-        """
-        Removes all actors in an area
-        Args:
-            value: Either rectangle or grid-position
-            actor_type: The actor type which should be removed
-
-        Returns: true if any actor was removed
-        """
         actors = self.get_tokens_in_area(value, actor_type)
         for actor in actors:
             self.remove_from_board(actor)
@@ -95,23 +93,16 @@ class TiledBoard(Board):
         else:
             self._dynamic_actors.append(token)
 
-    def is_empty_cell(self, position: tuple) -> bool:
-        """
-        Checks if cell is empty
-        :param position: the position of the cell
-        :return: True if cell is empty
-        """
-        if not self.get_tokens_in_area(position):
-            return True
-        else:
-            return False
-
     @staticmethod
     def get_neighbour_cells(position: tuple) -> list:
-        """
-        Gets a list with all neighbour cells
-        :param position: The position of the cell
-        :return: the neighbour cells as list
+        """Gets a list of all neighbour cells
+
+        Args:
+            position: the position
+
+        Returns:
+            a list of all neighbour cells
+
         """
         cells = []
         y_pos = position[0]

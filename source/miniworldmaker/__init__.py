@@ -5,6 +5,7 @@ import miniworldmaker.tools.image_renderer as image_renderer
 import miniworldmaker.containers.container as container
 import miniworldmaker.windows.miniworldwindow as window
 import miniworldmaker.tools.db_manager as db_manager
+from miniworldmaker import boards
 from miniworldmaker.tokens.token import Token
 from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.boards.tiled_board import TiledBoard

@@ -22,8 +22,8 @@ class Board(container.Container):
                  columns: int = 40,
                  rows: int = 40,
                  ):
-        """
-        Creates a new board
+        """Creates a new board
+
         Args:
             columns: columns of new board
             rows: rows of new board
@@ -72,18 +72,20 @@ class Board(container.Container):
                  tile_size: int = 1,
                  columns: int = 40,
                  rows: int = 40,
-                 margin: int = 0):
-        """
-        Sets size of a Board
-        :param tile_size: The tile_size in pixels
-        :param columns: The number of columns
-        :param rows: The number of rows
-        :param margin: the margin between tiles
+                 tile_margin: int = 0):
+        """Sets size of a board
+
+        Args:
+            tile_size: Size of a tile in pixels
+            columns: Number of columns
+            rows: Number of rows
+            tile_margin: margin bewtween tiles
+
         """
         self._tile_size = tile_size
         self._columns = columns
         self._rows = rows
-        self._tile_margin = margin
+        self._tile_margin = tile_margin
         self._grid = []
         self.log.info("Set Board Size to {0} columns and {1} rows".format(self.columns, self.rows))
         for row in range(self.rows):
@@ -100,18 +102,16 @@ class Board(container.Container):
         return [actor for actor in a_list if type(actor) == actor_type]
 
     def get_event(self, event, data):
-        """
-        Returns events triggered by events.
-        :param event: The event
-        :param data: The data of the event
+        """Event handling. Overwrite in your subclass
+
+        Args:
+            event: The event (e.g. mouse_left, ...)
+            data: The data associated with the event
         """
         pass
 
     @property
     def width(self) -> int:
-        """
-        :return: Returns the width of the grid
-        """
         if self.dirty == 0:
             return self._container_width
         else:
@@ -120,9 +120,6 @@ class Board(container.Container):
 
     @property
     def height(self) -> int:
-        """
-        :return: Returns the height of the grid
-        """
         if self.dirty == 0:
             return self._container_height
         else:
@@ -131,16 +128,10 @@ class Board(container.Container):
 
     @property
     def window(self) -> window.MiniWorldWindow:
-        """
-        :return: returns the parent windows
-        """
         return self._window
 
     @property
     def tile_size(self):
-        """
-        :return: The Tile size in pixels
-        """
         return self._tile_size
 
     @tile_size.setter
@@ -150,9 +141,6 @@ class Board(container.Container):
 
     @property
     def tile_margin(self) -> int:
-        """
-        :return: The margin between tiles
-        """
         return self._tile_margin
 
     @property
@@ -166,9 +154,6 @@ class Board(container.Container):
 
     @property
     def columns(self) -> int:
-        """
-        :return: number of columns of the grid
-        """
         return self._columns
 
     @columns.setter
@@ -189,13 +174,13 @@ class Board(container.Container):
         return self.__class__.__name__
 
     def add_image(self, path: str) -> int:
-        """
-        Adds image to current costume
+        """Adds image to current costume
 
         Args:
             path: The path to the image as relative path
 
-        Returns: The index of the image.
+        Returns:
+            The index of the image.
 
         """
         return self.background.add_image(path)
@@ -209,14 +194,14 @@ class Board(container.Container):
             return self.background.image
 
     def add_to_board(self, token: token.Token, position: Union[tuple, board_position.BoardPosition]) -> token.Token:
-        """
-        Adds token to board
+        """Adds token to board
 
         Args:
             token: The token which should be added
             position: The position the token should be added
 
-        Returns: The Token
+        Returns:
+            The Token
 
         """
         self.tokens.add(token)
@@ -234,13 +219,15 @@ class Board(container.Container):
         return token
 
     def get_token_by_pixel(self, pixel: tuple) -> list:
-        """
-        Gets all tokens by Pixel. This method can be used, if you want to get a token by mouse-clock
+        """Gets all tokens by Pixel.
+
+        This method can be used, if you want to get a token by mouse-clock
 
         Args:
             pixel: the pixel-coordinates
 
-        Returns: The toke
+        Returns:
+            A list of tokens
 
         """
         actors = []
@@ -250,15 +237,15 @@ class Board(container.Container):
         return actors
 
     def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token=None, exlude=None) -> list:
-        """
-        Gets all tokens in area
+        """Gets all tokens in area
 
         Args:
             area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be added
-            exluded: A token which should not be returned e.g. the actor itself
+            excluded: A token which should not be returned e.g. the actor itself
 
-        Returns: all tokens in the area
+        Returns:
+            all tokens in the area as list
 
         """
         tokens = []
@@ -275,15 +262,15 @@ class Board(container.Container):
         return tokens
 
     def get_token_in_area(self, area: Union[pygame.Rect, tuple], token=None, exclude=None) -> token.Token:
-        """
-        Gets all tokens in area
+        """Gets  a single tokens in area
 
         Args:
             area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be added
-            exluded: A token which should not be returned e.g. the actor itself
+            excluded: A token which should not be returned e.g. the actor itself
 
-        Returns: One token
+        Returns:
+            One token
 
         """
         if type(area) == tuple:
@@ -297,13 +284,12 @@ class Board(container.Container):
                 return token
 
     def remove_actors_from_area(self, area: Union[tuple, pygame.Rect], token=None, exclude=None):
-        """
-        Removes all tokens in an area
+        """Removes all tokens in an area
 
         Args:
             area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be removed
-            exluded: A token which should not be removed e.g. the actor itself
+            excluded: A token which should not be removed e.g. the actor itself
 
         Returns: all tokens in the area
 
@@ -317,13 +303,10 @@ class Board(container.Container):
             self.remove_from_board(actor)
 
     def remove_from_board(self, token: token.Token):
-        """
-        Removes a single token from board
+        """Removes a single token from board
 
         Args:
             token: The token which should be removed
-
-        Returns:
 
         """
         if token:
@@ -357,6 +340,7 @@ class Board(container.Container):
     def show(self):
         """
         Starts the program
+
         """
         self.tokens.clear(self.image, self.image)
         self.dirty = 1
@@ -403,8 +387,11 @@ class Board(container.Container):
         return token
 
     def act(self):
-        """
-        Überschreibe diese Methode in deinen Kind-Klassen
+        """Custom acting
+
+        This method is called every frame in the mainloop.
+        Overwrite this method in your subclass
+
         """
         pass
 

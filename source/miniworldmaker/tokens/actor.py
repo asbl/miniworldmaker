@@ -11,8 +11,7 @@ class Actor(tokens.token.Token):
     log = getLogger("Actor")
 
     def __init__(self):
-        """
-        Initializes a new Actor
+        """Initializes a new Actor
         """
         super().__init__()
         self.is_static = False
@@ -24,7 +23,8 @@ class Actor(tokens.token.Token):
         Args:
             direction: Direction the actor should point to
 
-        Returns: The new direction as integer
+        Returns:
+            The new direction as integer
 
         """
         direction = direction = self._value_to_direction(direction)
@@ -38,7 +38,8 @@ class Actor(tokens.token.Token):
         Args:
             board_position: The position to which the actor should pointing
 
-        Returns: The new direction
+        Returns:
+            The new direction
 
         """
         x = board_position[0] - self.position[0]
@@ -51,12 +52,13 @@ class Actor(tokens.token.Token):
         return self.direction
 
     def turn_left(self, degrees: int = 90) -> int:
-        """
-        Turns actor by *degrees* degrees left
+        """Turns actor by *degrees* degrees left
+
         Args:
             degrees: degrees in left direction
 
-        Returns: New direction
+        Returns:
+            New direction
 
         """
         direction = self.direction + degrees
@@ -64,12 +66,13 @@ class Actor(tokens.token.Token):
         return self.direction
 
     def turn_right(self, degrees: int = 90):
-        """
-        Turns actor by *degrees* degrees right
+        """Turns actor by *degrees* degrees right
+
         Args:
             degrees: degrees in left direction
 
-        Returns: New direction
+        Returns:
+            New direction
 
         """
         direction = self.direction - degrees
@@ -77,13 +80,13 @@ class Actor(tokens.token.Token):
         return self.direction
 
     def move(self, distance: int = 1) -> board_position.BoardPosition:
-        """
-        Moves actor *distance* steps into a *direction*.
+        """Moves actor *distance* steps into a *direction*.
 
         Args:
             distance: Number of steps to move
 
-        Returns: New position
+        Returns:
+            New position
 
         """
         destination = self.look(distance=distance, direction="forward")
@@ -93,14 +96,14 @@ class Actor(tokens.token.Token):
         return self.position
 
     def look(self, direction: Union[str, int] = "here", distance: int = 1, ) -> pygame.Rect:
-        """
-        Looks *distance* steps into a *direction*.
+        """Looks *distance* steps into a *direction*.
 
         Args:
             direction: The direction in degrees (int) or a direction as string
             distance: Number of steps to look
 
-        Returns: A destination Rectangle
+        Returns:
+            A destination Rectangle
         """
         if direction == "here":
             return self.rect
@@ -111,15 +114,15 @@ class Actor(tokens.token.Token):
             return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
 
     def sensing_tokens(self, distance: int = 1, token=None):
-        """
-        Checks if Actor is sensing Tokens in front
+        """Checks if Actor is sensing Tokens in front
 
         Args:
             distance: Number of steps to look for tokens  (0: at actor position)
             token: Class name of token types to look for. If token == None, all token are returned
 
 
-        Returns: a list of tokens
+        Returns:
+            a list of tokens
 
         """
         destination_rect = self.look(distance=distance, direction="forward")
@@ -127,14 +130,14 @@ class Actor(tokens.token.Token):
         return tokens
 
     def sensing_token(self, distance: int = 1, token=None) -> token.Token:
-        """
-        Checks if actor is sensing a single token in front. See sensing_tokens
+        """Checks if actor is sensing a single token in front. See sensing_tokens
 
         Args:
             distance: Number of steps to look for tokens  (0: at actor position)
             token: Class name of token types to look for. If token == None, all token are returned
 
-        Returns: A single token
+        Returns:
+            A single token
 
         """
         destination_rect = self.look(distance=distance, direction="forward", )
@@ -142,13 +145,13 @@ class Actor(tokens.token.Token):
         return token
 
     def sensing_borders(self, direction: Union[str, int] = "forward", distance: int = 1) -> list:
-        """
-        Checks if actor is sensing a border in front
+        """Checks if actor is sensing a border in front
 
         Args:
             distance: Number of steps to look for borders  (0: at actor position)
 
-        Returns: a list of all borders ("top", "left", "right", "bottom") which are sensed on given position.
+        Returns:
+            a list of all borders ("top", "left", "right", "bottom") which are sensed on given position.
 
         """
         destination_rect = self.look(distance=distance, direction=direction)
@@ -157,13 +160,13 @@ class Actor(tokens.token.Token):
         return borders
 
     def sensing_on_board(self, distance: int = 1) -> bool:
-        """
-        Checks if actor is sensing a position inside the board
+        """Checks if actor is sensing a position inside the board
 
         Args:
             distance: Number of steps to look for
 
-        Returns: True if position is on board
+        Returns:
+            True if position is on board
 
         """
         position = self.look(distance=distance, direction="forward")
@@ -171,13 +174,13 @@ class Actor(tokens.token.Token):
         return on_board
 
     def sensing_color(self, distance: int = 1) -> list:
-        """
-        Checks the color of board under the actor
+        """Checks the color of board under the actor
 
         Args:
             distance: Number of steps to look for a color
 
-        Returns: The color found in the center of the rectangle of the actor.
+        Returns:
+            The color found in the center of the rectangle of the actor.
 
         """
         destination_rect = self.look(distance=distance, direction=direction)
@@ -185,13 +188,13 @@ class Actor(tokens.token.Token):
         return color
 
     def is_sensing_color(self, color, distance: int = 1) -> int:
-        """
-        Checks if actor is sensing a color
+        """Checks if actor is sensing a color
 
         Args:
             distance: Number of steps to look for color
 
-        Returns: The number of pixels filled with the given color
+        Returns:
+            The number of pixels filled with the given color
 
         """
         destination_rect = self.look(distance=distance, direction="forward")
@@ -200,8 +203,7 @@ class Actor(tokens.token.Token):
 
 
     def flip_x(self):
-        """
-        Flips the actor by 180° degrees
+        """Flips the actor by 180° degrees
 
         """
         if not self._flip_x:

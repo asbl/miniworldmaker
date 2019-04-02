@@ -2,7 +2,6 @@ import math
 from logging import *
 from typing import Union
 import pygame
-from tools import image_renderer
 from boards import board_position
 from tokens import costume
 
@@ -86,9 +85,10 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def direction(self) -> int:
-        """int: Legt die Richtung fest, in die der Akteur "schaut"
-            0° bezeichnet dabei nach Osten, andere Winkel werden gegen den Uhrzeigersinn angegeben.
-            Die Direction kann alternativ auch als String ("left", "right", "top", "bottom"  festgelegt werden.
+        """ Sets direction the token is oriented
+
+            0°:  East, x degrees clock-wise otherwise
+            You can also set the direction by String ("forward", "up", "down", ...
         """
         return self._direction
 
@@ -100,9 +100,8 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def size(self):
-        """int: Legt die Richtung fest, in die der Akteur "schaut"
-            0° bezeichnet dabei nach Osten, andere Winkel werden gegen den Uhrzeigersinn angegeben.
-            Die Direction kann alternativ auch als String ("left", "right", "top", "bottom"  festgelegt werden.
+        """Size of the token
+
         """
         return self._size
 
@@ -113,6 +112,9 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def position(self) -> tuple:
+        """
+        The position of the token is tuple (x, y)
+        """
         return self._position
 
     @position.setter
@@ -128,55 +130,11 @@ class Token(pygame.sprite.DirtySprite):
 
     # Methoden
     def act(self):
-        """
-        Überschreibe diese Methode in deinen eigenen Actor-Klassen
-        """
-        pass
+        """Custom acting
 
-    def listen(self, key, data=None):
-        """
-        Diese Methode sollte in deiner Kind-Klasse überschrieben werden.
-        """
-        pass
+        This method is called every frame in the mainloop.
+        Overwrite this method in your subclass
 
-    @property
-    def x(self):
-        """
-        Gibt die x-Koordinate des Akteuers zurück.
-
-        :param x: Gibt die x-Koordinate des Akteurs zurück.
-        """
-        return self.position[0]
-
-    @x.setter
-    def x(self, x):
-        """
-        Setzt die x-Koordinate der Akteurs.
-        :param x: Die x-Koordinate die gesetzt werden soll.
-        """
-        self.position = (x, self.position[1])
-
-    @property
-    def y(self):
-        """
-        Gibt die y-Koordinate des Akteuers zurück.
-
-        :param y: Gibt die y-Koordinate des Akteurs zurück
-        """
-        return self.position[1]
-
-    @y.setter
-    def y(self, y):
-        """
-        Setzt die y-Koordinate der Akteurs.
-
-        :param y: Die y-Koordinate die gesetzt werden soll.
-        """
-        self.position = (self.position[0], y)
-
-    def setup(self):
-        """
-        Sollte in deiner Kind-Klasse überschrieben werden.
         """
         pass
 
@@ -200,8 +158,7 @@ class Token(pygame.sprite.DirtySprite):
         return value
 
     def remove(self):
-        """
-        Removes this actor from board
+        """Removes this actor from board
         """
         if self.board:
             self.board.remove_from_board(self)
