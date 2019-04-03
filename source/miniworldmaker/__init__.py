@@ -17,10 +17,7 @@ from miniworldmaker.containers.select_actor_toolbar import SelectActorToolbar
 from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.color_console import ColorConsole
 from miniworldmaker.containers.actionbar import ActionBar
-from miniworldmaker.containers.toolbar_widgets import ToolbarButton
-from miniworldmaker.containers.toolbar_widgets import ToolbarLabel
-from miniworldmaker.containers.toolbar_widgets import SaveButton
-from miniworldmaker.containers.toolbar_widgets import LoadButton
+from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.containers.token_toolbar import TokenToolbar
 from miniworldmaker.boards.board_position import BoardPosition
 
@@ -40,5 +37,8 @@ __all__ = ['Token',
            'ActionBar',
            'TokenToolbar',
            'ColorConsole',
-           'BoardPosition'
+           'BoardPosition',
+           'CounterLabel',
+           'TimeLabel',
+           'FPSLabel',
            ]

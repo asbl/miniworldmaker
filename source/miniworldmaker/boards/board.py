@@ -8,7 +8,8 @@ from tools import db_manager
 from tokens import token
 from boards import board_position
 from boards import background
-
+from boards import area
+from math import hypot
 
 class Board(container.Container):
     """
@@ -32,6 +33,7 @@ class Board(container.Container):
         pygame.init()
         # public
         self.active_token = None
+        self.register_events = {"mouse_left", "mouse_right", "key_pressed", "key_pressed", "key_down"}
         self.is_running = True
         self.steps = 1
         # private
@@ -47,11 +49,12 @@ class Board(container.Container):
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
         self.background = background.Background(self)
         self._image = self.background.image
+        self._max_diameter = self._tile_size
         # protected
         self.dirty = 1
-        self._frame = 0
+        self.frame = 0
         self._tick = 0
-        self._clock = pygame.time.Clock()
+        self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
         self.dirty = 1
@@ -166,10 +169,6 @@ class Board(container.Container):
         return self._tokens
 
     @property
-    def frame(self) -> int:
-        return self._frame
-
-    @property
     def class_name(self) -> str:
         return self.__class__.__name__
 
@@ -211,10 +210,8 @@ class Board(container.Container):
             token.position = position
         else:
             raise AttributeError("Position has wrong type" + str(type(position)))
-        token.board = self
-        token.dirty = 1
-        if token.init != 1:
-            raise UnboundLocalError("Init was not called")
+        token.add_to_board(self, position)
+        self._max_diameter = max(hypot(*token.rect.size) for token in self.tokens)
         self.window.send_event_to_containers("Added token", token)
         return token
 
@@ -236,13 +233,13 @@ class Board(container.Container):
                 actors.append(actor)
         return actors
 
-    def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token=None, exlude=None) -> list:
+    def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token=None, exclude=None) -> list:
         """Gets all tokens in area
 
         Args:
             area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be added
-            excluded: A token which should not be returned e.g. the actor itself
+            exclude: A token which should not be returned e.g. the actor itself
 
         Returns:
             all tokens in the area as list
@@ -253,19 +250,19 @@ class Board(container.Container):
             area = pygame.Rect(area[0], area[1], self.tile_size, self.tile_size)
         if token is not None:
             token_list = self.filter_actor_list(self.tokens, token)
+            token_list.remove(exclude)
         else:
             token_list = self.tokens
         for token in token_list:
-            if token.rect.colliderect(area) and token != exlude:
+            if token.rect.colliderect(area):
                 tokens.append(token)
-
         return tokens
 
-    def get_token_in_area(self, area: Union[pygame.Rect, tuple], token=None, exclude=None) -> token.Token:
+    def get_token_in_area(self, value: Union[pygame.Rect, tuple], token=None, exclude=None) -> token.Token:
         """Gets  a single tokens in area
 
         Args:
-            area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
+            value: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be added
             excluded: A token which should not be returned e.g. the actor itself
 
@@ -273,14 +270,16 @@ class Board(container.Container):
             One token
 
         """
-        if type(area) == tuple:
-            area = pygame.Rect(area[0], area[1], 1, 1)
+        if type(value) == tuple:
+            value = pygame.Rect(value[0], value[1], 1, 1)
         if token is not None:
             token_list = self.filter_actor_list(self.tokens, token)
         else:
             token_list = self.tokens
+        if exclude in token_list:
+            token_list.remove(exclude)
         for token in token_list:
-            if token.rect.colliderect(area) and token != exclude:
+            if token.rect.colliderect(value):
                 return token
 
     def remove_actors_from_area(self, area: Union[tuple, pygame.Rect], token=None, exclude=None):
@@ -345,23 +344,23 @@ class Board(container.Container):
         self.tokens.clear(self.image, self.image)
         self.dirty = 1
         logging.basicConfig(level=logging.WARNING)
+        self._max_diameter = max(hypot(*token.rect.size) for token in self.tokens)
         self.window.show()
 
     def update(self):
         if self.is_running:
             self._act_all()
-        self._frame = self._frame + 1
+        self.frame = self.frame + 1
         for token in self.tokens:
             token.update()
-        if self._frame == 100:
-            self._frame = 0
-        self._clock.tick(60)
+        self.clock.tick(40)
 
     def _act_all(self):
         self._tick = self._tick + 1
-        if self._tick > 60 - self.speed:
-            for actor in self.tokens:
-                actor.act()
+        if self._tick > 101 - self.speed:
+            tokens = [token for token in self.tokens if token.is_static == False]
+            for token in tokens:
+                token.act()
             self.act()
             self._tick = 0
 

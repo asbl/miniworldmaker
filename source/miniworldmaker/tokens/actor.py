@@ -89,13 +89,13 @@ class Actor(tokens.token.Token):
             New position
 
         """
-        destination = self.look(distance=distance, direction="forward")
+        destination = self.look(distance=distance)
         self.position = self.board.get_board_position_from_pixel(destination.topleft)
         if self.board:
             self.board.window.send_event_to_containers("actor_moved", self)
         return self.position
 
-    def look(self, direction: Union[str, int] = "here", distance: int = 1, ) -> pygame.Rect:
+    def look(self, distance: int = 1, ) -> pygame.Rect:
         """Looks *distance* steps into a *direction*.
 
         Args:
@@ -105,13 +105,10 @@ class Actor(tokens.token.Token):
         Returns:
             A destination Rectangle
         """
-        if direction == "here":
-            return self.rect
-        else:
-            direction = self._value_to_direction(direction)
-            x = self.position[0] + round(math.cos(math.radians(direction)) * distance * self.board.steps)
-            y = self.position[1] - round(math.sin(math.radians(direction)) * distance * self.board.steps)
-            return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
+        direction = self.direction
+        x = self.position[0] + round(math.cos(math.radians(direction)) * distance * self.board.steps)
+        y = self.position[1] - round(math.sin(math.radians(direction)) * distance * self.board.steps)
+        return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
 
     def sensing_tokens(self, distance: int = 1, token=None):
         """Checks if Actor is sensing Tokens in front
@@ -125,7 +122,7 @@ class Actor(tokens.token.Token):
             a list of tokens
 
         """
-        destination_rect = self.look(distance=distance, direction="forward")
+        destination_rect = self.look(distance=distance)
         tokens = self.board.get_tokens_in_area(destination_rect, token, exclude=self)
         return tokens
 
@@ -140,7 +137,7 @@ class Actor(tokens.token.Token):
             A single token
 
         """
-        destination_rect = self.look(distance=distance, direction="forward", )
+        destination_rect = self.look(distance=distance)
         token = self.board.get_token_in_area(destination_rect, token, exclude=self)
         return token
 
@@ -154,7 +151,7 @@ class Actor(tokens.token.Token):
             a list of all borders ("top", "left", "right", "bottom") which are sensed on given position.
 
         """
-        destination_rect = self.look(distance=distance, direction=direction)
+        destination_rect = self.look(distance=distance)
         borders = self.board.borders(destination_rect)
         self.board.window.send_event_to_containers("actor_is_looking_at_border", (self, borders))
         return borders
@@ -169,7 +166,7 @@ class Actor(tokens.token.Token):
             True if position is on board
 
         """
-        position = self.look(distance=distance, direction="forward")
+        position = self.look(distance=distance)
         on_board = self.board.is_on_board(position)
         return on_board
 
@@ -183,7 +180,7 @@ class Actor(tokens.token.Token):
             The color found in the center of the rectangle of the actor.
 
         """
-        destination_rect = self.look(distance=distance, direction=direction)
+        destination_rect = self.look(distance=distance)
         color = self.board.get_color_at_board_position(destination_rect.center)
         return color
 
@@ -197,7 +194,7 @@ class Actor(tokens.token.Token):
             The number of pixels filled with the given color
 
         """
-        destination_rect = self.look(distance=distance, direction="forward")
+        destination_rect = self.look(distance=distance)
         colors = self.board.find_colors(destination_rect, color)
         return colors
 
@@ -206,8 +203,8 @@ class Actor(tokens.token.Token):
         """Flips the actor by 180° degrees
 
         """
-        if not self._flip_x:
-            self._flip_x = True
+        if not self.is_flipped:
+            self.is_flipped = True
         else:
-            self._flip_x = False
+            self.is_flipped = False
         self.turn_left(180)

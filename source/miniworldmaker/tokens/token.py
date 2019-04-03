@@ -14,25 +14,45 @@ class Token(pygame.sprite.DirtySprite):
 
     def __init__(self):
         super().__init__()
+        self.costume = None
         # private
         self._size = (0, 0)  # Tuple with size
         self._position: board_position = None
         self._on_board = False
         self._is_at_border = False
         self._at_borders_list = False
-        self._flip_x = False
+        self._is_flipped = False
         Token.token_count += 1
         # public
         self.token_id = Token.token_count + 1
         self.is_static = True
         self.direction = 0
-        self.orientation = 0
+        self._orientation = 0
         self.board = None
         # costume
         self.costume = costume.Costume(self)
         self._image = self.costume.image
         self.costumes = [self.costume]
         self.init = 1
+
+    @property
+    def is_flipped(self):
+        return self._is_flipped
+
+    @is_flipped.setter
+    def is_flipped(self, value):
+        self.is_flipped = value
+        self.costume.changed.add("flipped")
+
+    @property
+    def orientation(self):
+        return self._orientation
+
+    @orientation.setter
+    def orientation(self, value):
+        self._orientation = value
+        self.dirty = 1
+        self.costume.changed.add("orientation")
 
     def __str__(self):
         if self.board:
@@ -50,15 +70,12 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def rect(self):
-        try:
-            if type(self.position == board_position.BoardPosition):
-                return self.position.to_rect(rect=self.image.get_rect())
-            else:
-                raise TypeError("Wrong type for board position")
-        except AttributeError as e:
-            if self.board is None:
-                raise ("ERROR: The actor {0} is not attached to a Board\n"
-                               "Maybe you forgot to add the actor with the board.add_actor function ".format(self))
+        if self.dirty == 1:
+            self._rect = self.position.to_rect(rect=self.image.get_rect())
+            self.dirty = 0
+            return self._rect
+        else:
+            return self._rect
 
     def add_image(self, path: str) -> int:
         return self.costume.add_image(path)
@@ -78,10 +95,13 @@ class Token(pygame.sprite.DirtySprite):
         self.costume = self.costumes[index]
         return self.costume
 
-    def _next_sprite(self):
-        if self.costume.is_animated:
-            if self.board.frame % self.costume.animation_speed == 0:
-                self.costume.next_sprite()
+    def add_to_board(self, board, position):
+        self.board = board
+        self.costume.changed.add("direction")
+        self.costume.changed.add("flipped")
+        self.dirty = 1
+        if self.init != 1:
+            raise UnboundLocalError("Init was not called")
 
     @property
     def direction(self) -> int:
@@ -97,6 +117,8 @@ class Token(pygame.sprite.DirtySprite):
         direction = self._value_to_direction(value)
         self._direction = direction
         self.dirty = 1
+        if self.costume:
+            self.costume.changed.add("direction")
 
     @property
     def size(self):
@@ -109,6 +131,7 @@ class Token(pygame.sprite.DirtySprite):
     def size(self, value):
         self._size = value
         self.dirty = 1
+        self.costume.changed.add("size")
 
     @property
     def position(self) -> tuple:
@@ -139,7 +162,8 @@ class Token(pygame.sprite.DirtySprite):
         pass
 
     def update(self):
-        self._next_sprite()
+        if self.costume.is_animated:
+            self.costume.update()
 
     def _value_to_direction(self, value) -> int:
         if value == "right":

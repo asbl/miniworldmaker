@@ -36,7 +36,6 @@ class Appearance:
     @scale_x.setter
     def scale_x(self, value):
         self._renderer.image_actions["scale_x"] = value
-        self.changed()
 
     @property
     def scale_y(self):
@@ -45,7 +44,6 @@ class Appearance:
     @scale_y.setter
     def scale_y(self, value):
         self._renderer.image_actions["scale_y"] = value
-        self.changed()
 
     @property
     def is_rotatable(self):
@@ -54,7 +52,6 @@ class Appearance:
     @is_rotatable.setter
     def is_rotatable(self, value):
         self._renderer.image_actions["rotatable"] = value
-        self.changed()
 
     @property
     def overlay(self):
@@ -63,7 +60,6 @@ class Appearance:
     @overlay.setter
     def overlay(self, value):
         self._renderer.image_actions["info_overlay"] = value
-        self.changed()
 
     @property
     def image(self) -> pygame.Surface:
@@ -79,7 +75,4 @@ class Appearance:
     @is_animated.setter
     def is_animated(self, value):
         self._is_animated = value
-        self.changed()
 
-    def changed(self):
-        pass

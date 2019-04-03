@@ -16,11 +16,13 @@ class ToolbarWidget():
         self.clear()
         self.parent = None
         self._text = ""
+        self.speed = 1
         self._image = None
         self._border = False
         self._text_padding = 5
         self._img_path = None
         self.surface = None
+        self.timed = False
         self._dirty = 1
 
     def get_event(self, event, data):
@@ -129,3 +131,55 @@ class LoadButton(ToolbarWidget):
         if event == "mouse_left":
             self.board = self.board.__class__.from_db(self.file)
             self.board.show()
+
+
+class CounterLabel(ToolbarWidget):
+
+    def __init__(self, text, img_path=None):
+        super().__init__()
+        if img_path != None:
+            self.set_image(img_path)
+        self.value = 0
+        self.text = text
+        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+        self.data = str(0)
+
+    def add(self, value):
+        self.value += value
+        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+
+
+class TimeLabel(ToolbarWidget):
+
+    def __init__(self, board, text, img_path=None):
+        super().__init__()
+        if img_path != None:
+            self.set_image(img_path)
+        self.board = board
+        self.value = self.board.frame
+        self.text = text
+        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+        self.data = str(0)
+        self.timed = True
+
+    def update(self):
+        self.value = self.board.frame
+        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+
+
+class FPSLabel(ToolbarWidget):
+
+    def __init__(self, board, text, img_path=None):
+        super().__init__()
+        if img_path != None:
+            self.set_image(img_path)
+        self.board = board
+        self.value = self.board.clock.get_fps()
+        self.text = text
+        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+        self.data = str(0)
+        self.timed = True
+
+    def update(self):
+        self.value = self.board.clock.get_fps()
+        self.set_text("{0} : {1}".format(self.text, str(self.value)))

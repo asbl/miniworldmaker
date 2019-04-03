@@ -1,11 +1,13 @@
 from miniworldmaker.containers.container import Container
 from miniworldmaker.containers.toolbar_widgets import ToolbarWidget
 
+
 class Toolbar(Container):
 
     def __init__(self, size=150):
         super().__init__(size)
         self.widgets = []
+        self.timed_widgets = []
         self.position = "right"
         self.margin_first = 10
         self.margin_last = 5
@@ -30,6 +32,8 @@ class Toolbar(Container):
         widget.height = self.row_height
         self.dirty = 1
         widget.dirty = 1
+        if widget.timed:
+            self.timed_widgets.append(widget)
         return widget
 
     def repaint(self):
@@ -40,10 +44,10 @@ class Toolbar(Container):
                 for widget in self.widgets:
                     if widget.dirty == 1:
                         widget.width = self._container_width - self.margin_left - self.margin_right
-
                         widget.repaint()
-                        self.surface.blit(widget.surface, (5, height))
                         widget.dirty = 0
+                    self.surface.blit(widget.surface, (5, height))
+
                     height += widget.height + self.row_margin
                 self.dirty = 0
                 self._window.repaint_areas.append(self.rect)
@@ -66,3 +70,7 @@ class Toolbar(Container):
                         height = height + widget.height + self.row_margin
         else:
             return "no toolbar event"
+
+    def update(self):
+        for widget in self.timed_widgets:
+            widget.update()
