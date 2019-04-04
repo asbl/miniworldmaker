@@ -28,6 +28,5 @@ class Player(Actor):
 
 
 board = MyBoard()
-board.speed = 40
 board.show()
 

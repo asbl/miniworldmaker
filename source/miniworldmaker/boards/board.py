@@ -33,7 +33,7 @@ class Board(container.Container):
         pygame.init()
         # public
         self.active_token = None
-        self.register_events = {"mouse_left", "mouse_right", "key_pressed", "key_pressed", "key_down"}
+        self.register_events = {"all"}
         self.is_running = True
         self.steps = 1
         # private
@@ -208,6 +208,8 @@ class Board(container.Container):
             token.position = position
         else:
             raise AttributeError("Position has wrong type" + str(type(position)))
+        if not self.is_on_board(token.position.to_rect()):
+            return None
         token.add_to_board(self, position)
         self._max_diameter = max(hypot(*token.rect.size) for token in self.tokens)
         self.window.send_event_to_containers("Added token", token)

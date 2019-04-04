@@ -63,8 +63,8 @@ class TiledBoard(Board):
     def remove_from_board(self, token: Token) -> None:
         if token in self._dynamic_actors:
             self._dynamic_actors.remove(token)
-        if token in self._static_tokens_dict[(token.x, token.y)]:
-            self._static_tokens_dict[(token.x, token.y)].remove(token)
+        if token in self._static_tokens_dict[token.position.to_tuple()]:
+            self._static_tokens_dict[token.position.to_tuple()].remove(token)
         super().remove_from_board(token)
 
     def remove_tokens_in_area(self, value: Union[pygame.Rect, tuple], actor_type=None) -> None:

@@ -33,28 +33,22 @@ class Token(pygame.sprite.DirtySprite):
         self.costume = costume.Costume(self)
         self._image = pygame.Surface((1, 1))
         self.costumes = [self.costume]
-        self.costume.is_rotatable = True
         self.costume.is_upscaled = True
         self.init = 1
 
     @property
     def is_flipped(self):
-        return self._is_flipped
+        return self.costume.is_flipped
 
     @is_flipped.setter
     def is_flipped(self, value):
-        self.is_flipped = value
-        self.costume.call_image_actions.add("flipped")
-
-    @property
-    def orientation(self):
-        return self._orientation
-
-    @orientation.setter
-    def orientation(self, value):
-        self._orientation = value
-        self.dirty = 1
-        self.costume.call_image_actions["orientation"] = True
+        self.costume._is_flipped = value
+        if self.is_flipped is True:
+            self.costume.enabled_image_actions["flip"] = True
+            self.costume.call_action("flip")
+        else:
+            self.costume.enabled_image_actions["flip"] = False
+            self.costume.call_action("flip")
 
     def __str__(self):
         if self.board:
@@ -81,19 +75,24 @@ class Token(pygame.sprite.DirtySprite):
     def add_image(self, path: str) -> int:
         return self.costume.add_image(path)
 
-    def add_costume(self, path: str) -> int:
+    def add_costume(self, path: str) -> costume.Costume:
         new_costume = costume.Costume(self)
         new_costume.add_image(path)
         self.costumes.append(new_costume)
-        return len(self.costumes) - 1
+        return new_costume
 
     def switch_costume(self):
         index = self.costumes.index(self.costume)
+        print(len(self.costumes))
+        print(index)
         if index < len(self.costumes) - 1:
             index += 1
         else:
             index = 0
         self.costume = self.costumes[index]
+        self.costume.dirty = 1
+        self.costume.changed_all()
+        self.dirty = 1
         return self.costume
 
     def add_to_board(self, board, position):

@@ -108,9 +108,11 @@ class MiniWorldWindow:
                 container_set.add(clicked_container)  # add container which was clicked
                 for container in container_set:
                     if event.button == 1:
-                        self.send_event_to_containers("mouse_left", (pos[0], pos[1]))
+                        clicked_container.pass_event("mouse_left", (pos[0], pos[1]))
+                        clicked_container.get_event("mouse_left", (pos[0], pos[1]))
                     if event.button == 3:
-                        self.send_event_to_containers("mouse_right", (pos[0], pos[1]))
+                        clicked_container.pass_event("mouse_right", (pos[0], pos[1]))
+                        clicked_container.get_event("mouse_right", (pos[0], pos[1]))
             elif event.type == pygame.KEYDOWN:
                 # key-events
                 keys_pressed = pygame.key.get_pressed()

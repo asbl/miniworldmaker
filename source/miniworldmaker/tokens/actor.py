@@ -15,6 +15,7 @@ class Actor(tokens.token.Token):
         """
         super().__init__()
         self.is_static = False
+        self.costume.is_rotatable = True
 
     def point_in_direction(self, direction) -> int:
         """

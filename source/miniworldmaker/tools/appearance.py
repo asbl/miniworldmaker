@@ -16,19 +16,25 @@ class Appearance:
         self.direction = 0
         self._image = pygame.Surface(self.size)
         self._image.fill((255, 0, 0, 255))
-        self.image_actions = ["scale", "upscale", "rotate"]
-        self.enabled_image_actions = {"scale": False,
+        self.image_actions = ["orientation", "scale", "upscale", "flip", "rotate"]
+        self.enabled_image_actions = {"orientation": False,
+                                      "scale": False,
                                       "upscale": False,
+                                      "flip": False,
                                       "rotate": False}
         self.call_image_actions = {key: False for key in self.image_actions}
-        self.image_handlers = {"scale": self.scale,
+        self.image_handlers = {"orientation": self.correct_orientation,
+                               "scale": self.scale,
                                "upscale": self.upscale,
+                               "flip": self.flip,
                                "rotate": self.rotate}
         self.animation_speed = 60
         self._is_scaled = False
         self._is_upscaled = False
         self._is_animated = False
+        self._is_flipped = False
         self._is_rotatable = False
+        self._orientation = False
         self.is_scaled = True
 
     @property
@@ -56,6 +62,33 @@ class Appearance:
             self.enabled_image_actions["rotate"] = True
         else:
             self.enabled_image_actions["rotate"] = False
+        self.dirty = 1
+
+    @property
+    def orientation(self):
+        return self._orientation
+
+    @orientation.setter
+    def orientation(self, value):
+        self._orientation = value
+        print("orientation", self._orientation)
+        if value != 0:
+            self.enabled_image_actions["orientation"] = True
+        else:
+            self.enabled_image_actions["orientation"] = False
+        self.dirty = 1
+
+    @property
+    def is_flipped(self):
+        return self._is_flipped
+
+    @is_flipped.setter
+    def is_flipped(self, value):
+        self._is_flipped = value
+        if value is True:
+            self.enabled_image_actions["flip"] = True
+        else:
+            self.enabled_image_actions["flip"] = False
         self.dirty = 1
 
     @property
@@ -100,6 +133,7 @@ class Appearance:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
                         if action in self.image_handlers.keys():
+                            print(action)
                             image = self.image_handlers[action](image)
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
@@ -147,8 +181,11 @@ class Appearance:
         return image
 
     def rotate(self, image):
-        print("rotate in", self.direction)
         return pygame.transform.rotate(image, self.direction)
+
+    def correct_orientation(self, image):
+        print("correct_orientation", self.orientation)
+        return pygame.transform.rotate(image, self.orientation)
 
     def changed_all(self):
         self.call_image_actions = {key: True for key in self.call_image_actions}
@@ -157,3 +194,6 @@ class Appearance:
     def call_action(self, action):
         self.call_image_actions[action] = True
         self.dirty = 1
+
+    def flip(self, image) -> pygame.Surface:
+        return pygame.transform.flip(image, False, self._is_flipped)

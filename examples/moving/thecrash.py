@@ -35,5 +35,4 @@ class Robot(Actor):
 
 
 board = MyBoard()
-board.speed = 50
 board.show()

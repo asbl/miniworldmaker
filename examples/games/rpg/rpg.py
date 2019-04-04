@@ -5,7 +5,7 @@ import easygui
 class MyBoard(TiledBoard):
 
     def __init__(self):
-        super().__init__(columns=30, rows=20, tile_size=20, tile_margin=1)
+        super().__init__(columns=30, rows=20, tile_size=20, tile_margin=0)
         for i in range(self.rows):
             for j in range(self.columns):
                 self.add_to_board(Grass(), (j, i))
@@ -37,9 +37,6 @@ class Player(Actor):
         self.costume.is_rotatable = False
         self.inventory = []
 
-    def act(self):
-        pass
-
     def move(self, distance=1):
         walls = self.sensing_tokens(token=Wall)
         doors = self.sensing_tokens(token=Door)
@@ -48,6 +45,7 @@ class Player(Actor):
             super().move()
 
     def get_event(self, event, data):
+        print(event, data)
         if event == "key_down":
             direction = None
             if "W" in data:
@@ -63,31 +61,34 @@ class Player(Actor):
                 self.point_in_direction("right")
                 self.move()
         if event == "button" and data == "Fackel":
-            actors_at_position = self.sensing_tokens(distance=0)
-            if self.board.fireplace in actors_at_position:
+            fireplace = self.sensing_token(distance=0, token=Fireplace)
+            print(fireplace)
+            if fireplace:
+                print("burn")
                 self.board.console.print("Du zündest die Feuerstelle an.")
                 self.board.fireplace.burn()
-        if event == "actor_moved":
-            actors_at_position = self.sensing_tokens(distance=0)
-            if self.board.torch in actors_at_position:
-                message = "Du findest eine Fackel. Möchtest du sie aufheben?"
+
+    def act(self):
+        torch = self.sensing_token(distance=0, token=Torch)
+        if torch:
+            message = "Du findest eine Fackel. Möchtest du sie aufheben?"
+            choices = ["Ja", "Nein"]
+            reply = easygui.buttonbox(message, "RPG", choices)
+            if reply == "Ja":
+                self.inventory.append("Torch")
+                self.board.torch.remove()
+                self.board.console.print("Du hebst die Fackel auf.")
+            self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+        # look forward
+        actors_in_front = self.sensing_tokens()
+        if self.board.door in actors_in_front:
+            if self.board.door.closed:
+                message = "Die Tür ist geschlossen... möchtest du sie öffnen"
                 choices = ["Ja", "Nein"]
                 reply = easygui.buttonbox(message, "RPG", choices)
                 if reply == "Ja":
-                    self.inventory.append("Torch")
-                    self.board.torch.remove()
-                    self.board.console.print("Du hebst die Fackel auf.")
-                self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
-            # look forward
-            actors_in_front = self.sensing_tokens()
-            if self.board.door in actors_in_front:
-                if self.board.door.closed:
-                    message = "Die Tür ist geschlossen... möchtest du sie öffnen"
-                    choices = ["Ja", "Nein"]
-                    reply = easygui.buttonbox(message, "RPG", choices)
-                    if reply == "Ja":
-                        self.board.door.open()
-                        self.board.console.print("Du hast das Tor geöffnet.")
+                    self.board.door.open()
+                    self.board.console.print("Du hast das Tor geöffnet.")
 
 
 class Wall(Token):
@@ -117,16 +118,16 @@ class Fireplace(Token):
     def __init__(self):
         super().__init__()
         self.add_image("rpgimages/fireplace_0.png")
+        burned = self.add_costume("rpgimages/fireplace_1.png")
+        burned.add_image("rpgimages/fireplace_2.png")
         self.burning = False
         self.is_static = True
 
     def burn(self):
         if self.burning == False:
-            self.add_image("rpgimages/fireplace_1.png")
-            self.add_image("rpgimages/fireplace_2.png")
             self.board.play_sound("rpgsounds/fireplace.wav")
-            self.is_animated = True
-            self.burning = True
+            self.switch_costume()
+            self.costume.is_animated = True
 
 
 class Door(Token):
@@ -134,16 +135,16 @@ class Door(Token):
     def __init__(self):
         super().__init__()
         self.add_image("rpgimages/door_closed.png")
+        self.add_costume("rpgimages/door_open.png")
         self.closed = True
         self.is_static = True
 
     def open(self):
         if self.closed == True:
-            self.add_image("rpgimages/door_open.png")
+            self.switch_costume()
             self.board.play_sound("rpgsounds/olddoor.wav")
             self.closed = False
 
 
 my_grid = MyBoard()
-my_grid.show_log()
 my_grid.show()
