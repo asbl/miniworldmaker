@@ -17,7 +17,7 @@ class Player(Actor):
     def __init__(self):
         super().__init__()
         self.add_image(path="images/char_blue.png")
-        self.costume.upscale = True
+        self.costume.is_upscaled = True
 
     def act(self):
         if self.sensing_on_board():
@@ -35,6 +35,15 @@ class Player(Actor):
                 self.direction = "right"
 
 
-board = MyBoard()
-board.speed = 50
-board.show()
+def main():
+    board = MyBoard()
+    board.show()
+
+
+import cProfile
+
+pr = cProfile.Profile()
+pr.enable()
+main()
+pr.disable()
+pr.dump_stats("profilefile.profile")

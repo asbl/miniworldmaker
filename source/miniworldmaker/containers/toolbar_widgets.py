@@ -43,19 +43,21 @@ class ToolbarWidget():
         self.dirty = 1
         return self.surface
 
+
     def repaint(self):
-        self.clear()
-        self.surface.fill(self.background_color)
-        label = self.myfont.render(self._text, 1, (0, 0, 0))
-        self.surface.blit(label, (self._text_padding, 5))
-        if self._img_path is not None:
-            image = pygame.image.load(self._img_path)
-            image = pygame.transform.scale(image, (22, 22))
-            self.surface.blit(image, (2, 0))
-        if self._border:
-            border_rect = pygame.Rect(0, 0, self.width, self.height - 2)
-            pygame.draw.rect(self.surface, self.background_color, border_rect, self.width)
-        self.dirty = 1
+        if self.dirty == 1:
+            self.clear()
+            self.surface.fill(self.background_color)
+            label = self.myfont.render(self._text, 1, (0, 0, 0))
+            self.surface.blit(label, (self._text_padding, 5))
+            if self._img_path is not None:
+                image = pygame.image.load(self._img_path)
+                image = pygame.transform.scale(image, (22, 22))
+                self.surface.blit(image, (2, 0))
+            if self._border:
+                border_rect = pygame.Rect(0, 0, self.width, self.height - 2)
+                pygame.draw.rect(self.surface, self.background_color, border_rect, self.width)
+        self.dirty = 0
 
     def set_text(self, text):
         self._text = text

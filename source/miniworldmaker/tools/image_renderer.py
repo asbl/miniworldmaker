@@ -189,18 +189,3 @@ class ImageRenderer():
             self._image_index = self._image_index + 1
         else:
             self._image_index = 0
-
-    def color_at(self, position):
-        position, self.size, self.image.get_at(position)
-        return self.image.get_at(position)
-
-    def color_at_rect(self, rect, color, threshold=(0, 0, 0, 0)):
-        cropped = pygame.Surface((rect.width, rect.height))
-        cropped.blit(self.image, (0, 0), rect)
-        sfa = pygame.surfarray.pixels3d(cropped).tolist()[0]
-        return pygame.transform.threshold(dest_surf=None,
-                                          set_behavior=0,
-                                          surf=cropped,
-                                          search_color=color,
-                                          threshold=threshold
-                                          )

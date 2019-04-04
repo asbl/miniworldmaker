@@ -5,7 +5,6 @@ from miniworldmaker.tools import keys
 from miniworldmaker.containers.container import Container
 from pygame.locals import *
 
-flags = FULLSCREEN | DOUBLEBUF
 
 class MiniWorldWindow:
     log = logging.getLogger("Window")
@@ -27,10 +26,14 @@ class MiniWorldWindow:
         surface = pygame.image.load(path)
         pygame.display.set_icon(surface)
 
-    def show(self):
+    def show(self, image):
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
+        self.window.window_surface.blit(image, self.board.rect)
+        # self.tokens.clear(image, self.image)
+        pygame.display.update([image.get_rect()])
         while not self._quit:
             self.update()
+            pass
         pygame.quit()
 
     def update(self):
@@ -43,6 +46,7 @@ class MiniWorldWindow:
             container.update()
             container.repaint()
             container.blit_surface_to_window_surface()
+        print(self.repaint_areas)
         pygame.display.update(self.repaint_areas)
         self.repaint_areas = []
 
@@ -105,9 +109,9 @@ class MiniWorldWindow:
                 container_set.add(clicked_container)  # add container which was clicked
                 for container in container_set:
                     if event.button == 1:
-                        self.send_event_to_containers(container, "mouse_left", (pos[0], pos[1]))
+                        self.send_event_to_containers("mouse_left", (pos[0], pos[1]))
                     if event.button == 3:
-                        self.send_event_to_containers(container, "mouse_right", (pos[0], pos[1]))
+                        self.send_event_to_containers("mouse_right", (pos[0], pos[1]))
             elif event.type == pygame.KEYDOWN:
                 # key-events
                 keys_pressed = pygame.key.get_pressed()

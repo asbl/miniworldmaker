@@ -37,7 +37,7 @@ class Board(container.Container):
         self.is_running = True
         self.steps = 1
         # private
-        self._speed = 60
+        self._speed = 100
         self._tokens = pygame.sprite.LayeredDirty()
         self._key_pressed = False
         self._key = 0
@@ -48,10 +48,8 @@ class Board(container.Container):
         self._columns, self._rows = columns, rows
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
         self.background = background.Background(self)
-        self._image = self.background.image
-        self._max_diameter = self._tile_size
+        self._image = pygame.Surface((1, 1))
         # protected
-        self.dirty = 1
         self.frame = 0
         self._tick = 0
         self.clock = pygame.time.Clock()
@@ -190,7 +188,7 @@ class Board(container.Container):
             return self._image
         else:
             self._image = self.background.image
-            return self.background.image
+            return self._image
 
     def add_to_board(self, token: token.Token, position: Union[tuple, board_position.BoardPosition]) -> token.Token:
         """Adds token to board
@@ -331,7 +329,12 @@ class Board(container.Container):
         pass
 
     def repaint(self):
-        self._window.repaint_areas.extend(self.tokens.draw(self.image))
+        self.tokens.clear(self.image, self.image)
+        repaint_rects = self.tokens.draw(self.image, self.image)
+        self._window.repaint_areas.extend(repaint_rects)
+        for token in self.tokens:
+            token.dirty = 0
+        self._window.repaint_areas.append(self._image.get_rect())  ###
         if self.dirty == 1:
             self._window.repaint_areas.append(self.rect)
             self.dirty = 0
@@ -341,11 +344,11 @@ class Board(container.Container):
         Starts the program
 
         """
-        self.tokens.clear(self.image, self.image)
-        self.dirty = 1
-        logging.basicConfig(level=logging.WARNING)
-        self._max_diameter = max(hypot(*token.rect.size) for token in self.tokens)
-        self.window.show()
+        self.background.is_scaled = True
+        size = self.width, self.height
+        self.background.size = (size)
+        image = self.image
+        self.window.show(image)
 
     def update(self):
         if self.is_running:
@@ -485,7 +488,7 @@ class Board(container.Container):
         if type(position == tuple):
             position = board_position.BoardPosition(position[1], position[0])
         self.dirty = 1
-        return self.background._renderer.color_at(self.get_pixel_from_board_position(pos=position))
+        return self.background.color_at(self.get_pixel_from_board_position(pos=position))
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.background._renderer.color_at_rect(rect, color, threshold)
+        return self.background.color_at_rect(rect, color, threshold)

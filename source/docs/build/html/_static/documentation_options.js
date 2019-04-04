@@ -1,7 +1,7 @@
 var DOCUMENTATION_OPTIONS = {
     URL_ROOT: '',
     VERSION: '2019',
-    LANGUAGE: 'de',
+    LANGUAGE: 'en',
     COLLAPSE_INDEX: false,
     FILE_SUFFIX: '.html',
     HAS_SOURCE: true,

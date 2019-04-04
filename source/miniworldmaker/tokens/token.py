@@ -16,7 +16,7 @@ class Token(pygame.sprite.DirtySprite):
         super().__init__()
         self.costume = None
         # private
-        self._size = (0, 0)  # Tuple with size
+        self._size = (20, 20)  # Tuple with size
         self._position: board_position = None
         self._on_board = False
         self._is_at_border = False
@@ -31,7 +31,7 @@ class Token(pygame.sprite.DirtySprite):
         self.board = None
         # costume
         self.costume = costume.Costume(self)
-        self._image = self.costume.image
+        self._image = pygame.Surface((1, 1))
         self.costumes = [self.costume]
         self.init = 1
 
@@ -52,7 +52,7 @@ class Token(pygame.sprite.DirtySprite):
     def orientation(self, value):
         self._orientation = value
         self.dirty = 1
-        self.costume.changed.add("orientation")
+        self.costume.changed["orientation"] = True
 
     def __str__(self):
         if self.board:
@@ -70,9 +70,8 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def rect(self):
+        self._rect = self.position.to_rect(rect=self.image.get_rect())
         if self.dirty == 1:
-            self._rect = self.position.to_rect(rect=self.image.get_rect())
-            self.dirty = 0
             return self._rect
         else:
             return self._rect
@@ -97,8 +96,9 @@ class Token(pygame.sprite.DirtySprite):
 
     def add_to_board(self, board, position):
         self.board = board
-        self.costume.changed.add("direction")
-        self.costume.changed.add("flipped")
+        self.position = position
+        self.costume.size = self.size
+        self.costume.changed_all()
         self.dirty = 1
         if self.init != 1:
             raise UnboundLocalError("Init was not called")
@@ -118,7 +118,7 @@ class Token(pygame.sprite.DirtySprite):
         self._direction = direction
         self.dirty = 1
         if self.costume:
-            self.costume.changed.add("direction")
+            self.costume.changed["direction"] = True
 
     @property
     def size(self):
@@ -131,7 +131,8 @@ class Token(pygame.sprite.DirtySprite):
     def size(self, value):
         self._size = value
         self.dirty = 1
-        self.costume.changed.add("size")
+        self.costume.size = self._size
+        self.costume.changed["size"] = True
 
     @property
     def position(self) -> tuple:

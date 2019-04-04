@@ -5,9 +5,9 @@ class MyBoard(PixelBoard):
 
     def __init__(self):
         super().__init__(columns=400, rows=400)
-        robo1 = self.add_to_board(Robot(), (20, 20))
         self.add_image("images/stone.jpg")
-
+        robo1 = self.add_to_board(Robot(), (20, 20))
+        print(robo1)
 
 class Robot(Actor):
     def __init__(self):

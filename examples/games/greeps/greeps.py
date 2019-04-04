@@ -9,7 +9,6 @@ class Earth(PixelBoard):
     def __init__(self):
         super().__init__(rows=600, columns=800)
         self.add_image("images/worlds/map0.jpg")
-        scores = list()
         self.ship = self.add_to_board(Ship((170, 100)), position=(30, 30))
         toolbar = Toolbar()
         self.window.add_container(toolbar, "right", 400)
@@ -17,7 +16,7 @@ class Earth(PixelBoard):
         self.time_label = toolbar.add_widget(TimeLabel(self, "Time"))
         self.time_label = toolbar.add_widget(FPSLabel(self, "FPS"))
         self.speed = 100
-        for i in range(40):
+        for i in range(20):
             self.add_to_board(Tomato(), position=(random.randint(0, 800), random.randint(0, 600)))
 
     def show_map(self, map_no):
@@ -38,7 +37,7 @@ class Ship(Actor):
         if self.position != self.target_position:
             self.point_towards_position(self.target_position)
             self.move()
-        if self.greeps < 80 and self.position == self.target_position:
+        if self.greeps < 20 and self.position == self.target_position:
             self.board.add_to_board(Greep(), self.position)
             self.greeps += 1
 

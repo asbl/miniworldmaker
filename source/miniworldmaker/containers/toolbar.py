@@ -1,6 +1,6 @@
 from miniworldmaker.containers.container import Container
 from miniworldmaker.containers.toolbar_widgets import ToolbarWidget
-
+import pygame
 
 class Toolbar(Container):
 
@@ -40,17 +40,16 @@ class Toolbar(Container):
         if self.dirty:
             self.surface.fill((255, 255, 255))
             if self.widgets:
-                height = self.margin_first
+                actual_height = self.margin_first
                 for widget in self.widgets:
                     if widget.dirty == 1:
                         widget.width = self._container_width - self.margin_left - self.margin_right
                         widget.repaint()
-                        widget.dirty = 0
-                    self.surface.blit(widget.surface, (5, height))
-
-                    height += widget.height + self.row_margin
+                        rect = pygame.Rect(self.rect.left, actual_height, widget.width, widget.height)
+                        self._window.repaint_areas.append(rect)
+                    self.surface.blit(widget.surface, (5, actual_height))
+                    actual_height += widget.height + self.row_margin
                 self.dirty = 0
-                self._window.repaint_areas.append(self.rect)
 
     def _widgets_total_height(self):
         height = self.margin_first

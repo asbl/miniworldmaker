@@ -59,6 +59,7 @@ class Container:
 
     def blit_surface_to_window_surface(self):
         self._window.window_surface.blit(self._image, self.rect)
+        pass
 
     def remove(self):
         pass
