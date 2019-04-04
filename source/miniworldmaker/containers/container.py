@@ -11,7 +11,6 @@ class Container:
         self.background_color = (255, 255, 255)
         self.size = size
         self.register_events = {"mouse_left", "mouse_right"}
-        self.listen_to_all_events = False
         # private
         self._window = None  # Set in add_to_window
         self._container_width = 0  # Set in add_to_window

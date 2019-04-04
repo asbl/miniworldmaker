@@ -33,6 +33,8 @@ class Token(pygame.sprite.DirtySprite):
         self.costume = costume.Costume(self)
         self._image = pygame.Surface((1, 1))
         self.costumes = [self.costume]
+        self.costume.is_rotatable = True
+        self.costume.is_upscaled = True
         self.init = 1
 
     @property
@@ -42,7 +44,7 @@ class Token(pygame.sprite.DirtySprite):
     @is_flipped.setter
     def is_flipped(self, value):
         self.is_flipped = value
-        self.costume.changed.add("flipped")
+        self.costume.call_image_actions.add("flipped")
 
     @property
     def orientation(self):
@@ -52,7 +54,7 @@ class Token(pygame.sprite.DirtySprite):
     def orientation(self, value):
         self._orientation = value
         self.dirty = 1
-        self.costume.changed["orientation"] = True
+        self.costume.call_image_actions["orientation"] = True
 
     def __str__(self):
         if self.board:
@@ -118,7 +120,9 @@ class Token(pygame.sprite.DirtySprite):
         self._direction = direction
         self.dirty = 1
         if self.costume:
-            self.costume.changed["direction"] = True
+            self.costume.direction = self.direction
+            self.costume.call_action("rotate")
+
 
     @property
     def size(self):
@@ -131,8 +135,8 @@ class Token(pygame.sprite.DirtySprite):
     def size(self, value):
         self._size = value
         self.dirty = 1
-        self.costume.size = self._size
-        self.costume.changed["size"] = True
+        self.costume.size = self.size
+        self.costume.call_action("scale")
 
     @property
     def position(self) -> tuple:

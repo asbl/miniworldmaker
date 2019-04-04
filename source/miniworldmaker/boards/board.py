@@ -329,15 +329,17 @@ class Board(container.Container):
         pass
 
     def repaint(self):
-        self.tokens.clear(self.image, self.image)
-        repaint_rects = self.tokens.draw(self.image, self.image)
+        self.tokens.clear(self.window.window_surface, self.image)
+        repaint_rects = self.tokens.draw(self.window.window_surface)
         self._window.repaint_areas.extend(repaint_rects)
         for token in self.tokens:
             token.dirty = 0
-        self._window.repaint_areas.append(self._image.get_rect())  ###
         if self.dirty == 1:
             self._window.repaint_areas.append(self.rect)
             self.dirty = 0
+
+    def blit_surface_to_window_surface(self):
+        pass
 
     def show(self):
         """
@@ -368,19 +370,19 @@ class Board(container.Container):
             self._tick = 0
 
     def pass_event(self, event, data=None):
+        actors = [token for token in self.tokens if token.is_static == False]
         if event == "collision":
-            for actor in self.tokens:
-                if data[0] == actor:
-                    actor.get_event("collision", data[1])
-                elif data[1] == actor:
-                    actor.get_event("collision", data[0])
+            for token in self.tokens:
+                if data[0] == token:
+                    token.get_event("collision", data[1])
+                elif data[1] == token:
+                    token.get_event("collision", data[0])
         elif event == "mouse_left":
             if self.get_token_by_pixel(data):
                 self.set_active_token(self.get_token_by_pixel(data)[0])
         else:
-            for actor in self.tokens:
+            for actor in actors:
                 actor.get_event(event, data)
-            pass
 
     def set_active_token(self, token: token.Token):
         self.active_token = token

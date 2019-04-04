@@ -97,8 +97,6 @@ class ImageRenderer():
     def flip_image(self, image, flip_x: bool, flip_y: bool) -> pygame.Surface:
         return pygame.transform.flip(image, flip_y, flip_x)
 
-    def rotate_image(self, image, direction):
-        return pygame.transform.rotate(image, direction)
 
     def scale_x_image(self, image, size):
         image = pygame.transform.scale(image, (size, image.get_height()))

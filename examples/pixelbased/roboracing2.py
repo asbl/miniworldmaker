@@ -21,7 +21,7 @@ class Robot(Actor):
             self.turn_left(270)
 
     def get_event(self, event, data):
-        if event == "key":
+        if event == "key_pressed":
             if "A" in data:
                 self.turn_left(10)
             if "D" in data:

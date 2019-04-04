@@ -37,7 +37,7 @@ class Ship(Actor):
         if self.position != self.target_position:
             self.point_towards_position(self.target_position)
             self.move()
-        if self.greeps < 20 and self.position == self.target_position:
+        if self.greeps < 40 and self.position == self.target_position:
             self.board.add_to_board(Greep(), self.position)
             self.greeps += 1
 
@@ -45,6 +45,7 @@ class Ship(Actor):
 class Tomato(Token):
     def __init__(self):
         super().__init__()
+        self.size = (40, 40)
         self.add_image("images/tomato.png")
 
 
@@ -54,6 +55,7 @@ class Greep(Actor):
         super().__init__()
         self.add_image("images/greeps/greep.png")
         self.add_costume("images/greeps/greep_with_food.png")
+        self.size = (25, 25)
         self.point_in_direction(random.randint(0, 360))
         self.carrys_tomato = False
 

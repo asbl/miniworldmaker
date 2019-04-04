@@ -6,7 +6,6 @@ class Appearance:
 
     def __init__(self):
         self.dirty = 0
-        self.changed = dict()
         self._renderer = image_renderer.ImageRenderer()
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
@@ -14,15 +13,22 @@ class Appearance:
         self._image_paths = []  # list with all images
         # properties
         self.size = (5, 5)
+        self.direction = 0
         self._image = pygame.Surface(self.size)
         self._image.fill((255, 0, 0, 255))
-        self.image_actions = ["scale", "upscale"]
-        self.changed = {"scale": False, "upscale": False}
-        self.image_handlers = {"scale": self.scale, "upscale": self.upscale}
+        self.image_actions = ["scale", "upscale", "rotate"]
+        self.enabled_image_actions = {"scale": False,
+                                      "upscale": False,
+                                      "rotate": False}
+        self.call_image_actions = {key: False for key in self.image_actions}
+        self.image_handlers = {"scale": self.scale,
+                               "upscale": self.upscale,
+                               "rotate": self.rotate}
         self.animation_speed = 60
         self._is_scaled = False
         self._is_upscaled = False
         self._is_animated = False
+        self._is_rotatable = False
         self.is_scaled = True
 
     @property
@@ -33,10 +39,23 @@ class Appearance:
     def is_upscaled(self, value):
         self._is_upscaled = value
         if value is True:
-            if "scale" in self.image_actions:
-                self.image_actions.remove('scale')
-            if "upscale" not in self.image_actions:
-                self.image_actions.append("upscale")
+            self.enabled_image_actions["scale"] = False
+            self.enabled_image_actions["upscale"] = True
+        else:
+            self.enabled_image_actions["upscale"] = False
+        self.dirty = 1
+
+    @property
+    def is_rotatable(self):
+        return self._is_rotatable
+
+    @is_rotatable.setter
+    def is_rotatable(self, value):
+        self._is_rotatable = value
+        if value is True:
+            self.enabled_image_actions["rotate"] = True
+        else:
+            self.enabled_image_actions["rotate"] = False
         self.dirty = 1
 
     @property
@@ -46,11 +65,11 @@ class Appearance:
     @is_scaled.setter
     def is_scaled(self, value):
         if value == True:
-            if "upscale" in self.image_actions:
-                self.image_actions.remove("upscale")
-            if "scale" not in self.image_actions:
-                self.image_actions.append("scale")
-        self.changed["scale"] = True
+            self.enabled_image_actions["upscale"] = False
+            self.enabled_image_actions["scale"] = True
+        else:
+            self.enabled_image_actions["scale"] = True
+        self.call_image_actions["scale"] = True
         self.dirty = 1
 
     def add_image(self, img_path: str) -> int:
@@ -73,28 +92,19 @@ class Appearance:
     def image(self) -> pygame.Surface:
         if self.dirty == 1:
             if self.images_list and self.images_list[self._image_index]:
-                if self.__class__.__name__ == "Costume":
-                    print("il", self.images_list)
-                    print("ii", self._image_index)
                 image = self.images_list[self._image_index]
             else:
                 image = pygame.Surface(self.size)
                 image.fill((0, 0, 255, 255))
-            if self.__class__.__name__ == "Costume":
-                print(self.changed)
-            for action in self.changed:
-                if self.changed[action] is True and action in self.image_actions:
-                    if action in self.image_handlers.keys():
-                        image = self.image_handlers[action](image)
+            for action in self.image_actions:
+                if self.dirty == 1:
+                    if self.enabled_image_actions[action]:
+                        if action in self.image_handlers.keys():
+                            image = self.image_handlers[action](image)
             self._image = image
-            self.changed = {key: False for key in self.changed}
+            self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
-            if self.__class__.__name__ == "Costume":
-                print("is", self._image)
-        if self.__class__.__name__ == "Costume":
-            print("ind", self._image)
         return self._image
-
 
     def next_sprite(self):
         self._renderer.next_sprite()
@@ -136,6 +146,14 @@ class Appearance:
         image = pygame.transform.scale(image, self.size)
         return image
 
+    def rotate(self, image):
+        print("rotate in", self.direction)
+        return pygame.transform.rotate(image, self.direction)
+
     def changed_all(self):
-        self.changed = {key: True for key in self.changed}
+        self.call_image_actions = {key: True for key in self.call_image_actions}
+        self.dirty = 1
+
+    def call_action(self, action):
+        self.call_image_actions[action] = True
         self.dirty = 1

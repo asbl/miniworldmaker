@@ -9,6 +9,7 @@ class Costume(appearance.Appearance):
         super().__init__()
         self.size = self.token.size
         self.is_upscaled = True
+        self.is_rotatable = True
 
     def update(self):
         if self.token.board.frame % self.animation_speed == 0:

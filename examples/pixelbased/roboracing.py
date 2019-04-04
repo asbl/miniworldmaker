@@ -21,7 +21,7 @@ class Robot(Actor):
             self.turn_left(180)
 
     def get_event(self, event, data):
-        if event == "key":
+        if event == "key_pressed":
             if "W" in data:
                 self.turn_left(10)
             elif "S" in data:
@@ -29,6 +29,4 @@ class Robot(Actor):
 
 
 board = MyBoard()
-board.speed = 60
-board.show_log()
 board.show()

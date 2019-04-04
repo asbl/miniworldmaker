@@ -2,7 +2,7 @@ from miniworldmaker import *
 import random
 
 
-class MyGrid(PixelBoard):
+class MyBoard(PixelBoard):
 
     def __init__(self):
         super().__init__(columns=screen_x, rows=screen_y)
@@ -12,8 +12,6 @@ class MyGrid(PixelBoard):
             random.randint(30, screen_x - 30), random.randint(0 + 30, screen_y - 30)))
             asteroids.append(asteroid)
         self.player = self.add_to_board(Player(), position=(40, 40))
-        for asteroid in asteroids:
-            self.add_collision_partner(self.player,asteroid)
         self.add_image("images/galaxy.jpg")
 
 
@@ -25,7 +23,7 @@ class Player(Actor):
         self.size = (30,30)
 
     def get_event(self,event, data):
-        if event == "key":
+        if event == "key_pressed":
             if "W" in data:
                 self.turn_left(10)
             elif "S" in data:
@@ -38,7 +36,6 @@ class Player(Actor):
         if self.sensing_token(token=Asteroid):
             self.board.add_to_board(Explosion(), position=self.position)
             self.remove()
-
 
 
 class Asteroid(Actor):
@@ -64,6 +61,5 @@ class Explosion(Actor):
 random.seed()
 screen_x=400
 screen_y=300
-mygrid = MyGrid()
-mygrid.speed = 60
+mygrid = MyBoard()
 mygrid.show()

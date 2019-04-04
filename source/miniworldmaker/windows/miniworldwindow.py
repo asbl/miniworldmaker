@@ -46,7 +46,6 @@ class MiniWorldWindow:
             container.update()
             container.repaint()
             container.blit_surface_to_window_surface()
-        print(self.repaint_areas)
         pygame.display.update(self.repaint_areas)
         self.repaint_areas = []
 
