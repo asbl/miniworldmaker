@@ -14,3 +14,6 @@ class Costume(appearance.Appearance):
     def update(self):
         if self.token.board.frame % self.animation_speed == 0:
             self.next_sprite()
+
+    def set_costume(self, index):
+        self._image_index = index

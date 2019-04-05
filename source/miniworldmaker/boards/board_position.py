@@ -18,14 +18,19 @@ class BoardPosition:
 
     def __eq__(self, other):
         """Overrides the default implementation"""
+        return self.near(other, 1)
+
+    def near(self, other, distance):
         if isinstance(other, tuple):
             other = BoardPosition(other[0], other[1])
         if isinstance(other, BoardPosition):
-            if self.x <= other.x + self.board.steps - 1 \
-                    and self.x >= other.x - self.board.steps + 1 \
-                    and self.y <= other.y + self.board.steps - 1 \
-                    and self.y >= other.y - self.board.steps + 1:
+            if self.x <= other.x + distance \
+                    and self.x >= other.x - distance \
+                    and self.y <= other.y + distance \
+                    and self.y >= other.y - distance:
                 return True
+        else:
+            return False
 
     def to_tuple(self):
         return (self.x, self.y)

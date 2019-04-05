@@ -18,7 +18,7 @@ class MiniWorldWindow:
         self._quit = False
         self.dirty = 1
         self.repaint_areas = []
-        self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
+        self.window_surface = pygame.display.set_mode((self.window_width, self.window_height), pygame.DOUBLEBUF)
         self.window_surface.set_alpha(None)
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))

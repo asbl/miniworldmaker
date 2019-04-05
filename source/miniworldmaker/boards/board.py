@@ -35,9 +35,9 @@ class Board(container.Container):
         self.active_token = None
         self.register_events = {"all"}
         self.is_running = True
-        self.steps = 1
+        self.default_actor_speed = 1
         # private
-        self._speed = 100
+        self._world_speed = 100
         self._tokens = pygame.sprite.LayeredDirty()
         self._key_pressed = False
         self._key = 0
@@ -62,12 +62,12 @@ class Board(container.Container):
 
     @property
     def speed(self) -> int:
-        return self._speed
+        return self._world_speed
 
     @speed.setter
     def speed(self, value: int):
-        self._speed = value
-        self.window.send_event_to_containers("board_speed_changed", self._speed)
+        self._world_speed = value
+        self.window.send_event_to_containers("board_speed_changed", self._world_speed)
 
     def set_size(self,
                  tile_size: int = 1,
@@ -210,6 +210,8 @@ class Board(container.Container):
             raise AttributeError("Position has wrong type" + str(type(position)))
         if not self.is_on_board(token.position.to_rect()):
             return None
+        if token.speed == 0:
+            token.speed = self.default_actor_speed
         token.add_to_board(self, position)
         self._max_diameter = max(hypot(*token.rect.size) for token in self.tokens)
         self.window.send_event_to_containers("Added token", token)

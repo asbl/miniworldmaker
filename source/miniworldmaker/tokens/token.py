@@ -2,6 +2,7 @@ import math
 from logging import *
 from typing import Union
 import pygame
+from boards import board
 from boards import board_position
 from tokens import costume
 
@@ -35,6 +36,7 @@ class Token(pygame.sprite.DirtySprite):
         self.costumes = [self.costume]
         self.costume.is_upscaled = True
         self.init = 1
+        self.speed = 0
 
     @property
     def is_flipped(self):
@@ -49,6 +51,11 @@ class Token(pygame.sprite.DirtySprite):
         else:
             self.costume.enabled_image_actions["flip"] = False
             self.costume.call_action("flip")
+
+    def colorize(self, color):
+        self.costume.color = color
+        self.costume.enabled_image_actions["colorize"] = True
+        self.costume.call_action("colorize")
 
     def __str__(self):
         if self.board:
@@ -83,8 +90,6 @@ class Token(pygame.sprite.DirtySprite):
 
     def switch_costume(self):
         index = self.costumes.index(self.costume)
-        print(len(self.costumes))
-        print(index)
         if index < len(self.costumes) - 1:
             index += 1
         else:
@@ -95,14 +100,17 @@ class Token(pygame.sprite.DirtySprite):
         self.dirty = 1
         return self.costume
 
-    def add_to_board(self, board, position):
-        self.board = board
-        self.position = position
-        self.costume.size = self.size
-        self.costume.changed_all()
-        self.dirty = 1
-        if self.init != 1:
-            raise UnboundLocalError("Init was not called")
+    def add_to_board(self, board, position: board_position.BoardPosition):
+        try:
+            self.board = board
+            self.position = position
+            self.costume.size = self.size
+            self.costume.changed_all()
+            self.dirty = 1
+            if self.init != 1:
+                raise UnboundLocalError("Init was not called")
+        except:
+            raise ()
 
     @property
     def direction(self) -> int:
