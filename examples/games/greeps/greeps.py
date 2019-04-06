@@ -28,15 +28,13 @@ class Earth(PixelBoard):
                                   [40, 655, 492]])
         self.ship_pos = []
         self.ship_pos.append([480, 100])
-        self.ship_pos.append([272, 394])
         self.ship_pos.append([496, 709])
+        self.ship_pos.append([272, 394])
         self.target = []
         self.target.append((30, 30))
         self.target.append((20, 30))
-        self.target.append((272, 394))
+        self.target.append((20, 30))
         self.time_label = toolbar.add_widget(TimeLabel(self, "Time"))
-        self.toolbar_label = toolbar.add_widget(FPSLabel(self, "FPS"))
-        self.speed = 100
 
     def show_map(self, map_no):
         pass
@@ -56,8 +54,6 @@ class Earth(PixelBoard):
             for tomatopile in self.tomato_piles[self.index]:
                 tomatos = Tomatos(tomatopile[0])
                 position = (tomatopile[1], tomatopile[2])
-                print("tomato added")
-                print(position)
                 self.add_to_board(tomatos, position)
             position = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
             self.ship = self.add_to_board(Ship(position), position=self.target[self.index])
@@ -78,7 +74,7 @@ class Ship(Actor):
         self.greeps = 0
         self.costume.overlay = True
         self.costume.is_rotatable = False
-        self.speed = 10
+        self.speed = 20
         self.stop = False
 
     def act(self):
@@ -89,7 +85,6 @@ class Ship(Actor):
             self.stop = True
             self.board.add_to_board(Greep(), self.position)
             self.greeps += 1
-            print(self.greeps)
 
 
 class Tomatos(Token):
@@ -115,10 +110,11 @@ class Greep(Actor):
         super().__init__()
         self.add_image("images/greeps/greep.png")
         self.add_costume("images/greeps/greep_with_food.png")
-        self.size = (25, 25)
+        self.size = (35, 35)
         self.point_in_direction(random.randint(0, 360))
         self.carrys_tomato = False
         self.memory = 0
+        self.speed = 5
 
     def move(self, distance: int = 1) -> BoardPosition:
         if self.is_valid_move():
@@ -151,14 +147,17 @@ class Greep(Actor):
 
     def think(self):
         self.memory = self.memory + 1
-        if self.memory > 0 and self.memory % 10 == 0:
-            self.spit()
+        if self.memory > 0 and self.memory % 40 == 0:
+            if self.carrys_tomato:
+                self.spit("red")
+            else:
+                self.spit("blue")
+
         greep = self.sensing_token(token=Greep, distance=0)
         tomato = self.sensing_token(token=Tomatos, distance=0)
 
         if greep and tomato:
             self.charge(greep, tomato)
-            greep.switch_costume()
             # self.point_towards_position(self.board.ship.position)
         if self.carrys_tomato:
             self.turn_home()
@@ -169,7 +168,7 @@ class Greep(Actor):
         print("deliver")
         if self.sensing_token(token=Ship, distance=0) and self.carrys_tomato:
             self.carrys_tomato = False
-            self.costume = self.costumes[0]
+            self.switch_costume(0)
             print("delivered")
             board = self.board
             board.counter[board.index].add(1)
@@ -177,35 +176,53 @@ class Greep(Actor):
 
 
     def charge(self, greep, tomato):
-        print("charge")
+        greep = self.sensing_token(token=Greep, distance=0)
+        tomato = self.sensing_token(token=Tomatos, distance=0)
+        print("charge", self, greep, tomato, greep.carrys_tomato)
         if greep and tomato:
             if not greep.carrys_tomato:
                 greep.carrys_tomato = True
                 tomato.get_tomato()
-                greep.costume = greep.costumes[1]
+                greep.switch_costume(id=1)
+
 
     def turn_home(self):
         self.point_towards_position(self.board.ship.position)
 
-    def spit(self):
-        paint = Paint()
-        self.board.add_to_board(paint, position=self.position)
+    def spit(self, color):
+
+        if color == "red":
+            paint = Paint(color="red")
+            self.board.add_to_board(paint, position=self.position)
+        if color == "green":
+            paint = Paint(color="green")
+            self.board.add_to_board(paint, position=self.position)
+        if color == "blue":
+            paint = Paint(color="blue")
+            self.board.add_to_board(paint, position=self.position)
 
 
 class Paint(Token):
-    def __init__(self):
+    def __init__(self, color):
         super().__init__()
         self.add_image("images/paint.png")
         self.intensity = 255
         self.colorize((255, 0, 0, self.intensity))
         self.time = 0
+        self.color = color
+
 
     def update(self):
         super().update()
         self.time = self.time + 1
-        if self.time % 10 == 0 and self.time > 0:
-            self.intensity = self.intensity - 30
-            self.colorize((255, 0, 0, self.intensity))
+        if self.time % 50 == 0 and self.time > 0:
+            self.intensity = self.intensity % 2
+            if self.color == "red":
+                self.colorize((255, 0, 0, self.intensity))
+            if self.color == "green":
+                self.colorize((0, 255, 0, self.intensity))
+            if self.color == "blue":
+                self.colorize((0, 0, 255, self.intensity))
             self.dirty = 1
             if self.intensity < 50:
                 self.remove()

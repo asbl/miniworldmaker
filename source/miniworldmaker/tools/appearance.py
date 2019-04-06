@@ -217,5 +217,4 @@ class Appearance:
         image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
         # add in new RGB values
         image.fill(self.color[0:3] + (0,), None, pygame.BLEND_RGBA_ADD)
-        print("colorize")
         return image

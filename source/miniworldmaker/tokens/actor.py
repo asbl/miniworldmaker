@@ -49,7 +49,6 @@ class Actor(tokens.token.Token):
             m = y / x
         else:
             m = 0
-        print(self.speed)
         self.direction = math.degrees(math.atan(m))
         return self.direction
 

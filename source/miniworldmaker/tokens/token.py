@@ -88,16 +88,22 @@ class Token(pygame.sprite.DirtySprite):
         self.costumes.append(new_costume)
         return new_costume
 
-    def switch_costume(self):
-        index = self.costumes.index(self.costume)
-        if index < len(self.costumes) - 1:
-            index += 1
+    def switch_costume(self, id=-1):
+        if id == -1:
+            index = self.costumes.index(self.costume)
+            if index < len(self.costumes) - 1:
+                index += 1
+            else:
+                index = 0
         else:
-            index = 0
+            index = id
         self.costume = self.costumes[index]
         self.costume.dirty = 1
         self.costume.changed_all()
         self.dirty = 1
+        self.costume.size = self.size
+        self.costume.direction = self.direction
+
         return self.costume
 
     def add_to_board(self, board, position: board_position.BoardPosition):
