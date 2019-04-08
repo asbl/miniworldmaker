@@ -1,6 +1,7 @@
 Akteure
 =======
 
+### Eine neue Actor-Klasse erstellen
 Als nächtes wird ein Akteur auf dem Board platziert.
 
 Dies geht prinzipiell ähnlich wie das Erstellen des Spielfeldes:
@@ -19,8 +20,8 @@ class Player(Actor):
   * Zeile 4 ruft die init()-Methode der Vaterklasse auf, die zahlreiche Dinge hinter den Kulissen initialisiert.
   * In Zeile 5 wird dann zu dem Player-Objekt ein Bild hinzugefügt.
 
-Den Akteur zum Spielfeld hinzufügen
--------------------------------------
+### Den Akteur zum Spielfeld hinzufügen
+
 
   Bis jetzt haben wir nur eine Schablone erstellt, um Player-Objekte zu erzeugen.
   Jetzt sollen konkrete Objekte erzeugt und zum Spielfeld hinzugefügt werden.

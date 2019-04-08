@@ -1,23 +1,22 @@
-status
-======
+Project Status
+==============
 
 MiniWorldMaker is currently in the pre-release phase. 
 In the coming weeks some functions may change.
 
-Roadmap
-=======
+### Roadmap
+
 
 Mid February: Version 1.0
 
-### goals:
+### Goals
   
   * Stable API
   
   * Many additional examples
   
   
-changelog
-=========
+### Changelog
 
   * 08.04.2019 : Again many changes in the API. Started english translation.
 

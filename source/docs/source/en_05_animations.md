@@ -1,5 +1,4 @@
-
-animations
+Animations
 ==========
 
 You can imagine 2D animations like a flip book. 

@@ -25,11 +25,6 @@ class TiledBoard(Board):
         self._dynamic_actors = []  # List with all dynamic actors
         self._static_tokens_dict = defaultdict(list)
 
-    def show_grid(self):
-        """Draws the grid on the background
-        """
-        self.background._renderer.set_image_action("grid_overlay", True)
-
     def _update_token_positions(self) -> None:
         self._dynamic_actors_dict.clear()
         for actor in self._dynamic_actors:

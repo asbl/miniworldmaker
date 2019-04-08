@@ -3,8 +3,7 @@ Das Spielfeld
 
 Los geht es!
 
-Eine erste Welt
----------------
+### Eine erste Welt
 
 Wir erschaffen die erste Welt. Dies geht mit folgendem Code:
 
@@ -42,7 +41,7 @@ Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen la
 ```
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
-        self.show_grid()
+        self.background.show_grid()
         self.add_image(path="images/soccer_green.jpg")
 ```
 

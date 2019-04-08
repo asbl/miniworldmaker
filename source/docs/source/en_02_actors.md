@@ -1,6 +1,8 @@
 Actors
 ======
 
+### Create new Actor-Class
+
 Next, an actor is placed on the board.
 
 This is basically similar to creating the playing field:
@@ -19,8 +21,8 @@ class Player(Actor):
   * Line 4 calls the parent class init() method, which initializes many things behind the scenes.
   * Row 5 then adds an image to the Player object.
 
-Add the player to the playing field
--------------------------------------
+### Add the player to the board
+
 
   So far we have only created one template to create player objects.
   Now we want to create concrete objects and add them to the playing field.

@@ -45,7 +45,7 @@ Change the method __init__() in the class MyBoard:
 ```
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
-        self.show_grid()
+        self.background.show_grid()
         self.add_image(path="images/soccer_green.jpg")
 ```
 
