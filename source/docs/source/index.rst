@@ -2,10 +2,10 @@ MiniWorldMaker
 ==========================================
 
 .. toctree::
-:maxdepth: 1
+    :maxdepth: 1
 
-       tutorial_german
-       tutorial_english
+    tutorial_german
+    tutorial_english
 
 Die Klassenbibliothek
 =====================
