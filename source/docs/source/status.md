@@ -1,34 +1,39 @@
-Status
+status
 ======
 
-MiniWorldMaker befindet sich zur Zeit in der Pre-Release Phase. 
-In den kommenden Wochen können sich noch einige Funktionen verändern.
+MiniWorldMaker is currently in the pre-release phase. 
+In the coming weeks some functions may change.
 
 Roadmap
 =======
 
-Mitte Februar: Version 1.0
+Mid February: Version 1.0
 
-### Ziele:
+### goals:
   
-  * Stabile API
+  * Stable API
   
-  * Viele zusätzliche Beispiele
+  * Many additional examples
   
   
-Changelog
+changelog
 =========
 
-  * 25.03.2019 : Arbeiten an den Containern, insbesondere wurde die ActorToolbar hinzugefügt.
+  * 08.04.2019 : Again many changes in the API. Started english translation.
 
-  * 23.03.2019 : Es wurde eine Neue Klasse token hinzugefügt, die als Vaterklasse der Klasse actor fungiert.
-  Außerdem wurden die Abhängigkeiten zu den Features (Sound, Datenbanken, GUI) gerändert:
-    * Easygui ist herausgeflogen, da die saubere Lösung ist die eigenen Programme direkt mit easygui zu schreiben.
-    * Datenbanken (in process) wurden verändert. In Zukunft kann sich ein Board mit Tokens und Akteuren selbst in eine Datenbank speichern
-    * Sound ist in die Klasse Board gewandert.
+  * 25.03.2019 : Work on the containers, especially the ActorToolbar was added.
 
-  * 20.03.2019 : Es wurde ein neues Beispiel für eine Robo-World Beispiel erstellt. 
-  Ziel: Mit dem Create-the-World Beispiel sollen Roboter-Welten erstellt werden. 
-  Die Ergebnisse sollen später von Schülern geladen werden können.
+  * 23.03.2019 : A new class token has been added, which acts as parent class of the class actor.
+  Also the dependencies to the features (sound, databases, GUI) have been changed:
+    * Easygui has been thrown out because the clean solution is to write your own programs directly with easygui.
+    * Databases (in process) have been changed. In the future a board with tokens and actors can store itself in a database.
+    * Sound has migrated to the class board.
+
+  * 20.03.2019 : A new example for a Robo-World example was created. 
+  Objective: With the Create-the-World example robot worlds should be created. 
+  The results should be loaded later by students.
   
 
+
+
+Translated with www.DeepL.com/Translator

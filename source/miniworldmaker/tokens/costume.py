@@ -17,3 +17,9 @@ class Costume(appearance.Appearance):
 
     def set_costume(self, index):
         self._image_index = index
+
+    def show_info_overlay(self, color=(255, 255, 255, 255)):
+        self.dirty = 1
+        self.color = color
+        self.enabled_image_actions["info_overlay"] = True
+        self.call_action("info_overlay")

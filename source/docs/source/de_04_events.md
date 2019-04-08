@@ -1,6 +1,6 @@
 
 Ereignisse
-------------------
+===========
 
 Es gibt zwei wichtige Methoden, die du mit Inhalten füllen kannst:
 

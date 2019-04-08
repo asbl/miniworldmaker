@@ -12,7 +12,7 @@ class MyBoard(TiledBoard):
         self.add_image(path="images/soccer_green.jpg")
         player3 = Player()
         self.add_to_board(player3, position=(1, 1))
-        self.show_grid()
+        self.background.show_grid()
 
 
 class Player(Actor):
@@ -20,6 +20,7 @@ class Player(Actor):
     def __init__(self):
         super().__init__()
         self.add_image(path="images/char_blue.png")
+        self.costume.show_info_overlay()
 
     def act(self):
         if not self.sensing_on_board():

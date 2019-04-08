@@ -2,20 +2,20 @@ MiniWorldMaker
 ---------
 
 <img align="right" src="source/miniworldmaker/resources/logo_big.png" alt="logo"/>
-MiniWorldMaker erlaubt dir 2D Miniwelten und Spiele zu erstellen.
+MiniWorldMaker allows you to create 2D mini worlds and games.
 
-### Eigenschaften
+### Features
 
-  * MiniWorldMaker unterstützt sowohl Pixel-basierte Spiele als auch Spiele mit 
-  quadratischen Zellen (z.B. Rouge-Likes)
+  * MiniWorldMaker supports pixel-based games as well as games with 
+  tiles (e.g. Rouge-Likes)
   
-  * Einfaches Erstellen von Animationen
+  * Easy creation of animations
   
-  * Musik und Soundeffekte
+  * Music and sound effects
   
-  * Integrierte Konsole für Ausgaben
+  * Integrated GUI elements like console for output, toolbar, ...
     
-  * Laden und Speichern in SQLite Datenbanken
+  * Load and Save to SQLite Databases
   
   * Open Source
 

@@ -1,4 +1,3 @@
-from tools import image_renderer
 import pygame
 
 
@@ -6,7 +5,7 @@ class Appearance:
 
     def __init__(self):
         self.dirty = 0
-        self._renderer = image_renderer.ImageRenderer()
+        self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
         self._images_dict = {}  # dict with key: image_path, value: loaded image
@@ -14,22 +13,29 @@ class Appearance:
         # properties
         self.size = (5, 5)
         self.direction = 0
+        self.cell_width = 0
+        self.cell_height = 0
+        self.cell_margin = 0
         self._image = pygame.Surface(self.size)
         self._image.fill((255, 0, 0, 255))
-        self.image_actions = ["orientation", "scale", "upscale", "flip", "rotate", "colorize"]
+        self.image_actions = ["orientation", "scale", "upscale", "flip", "rotate", "colorize", "grid", "info_overlay"]
         self.enabled_image_actions = {"orientation": False,
                                       "scale": False,
                                       "upscale": False,
                                       "flip": False,
                                       "rotate": False,
-                                      "colorize": False}
+                                      "colorize": False,
+                                      "grid": False,
+                                      "info_overlay": False}
         self.call_image_actions = {key: False for key in self.image_actions}
         self.image_handlers = {"orientation": self.correct_orientation,
                                "scale": self.scale,
                                "upscale": self.upscale,
                                "flip": self.flip,
                                "rotate": self.rotate,
-                               "colorize": self.colorize}
+                               "colorize": self.colorize,
+                               "grid": self.grid_overlay,
+                               "info_overlay": self.info_overlay}
         self.animation_speed = 60
         self._is_scaled = False
         self._is_upscaled = False
@@ -217,4 +223,41 @@ class Appearance:
         image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
         # add in new RGB values
         image.fill(self.color[0:3] + (0,), None, pygame.BLEND_RGBA_ADD)
+        return image
+
+    def grid_overlay(self, image):
+        i = 0
+        print("grid", self.parent, self.__class__.__name__)
+        width, height, tile_size, tile_margin, grid_color = self.parent.width, self.parent.height, self.parent.tile_size, self.parent.tile_margin, self.color
+        print(width, height)
+        while i <= width:
+            pygame.draw.rect(image, grid_color, [i, 0, tile_margin, height])
+            i += tile_size + tile_margin
+        i = 0
+        while i <= height:
+            pygame.draw.rect(image, grid_color, [0, i, width, tile_margin])
+            i += tile_size + tile_margin
+        return image
+
+    def info_overlay(self, image):
+        pygame.draw.rect(image, self.color,
+                         (0, 0, image.get_rect().width, image.get_rect().height), 10)
+        # draw direction marker on image
+        rect = image.get_rect()
+        center = rect.center
+        x = rect.right
+        y = rect.centery
+        pygame.draw.line(image, self.color, (center[0], center[1]), (x, y))
+        return image
+
+    def crop_image(self, image):
+        cropped_surface = pygame.Surface(self.parent.size)
+        cropped_surface.fill((255, 255, 255))
+        cropped_surface.blit(image, (0, 0), (0, 0, self.parent.size[0], self.parent.size[1]))
+        return cropped_surface
+
+    def set_text(self, image, text):
+        my_font = pygame.font.SysFont("monospace", self.parent.size)
+        label = my_font.render(text, 1, (0, 0, 0))
+        image.blit(label, (0, 0))
         return image

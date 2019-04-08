@@ -1,7 +1,6 @@
 import miniworldmaker.tokens.token
 import miniworldmaker.tokens.actor
 from miniworldmaker.tokens import token
-import miniworldmaker.tools.image_renderer as image_renderer
 import miniworldmaker.containers.container as container
 import miniworldmaker.windows.miniworldwindow as window
 import miniworldmaker.tools.db_manager as db_manager

@@ -2,27 +2,28 @@ MiniWorldMaker
 ==========================================
 
 .. toctree::
+:maxdepth: 1
 
-       tutorial
+       tutorial_german
+       tutorial_english
 
 Die Klassenbibliothek
 =====================
 
-Hier findest du alle Informationen, wenn du direkt auf Klassen, Methoden und Attribute zugreifen möchtest.
+Here you will find all the information you need if you want to access classes, methods and attributes directly.
 
 .. toctree::
 
-       modules
+   modules
 
 
 Status
 =====================
 
-Hier findest du alle Informationen, wenn du direkt auf Klassen, Methoden und Attribute zugreifen möchtest.
 
 .. toctree::
 
-       status
+   status
 
 .. automodule:: miniworldmaker
 

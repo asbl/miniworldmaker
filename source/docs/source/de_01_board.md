@@ -1,9 +1,7 @@
+Das Spielfeld
+=============
 
 Los geht es!
-
-MiniWorldMaker ist eine Engine, die dir erlaubt, eigene Miniwelten und Spiele zu erschaffen.
-
-In den folgenden Schritten wird dir gezeigt, wie du eigene Miniwelten erstellst und Akteure in den Welten erschaffst.
 
 Eine erste Welt
 ---------------
