@@ -1,0 +1,41 @@
+Metadata-Version: 2.1
+Name: miniworldmaker
+Version: 0.9.24
+Summary: Create 2D Miniworlds and Games
+Home-page: https://github.com/asbl/miniworldmaker
+Author: Andreas Siebel
+Author-email: andreas.siebel@it-teaching.de
+License: OSI Approved :: MIT License
+Download-URL: https://github.com/asbl/miniworldmaker
+Description: MiniWorldMaker
+        ---------
+        
+        ![Logo](miniworldmaker/ressources/logo_big.png)
+        
+        gamegridp ist eine in Python programmierte 2D-Grafikengine die für Bildungszwecke gedacht ist.
+        
+        Viele Konzepte wurden von  [JGameGrid](http://www.aplu.ch/home/apluhomex.jsp?site=45)_
+        bzw. [Greenfoot](https://www.greenfoot.org/door) übernommen. Im Gegensatz zu Greenfoot bietet
+        gamegridp keine grafische Benutzeroberfläche, sondern ist ein Framework.
+        
+        Eigenschaften
+          * gamegridp unterstützt sowohl Pixel-basierte Spiele als auch Spiele mit 
+          quadratischen Zellen (z.B. Rouge-Likes)
+          * Einfaches Erstellen von Animationen
+          * Musik und Soundeffekte
+          * Integrierte Konsole für Ausgaben
+          * Einfaches Erstellen von GUI-Elementen und Popups
+          * Einfache Datenbankanbindung
+          * Open Source
+        
+        Github: https://github.com/asbl/gamegridp
+        Dokumentation: https://gamegridp.it-teaching.de
+        
+Keywords: games,education,mini-worlds
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Education
+Description-Content-Type: text/markdown
