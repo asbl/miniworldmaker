@@ -24,10 +24,12 @@ class Token(pygame.sprite.DirtySprite):
         self._at_borders_list = False
         self._is_flipped = False
         Token.token_count += 1
+        self._direction = 0
         # public
+        self.last_position = (0,0)
+        self.last_direction = 0
         self.token_id = Token.token_count + 1
         self.is_static = True
-        self.direction = 0
         self.board = None
         # costume
         self.costume = costume.Costume(self)
@@ -36,6 +38,7 @@ class Token(pygame.sprite.DirtySprite):
         self.costume.is_upscaled = True
         self.init = 1
         self.speed = 0
+
 
     @property
     def is_flipped(self):
@@ -128,6 +131,7 @@ class Token(pygame.sprite.DirtySprite):
 
     @direction.setter
     def direction(self, value):
+        self.last_direction = self.direction
         direction = self._value_to_direction(value)
         self._direction = direction
         self.dirty = 1
@@ -149,7 +153,7 @@ class Token(pygame.sprite.DirtySprite):
         self.costume.call_action("scale")
 
     @property
-    def position(self) -> tuple:
+    def position(self) -> board_position.BoardPosition:
         """
         The position of the token is tuple (x, y)
         """
@@ -157,6 +161,7 @@ class Token(pygame.sprite.DirtySprite):
 
     @position.setter
     def position(self, value: Union[board_position.BoardPosition, tuple]):
+        self.last_position = self.position
         if type(value) == tuple:
             value = board_position.BoardPosition(value[0], value[1])
         self._position = value

@@ -1,6 +1,8 @@
 Tutorial - Deutsch
 ==================
 
+  * [Installation](de_00_installation.md)
+  
   * [Das Board](de_01_board.md)
   
   * [Akteure](de_02_actors.md)

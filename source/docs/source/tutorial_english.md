@@ -1,6 +1,8 @@
 Tutorial - English
 ==================
 
+  * [Installation](en_00_installation.md)
+
   * [Board](en_01_board.md)
 
   * [Actors](en_02_actors.md)

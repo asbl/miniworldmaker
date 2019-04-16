@@ -7,13 +7,13 @@ In the coming weeks some functions may change.
 ### Roadmap
 
 
-Mid February: Version 1.0
+Mid April: Version 1.0
 
 ### Goals
   
   * Stable API
   
-  * Many additional examples
+  * Additional examples
   
   
 ### Changelog

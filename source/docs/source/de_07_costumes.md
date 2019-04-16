@@ -45,6 +45,9 @@ Diese Aktion behält das Größenverhältnis zwischen Länge und Breite bei.
 Gibt an, ob das Bild auf die Größe des Tokens hochskaliert werden soll.
 Diese Aktion verändert gegebenenfalls das Größenverhältnis zwischen Länge Breite.
 
+#### is_textured
+
+Neben scale und upscale gibt es für Hintergründe auch die Option, den Hintergrund mit einemm Bild zu "tapezieren"
 
 
 ### Mehrere Kostüme anlegen
@@ -83,6 +86,3 @@ Das Spielfeld hat einen Hintergrund. Viele Aktionen funktionieren ähnlich wie b
 
 Zeigt für alle Zellen Ränder an.
 
-#### texture
-
-Neben scale und upscale gibt es für Hintergründe auch die Option, den Hintergrund mit einemm Bild zu "tapezieren"

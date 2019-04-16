@@ -12,16 +12,16 @@ class MyBoard(TiledBoard):
         self.add_image(path="images/stone.png")
         self.background.is_textured = True
         player3 = Player()
-        self.add_to_board(player3, position=(1, 1))
+        self.add_to_board(player3, position=(0, 1))
         self.window.add_container(ActionBar(self), dock = "bottom")
-        #self.background.show_grid((255,100,0))
+        # elf.background.show_grid((255,100,0))
 
 class Player(Actor):
 
     def __init__(self):
         super().__init__()
         self.add_image(path="images/char_blue.png")
-        self.costume.show_info_overlay((0,100,255))
+        # self.costume.show_info_overlay((0,100,255))
 
     def act(self):
         if not self.sensing_on_board(distance = 1):

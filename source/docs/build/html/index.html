@@ -80,6 +80,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_english.html">Tutorial English</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="en_00_installation.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="en_01_board.html">Board</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="en_01_board.html#a-first-world">A first world</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="en_01_board.html#display-a-grid">Display a grid</a></li>
@@ -121,7 +122,27 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="en_07_costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="en_07_costumes.html">Costumes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="en_07_costumes.html#costumes">Costumes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#add-images-to-a-costume">Add images to a costume:</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="en_07_costumes.html#representation-of-pictures">Representation of pictures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#info-overlay">Info Overlay</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#is-rotatable">is_rotatable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#is-upscaled">is_upscaled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#is-scaled">is_scaled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#is-textured">is_textured</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="en_07_costumes.html#create-multiple-costumes">Create multiple costumes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en_07_costumes.html#switching-between-costumes">Switching between costumes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en_07_costumes.html#the-background">The background</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="en_07_costumes.html#show-grid-overlay">Show Grid Overlay</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="en_08_animations.html">Animations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="en_08_animations.html#add-images">1. add images</a></li>
 <li class="toctree-l3"><a class="reference internal" href="en_08_animations.html#start-second-animation">Start second animation</a></li>
@@ -138,6 +159,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_german.html">Tutorial Deutsch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="de_00_installation.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="de_01_board.html">Das Board</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="de_01_board.html#eine-erste-welt">Eine erste Welt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="de_01_board.html#das-grid-anzeigen">Das Grid anzeigen</a></li>
@@ -195,13 +217,13 @@
 <li class="toctree-l4"><a class="reference internal" href="de_07_costumes.html#is-rotatable">is_rotatable</a></li>
 <li class="toctree-l4"><a class="reference internal" href="de_07_costumes.html#is-upscaled">is_upscaled</a></li>
 <li class="toctree-l4"><a class="reference internal" href="de_07_costumes.html#is-scaled">is_scaled</a></li>
+<li class="toctree-l4"><a class="reference internal" href="de_07_costumes.html#is-textured">is_textured</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="de_07_costumes.html#mehrere-kostume-anlegen">Mehrere Kostüme anlegen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="de_07_costumes.html#zwischen-kostumen-wechseln">Zwischen Kostümen wechseln</a></li>
 <li class="toctree-l3"><a class="reference internal" href="de_07_costumes.html#der-hintergrund">Der Hintergrund</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="de_07_costumes.html#grid-overlay-anzeigen">Grid Overlay anzeigen</a></li>
-<li class="toctree-l4"><a class="reference internal" href="de_07_costumes.html#texture">texture</a></li>
 </ul>
 </li>
 </ul>
@@ -245,6 +267,17 @@
 <li class="toctree-l2"><a class="reference internal" href="status.html#changelog">Changelog</a></li>
 </ul>
 </li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#basics">Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#tiled-boards">Tiled Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#pixel-boards">Pixel Boards</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="impressum.html">Impressum</a></li>
 </ul>
 
             
@@ -316,14 +349,15 @@
 <span id="features"></span><h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>MiniWorldMaker supports pixel-based games as well as games with
-tiles (e.g. Rouge-Likes)</li>
+tiles (e.g. Rogue-Likes)</li>
 <li>Easy creation of animations</li>
 <li>Music and sound effects</li>
 <li>Integrated GUI elements like console for output, toolbar, …</li>
 <li>Load and Save to SQLite Databases</li>
 <li>Open Source</li>
+<li>Miniworldmaker is a 2D Engine based on <strong>Python 3</strong> and <strong>pygame</strong>.</li>
 </ul>
-<p>Github: https://github.com/asbl/miniworldmaker</p>
+<p>Github: <a class="reference external" href="https://github.com/asbl/miniworldmaker">https://github.com/asbl/miniworldmaker</a></p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_english.html">Tutorial English</a></li>
@@ -349,18 +383,36 @@ tiles (e.g. Rouge-Likes)</li>
 </ul>
 </div>
 </div>
+<div class="section" id="examples">
+<span id="examples"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+</div>
+</div>
 <div class="section" id="credits">
 <span id="credits"></span><h1>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><a class="reference external" href="https://www.greenfoot.org/door">Greenfoot</a>: The model for this framework.</li>
 <li><a class="reference external" href="https://www.deepl.com/translator">Deepl</a>: Assistant for translating pages.</li>
+<li><a class="reference external" href="https://www.kenney.nl/assets">Kenny Assets</a>: Most of the images in the example-code are based on kenny assets.</li>
 </ul>
 </div>
 <div class="section" id="impressum">
 <span id="impressum"></span><h1>Impressum<a class="headerlink" href="#impressum" title="Permalink to this headline">¶</a></h1>
-<p>Andreas Siebel</p>
-<p>andreas.siebel&#64;it-teaching.de</p>
-<p>61273 Wehrheim</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="impressum.html">Impressum</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="feedback">
+<span id="feedback"></span><h1>Feedback<a class="headerlink" href="#feedback" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Twitter: &#64;a_siebel</li>
+<li>Mail: a.siebel&#64;cws-usingen.de</li>
+</ul>
 </div>
 
 

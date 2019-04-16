@@ -80,6 +80,21 @@ class Actor(tokens.token.Token):
         self.direction = direction
         return self.direction
 
+    def move_to(self, position = board_position.BoardPosition) -> board_position.BoardPosition:
+        """Moves actor *distance* steps into a *direction*.
+
+        Args:
+            distance: Number of steps to move
+
+        Returns:
+            New position
+
+        """
+        self.position = position
+        if self.board:
+            self.board.window.send_event_to_containers("actor_moved", self)
+        return self.position
+
     def move(self, distance: int = -1) -> board_position.BoardPosition:
         """Moves actor *distance* steps into a *direction*.
 

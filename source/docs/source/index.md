@@ -7,7 +7,7 @@ Features
 --------
 
   * MiniWorldMaker supports pixel-based games as well as games with
-  tiles (e.g. Rouge-Likes)
+  tiles (e.g. Rogue-Likes)
 
   * Easy creation of animations
 
@@ -18,9 +18,11 @@ Features
   * Load and Save to SQLite Databases
 
   * Open Source
+  
+  * Miniworldmaker is a 2D Engine based on **Python 3** and **pygame**.
 
 
-Github: https://github.com/asbl/miniworldmaker
+Github: [https://github.com/asbl/miniworldmaker](https://github.com/asbl/miniworldmaker)
 
   * [Tutorial English](tutorial_english.md)
   * [Tutorial Deutsch](tutorial_german.md)
@@ -42,6 +44,11 @@ Status
 
 
   * [Status](./status.md)
+  
+Examples
+=================
+
+  * [Examples](examples.md)
 
 Credits
 =======
@@ -49,12 +56,16 @@ Credits
   * [Greenfoot](https://www.greenfoot.org/door): The model for this framework.
 
   * [Deepl](https://www.deepl.com/translator): Assistant for translating pages.
+  
+  * [Kenny Assets](https://www.kenney.nl/assets): Most of the images in the example-code are based on kenny assets. 
 
 Impressum
 ==========
 
-Andreas Siebel
+  * [Impressum](impressum.md)
+  
+Feedback
+========
 
-andreas.siebel@it-teaching.de
-
-61273 Wehrheim
+  * Twitter: @a_siebel
+  * Mail: a.siebel@cws-usingen.de
