@@ -9,7 +9,7 @@ MiniWorldMaker allows you to create 2D mini worlds and games.
 ### Features
 
   * MiniWorldMaker supports pixel-based games as well as games with 
-  tiles (e.g. Rouge-Likes)
+  tiles (e.g. Rogue-Likes)
   
   * Easy creation of animations
   
