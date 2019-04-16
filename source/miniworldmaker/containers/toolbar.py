@@ -4,8 +4,8 @@ import pygame
 
 class Toolbar(Container):
 
-    def __init__(self, size=150):
-        super().__init__(size)
+    def __init__(self):
+        super().__init__()
         self.widgets = []
         self.timed_widgets = []
         self.position = "right"

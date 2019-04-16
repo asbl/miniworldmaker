@@ -42,15 +42,15 @@ class TiledBoard(Board):
         self._dynamic_actors_dict.clear()
         self._update_token_positions()
         if type(area) == tuple:
-            x, y = area[0], area[1]
+            position = board_position.BoardPosition(area[0], area[1])
         else:
-            x, y = self.get_board_position_from_pixel(area.topleft)
+            position = self.get_board_position_from_pixel(area.topleft)
         tokens_in_area = []
         if self.is_on_board(self.rect):
-            if self._dynamic_actors_dict[x, y]:
-                tokens_in_area.extend(self._dynamic_actors_dict[(x, y)])
-            if self._static_tokens_dict[x, y]:
-                tokens_in_area.extend(self._static_tokens_dict[(x, y)])
+            if self._dynamic_actors_dict[position.x, position.y]:
+                tokens_in_area.extend(self._dynamic_actors_dict[(position.x, position.y)])
+            if self._static_tokens_dict[position.x, position.y]:
+                tokens_in_area.extend(self._static_tokens_dict[(position.x, position.y)])
         if token_type is not None:
             tokens_in_area = self.filter_actor_list(tokens_in_area, token_type)
         return tokens_in_area
@@ -116,12 +116,12 @@ class TiledBoard(Board):
             area = board_position.BoardPosition(area[0], area[1])
         if type(area) == board_position.BoardPosition:
             area = area.to_rect()
-        x, y = self.get_board_position_from_pixel(area.center)
-        if x > self.columns - 1:
+        position = self.get_board_position_from_pixel(area.center)
+        if position.x > self.columns - 1:
             return False
-        elif y > self.rows - 1:
+        elif position.y > self.rows - 1:
             return False
-        elif x < 0 or y < 0:
+        elif position.x < 0 or position.y < 0:
             return False
         else:
             return True
@@ -132,13 +132,13 @@ class TiledBoard(Board):
             value = board_position.BoardPosition(value[0], value[1])
         if type(value) == board_position.BoardPosition:
             value = value.to_rect()
-        x, y = self.get_board_position_from_pixel(value.center)
-        if x == self.columns - 1:
+        position = self.get_board_position_from_pixel(value.center)
+        if position.x == self.columns - 1:
             borders.append("right")
-        if y == self.rows - 1:
+        if position.y == self.rows - 1:
             borders.append("bottom")
-        if x == 0:
+        if position.x == 0:
             borders.append("right")
-        if y == 0:
+        if position.y == 0:
             borders.append("top")
         return borders

@@ -164,8 +164,6 @@ class ResetButton(ActionBarWidget):
             board.show()
 
 
-
-
 class InfoButton(ActionBarWidget):
 
     def __init__(self, board):
@@ -182,11 +180,12 @@ class InfoButton(ActionBarWidget):
         if event == "mouse_left":
             if self.state is False:
                 for token in self.board.tokens:
-                    token.costume.overlay = True
+                    token.costume.hide_info_overlay()
                     self.state = True
+
             else:
                 for token in self.board.tokens:
-                    token.costume.overlay = False
+                    token.costume.show_info_overlay()
                     self.state = False
 
 

@@ -80,7 +80,7 @@ class Player(Actor):
                 self.board.console.print("Du hebst die Fackel auf.")
             self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
-        actors_in_front = self.sensing_tokens()
+        actors_in_front = self.sensing_tokens(distance = 1, token = Door)
         if self.board.door in actors_in_front:
             if self.board.door.closed:
                 message = "Die Tür ist geschlossen... möchtest du sie öffnen"

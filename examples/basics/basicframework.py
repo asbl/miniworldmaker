@@ -9,22 +9,23 @@ class MyBoard(TiledBoard):
         self.add_to_board(player1, position=(3, 3))
         player2 = Player()
         self.add_to_board(player2, position=(8, 2))
-        self.add_image(path="images/soccer_green.jpg")
+        self.add_image(path="images/stone.png")
+        self.background.is_textured = True
         player3 = Player()
         self.add_to_board(player3, position=(1, 1))
         self.window.add_container(ActionBar(self), dock = "bottom")
-        self.background.show_grid()
+        #self.background.show_grid((255,100,0))
 
 class Player(Actor):
 
     def __init__(self):
         super().__init__()
         self.add_image(path="images/char_blue.png")
+        self.costume.show_info_overlay((0,100,255))
 
     def act(self):
-        #if not self.sensing_on_board():
-        #    self.turn_left(90)
-        self.direction = 0
+        if not self.sensing_on_board(distance = 1):
+            self.turn_left(90)
         self.move()
 
 

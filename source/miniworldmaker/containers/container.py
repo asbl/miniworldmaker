@@ -6,10 +6,10 @@ import pygame
 class Container:
     clog = logging.getLogger("Container")
 
-    def __init__(self, size=0):
+    def __init__(self):
         self.dirty = 1
         self.background_color = (255, 255, 255)
-        self.size = size
+        self.default_size = 100
         self.register_events = {"mouse_left", "mouse_right"}
         # private
         self._window = None  # Set in add_to_window
@@ -27,8 +27,8 @@ class Container:
 
     def _add_to_window(self, window, dock, size=None):
         self._window = window
-        if size != None:
-            self.size = size
+        if size== None:
+            size = self.default_size
         if dock == "main":
             self._docking_position = dock
         if dock == "top_left":
@@ -36,22 +36,26 @@ class Container:
             self._container_top_left_y = 0
             self._docking_position = dock
             self._container_height = self._window.window_height
-            self._container_width = self.size
+            self._container_width = size
         elif dock == "right":
             self._container_top_left_x = self._window.window_width
             self._container_top_left_y = 0
             self._docking_position = dock
             self._container_height = self._window.window_height
-            self._container_width = self.size
+            self._container_width = size
         elif dock == "bottom":
             self._container_top_left_x = 0
             self._container_top_left_y = self._window.window_height
             self._docking_position = dock
             self._container_width = self._window.window_width
-            self._container_height = self.size
+            self._container_height = size
         self.clog.info("Added Container {0} with width: {1} and height {2}".format(self, self.width, self.height))
         print("size,", self.width, self.height)
         self._image = pygame.Surface((self.width, self.height))
+
+    @property
+    def size(self):
+        return self._container_width, self._container_height
 
     def repaint(self):
         pass

@@ -6,7 +6,7 @@ import pygame
 class Console(Container):
 
     def __init__(self, lines=5):
-        super().__init__(size=100)
+        super().__init__()
         self._lines = lines
         self._height = self._lines * 20
         self._text_queue = []

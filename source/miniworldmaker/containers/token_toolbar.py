@@ -4,11 +4,10 @@ from miniworldmaker.containers.toolbar_widgets import *
 
 class TokenToolbar(Toolbar):
 
-    def __init__(self, size=100):
-        super().__init__(size)
+    def __init__(self):
+        super().__init__()
         self.position = "right"
         self.token = None
-        self.size = size
         self.label_id = self.add_widget(ToolbarLabel(text="ID"))
         self.label_direction = self.add_widget(ToolbarLabel(text="Direction"))
         self.label_border = self.add_widget(ToolbarLabel(text="Is at Border"))

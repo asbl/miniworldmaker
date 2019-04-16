@@ -28,7 +28,6 @@ class Token(pygame.sprite.DirtySprite):
         self.token_id = Token.token_count + 1
         self.is_static = True
         self.direction = 0
-        self._orientation = 0
         self.board = None
         # costume
         self.costume = costume.Costume(self)
@@ -133,9 +132,7 @@ class Token(pygame.sprite.DirtySprite):
         self._direction = direction
         self.dirty = 1
         if self.costume:
-            self.costume.direction = self.direction
             self.costume.call_action("rotate")
-
 
     @property
     def size(self):

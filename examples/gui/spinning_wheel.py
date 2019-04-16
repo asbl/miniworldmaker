@@ -25,10 +25,12 @@ class MyBoard(TiledBoard):
                     easygui.msgbox("Du musst zuerst einen Chip setzen")
         if event == "mouse_left" and self.placed is False:
             position = self.get_board_position_from_pixel(data)
-            print(position)
+            print("clicked", position)
+            print(position == (1, 1))
             if not position == (1, 1):
                 self.chip = Chip()
                 chip = self.add_to_board(self.chip, position)
+                print(chip)
                 if chip:
                     print("placed, true", chip)
                     self.placed = True

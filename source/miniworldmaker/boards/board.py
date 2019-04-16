@@ -8,7 +8,6 @@ from tools import db_manager
 from tokens import token
 from boards import board_position
 from boards import background
-from boards import area
 from math import hypot
 
 class Board(container.Container):
@@ -29,7 +28,7 @@ class Board(container.Container):
             columns: columns of new board
             rows: rows of new board
         """
-        super().__init__(self)
+        super().__init__()
         pygame.init()
         # public
         self.active_token = None
@@ -358,20 +357,21 @@ class Board(container.Container):
 
     def update(self):
         if self.is_running:
-            self._act_all()
+            self._tick = self._tick + 1
+            if self._tick > 101 - self.speed:
+                self._act_all()
+                self._tick = 0
         self.frame = self.frame + 1
         for token in self.tokens:
             token.update()
         self.clock.tick(40)
 
     def _act_all(self):
-        self._tick = self._tick + 1
-        if self._tick > 101 - self.speed:
-            tokens = [token for token in self.tokens if token.is_static == False]
-            for token in tokens:
-                token.act()
-            self.act()
-            self._tick = 0
+        tokens = [token for token in self.tokens if token.is_static == False]
+        for token in tokens:
+            token.act()
+        self.act()
+
 
     def pass_event(self, event, data=None):
         actors = [token for token in self.tokens if token.is_static == False]
@@ -481,12 +481,12 @@ class Board(container.Container):
         rect = pos.to_rect()
         return rect.topleft
 
-    def get_board_position_from_pixel(self, position: tuple) -> tuple:
+    def get_board_position_from_pixel(self, position: tuple) -> board_position.BoardPosition:
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
         row = (position[1] - self.tile_margin) // (self.tile_size + self.tile_margin)
-        return column, row
+        return board_position.BoardPosition(column, row)
 
-    def get_board_position_from_rect(self, position: pygame.Rect) -> tuple:
+    def get_board_position_from_rect(self, position: pygame.Rect) -> board_position.BoardPosition:
         position = position.topleft
         return self.get_board_position_from_pixel(position)
 

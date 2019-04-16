@@ -7,7 +7,7 @@ from miniworldmaker.containers.actionbar_widgets import *
 class ActionBar(Container):
 
     def __init__(self, board):
-        super().__init__(size=40)
+        super().__init__()
         self.widgets = []
         self.position = "right"
         self.board = board
@@ -21,6 +21,7 @@ class ActionBar(Container):
         self.add_widget(SpeedUpButton(self.board))
         self.board.is_running = False
         self.dirty = 1
+        self.default_size = 40
 
     def add_widget(self, widget):
         """

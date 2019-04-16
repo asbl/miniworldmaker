@@ -18,14 +18,8 @@ Simply add multiple images in the __init__() method:
         self.add_image("images/robot_blue2.png")
 ```
 
-### The costume
 
-The images are automatically added to a *costume*. 
-A costume collects multiple images and allows you to combine animations.
-
-Later you will also learn how to change costumes, e.g. to jump between animations. 
-
-### Start 2nd animation
+### Start second animation
  
 Set the speed and start the animation:
 ```
@@ -44,5 +38,3 @@ In the last two lines it is indicated that the costume of the actor should chang
 See also the example [roboanimation](https://github.com/asbl/miniworldmaker/blob/master/examples/moving/roboanimation.py) on github:
 
 ![_images/roboanimation.gif](_images/roboanimation.gif)
-
-Translated with www.DeepL.com/Translator

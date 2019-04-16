@@ -150,7 +150,7 @@ class Actor(tokens.token.Token):
         token = self.board.get_token_in_area(destination_rect, token, exclude=self)
         return token
 
-    def sensing_borders(self, direction: Union[str, int] = "forward", distance: int = -1) -> list:
+    def sensing_borders(self, distance: int = -1) -> list:
         """Checks if actor is sensing a border in front
 
         Args:
@@ -183,35 +183,23 @@ class Actor(tokens.token.Token):
         on_board = self.board.is_on_board(position)
         return on_board
 
-    def sensing_color(self, distance: int = -1) -> list:
-        """Checks the color of board under the actor
-
-        Args:
-            distance: Number of steps to look for a color
-
-        Returns:
-            The color found in the center of the rectangle of the actor.
-
-        """
-        if distance < 0:
-            distance = self.speed
-        destination_rect = self.look(distance=distance)
-        color = self.board.get_color_at_board_position(destination_rect.center)
-        return color
-
-    def is_sensing_color(self, color, distance: int = -1) -> int:
+    def sensing_color(self, color = None, distance: int = -1) -> Union[int, list]:
         """Checks if actor is sensing a color
 
         Args:
             distance: Number of steps to look for color
+            color: The color to look for
 
         Returns:
-            The number of pixels filled with the given color
+            The number of pixels filled with the given color. If no color ist given, the
+            color found in the center of actor rectangle will be returned.
 
         """
         if distance < 0:
             distance = self.speed
         destination_rect = self.look(distance=distance)
+        if color == None:
+            return self.board.get_color_at_board_position(destination_rect.center)
         colors = self.board.find_colors(destination_rect, color)
         return colors
 

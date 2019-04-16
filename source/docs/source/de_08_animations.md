@@ -1,4 +1,3 @@
-
 Animationen
 ===========
 
@@ -8,7 +7,7 @@ Dadurch, dass schnell hintereinander das Bild eines Akteurs/Token geändert wird
 
 Folgendermaßen kannst du Animationen erstellen:
 
-### 1. Bilder hinzufügen
+#### 1. Bilder hinzufügen
 
 Füge in der __init__()-Methode einfach mehrere Bilder hinzu:
 
@@ -18,13 +17,6 @@ Füge in der __init__()-Methode einfach mehrere Bilder hinzu:
         self.add_image("images/robot_blue1.png")
         self.add_image("images/robot_blue2.png")
 ```
-
-### Das Kostüm
-
-Die Bilder werden automatisch zu einem *Kostüm* hinzugefügt. 
-Ein Kostüm sammelt mehrere Bilder und erlaubt es dir damit, Animationen zusammenzufassen.
-
-Später wirst du auch lernen, Kostüme zu wechseln, um z.B. zwischen Animationen zu springen. 
 
 ### 2. Animation starten
  

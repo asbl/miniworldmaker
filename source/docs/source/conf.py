@@ -17,6 +17,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../../miniworldmaker'))
 from recommonmark.parser import CommonMarkParser
+from recommonmark.transform import AutoStructify
 
 # -- Project information -----------------------------------------------------
 
@@ -205,3 +206,11 @@ todo_include_todos = True
 
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
+
+# At the bottom of conf.py
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+            'enable_eval_rst:': True,
+            'enable_auto_toc_tree' : True,
+            }, True)
+    app.add_transform(AutoStructify)

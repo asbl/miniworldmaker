@@ -121,7 +121,7 @@ class Greep(Actor):
             return super().move()
 
     def is_looking_at_water(self):
-        if self.is_sensing_color((40, 60, 120, 255), distance=self.speed) < 1:
+        if self.sensing_color((40, 60, 120, 255), distance=self.speed) < 1:
             return False
         else:
             return True

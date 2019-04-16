@@ -3,30 +3,24 @@ import pygame
 
 class Appearance:
 
+    _images_dict = {}  # dict with key: image_path, value: loaded image
+
     def __init__(self):
         self.dirty = 0
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
-        self._images_dict = {}  # dict with key: image_path, value: loaded image
         self._image_paths = []  # list with all images
         # properties
-        self.size = (5, 5)
-        self.direction = 0
-        self.cell_width = 0
-        self.cell_height = 0
-        self.cell_margin = 0
-        self._image = pygame.Surface(self.size)
+        self._image = pygame.Surface((5,5))
         self._image.fill((255, 0, 0, 255))
-        self.image_actions = ["orientation", "scale", "upscale", "flip", "rotate", "colorize", "grid", "info_overlay"]
+        self.image_actions = ["orientation", "scale", "upscale", "flip", "rotate", "colorize"]
         self.enabled_image_actions = {"orientation": False,
                                       "scale": False,
                                       "upscale": False,
                                       "flip": False,
                                       "rotate": False,
-                                      "colorize": False,
-                                      "grid": False,
-                                      "info_overlay": False}
+                                      "colorize": False,}
         self.call_image_actions = {key: False for key in self.image_actions}
         self.image_handlers = {"orientation": self.correct_orientation,
                                "scale": self.scale,
@@ -34,8 +28,7 @@ class Appearance:
                                "flip": self.flip,
                                "rotate": self.rotate,
                                "colorize": self.colorize,
-                               "grid": self.grid_overlay,
-                               "info_overlay": self.info_overlay}
+                               }
         self.animation_speed = 60
         self._is_scaled = False
         self._is_upscaled = False
@@ -45,6 +38,14 @@ class Appearance:
         self._orientation = False
         self.is_scaled = True
         self.color = (255, 255, 255, 255)
+
+    def register_action(self, action : str, handler, begin = False):
+        if not begin:
+            self.image_actions.append(action)
+        else:
+            self.image_actions.insert(0, action)
+        self.image_handlers[action] = handler
+        self.enabled_image_actions[action] = False
 
     @property
     def is_upscaled(self):
@@ -62,6 +63,9 @@ class Appearance:
 
     @property
     def is_rotatable(self):
+        """
+        If is_rotatable is True, the image is rotated with actor direction.
+        """
         return self._is_rotatable
 
     @is_rotatable.setter
@@ -114,16 +118,16 @@ class Appearance:
         self.dirty = 1
 
     def add_image(self, img_path: str) -> int:
-        if img_path in self._images_dict.keys():
+        if img_path in Appearance._images_dict.keys():
             # load image from img_dict
-            _image = self._images_dict[img_path]
+            _image = Appearance._images_dict[img_path]
         else:
             # create new image and add to img_dict
             if self.__class__.__name__ == "Background":
                 _image = pygame.image.load(img_path).convert()
             else:
                 _image = pygame.image.load(img_path).convert_alpha()
-            self._images_dict[img_path] = _image
+                Appearance._images_dict[img_path] = _image
         self.images_list.append(_image)
         self._image_paths.append(img_path)
         self.dirty = 1
@@ -135,13 +139,15 @@ class Appearance:
             if self.images_list and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]
             else:
-                image = pygame.Surface(self.size)
+                image = pygame.Surface(self.parent.size)
                 image.fill((0, 0, 255, 255))
             for action in self.image_actions:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
+
                         if action in self.image_handlers.keys():
                             image = self.image_handlers[action](image)
+
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
@@ -153,8 +159,6 @@ class Appearance:
         else:
             self._image_index = 0
         self.dirty = 1
-
-
 
     @property
     def is_animated(self):
@@ -174,15 +178,13 @@ class Appearance:
                                           threshold=threshold)
 
     def color_at(self, position):
-        position, self.size, self._image.get_at(position)
+        position, self.parent.size, self._image.get_at(position)
         return self._image.get_at(position)
 
     def upscale(self, image):
-        size = self.size
-        if size != 0:
-            scale_factor_x = size[0] / image.get_width()
-            scale_factor_y = size[1] / image.get_height()
-            max_scale = max(scale_factor_x, scale_factor_y)
+        if self.parent.size != 0:
+            scale_factor_x = self.parent.size[0] / image.get_width()
+            scale_factor_y = self.parent.size[1] / image.get_height()
             scale_factor = min(scale_factor_x, scale_factor_y)
             new_width = int(image.get_width() * scale_factor)
             new_height = int(image.get_height() * scale_factor)
@@ -190,11 +192,11 @@ class Appearance:
         return image
 
     def scale(self, image):
-        image = pygame.transform.scale(image, self.size)
+        image = pygame.transform.scale(image, self.parent.size)
         return image
 
     def rotate(self, image):
-        return pygame.transform.rotate(image, self.direction)
+        return pygame.transform.rotate(image, self.parent.direction)
 
     def correct_orientation(self, image):
         return pygame.transform.rotate(image, self.orientation)
@@ -223,31 +225,6 @@ class Appearance:
         image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
         # add in new RGB values
         image.fill(self.color[0:3] + (0,), None, pygame.BLEND_RGBA_ADD)
-        return image
-
-    def grid_overlay(self, image):
-        i = 0
-        print("grid", self.parent, self.__class__.__name__)
-        width, height, tile_size, tile_margin, grid_color = self.parent.width, self.parent.height, self.parent.tile_size, self.parent.tile_margin, self.color
-        print(width, height)
-        while i <= width:
-            pygame.draw.rect(image, grid_color, [i, 0, tile_margin, height])
-            i += tile_size + tile_margin
-        i = 0
-        while i <= height:
-            pygame.draw.rect(image, grid_color, [0, i, width, tile_margin])
-            i += tile_size + tile_margin
-        return image
-
-    def info_overlay(self, image):
-        pygame.draw.rect(image, self.color,
-                         (0, 0, image.get_rect().width, image.get_rect().height), 10)
-        # draw direction marker on image
-        rect = image.get_rect()
-        center = rect.center
-        x = rect.right
-        y = rect.centery
-        pygame.draw.line(image, self.color, (center[0], center[1]), (x, y))
         return image
 
     def crop_image(self, image):

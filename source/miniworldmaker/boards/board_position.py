@@ -3,6 +3,7 @@ import pygame
 
 
 class BoardPosition:
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -18,7 +19,7 @@ class BoardPosition:
 
     def __eq__(self, other):
         """Overrides the default implementation"""
-        return self.near(other, 1)
+        return self.near(other, self.board.default_actor_speed-1)
 
     def near(self, other, distance):
         if isinstance(other, tuple):
