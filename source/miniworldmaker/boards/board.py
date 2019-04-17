@@ -2,13 +2,13 @@ import logging
 from typing import Union
 import os
 import pygame
-from containers import container
-from miniworldmaker.miniworldmaker.windows import miniworldwindow as window
+from miniworldmaker.containers import container
+from miniworldmaker.windows import miniworldwindow as window
 from miniworldmaker.tools import db_manager
 from miniworldmaker.tokens import token
 from miniworldmaker.boards import board_position
 from miniworldmaker.boards import background
-from miniworldmaker.math import hypot
+from math import hypot
 
 class Board(container.Container):
     """

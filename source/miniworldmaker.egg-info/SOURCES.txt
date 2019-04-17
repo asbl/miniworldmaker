@@ -12,6 +12,17 @@ miniworldmaker/boards/board.py
 miniworldmaker/boards/board_position.py
 miniworldmaker/boards/pixel_board.py
 miniworldmaker/boards/tiled_board.py
+miniworldmaker/containers/__init__.py
+miniworldmaker/containers/actionbar.py
+miniworldmaker/containers/actionbar_widgets.py
+miniworldmaker/containers/active_actor_toolbar.py
+miniworldmaker/containers/color_console.py
+miniworldmaker/containers/console.py
+miniworldmaker/containers/container.py
+miniworldmaker/containers/event_console.py
+miniworldmaker/containers/select_actor_toolbar.py
+miniworldmaker/containers/toolbar.py
+miniworldmaker/containers/toolbar_widgets.py
 miniworldmaker/tokens/__init__.py
 miniworldmaker/tokens/actor.py
 miniworldmaker/tokens/actor_physics_actor.py

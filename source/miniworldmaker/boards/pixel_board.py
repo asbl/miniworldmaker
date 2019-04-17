@@ -1,8 +1,6 @@
-import pygame
 from miniworldmaker.boards.board import Board
 from miniworldmaker.tokens.token import Token
 from typing import Union
-from tokens import token
 
 class PixelBoard(Board):
 

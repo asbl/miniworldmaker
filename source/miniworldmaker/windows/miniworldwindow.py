@@ -2,9 +2,7 @@ import logging
 import os
 import pygame
 from miniworldmaker.tools import keys
-from miniworldmaker.containers.container import Container
-from pygame.locals import *
-
+from miniworldmaker.containers import container
 
 class MiniWorldWindow:
     log = logging.getLogger("Window")
@@ -22,9 +20,12 @@ class MiniWorldWindow:
         self.window_surface.set_alpha(None)
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
-        path = os.path.join(my_path, "../resources/logo_small_32.png")
-        surface = pygame.image.load(path)
-        pygame.display.set_icon(surface)
+        try:
+            path = os.path.join(my_path, "../resources/logo_small_32.png")
+            surface = pygame.image.load(path)
+            pygame.display.set_icon(surface)
+        except pygame.error as e:
+            print("Warning: Could not load window-image")
 
     def show(self, image):
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
@@ -49,7 +50,7 @@ class MiniWorldWindow:
         pygame.display.update(self.repaint_areas)
         self.repaint_areas = []
 
-    def add_container(self, container, dock, size=None) -> Container:
+    def add_container(self, container, dock, size=None) -> container.Container:
         self._containers.append(container)
         container._add_to_window(self, dock, size)
         return container
