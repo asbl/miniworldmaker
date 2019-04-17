@@ -44,7 +44,7 @@ class Console(Container):
         self._lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height + self.row_margin)
         return self._lines
 
-    def print(self, text):
+    def newline(self, text):
         self._text_queue.append(text)
         if len(self._text_queue) > self.lines:
             self._text_queue.pop(0)

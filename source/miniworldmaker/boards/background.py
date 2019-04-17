@@ -21,7 +21,6 @@ class Background(appearance.Appearance):
         self.call_action("grid")
 
     def texture(self, image):
-        print("texture")
         background = pygame.Surface(self.parent.size)
         background.fill((255, 255, 255))
         image = pygame.transform.scale(image, (self.parent.tile_size, self.parent.tile_size))

@@ -48,7 +48,6 @@ class Container:
             self._container_width = self._window.window_width
             self._container_height = size
         self.clog.info("Added Container {0} with width: {1} and height {2}".format(self, self.width, self.height))
-        print("size,", self.width, self.height)
         self._image = pygame.Surface((self.width, self.height))
 
     @property

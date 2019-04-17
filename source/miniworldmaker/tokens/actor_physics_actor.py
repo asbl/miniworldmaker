@@ -36,11 +36,8 @@ class PhysicsActor(actor.Actor):
     def move(self, distance=1, direction="forward"):
         self._exact_coordinates[0] = self._exact_coordinates[0] + self._vector[0] + 0.0
         self._exact_coordinates[1] = self._exact_coordinates[1] + self._vector[1] + 0.0
-        print("Vector :", self._vector)
-        print(self._exact_coordinates)
         self.set_x(round(self._exact_coordinates[0]))
         self.set_y(round(self._exact_coordinates[1]))
-        print("Cell :", self.cell[0], self.cell[1])
 
     def inc_speed(self, factor):
         self._vector *= factor
@@ -58,10 +55,7 @@ class PhysicsActor(actor.Actor):
 
     @direction.setter
     def direction(self, value):
-        print("Value-Type", type(value))
-        print("Value", value)
         direction = np.degrees(PhysicsActor._angle_between(np.array([1, 0]), value))
-        print("Direction in physics actor:", direction)
         if self._vector[1] > 0:
             self._direction = 360 - direction
         else:

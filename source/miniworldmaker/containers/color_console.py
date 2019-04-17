@@ -36,7 +36,6 @@ class ColorConsole(Container):
     @property
     def lines(self):
         _lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height)
-        print(_lines)
         return _lines
 
     def get_event(self, event, data):

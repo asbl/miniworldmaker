@@ -24,8 +24,8 @@ class MiniWorldWindow:
             path = os.path.join(my_path, "../resources/logo_small_32.png")
             surface = pygame.image.load(path)
             pygame.display.set_icon(surface)
-        except pygame.error as e:
-            print("Warning: Could not load window-image")
+        except:
+            pass
 
     def show(self, image):
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
@@ -124,11 +124,8 @@ class MiniWorldWindow:
         return False
 
     def send_event_to_containers(self, event, data):
-        print("Send event '{0}' with data: {1}".format(event, data))
         for container in self._containers:
-            print(container, container.register_events)
             if event in container.register_events or "all" in container.register_events:
-                print("send to", container)
                 container.pass_event(event, data)
                 container.get_event(event, data)
 

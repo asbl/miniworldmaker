@@ -31,7 +31,7 @@ class Board(container.Container):
         super().__init__()
         pygame.init()
         # public
-        self.active_token = None
+        self.active_actor = None
         self.register_events = {"all"}
         self.is_running = True
         self.default_actor_speed = 1
@@ -383,13 +383,13 @@ class Board(container.Container):
                     token.get_event("collision", data[0])
         elif event == "mouse_left":
             if self.get_token_by_pixel(data):
-                self.set_active_token(self.get_token_by_pixel(data)[0])
+                self.set_active_actor(self.get_token_by_pixel(data)[0])
         else:
             for actor in actors:
                 actor.get_event(event, data)
 
-    def set_active_token(self, token: token.Token):
-        self.active_token = token
+    def set_active_actor(self, token: token.Token):
+        self.active_actor = token
         token.dirty = 1
         self.window.send_event_to_containers("active_token", token)
         return token

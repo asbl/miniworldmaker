@@ -60,7 +60,6 @@ class ActionBar(Container):
             if not x > self._widgets_total_width():
                 for widget in self.widgets:
                     if actual_position + widget.width + 5 > x:
-                        print(widget)
                         return widget.get_event(event, data)
                     else:
                         actual_position = actual_position + widget.width + 5

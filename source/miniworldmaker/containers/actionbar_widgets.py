@@ -114,7 +114,6 @@ class RunButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            print("run/pause", self.board.is_running)
             if not self.board.is_running:
                 self.board.is_running = True
                 self.state = "pause"
