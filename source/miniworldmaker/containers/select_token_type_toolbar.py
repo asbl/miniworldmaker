@@ -2,7 +2,7 @@ from miniworldmaker.containers.toolbar import Toolbar
 from miniworldmaker.containers.toolbar_widgets import *
 
 
-class SelectActorToolbar(Toolbar):
+class SelectTokenTypeToolbar(Toolbar):
     def __init__(self, board):
         super().__init__()
         self.board = board
@@ -18,7 +18,8 @@ class ActorButton(ToolbarWidget):
         self.parent = parent
         self.board = board
         token = self.board.registered_token_types[token_type]()
-        self._image = token.image
+        self._img_path = token.costume.image_paths[0]
+        self._text_padding = 30
         self.set_text(token_type)
         self.token_type = token_type
 

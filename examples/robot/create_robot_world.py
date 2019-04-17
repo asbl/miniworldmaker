@@ -12,12 +12,12 @@ class MyBoard(TiledBoard):
         self.register_token_type(Gold)
         self.register_token_type(Diamond)
         self.register_token_type(Emerald)
-        self.create_world_toolbar = SelectActorToolbar(self)
+        self.create_world_toolbar = SelectTokenTypeToolbar(self)
         self.create_world_toolbar.add_widget(SaveButton("db_files/ctw_db.db", self, "Save"))
         self.create_world_toolbar.add_widget(LoadButton("db_files/ctw_db.db", self, "Load", ))
         self._window.add_container(self.create_world_toolbar, "right")
         self.event_console = EventConsole()
-        self.event_console.register_events = {"Selected actor"}
+        self.event_console.register_events = {"all"}
         self._window.add_container(self.event_console, "right", size=500)
         self.add_image(path="images/stone.jpg")
 

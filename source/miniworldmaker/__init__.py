@@ -12,7 +12,7 @@ from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.boards.board import Board
 from miniworldmaker.containers.toolbar import Toolbar
 from miniworldmaker.containers.event_console import EventConsole
-from miniworldmaker.containers.select_actor_toolbar import SelectActorToolbar
+from miniworldmaker.containers.select_token_type_toolbar import SelectTokenTypeToolbar
 from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.color_console import ColorConsole
 from miniworldmaker.containers.actionbar import ActionBar
@@ -23,7 +23,7 @@ from miniworldmaker.boards.board_position import BoardPosition
 __all__ = ['Token',
            'Actor',
            'TiledBoard',
-           'SelectActorToolbar',
+           'SelectTokenTypeToolbar',
            'PixelBoard',
            'Toolbar',
            'Board',

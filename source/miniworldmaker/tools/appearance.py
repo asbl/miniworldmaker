@@ -10,7 +10,7 @@ class Appearance:
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
-        self._image_paths = []  # list with all images
+        self.image_paths = []  # list with all images
         # properties
         self._image = pygame.Surface((5,5))
         self._image.fill((255, 0, 0, 255))
@@ -129,7 +129,7 @@ class Appearance:
                 _image = pygame.image.load(img_path).convert_alpha()
                 Appearance._images_dict[img_path] = _image
         self.images_list.append(_image)
-        self._image_paths.append(img_path)
+        self.image_paths.append(img_path)
         self.dirty = 1
         return len(self.images_list) - 1
 

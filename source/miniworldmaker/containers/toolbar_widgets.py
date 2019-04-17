@@ -1,7 +1,8 @@
 import logging
 from miniworldmaker.boards.board import Board
 import pygame
-
+from tkinter import filedialog
+from tkinter import *
 
 class ToolbarWidget():
     log = logging.getLogger("toolbar")
@@ -118,7 +119,14 @@ class SaveButton(ToolbarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.board.save_to_db(self.file)
+            Tk().withdraw()
+            try:
+                filename = filedialog.asksaveasfilename(initialdir="./", title="Select file",
+                                                         filetypes=(("db files", "*.db"), ("all files", "*.*")))
+                self.board.save_to_db(filename)
+                self.board.window.send_event_to_containers("Saved new world", filename)
+            except:
+                print("Not saved!")
 
 
 class LoadButton(ToolbarWidget):
@@ -133,8 +141,14 @@ class LoadButton(ToolbarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
+            Tk().withdraw()
+            filename = filedialog.askopenfilename(initialdir="./", title="Select file",
+                                                       filetypes=(("db files", "*.db"), ("all files", "*.*")))
+            self.board.save_to_db(filename)
             self.board = self.board.__class__.from_db(self.file)
+            self.board.window.send_event_to_containers("Loaded new world", filename)
             self.board.show()
+
 
 
 class CounterLabel(ToolbarWidget):

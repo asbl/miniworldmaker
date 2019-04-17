@@ -97,6 +97,9 @@ class MiniWorldWindow:
         return None
 
     def process_pygame_events(self):
+        if pygame.key.get_pressed().count(1) != 0:
+           keys_pressed = pygame.key.get_pressed()
+           self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -118,9 +121,6 @@ class MiniWorldWindow:
                 # key-events
                 keys_pressed = pygame.key.get_pressed()
                 self.send_event_to_containers("key_down", keys.key_codes_to_keys(keys_pressed))
-        if pygame.key.get_pressed().count(1) != 0:
-            keys_pressed = pygame.key.get_pressed()
-            self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
         return False
 
     def send_event_to_containers(self, event, data):

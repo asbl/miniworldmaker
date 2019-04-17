@@ -21,7 +21,7 @@ miniworldmaker/containers/color_console.py
 miniworldmaker/containers/console.py
 miniworldmaker/containers/container.py
 miniworldmaker/containers/event_console.py
-miniworldmaker/containers/select_actor_toolbar.py
+miniworldmaker/containers/select_token_type_toolbar.py
 miniworldmaker/containers/toolbar.py
 miniworldmaker/containers/toolbar_widgets.py
 miniworldmaker/resources/down.png
