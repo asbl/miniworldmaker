@@ -2,9 +2,8 @@ import math
 from logging import *
 from typing import Union
 import pygame
-from boards import board
-from boards import board_position
-from tokens import costume
+from miniworldmaker.boards import board_position
+from miniworldmaker.tokens import costume
 
 
 class Token(pygame.sprite.DirtySprite):

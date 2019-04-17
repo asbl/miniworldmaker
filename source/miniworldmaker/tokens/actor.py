@@ -2,12 +2,11 @@ from logging import *
 from typing import Union
 import pygame
 import math
-from miniworldmaker import tokens
-from boards import board_position
-from tokens import token
+from miniworldmaker.tokens import token
+from miniworldmaker.boards import board_position
 
 
-class Actor(tokens.token.Token):
+class Actor(token.Token):
     log = getLogger("Actor")
 
     def __init__(self):

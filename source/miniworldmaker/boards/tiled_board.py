@@ -3,7 +3,7 @@ from typing import Union
 import pygame
 from miniworldmaker.boards.board import Board
 from miniworldmaker.tokens.token import Token
-from boards import board_position
+from miniworldmaker.boards import board_position
 
 
 class TiledBoard(Board):

@@ -1,4 +1,4 @@
-from windows import miniworldwindow as window
+from miniworldmaker.windows import miniworldwindow as window
 import pygame
 
 

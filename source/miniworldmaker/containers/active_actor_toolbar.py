@@ -1,6 +1,5 @@
 from miniworldmaker.containers.toolbar import Toolbar
 from miniworldmaker.containers.toolbar_widgets import *
-import inspect
 
 class ActiveActorToolbar(Toolbar):
 

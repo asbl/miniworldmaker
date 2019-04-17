@@ -1,4 +1,4 @@
-from tools import appearance
+from miniworldmaker.tools import appearance
 import pygame
 
 class Background(appearance.Appearance):

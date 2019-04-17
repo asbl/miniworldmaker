@@ -3,12 +3,12 @@ from typing import Union
 import os
 import pygame
 from containers import container
-from windows import miniworldwindow as window
-from tools import db_manager
-from tokens import token
-from boards import board_position
-from boards import background
-from math import hypot
+from miniworldmaker.miniworldmaker.windows import miniworldwindow as window
+from miniworldmaker.tools import db_manager
+from miniworldmaker.tokens import token
+from miniworldmaker.boards import board_position
+from miniworldmaker.boards import background
+from miniworldmaker.math import hypot
 
 class Board(container.Container):
     """

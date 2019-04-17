@@ -1,5 +1,5 @@
 import numpy as np
-from tokens import actor
+from miniworldmaker.tokens import actor
 
 
 class PhysicsActor(actor.Actor):
