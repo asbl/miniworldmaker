@@ -1,6 +1,6 @@
 from codecs import open
 from os import path
-
+from glob import glob
 from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') \
         as f: long_description = f.read()
 
 setup(name='miniworldmaker',
-      version='0.9.36',
+      version='0.9.40',
       description='Create 2D Miniworlds and Games',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -27,7 +27,7 @@ setup(name='miniworldmaker',
                    "Topic :: Education",
                    ],
       packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
-      package_data={'miniworldmaker': ['resources/*.png']},
+      package_dir={'miniworldmaker': 'miniworldmaker'},
       install_requires=['pygame'],
       include_package_data=True,
       )

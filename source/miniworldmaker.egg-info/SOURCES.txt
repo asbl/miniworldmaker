@@ -1,3 +1,4 @@
+MANIFEST.in
 README.md
 setup.py
 miniworldmaker/__init__.py
@@ -23,6 +24,18 @@ miniworldmaker/containers/event_console.py
 miniworldmaker/containers/select_actor_toolbar.py
 miniworldmaker/containers/toolbar.py
 miniworldmaker/containers/toolbar_widgets.py
+miniworldmaker/resources/down.png
+miniworldmaker/resources/left.png
+miniworldmaker/resources/logo_big.png
+miniworldmaker/resources/logo_small.png
+miniworldmaker/resources/logo_small_32.png
+miniworldmaker/resources/pause.png
+miniworldmaker/resources/play.png
+miniworldmaker/resources/question.png
+miniworldmaker/resources/reset.png
+miniworldmaker/resources/right.png
+miniworldmaker/resources/run.png
+miniworldmaker/resources/up.png
 miniworldmaker/tokens/__init__.py
 miniworldmaker/tokens/actor.py
 miniworldmaker/tokens/actor_physics_actor.py

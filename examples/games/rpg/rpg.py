@@ -65,7 +65,7 @@ class Player(Actor):
             print(fireplace)
             if fireplace:
                 print("burn")
-                self.board.console.print("Du zündest die Feuerstelle an.")
+                self.board.console.newline("Du zündest die Feuerstelle an.")
                 self.board.fireplace.burn()
 
     def act(self):
@@ -77,7 +77,7 @@ class Player(Actor):
             if reply == "Ja":
                 self.inventory.append("Torch")
                 self.board.torch.remove()
-                self.board.console.print("Du hebst die Fackel auf.")
+                self.board.console.newline("Du hebst die Fackel auf.")
             self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
         actors_in_front = self.sensing_tokens(distance = 1, token = Door)
@@ -88,7 +88,7 @@ class Player(Actor):
                 reply = easygui.buttonbox(message, "RPG", choices)
                 if reply == "Ja":
                     self.board.door.open()
-                    self.board.console.print("Du hast das Tor geöffnet.")
+                    self.board.console.newline("Du hast das Tor geöffnet.")
 
 
 class Wall(Token):
