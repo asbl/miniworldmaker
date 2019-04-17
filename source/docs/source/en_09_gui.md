@@ -68,15 +68,15 @@ This is how you initialize the Actionbar:
         self.window.add_container(ActionBar(self), dock="bottom")
 ```
 
-### The Token Toolbar
+### The ActiveActorToolbar
 
-The token shows you all current information about a token (position, direction, borders touched, ...).
+The ActiveActorToolbar shows you all current information about an actor (position, direction, borders touched, ...).
 
 You can initialize the token toolbar as follows:
 
 ```
-        actor_toolbar = TokenToolbar(self)
+        actor_toolbar = ActiveActorToolbar(self)
         self.window.add_container(actor_toolbar, dock="right", size=400)
 ```
 
-The token or actor that is displayed with the token toolbar can be selected by clicking on the corresponding actor.
+The actor that is displayed with the toolbar can be selected by clicking on the corresponding actor.

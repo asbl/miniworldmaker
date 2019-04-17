@@ -17,7 +17,7 @@ from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.color_console import ColorConsole
 from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.toolbar_widgets import *
-from miniworldmaker.containers.token_toolbar import TokenToolbar
+from miniworldmaker.containers.active_actor_toolbar import ActiveActorToolbar
 from miniworldmaker.boards.board_position import BoardPosition
 
 __all__ = ['Token',
@@ -34,7 +34,7 @@ __all__ = ['Token',
            'Console',
            'EventConsole',
            'ActionBar',
-           'TokenToolbar',
+           'ActiveActorToolbar',
            'ColorConsole',
            'BoardPosition',
            'CounterLabel',

@@ -10,13 +10,13 @@ class MyBoard(TiledBoard):
         self.add_image("images/galaxy.jpg")
         event_console = EventConsole()
         self.window.add_container(event_console, dock="right", size=400)
-        event_console.register_events = {"actor_moved"}
         self.window.add_container(ActionBar(self), dock="bottom")
-        actor_toolbar = TokenToolbar()
+        actor_toolbar = ActiveActorToolbar()
         self.window.add_container(actor_toolbar, dock="right", size=400)
 
     def get_event(self, event, data):
-        print(self.active_token)
+        pass
+
 
 class Ship(Actor):
 
@@ -24,7 +24,7 @@ class Ship(Actor):
         super().__init__()
         self.spinning = 0
         self.add_image("images/ship.png")
-        self.orientation = 270
+        self.costume.orientation = 270
 
     def get_event(self, event, data):
         if event == "key_down":

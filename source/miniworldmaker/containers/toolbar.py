@@ -1,5 +1,5 @@
 from miniworldmaker.containers.container import Container
-from miniworldmaker.containers.toolbar_widgets import ToolbarWidget
+from miniworldmaker.containers import toolbar_widgets
 import pygame
 
 class Toolbar(Container):
@@ -20,11 +20,15 @@ class Toolbar(Container):
     def get_widget(self, index):
         return self.widgets[index]
 
-    def add_widget(self, widget) -> ToolbarWidget:
+    def add_widget(self, widget : toolbar_widgets.ToolbarWidget ) -> toolbar_widgets.ToolbarWidget:
         """
-        adds a widget to the toolbar
-        :param widget: A toolbar widget
-        :return:
+        Adds a widget to the toolbar
+
+        Args:
+            widget: the widget which should be added
+
+        Returns: The widget which was added
+
         """
         widget.clear()
         widget.parent = self
@@ -35,6 +39,19 @@ class Toolbar(Container):
         if widget.timed:
             self.timed_widgets.append(widget)
         return widget
+
+    def remove_widget(self, widget):
+        """
+        Removes a widget from the toolbar. Warning: Be careful when calling this method in a loop.
+
+        Args:
+            widget: The widget which should be removed
+        """
+        self.widgets.remove(widget)
+        self.dirty = 1
+
+    def remove_all_widgets(self):
+        self.widgets = []
 
     def repaint(self):
         if self.dirty:

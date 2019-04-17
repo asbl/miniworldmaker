@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: miniworldmaker
-Version: 0.9.27
+Version: 0.9.28
 Summary: Create 2D Miniworlds and Games
 Home-page: https://github.com/asbl/miniworldmaker
 Author: Andreas Siebel
@@ -13,10 +13,12 @@ Description: MiniWorldMaker
         <img align="right" src="miniworldmaker/resources/logo_big.png" alt="logo"/>
         MiniWorldMaker allows you to create 2D mini worlds and games.
         
+        
+        
         ### Features
         
           * MiniWorldMaker supports pixel-based games as well as games with 
-          tiles (e.g. Rouge-Likes)
+          tiles (e.g. Rogue-Likes)
           
           * Easy creation of animations
           
@@ -27,9 +29,10 @@ Description: MiniWorldMaker
           * Load and Save to SQLite Databases
           
           * Open Source
+          
+          * Miniworldmaker is a 2D Engine based on Python 3 and pygame.
         
-        Github: https://github.com/asbl/miniworldmaker
-        
+          * [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.it-teaching.de/) | [PyPi](https://pypi.org/project/miniworldmaker/)
         
 Keywords: games,education,mini-worlds
 Platform: UNKNOWN

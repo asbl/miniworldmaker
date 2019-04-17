@@ -91,8 +91,6 @@ class Actor(tokens.token.Token):
 
         """
         self.position = position
-        if self.board:
-            self.board.window.send_event_to_containers("actor_moved", self)
         return self.position
 
     def move(self, distance: int = -1) -> board_position.BoardPosition:
@@ -109,8 +107,6 @@ class Actor(tokens.token.Token):
             distance = self.speed
         destination = self.look(distance=distance)
         self.position = self.board.get_board_position_from_pixel(destination.topleft)
-        if self.board:
-            self.board.window.send_event_to_containers("actor_moved", self)
         return self.position
 
     def look(self, distance: int = -1, ) -> pygame.Rect:

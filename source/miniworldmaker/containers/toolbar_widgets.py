@@ -72,6 +72,8 @@ class ToolbarWidget():
         self.border = True
         self.dirty = 1
 
+    def __str__(self):
+        return "{0} : {1}".format(self.__class__.__name__, self._text)
 
 class ToolbarButton(ToolbarWidget):
     log = logging.getLogger("toolbar-button")

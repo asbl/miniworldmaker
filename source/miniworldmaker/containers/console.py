@@ -29,7 +29,9 @@ class Console(Container):
                 row.fill((200, 200, 200))
                 label = myfont.render(text, 1, (0, 0, 0))
                 row.blit(label, (10, 5))
-                self.surface.blit(row, (self.margin_left, self.margin_first + i * 20 + i * self.row_margin))
+                self.surface.blit(row, (self.margin_left, self.margin_first + i * self.row_height + i * self.row_margin))
+        self.window.repaint_areas.append(self.rect)
+        self.dirty = 0
 
     def max_height(self):
         width = self.margin_first
@@ -39,8 +41,8 @@ class Console(Container):
 
     @property
     def lines(self):
-        _lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height)
-        return _lines
+        self._lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height + self.row_margin)
+        return self._lines
 
     def print(self, text):
         self._text_queue.append(text)

@@ -137,6 +137,8 @@ class Token(pygame.sprite.DirtySprite):
         self.dirty = 1
         if self.costume:
             self.costume.call_action("rotate")
+        if self.board:
+            self.board.window.send_event_to_containers("actor_changed_direction", self)
 
     @property
     def size(self):
@@ -166,6 +168,8 @@ class Token(pygame.sprite.DirtySprite):
             value = board_position.BoardPosition(value[0], value[1])
         self._position = value
         self.dirty = 1
+        if self.board:
+            self.board.window.send_event_to_containers("actor_moved", self)
 
     @property
     def class_name(self) -> str:
@@ -234,5 +238,4 @@ class Token(pygame.sprite.DirtySprite):
         d = {}
         for cls in base.__subclasses__():
             d[cls.__name__] = cls
-        print(d)
         return d

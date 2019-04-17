@@ -1,5 +1,5 @@
 import logging
-
+import inspect
 import pygame
 
 
@@ -19,7 +19,6 @@ class Container:
         self._container_top_left_y = 0  # Set in add_to_window
         self._docking_position = None  # Set in add_to_windows
         self._image = None
-        self.register_events = {"all"}
 
     @property
     def window(self):
