@@ -1,8 +1,10 @@
 MiniWorldMaker
 ---------
 
-<img align="right" src="source/miniworldmaker/resources/logo_big.png" alt="logo"/>
+<img align="right" src="miniworldmaker/resources/logo_big.png" alt="logo"/>
 MiniWorldMaker allows you to create 2D mini worlds and games.
+
+
 
 ### Features
 
@@ -18,6 +20,7 @@ MiniWorldMaker allows you to create 2D mini worlds and games.
   * Load and Save to SQLite Databases
   
   * Open Source
+  
+  * Miniworldmaker is a 2D Engine based on Python 3 and pygame.
 
-Github: https://github.com/asbl/miniworldmaker
-
+  * [Github]()https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.it-teaching.de/) | [PyPi](https://pypi.org/project/miniworldmaker/)
