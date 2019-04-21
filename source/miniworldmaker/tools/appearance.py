@@ -36,8 +36,39 @@ class Appearance:
         self._is_flipped = False
         self._is_rotatable = False
         self._orientation = False
+        self._is_textured = False
+        self.register_action("texture", self.texture, begin = True)
         self.is_scaled = True
         self.color = (255, 255, 255, 255)
+
+    @property
+    def is_textured(self):
+        return self._is_textured
+
+    @is_textured.setter
+    def is_textured(self, value):
+        self._is_textured = True
+        if value is True:
+            self.enabled_image_actions["upscale"] = False
+            self.enabled_image_actions["scale"] = False
+            self.enabled_image_actions["texture"] = True
+        self.call_image_actions["texture"] = True
+        self.dirty = 1
+
+    def texture(self, image):
+        background = pygame.Surface(self.parent.size)
+        background.fill((255, 255, 255))
+        i, j, width, height = 0, 0, 0, 0
+        while width < self.parent.width:
+            while height < self.parent.height:
+                width = i * image.get_width()
+                height = j * image.get_height()
+                j += 1
+                background.blit(image, (width, height))
+            j, height = 0, 0
+            i += 1
+        self._image = background
+        return background
 
     def register_action(self, action : str, handler, begin = False):
         if not begin:
@@ -144,10 +175,9 @@ class Appearance:
             for action in self.image_actions:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
-
                         if action in self.image_handlers.keys():
                             image = self.image_handlers[action](image)
-
+                    self.parent.dirty = 1
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
@@ -159,6 +189,7 @@ class Appearance:
         else:
             self._image_index = 0
         self.dirty = 1
+        self.parent.dirty = 1
 
     @property
     def is_animated(self):

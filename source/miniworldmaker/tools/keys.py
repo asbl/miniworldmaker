@@ -24,7 +24,7 @@ KEYS = {113: "Q",
         98: "B",
         110: "N",
         109: "M",
-        21: "SPACE",
+        32: "SPACE",
         273: "UP",
         274: "DOWN",
         276: "LEFT",
@@ -35,7 +35,7 @@ KEYS = {113: "Q",
         }
 
 
-def key_codes_to_keys(key_pressed_list: list):
+def key_codes_to_keys(key_pressed_list: list) :
     keys = []
     for index, item in enumerate(key_pressed_list):
         if item:

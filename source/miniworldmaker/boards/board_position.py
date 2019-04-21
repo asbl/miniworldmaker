@@ -49,3 +49,15 @@ class BoardPosition:
 
     def __str__(self):
         return str("Pos(" + str(self.x) + "," + str(self.y) + ")")
+
+    def up(self, value : int):
+        return BoardPosition(self.x, self.y-value)
+
+    def down(self, value : int):
+        return BoardPosition(self.x, self.y+value)
+
+    def left(self, value : int):
+        return BoardPosition(self.x-value, self.y)
+
+    def right(self, value : int):
+        return BoardPosition(self.x+value, self.y-value)

@@ -9,6 +9,8 @@ from miniworldmaker.tokens import token
 from miniworldmaker.boards import board_position
 from miniworldmaker.boards import background
 from math import hypot
+import sys
+
 
 class Board(container.Container):
     """
@@ -35,6 +37,7 @@ class Board(container.Container):
         self.register_events = {"all"}
         self.is_running = True
         self.default_actor_speed = 1
+        self.sound_effects = {}
         # private
         self._world_speed = 100
         self._tokens = pygame.sprite.LayeredDirty()
@@ -374,19 +377,14 @@ class Board(container.Container):
 
 
     def pass_event(self, event, data=None):
-        actors = [token for token in self.tokens if token.is_static == False]
-        if event == "collision":
-            for token in self.tokens:
-                if data[0] == token:
-                    token.get_event("collision", data[1])
-                elif data[1] == token:
-                    token.get_event("collision", data[0])
-        elif event == "mouse_left":
+        tokens = [token for token in self.tokens if token.is_static == False]
+        if event == "mouse_left":
             if self.get_token_by_pixel(data):
                 self.set_active_actor(self.get_token_by_pixel(data)[0])
         else:
-            for actor in actors:
-                actor.get_event(event, data)
+            for token in tokens:
+                if "all" in token.registered_events or event in token.registered_events:
+                    token.get_event(event, data)
 
     def set_active_actor(self, token: token.Token):
         self.active_actor = token
@@ -469,11 +467,22 @@ class Board(container.Container):
     def register_token_type(class_name):
         Board.registered_token_types[class_name.__name__] = class_name
 
-    def play_sound(self, sound_path):
-        effect = pygame.mixer.Sound(sound_path)
-        effect.play()
+    def play_sound(self, sound_path : str):
+        if sound_path.endswith("mp3"):
+            sound_path = sound_path[:-4] + "wav"
+        if sound_path in self.sound_effects.keys():
+            self.sound_effects[sound_path].play()
+        else:
+            effect = self.register_sound(sound_path)
+            effect.play()
 
-    def play_music(self, music_path):
+    def register_sound(self, sound_path) -> pygame.mixer.Sound:
+        effect = pygame.mixer.Sound(sound_path)
+        self.sound_effects[sound_path] = effect
+        return effect
+
+
+    def play_music(self, music_path : str):
         pygame.mixer.music.load(music_path)
         pygame.mixer.music.play(-1)
 

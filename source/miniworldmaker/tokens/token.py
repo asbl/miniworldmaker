@@ -37,6 +37,7 @@ class Token(pygame.sprite.DirtySprite):
         self.costume.is_upscaled = True
         self.init = 1
         self.speed = 0
+        self.registered_events = ["mouse_left", "mouse_right"]
 
 
     @property

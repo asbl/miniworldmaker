@@ -15,6 +15,7 @@ class Actor(token.Token):
         super().__init__()
         self.is_static = False
         self.costume.is_rotatable = True
+        self.registered_events.extend(["key_pressed", "key_down"])
 
     def point_in_direction(self, direction) -> int:
         """
