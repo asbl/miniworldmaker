@@ -10,11 +10,13 @@ class MyBoard(TiledBoard):
         player2 = Player()
         self.add_to_board(player2, position=(8, 2))
         self.add_image(path="images/stone.png")
+        self.background.is_scaled_to_tile= True
         self.background.is_textured = True
+        self.background.grid_overlay = True
         player3 = Player()
         self.add_to_board(player3, position=(0, 1))
         self.window.add_container(ActionBar(self), dock = "bottom")
-        # elf.background.show_grid((255,100,0))
+
 
 class Player(Actor):
 

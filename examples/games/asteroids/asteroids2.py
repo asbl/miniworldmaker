@@ -9,11 +9,13 @@ class MyBoard(PixelBoard):
         asteroids = list()
         for i in range(5):
             asteroid = self.add_to_board(Asteroid(),
-                                         position=(random.randint(30, screen_x - 30),
-                                                   random.randint(0 + 30, screen_y - 30)))
+                                         position=(random.randint(60, screen_x - 30),
+                                                   random.randint(60, screen_y - 30)))
             asteroids.append(asteroid)
-        self.player = self.add_to_board(Player(), position=(40, 40))
+        self.player = self.add_to_board(Player(), position=(20, 20))
         self.add_image("images/galaxy.jpg")
+        # Preload explosion for faster image handling
+        explosion = Explosion()
 
 
 class Player(Actor):
@@ -29,6 +31,9 @@ class Player(Actor):
                 self.turn_left(10)
             elif "S" in data:
                 self.turn_right(10)
+        if event == "key_down":
+            if "SPACE" in data:
+                self.shoot()
 
     def act(self):
         self.move()
@@ -40,6 +45,28 @@ class Player(Actor):
             self.board.play_sound("sounds/explosion.wav")
             self.remove()
 
+    def shoot(self):
+        laser = Laser(self.direction)
+        self.board.add_to_board(laser, self.position.down(10))
+
+
+class Laser(Actor):
+    def __init__(self, direction):
+        super().__init__()
+        self.add_image("images/laser.png")
+        self.size = (30, 30)
+        self.direction = direction
+        self.costume.orientation = 270
+        self.speed = 5
+
+    def act(self):
+        self.move()
+        token = self.sensing_token(token = Asteroid)
+        if token:
+            token.remove()
+            explosion = self.board.add_to_board(Explosion(), position=self.position)
+            explosion.costume.is_animated = True
+            self.remove()
 
 
 class Asteroid(Actor):
