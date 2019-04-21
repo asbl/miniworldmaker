@@ -254,7 +254,8 @@ class Board(container.Container):
             area = pygame.Rect(area[0], area[1], self.tile_size, self.tile_size)
         if token is not None:
             token_list = self.filter_actor_list(self.tokens, token)
-            token_list.remove(exclude)
+            if exclude in token_list:
+                token_list.remove(exclude)
         else:
             token_list = self.tokens
         for token in token_list:

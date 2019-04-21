@@ -126,13 +126,13 @@ class Actor(token.Token):
         y = self.position[1] - round(math.sin(math.radians(direction)) * distance)
         return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
 
-    def sensing_tokens(self, distance: int = -1, token=None):
+    def sensing_tokens(self, distance: int = -1, token=None, exact = False):
         """Checks if Actor is sensing Tokens in front
 
         Args:
             distance: Number of steps to look for tokens  (0: at actor position)
             token: Class name of token types to look for. If token == None, all token are returned
-
+            exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
 
         Returns:
             a list of tokens
@@ -142,14 +142,17 @@ class Actor(token.Token):
             distance = self.speed
         destination_rect = self.look(distance=distance)
         tokens = self.board.get_tokens_in_area(destination_rect, token, exclude=self)
+        if exact:
+            return  [token for token in tokens if pygame.sprite.collide_mask(self,token)]
         return tokens
 
-    def sensing_token(self, distance: int = -1, token=None) -> token.Token:
+    def sensing_token(self, distance: int = -1, token=None, exact = False) -> token.Token:
         """Checks if actor is sensing a single token in front. See sensing_tokens
 
         Args:
             distance: Number of steps to look for tokens  (0: at actor position)
             token: Class name of token types to look for. If token == None, all token are returned
+            exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
 
         Returns:
             A single token
@@ -159,6 +162,13 @@ class Actor(token.Token):
             distance = self.speed
         destination_rect = self.look(distance=distance)
         token = self.board.get_token_in_area(destination_rect, token, exclude=self)
+        if exact and token is not None:
+            if not pygame.sprite.collide_mask(self, token):
+                tokens = self.sensing_tokens(exact= True, token = token)
+                if tokens:
+                    return tokens[0]
+                else:
+                    return []
         return token
 
     def sensing_borders(self, distance: int = -1) -> list:

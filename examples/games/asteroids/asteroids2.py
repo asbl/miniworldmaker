@@ -39,8 +39,8 @@ class Player(Actor):
         self.move()
         if not self.sensing_on_board():
             self.turn_left(180)
-        if self.sensing_token(token=Asteroid):
-            explosion = self.board.add_to_board(Explosion(), position=self.position)
+        if self.sensing_token(token=Asteroid, exact= True):
+            explosion = self.board.add_to_board(Explosion(), position=self.position.up(40).left(40))
             explosion.costume.is_animated = True
             self.board.play_sound("sounds/explosion.wav")
             self.remove()
@@ -61,10 +61,10 @@ class Laser(Actor):
 
     def act(self):
         self.move()
-        token = self.sensing_token(token = Asteroid)
+        token = self.sensing_token(token = Asteroid, exact = True)
         if token:
             token.remove()
-            explosion = self.board.add_to_board(Explosion(), position=self.position)
+            explosion = self.board.add_to_board(Explosion(), position=token.position.up(40).left(40))
             explosion.costume.is_animated = True
             self.remove()
 
@@ -98,6 +98,7 @@ class Explosion(Actor):
         self.add_image("images/explosion08.png")
         self.costume.animation_speed = 3
         self.counter = 0
+
 
     def act(self):
         self.counter+= 1
