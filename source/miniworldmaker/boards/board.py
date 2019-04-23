@@ -508,3 +508,11 @@ class Board(container.Container):
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.background.color_at_rect(rect, color, threshold)
+
+    def get_mouse_position(self):
+        pos = pygame.mouse.get_pos()
+        clicked_container = self.window.get_container_by_pixel(pos[0], pos[1])
+        if clicked_container == self:
+            return board_position.BoardPosition.from_pixel(self, pos)
+        else:
+            return None

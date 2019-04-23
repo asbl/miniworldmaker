@@ -15,8 +15,9 @@ class Costume(appearance.Appearance):
         self.image_handlers["info_overlay"] = self.info_overlay
 
     def update(self):
-        if self.parent.board.frame % self.animation_speed == 0:
-            self.next_sprite()
+        if self.parent.board:
+            if self.parent.board.frame % self.animation_speed == 0:
+                self.next_sprite()
 
     def set_costume(self, index):
         self._image_index = index

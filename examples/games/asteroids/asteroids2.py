@@ -57,7 +57,7 @@ class Laser(Actor):
         self.size = (30, 30)
         self.direction = direction
         self.costume.orientation = 270
-        self.speed = 5
+        self.speed = 15
 
     def act(self):
         self.move()
@@ -75,12 +75,13 @@ class Asteroid(Actor):
         self.add_image("images/asteroid.png")
         self.size = (30, 30)
         self.direction = random.randint(0, 360)
+        self.costume.show_info_overlay()
 
     def act(self):
-        if not self.sensing_on_board():
-            self.turn_left(180)
-        else:
-            self.move()
+        borders = self.sensing_borders()
+        if borders:
+            self.bounce_from_border(borders)
+        self.move()
 
 
 class Explosion(Actor):

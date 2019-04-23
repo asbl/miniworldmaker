@@ -43,13 +43,17 @@ class Actor(token.Token):
             The new direction
 
         """
+        print(board_position[0], self.position[0], board_position[1], self.position[1])
         x = board_position[0] - self.position[0]
         y = -(board_position[1] - self.position[1])
         if x != 0:
             m = y / x
         else:
             m = 0
-        self.direction = math.degrees(math.atan(m))
+        if board_position[0] > self.position[0]:
+            self.direction = math.degrees(math.atan(m))
+        else:
+            self.direction = 180+math.degrees(math.atan(m))
         return self.direction
 
     def turn_left(self, degrees: int = 90) -> int:
@@ -119,12 +123,31 @@ class Actor(token.Token):
         Returns:
             A destination Rectangle
         """
-        direction = self.direction
         if distance < 0:
             distance = self.speed
-        x = self.position[0] + round(math.cos(math.radians(direction)) * distance)
-        y = self.position[1] - round(math.sin(math.radians(direction)) * distance)
+        x = self.position[0] + self.delta_x(distance)
+        y = self.position[1] + self.delta_y(distance)
         return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
+
+    def delta_x(self, distance):
+        return round(math.cos(math.radians(self.direction)) * distance)
+
+    def delta_y(self, distance):
+        return - round(math.sin(math.radians(self.direction)) * distance)
+
+    def bounce_from_border(self, borders):
+        new_x = 0
+        new_y = 0
+        if ("top" in borders and self.direction > 0 and self.direction <= 180):
+            new_x, new_y = self.delta_x(self.speed), -self.delta_y(self.speed)
+        elif ("bottom" in borders and self.direction > 180 and self.direction <= 360):
+            new_x, new_y = self.delta_x(self.speed), -self.delta_y(self.speed)
+        elif ("left" in borders and self.direction > 90 and self.direction <= 270):
+            new_x, new_y = - self.delta_x(self.speed), self.delta_y(self.speed)
+        elif ("right" in borders and (self.direction > 270 and self.direction <= 360) or self.direction <= 90):
+            new_x, new_y = - self.delta_x(self.speed), self.delta_y(self.speed)
+        self.point_towards_position(self.position.add(new_x, new_y))
+
 
     def sensing_tokens(self, distance: int = -1, token=None, exact = False):
         """Checks if Actor is sensing Tokens in front
@@ -234,3 +257,4 @@ class Actor(token.Token):
         else:
             self.is_flipped = False
         self.turn_left(180)
+

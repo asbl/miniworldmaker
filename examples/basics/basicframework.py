@@ -29,6 +29,7 @@ class Player(Actor):
         if not self.sensing_on_board(distance = 1):
             self.turn_left(90)
         self.move()
+        print(self.direction)
 
 
 board = MyBoard()

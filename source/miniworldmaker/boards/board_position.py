@@ -21,6 +21,13 @@ class BoardPosition:
         """Overrides the default implementation"""
         return self.near(other, self.board.default_actor_speed-1)
 
+    @classmethod
+    def from_pixel(cls, board, position: tuple):
+        column = (position[0] - board.tile_margin) // (board.tile_size + board.tile_margin)
+        row = (position[1] - board.tile_margin) // (board.tile_size + board.tile_margin)
+        return cls(column, row)
+
+
     def near(self, other, distance):
         if isinstance(other, tuple):
             other = BoardPosition(other[0], other[1])
@@ -61,3 +68,7 @@ class BoardPosition:
 
     def right(self, value : int):
         return BoardPosition(self.x+value, self.y-value)
+
+    def add(self, x, y):
+        return BoardPosition(self.x+x, self.y+y)
+
