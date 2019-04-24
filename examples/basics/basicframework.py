@@ -5,16 +5,17 @@ class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=0)
+        self.rounds = 1
+        self.counter = TextToken(str(self.rounds))
+        self.counter.size = (160,160)
+        self.add_to_board(self.counter, position=(4,3))
         player1 = Player( )
         self.add_to_board(player1, position=(3, 3))
-        player2 = Player()
-        self.add_to_board(player2, position=(8, 2))
         self.add_image(path="images/stone.png")
         self.background.is_scaled_to_tile= True
         self.background.is_textured = True
         self.background.grid_overlay = True
-        player3 = Player()
-        self.add_to_board(player3, position=(0, 1))
+
         self.window.add_container(ActionBar(self), dock = "bottom")
 
 
@@ -28,8 +29,10 @@ class Player(Actor):
     def act(self):
         if not self.sensing_on_board(distance = 1):
             self.turn_left(90)
+        if self.position == (0,0):
+            self.board.rounds += 1
+            self.board.counter.set_text(str(self.board.rounds))
         self.move()
-        print(self.direction)
 
 
 board = MyBoard()

@@ -43,7 +43,6 @@ class Actor(token.Token):
             The new direction
 
         """
-        print(board_position[0], self.position[0], board_position[1], self.position[1])
         x = board_position[0] - self.position[0]
         y = -(board_position[1] - self.position[1])
         if x != 0:

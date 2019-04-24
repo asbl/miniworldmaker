@@ -1,5 +1,6 @@
 from miniworldmaker.tools import appearance
 import pygame
+from miniworldmaker.tools import image_renderers as ir
 
 
 class Costume(appearance.Appearance):
@@ -7,12 +8,9 @@ class Costume(appearance.Appearance):
     def __init__(self, token):
         super().__init__()
         self.parent = token
-        self.size = self.parent.size
         self.is_upscaled = True
         self.is_rotatable = True
-        self.image_actions.append("info_overlay")
-        self.enabled_image_actions["info_overlay"] =  False
-        self.image_handlers["info_overlay"] = self.info_overlay
+        self.register_action("info_overlay", ir.ImageRenderer.info_overlay)
 
     def update(self):
         if self.parent.board:
@@ -37,15 +35,3 @@ class Costume(appearance.Appearance):
         self.parent.dirty = 1
         self.enabled_image_actions["info_overlay"] = False
         self.call_action("info_overlay")
-
-
-    def info_overlay(self, image):
-        pygame.draw.rect(image, self.color,
-                         (0, 0, image.get_rect().width, image.get_rect().height), 10)
-        # draw direction marker on image
-        rect = image.get_rect()
-        center = rect.center
-        x = rect.right
-        y = rect.centery
-        pygame.draw.line(image, self.color, (center[0], center[1]), (x, y))
-        return image

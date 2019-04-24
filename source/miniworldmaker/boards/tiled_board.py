@@ -75,7 +75,8 @@ class TiledBoard(Board):
         else:
             self._dynamic_actors.append(token)
         super().add_to_board(token, position)
-        token.size = (self.tile_size, self.tile_size)
+        if token.size == (0, 0):
+            token.size = (self.tile_size, self.tile_size)
         token.dirty = 1
         return token
 

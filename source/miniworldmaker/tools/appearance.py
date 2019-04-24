@@ -1,4 +1,6 @@
 import pygame
+from miniworldmaker.tools import image_renderers
+from tools import image_renderers as ir
 
 
 class Appearance:
@@ -13,22 +15,18 @@ class Appearance:
         self.image_paths = []  # list with all images
         # properties
         self._image = pygame.Surface((5,5))
-        self._image.fill((255, 0, 0, 255))
-        self.image_actions = ["orientation", "scale", "upscale", "flip", "rotate", "colorize"]
-        self.enabled_image_actions = {"orientation": False,
-                                      "scale": False,
-                                      "upscale": False,
-                                      "flip": False,
-                                      "rotate": False,
-                                      "colorize": False,}
-        self.call_image_actions = {key: False for key in self.image_actions}
-        self.image_handlers = {"orientation": self.correct_orientation,
-                               "scale": self.scale,
-                               "upscale": self.upscale,
-                               "flip": self.flip,
-                               "rotate": self.rotate,
-                               "colorize": self.colorize,
-                               }
+        self.call_image_actions = {}
+        self.image_actions = []
+        self.enabled_image_actions = {}
+        self.image_handlers = {}
+        self.register_action("texture", ir.ImageRenderer.texture, begin=True)
+        self.register_action("orientation", ir.ImageRenderer.correct_orientation)
+        self.register_action("write_text", ir.ImageRenderer.write_text)
+        self.register_action("scale", ir.ImageRenderer.scale)
+        self.register_action("upscale", ir.ImageRenderer.upscale)
+        self.register_action("flip", ir.ImageRenderer.flip)
+        self.register_action("rotate", ir.ImageRenderer.rotate)
+        self.register_action("colorize", ir.ImageRenderer.colorize)
         self.animation_speed = 60
         self._is_scaled = False
         self._is_upscaled = False
@@ -37,9 +35,21 @@ class Appearance:
         self._is_rotatable = False
         self._orientation = False
         self._is_textured = False
-        self.register_action("texture", self.texture, begin = True)
-        self.is_scaled = True
+        self._is_scaled = True
+        self._text = ""
+        self.fill_color = (0,0,255,255)
+        self.font_size = 0
+        self.text_position = (0,0)
+        self.font_path = None
         self.color = (255, 255, 255, 255)
+
+    def register_action(self, action : str, handler, begin = False):
+        if not begin:
+            self.image_actions.append(action)
+        else:
+            self.image_actions.insert(0, action)
+        self.image_handlers[action] = handler
+        self.enabled_image_actions[action] = False
 
     @property
     def is_textured(self):
@@ -55,28 +65,6 @@ class Appearance:
         self.call_image_actions["texture"] = True
         self.dirty = 1
 
-    def texture(self, image):
-        background = pygame.Surface(self.parent.size)
-        background.fill((255, 255, 255))
-        i, j, width, height = 0, 0, 0, 0
-        while width < self.parent.width:
-            while height < self.parent.height:
-                width = i * image.get_width()
-                height = j * image.get_height()
-                j += 1
-                background.blit(image, (width, height))
-            j, height = 0, 0
-            i += 1
-        self._image = background
-        return background
-
-    def register_action(self, action : str, handler, begin = False):
-        if not begin:
-            self.image_actions.append(action)
-        else:
-            self.image_actions.insert(0, action)
-        self.image_handlers[action] = handler
-        self.enabled_image_actions[action] = False
 
     @property
     def is_upscaled(self):
@@ -103,10 +91,9 @@ class Appearance:
     def is_rotatable(self, value):
         self._is_rotatable = value
         if value is True:
-            self.enabled_image_actions["rotate"] = True
+            self.enable_action("rotate")
         else:
-            self.enabled_image_actions["rotate"] = False
-        self.dirty = 1
+            self.disable_action("rotate")
 
     @property
     def orientation(self):
@@ -116,10 +103,9 @@ class Appearance:
     def orientation(self, value):
         self._orientation = value
         if value != 0:
-            self.enabled_image_actions["orientation"] = True
+            self.enable_action("orientation")
         else:
-            self.enabled_image_actions["orientation"] = False
-        self.dirty = 1
+            self.disable_action("orientation")
 
     @property
     def is_flipped(self):
@@ -129,10 +115,9 @@ class Appearance:
     def is_flipped(self, value):
         self._is_flipped = value
         if value is True:
-            self.enabled_image_actions["flip"] = True
+            self.enable_action("flip")
         else:
-            self.enabled_image_actions["flip"] = False
-        self.dirty = 1
+            self.disable_action("flip")
 
     @property
     def is_scaled(self):
@@ -141,12 +126,29 @@ class Appearance:
     @is_scaled.setter
     def is_scaled(self, value):
         if value == True:
-            self.enabled_image_actions["upscale"] = False
-            self.enabled_image_actions["scale"] = True
+            self.disable_action("upscale")
+            self.enable_action("scale")
         else:
-            self.enabled_image_actions["scale"] = True
-        self.call_image_actions["scale"] = True
-        self.dirty = 1
+            self.disable_action("scale")
+
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        """
+        Shows info overlay (Rectangle around the token and Direction marker)
+        Args:
+            color: Color of info_overlay
+        """
+        if value == "" or value is None:
+            self.text = ""
+            self.disable_action("write_text")
+        else:
+            self._text = value
+            self.enable_action("write_text")
 
     def add_image(self, img_path: str) -> int:
         if img_path in Appearance._images_dict.keys():
@@ -170,13 +172,14 @@ class Appearance:
             if self.images_list and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]
             else:
-                image = pygame.Surface(self.parent.size)
-                image.fill((0, 0, 255, 255))
+                image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
+                image.fill(self.fill_color)
+                image.set_alpha(255)
             for action in self.image_actions:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
                         if action in self.image_handlers.keys():
-                            image = self.image_handlers[action](image)
+                            image = self.image_handlers[action](image, parent = self.parent, appearance = self)
                     self.parent.dirty = 1
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
@@ -212,26 +215,6 @@ class Appearance:
         position, self.parent.size, self._image.get_at(position)
         return self._image.get_at(position)
 
-    def upscale(self, image):
-        if self.parent.size != 0:
-            scale_factor_x = self.parent.size[0] / image.get_width()
-            scale_factor_y = self.parent.size[1] / image.get_height()
-            scale_factor = min(scale_factor_x, scale_factor_y)
-            new_width = int(image.get_width() * scale_factor)
-            new_height = int(image.get_height() * scale_factor)
-            image = pygame.transform.scale(image, (new_width, new_height))
-        return image
-
-    def scale(self, image):
-        image = pygame.transform.scale(image, self.parent.size)
-        return image
-
-    def rotate(self, image):
-        return pygame.transform.rotate(image, self.parent.direction)
-
-    def correct_orientation(self, image):
-        return pygame.transform.rotate(image, self.orientation)
-
     def changed_all(self):
         self.call_image_actions = {key: True for key in self.call_image_actions}
         self.dirty = 1
@@ -239,33 +222,16 @@ class Appearance:
     def call_action(self, action):
         self.call_image_actions[action] = True
         self.dirty = 1
+        self.parent.dirty = 1
 
-    def flip(self, image) -> pygame.Surface:
-        return pygame.transform.flip(image, False, self._is_flipped)
+    def enable_action(self, action):
+        self.enabled_image_actions[action] = True
+        self.call_action(action)
+        self.parent.dirty = 1
+        self.dirty = 1
 
-    def colorize(self, image):
-        """
-        Create a "colorized" copy of a surface (replaces RGB values with the given color, preserving the per-pixel alphas of
-        original).
-        :param image: Surface to create a colorized copy of
-        :param newColor: RGB color to use (original alpha values are preserved)
-        :return: New colorized Surface instance
-        """
-        image = image.copy()
-        # zero out RGB values
-        image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
-        # add in new RGB values
-        image.fill(self.color[0:3] + (0,), None, pygame.BLEND_RGBA_ADD)
-        return image
-
-    def crop_image(self, image):
-        cropped_surface = pygame.Surface(self.parent.size)
-        cropped_surface.fill((255, 255, 255))
-        cropped_surface.blit(image, (0, 0), (0, 0, self.parent.size[0], self.parent.size[1]))
-        return cropped_surface
-
-    def set_text(self, image, text):
-        my_font = pygame.font.SysFont("monospace", self.parent.size)
-        label = my_font.render(text, 1, (0, 0, 0))
-        image.blit(label, (0, 0))
-        return image
+    def disable_action(self, action):
+        self.enabled_image_actions[action] = False
+        self.call_action(action)
+        self.parent.dirty = 1
+        self.dirty = 1
