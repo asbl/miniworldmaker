@@ -4,6 +4,11 @@ from tools import image_renderers as ir
 
 
 class Appearance:
+    """ Base class of token costumes and board backgrounds
+
+    Die Klasse enthält alle Methoden und Attribute um Bilder der Objekte anzuzeigen, zu animieren, Text auf den Bildern zu rendern  oder Overlays anzuzeigen.
+
+    """
 
     _images_dict = {}  # dict with key: image_path, value: loaded image
 
@@ -27,21 +32,15 @@ class Appearance:
         self.register_action("flip", ir.ImageRenderer.flip)
         self.register_action("rotate", ir.ImageRenderer.rotate)
         self.register_action("colorize", ir.ImageRenderer.colorize)
-        self.animation_speed = 60
-        self._is_scaled = False
-        self._is_upscaled = False
+        self.animation_speed = 60 #: The animation speed for animations
         self._is_animated = False
         self._is_flipped = False
-        self._is_rotatable = False
-        self._orientation = False
-        self._is_textured = False
-        self._is_scaled = True
         self._text = ""
-        self.fill_color = (0,0,255,255)
-        self.font_size = 0
-        self.text_position = (0,0)
-        self.font_path = None
-        self.color = (255, 255, 255, 255)
+        self.fill_color = (0,0,255,255) #: background_color if actor has no background image
+        self.font_size = 0 #: font_size if token-text != ""
+        self.text_position = (0,0) #: Position of text relative to the top-left pixel of token
+        self.font_path = None #: Path to font-file
+        self.color = (255, 255, 255, 255) #: color for overlays
 
     def register_action(self, action : str, handler, begin = False):
         if not begin:
@@ -53,11 +52,12 @@ class Appearance:
 
     @property
     def is_textured(self):
-        return self._is_textured
+        """bool: If True, the image is tiled over the background.
+        """
+        return self.enabled_image_actions["texture"]
 
     @is_textured.setter
     def is_textured(self, value):
-        self._is_textured = True
         if value is True:
             self.enabled_image_actions["upscale"] = False
             self.enabled_image_actions["scale"] = False
@@ -68,28 +68,25 @@ class Appearance:
 
     @property
     def is_upscaled(self):
-        return self._is_upscaled
+        """bool: If True, the image will be upscaled remaining aspect-ratio.
+        """
+        return self.enabled_image_actions["upscale"]
 
     @is_upscaled.setter
     def is_upscaled(self, value):
-        self._is_upscaled = value
         if value is True:
-            self.enabled_image_actions["scale"] = False
-            self.enabled_image_actions["upscale"] = True
+            self.disable_action("scale")
+            self.enable_action("upscale")
         else:
-            self.enabled_image_actions["upscale"] = False
-        self.dirty = 1
+            self.disable_action("upscale")
 
     @property
     def is_rotatable(self):
-        """
-        If is_rotatable is True, the image is rotated with actor direction.
-        """
-        return self._is_rotatable
+        """bool: If True, the image will be rotated by parent direction"""
+        return self.enabled_image_actions["rotate"]
 
     @is_rotatable.setter
     def is_rotatable(self, value):
-        self._is_rotatable = value
         if value is True:
             self.enable_action("rotate")
         else:
@@ -97,6 +94,9 @@ class Appearance:
 
     @property
     def orientation(self):
+        """bool: If True, the image will be rotated by parent orientation before it is rotated.
+
+        This should be used, if image is not pointing to right direction"""
         return self._orientation
 
     @orientation.setter
@@ -109,6 +109,9 @@ class Appearance:
 
     @property
     def is_flipped(self):
+        """bool: Flips the token by 180° degrees.
+
+        This can be used e.g. for bouncing actor at border"""
         return self._is_flipped
 
     @is_flipped.setter
@@ -121,11 +124,12 @@ class Appearance:
 
     @property
     def is_scaled(self):
-        return self._is_scaled
+        """ bool: Scales the actor to parent-size withour remaining aspect-ratio."""
+        return self.enabled_image_actions["scale"]
 
     @is_scaled.setter
     def is_scaled(self, value):
-        if value == True:
+        if value is True:
             self.disable_action("upscale")
             self.enable_action("scale")
         else:
@@ -134,16 +138,12 @@ class Appearance:
 
     @property
     def text(self):
+        """str: If text!= "", a text is drawn over the parent."""
         return self._text
 
     @text.setter
     def text(self, value):
-        """
-        Shows info overlay (Rectangle around the token and Direction marker)
-        Args:
-            color: Color of info_overlay
-        """
-        if value == "" or value is None:
+        if value == "":
             self.text = ""
             self.disable_action("write_text")
         else:
@@ -151,6 +151,15 @@ class Appearance:
             self.enable_action("write_text")
 
     def add_image(self, img_path: str) -> int:
+        """
+        Adds an image to the appearance
+
+        Args:
+            img_path: The path to the image relative to actual directory
+
+        Returns: The index of the added image.
+
+        """
         if img_path in Appearance._images_dict.keys():
             # load image from img_dict
             _image = Appearance._images_dict[img_path]
@@ -187,6 +196,11 @@ class Appearance:
         return self._image
 
     def next_sprite(self):
+        """
+
+        Returns: Switches the image of the appearance
+
+        """
         if self._image_index < len(self.images_list) - 1:
             self._image_index = self._image_index + 1
         else:
@@ -196,23 +210,43 @@ class Appearance:
 
     @property
     def is_animated(self):
+        """bool: If True, the image will be animated.
+        Depends on appearance.animation_speed
+        """
         return self._is_animated
 
     @is_animated.setter
     def is_animated(self, value):
         self._is_animated = value
 
-    def color_at_rect(self, rect, color, threshold=(0, 0, 0, 0)):
-        cropped = pygame.Surface((rect.width, rect.height))
-        cropped.blit(self._image, (0, 0), rect)
+    def count_pixels_by_color(self, rect, color, threshold=(0, 0, 0, 0)):
+        """ Counts the number of pixels of a color under the appearance.
+
+        Args:
+            color: The color
+            threshold: The allowed deviation from the color splitted into r,g,b and alpha values.
+
+        Returns: The number of matching pixes
+
+        """
+        surf = pygame.Surface((rect.width, rect.height))
+        surf.blit(self._image, (0, 0), rect)
         return pygame.transform.threshold(dest_surf=None,
                                           set_behavior=0,
-                                          surf=cropped,
+                                          surf=surf,
                                           search_color=color,
                                           threshold=threshold)
 
     def color_at(self, position):
-        position, self.parent.size, self._image.get_at(position)
+        """
+        Returns the color at a specific position
+
+        Args:
+            position: The position to search for
+
+        Returns: The color
+
+        """
         return self._image.get_at(position)
 
     def changed_all(self):

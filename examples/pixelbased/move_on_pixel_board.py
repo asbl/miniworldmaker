@@ -21,7 +21,7 @@ class Player(Actor):
         self.move()
 
     def get_event(self, event, data):
-        if event == "key":
+        if event == "key_pressed":
             if "W" in data:
                 self.point_in_direction("up")
             elif "S" in data:

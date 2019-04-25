@@ -384,8 +384,7 @@ class Board(container.Container):
                 self.set_active_actor(self.get_token_by_pixel(data)[0])
         else:
             for token in tokens:
-                if "all" in token.registered_events or event in token.registered_events:
-                    token.get_event(event, data)
+                token.get_event(event, data)
 
     def set_active_actor(self, token: token.Token):
         self.active_actor = token
@@ -507,7 +506,7 @@ class Board(container.Container):
         return self.background.color_at(self.get_pixel_from_board_position(pos=position))
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.background.color_at_rect(rect, color, threshold)
+        return self.background.count_pixels_by_color(rect, color, threshold)
 
     def get_mouse_position(self):
         pos = pygame.mouse.get_pos()

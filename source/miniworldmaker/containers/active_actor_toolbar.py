@@ -59,4 +59,4 @@ class ActorButton(ToolbarButton):
     def get_event(self, event, data):
         if not  self.toolbar.window.board.active_actor == self.actor:
             self.toolbar.window.board.set_active_actor(token = self.actor)
-            self.actor.costume.show_info_overlay()
+            self.actor.costume.info_overlay = True

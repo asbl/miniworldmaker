@@ -15,6 +15,7 @@ class Toolbar(Container):
         self.row_margin = 4
         self.margin_left = 10
         self.margin_right = 10
+
         self.dirty = 1
 
     def get_widget(self, index):

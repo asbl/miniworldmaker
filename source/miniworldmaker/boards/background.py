@@ -6,7 +6,7 @@ from miniworldmaker.tools import image_renderers as ir
 class Background(appearance.Appearance):
     def __init__(self, board):
         super().__init__()
-        self.parent = board
+        self.parent = board #: The parent of a Background is the associated board.
         self.register_action("grid", ir.ImageRenderer.show_grid)
         self.register_action("scale_to_tile", ir.ImageRenderer.scale_to_tile, begin = True)
 
@@ -17,6 +17,7 @@ class Background(appearance.Appearance):
 
     @property
     def grid_overlay(self):
+        """bool: Renders a grid overlay."""
         return self.enabled_image_actions["grid"]
 
     @grid_overlay.setter
@@ -35,6 +36,10 @@ class Background(appearance.Appearance):
 
     @property
     def is_scaled_to_tile(self):
+        """bool: Scaled image to tile_size.
+
+        Scales the image to Tile_size. This is needed if you want to texture the background on a Tiled_Board and want the texture to fill one tile at a time.
+        """
         return self.enabled_image_actions["scale_to_tile"]
 
     @is_scaled_to_tile.setter
