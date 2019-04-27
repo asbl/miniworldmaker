@@ -18,6 +18,7 @@ class Player(Actor):
         super().__init__()
         self.add_image(path="images/char_blue.png")
         self.costume.is_upscaled = True
+        self.costume.orientation = - 90
 
     def act(self):
         if self.sensing_on_board():

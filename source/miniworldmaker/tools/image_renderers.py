@@ -35,15 +35,16 @@ class ImageRenderer:
 
     @staticmethod
     def rotate(image : pygame.Surface, parent, appearance) -> pygame.Surface:
-        return pygame.transform.rotate(image, parent.direction)
+
+        return pygame.transform.rotate(image, - (parent.direction))
 
     @staticmethod
     def correct_orientation(image : pygame.Surface, parent, appearance) -> pygame.Surface:
-        return pygame.transform.rotate(image, appearance.orientation)
+        return pygame.transform.rotate(image, - appearance.orientation )
 
     @staticmethod
     def flip(image : pygame.Surface, parent, appearance) -> pygame.Surface:
-        return pygame.transform.flip(image, False, parent.is_flipped)
+        return pygame.transform.flip(image, appearance.is_flipped, False)
 
     @staticmethod
     def colorize(image : pygame.Surface, parent, appearance) -> pygame.Surface:

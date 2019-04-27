@@ -26,6 +26,7 @@ class Robot(Actor):
     def __init__(self):
         super().__init__()
         self.add_image(path="images/robo_green.png")
+        self.costume.orientation = - 90
 
     def act(self):
         actors = self.sensing_tokens(token=Wall)

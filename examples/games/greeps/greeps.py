@@ -72,10 +72,10 @@ class Ship(Actor):
         self.size = (80, 80)
         self.target_position = target_position
         self.greeps = 0
-        self.costume.overlay = True
         self.costume.is_rotatable = False
         self.speed = 20
         self.stop = False
+
 
     def act(self):
         if self.position != self.target_position and not self.stop:
@@ -115,6 +115,7 @@ class Greep(Actor):
         self.carrys_tomato = False
         self.memory = 0
         self.speed = 5
+        self.costume.orientation = - 90
 
     def move(self, distance: int = 1) -> BoardPosition:
         if self.is_valid_move():

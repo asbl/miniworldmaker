@@ -24,7 +24,7 @@ class Ship(Actor):
         super().__init__()
         self.spinning = 0
         self.add_image("images/ship.png")
-        self.costume.orientation = 270
+        self.costume.orientation = 0
 
     def get_event(self, event, data):
         if event == "key_down":

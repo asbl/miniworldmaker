@@ -35,6 +35,7 @@ class Appearance:
         self.animation_speed = 60 #: The animation speed for animations
         self._is_animated = False
         self._is_flipped = False
+        self._orientation = 90
         self._text = ""
         self.fill_color = (0,0,255,255) #: background_color if actor has no background image
         self.font_size = 0 #: font_size if token-text != ""
@@ -102,10 +103,6 @@ class Appearance:
     @orientation.setter
     def orientation(self, value):
         self._orientation = value
-        if value != 0:
-            self.enable_action("orientation")
-        else:
-            self.disable_action("orientation")
 
     @property
     def is_flipped(self):
@@ -117,8 +114,10 @@ class Appearance:
     @is_flipped.setter
     def is_flipped(self, value):
         self._is_flipped = value
+        print("is_flipped", value)
         if value is True:
             self.enable_action("flip")
+            print("enable flip")
         else:
             self.disable_action("flip")
 

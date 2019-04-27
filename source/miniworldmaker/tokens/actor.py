@@ -1,9 +1,11 @@
+from __future__ import annotations
 from logging import *
 from typing import Union
 import pygame
 import math
 from miniworldmaker.tokens import token
 from miniworldmaker.boards import board_position
+
 
 
 class Actor(token.Token):
@@ -16,6 +18,7 @@ class Actor(token.Token):
         self.is_static = False
         self.costume.is_rotatable = True
         self.registered_events.extend(["key_pressed", "key_down"])
+        self._orientation = 0
 
     def point_in_direction(self, direction) -> int:
         """
@@ -32,28 +35,52 @@ class Actor(token.Token):
         self.direction = direction
         return self.direction
 
-    def point_towards_position(self, board_position) -> int:
+    def point_towards_position(self, destination_position, center = False) -> int:
         """
         Actor points towards a given position
 
         Args:
-            board_position: The position to which the actor should pointing
+            destination_position: The position to which the actor should pointing
 
         Returns:
             The new direction
 
         """
-        x = board_position[0] - self.position[0]
-        y = -(board_position[1] - self.position[1])
+        if center is True:
+            pos = self.rect.center
+        else:
+            pos = self.position
+        x =  (destination_position[0] - pos[0])
+        y =  (destination_position[1] - pos[1])
         if x != 0:
             m = y / x
         else:
             m = 0
-        if board_position[0] > self.position[0]:
-            self.direction = math.degrees(math.atan(m))
+            if destination_position[1] > self.position[1]:
+                self.direction = 180
+                return 180
+            else:
+                self.direction = 0
+                return 0
+        if destination_position[0] > self.position[0]:
+            self.direction = 90 + math.degrees(math.atan(m))
         else:
-            self.direction = 180+math.degrees(math.atan(m))
+            self.direction = 270 +  math.degrees(math.atan(m))
         return self.direction
+
+    def point_towards_token(self, token) -> int:
+        """
+        Actor points towards a given position
+
+        Args:
+            destination_position: The position to which the actor should pointing
+
+        Returns:
+            The new direction
+
+        """
+        pos = token.rect.center
+        return self.point_towards_position(pos, center = True)
 
     def turn_left(self, degrees: int = 90) -> int:
         """Turns actor by *degrees* degrees left
@@ -65,8 +92,7 @@ class Actor(token.Token):
             New direction
 
         """
-        direction = self.direction + degrees
-        self.direction = direction
+        self.direction = self.direction - degrees
         return self.direction
 
     def turn_right(self, degrees: int = 90):
@@ -79,76 +105,118 @@ class Actor(token.Token):
             New direction
 
         """
-        direction = self.direction - degrees
-        self.direction = direction
+        self.direction = self.direction + degrees
         return self.direction
 
-    def move_to(self, position = board_position.BoardPosition) -> board_position.BoardPosition:
+    def move_in_direction(self, direction : int) -> Actor:
         """Moves actor *distance* steps into a *direction*.
 
         Args:
             distance: Number of steps to move
 
         Returns:
-            New position
+            The actor
+
+        """
+        self.direction = direction
+        self.move()
+        return self
+
+    def move_to(self, position : board_position.BoardPosition) -> Actor:
+        """Moves actor *distance* steps into a *direction*.
+
+        Args:
+            position: The position to which the actor should move
+
+        Returns:
+            The actor
 
         """
         self.position = position
-        return self.position
+        return self
 
-    def move(self, distance: int = -1) -> board_position.BoardPosition:
+    def move(self, distance: int = 0) -> Actor:
         """Moves actor *distance* steps into a *direction*.
 
         Args:
-            distance: Number of steps to move
+            distance: Number of steps to move. If distance = 0, the actor speed will be used.
 
         Returns:
-            New position
+            The actor
 
         """
-        if distance < 0:
+        if distance == 0:
             distance = self.speed
         destination = self.look(distance=distance)
         self.position = self.board.get_board_position_from_pixel(destination.topleft)
-        return self.position
+        self.last_direction=self.direction
+        return self
 
-    def look(self, distance: int = -1, ) -> pygame.Rect:
+    def look(self, distance: int) -> pygame.Rect:
         """Looks *distance* steps into a *direction*.
 
         Args:
-            direction: The direction in degrees (int) or a direction as string
             distance: Number of steps to look
 
         Returns:
             A destination Rectangle
         """
-        if distance < 0:
-            distance = self.speed
         x = self.position[0] + self.delta_x(distance)
         y = self.position[1] + self.delta_y(distance)
         return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
 
     def delta_x(self, distance):
-        return round(math.cos(math.radians(self.direction)) * distance)
+        return round( math.sin(math.radians(self.direction)) * distance)
 
     def delta_y(self, distance):
-        return - round(math.sin(math.radians(self.direction)) * distance)
+        return - round(math.cos(math.radians(self.direction)) * distance)
 
-    def bounce_from_border(self, borders):
-        new_x = 0
-        new_y = 0
-        if ("top" in borders and self.direction > 0 and self.direction <= 180):
-            new_x, new_y = self.delta_x(self.speed), -self.delta_y(self.speed)
-        elif ("bottom" in borders and self.direction > 180 and self.direction <= 360):
-            new_x, new_y = self.delta_x(self.speed), -self.delta_y(self.speed)
-        elif ("left" in borders and self.direction > 90 and self.direction <= 270):
-            new_x, new_y = - self.delta_x(self.speed), self.delta_y(self.speed)
-        elif ("right" in borders and (self.direction > 270 and self.direction <= 360) or self.direction <= 90):
-            new_x, new_y = - self.delta_x(self.speed), self.delta_y(self.speed)
-        self.point_towards_position(self.position.add(new_x, new_y))
+    def bounce_from_border(self, borders) -> Actor:
+        """ Bounces the actor from a border.
 
+        Args:
+            borders: A list of borders as strings e.g. ["left", "right"]
 
-    def sensing_tokens(self, distance: int = -1, token=None, exact = False):
+        Returns: The actor
+
+        """
+        angle = self.direction
+        if ("top" in borders and ((self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction>=0))):
+            self.point_in_direction(0)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        elif ("bottom" in borders and ((self.direction < -90 and self.direction > -180) or (self.direction > 90 and self.direction < 180))):
+            self.point_in_direction(180)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        elif ("left" in borders and self.direction <= 0):
+            self.point_in_direction(-90)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        elif ("right" in borders and (self.direction >= 0)):
+            self.point_in_direction(90)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        else:
+            pass
+        return self
+
+    def bounce_from_token(self, token) -> Actor:
+        """experimental: Bounces actor from another token
+        Args:
+            token: the token
+
+        Returns: the actor
+
+        """
+        angle = self.direction
+        self.move(-self.speed)
+        self.point_towards_token(token)
+        incidence = self.direction - angle
+        self.turn_left(180 - incidence)
+        return self
+
+    def sensing_tokens(self, distance: int = -1, token=None, exact = False) -> list:
         """Checks if Actor is sensing Tokens in front
 
         Args:
@@ -168,7 +236,7 @@ class Actor(token.Token):
             return  [token for token in tokens if pygame.sprite.collide_mask(self,token)]
         return tokens
 
-    def sensing_token(self, distance: int = -1, token=None, exact = False) -> token.Token:
+    def sensing_token(self, distance: int = -1, token=None, exact = False) -> Union[token.Token,None]:
         """Checks if actor is sensing a single token in front. See sensing_tokens
 
         Args:
@@ -190,7 +258,7 @@ class Actor(token.Token):
                 if tokens:
                     return tokens[0]
                 else:
-                    return []
+                    return None
         return token
 
     def sensing_borders(self, distance: int = -1) -> list:
@@ -246,14 +314,13 @@ class Actor(token.Token):
         colors = self.board.find_colors(destination_rect, color)
         return colors
 
-
     def flip_x(self):
         """Flips the actor by 180° degrees
 
         """
-        if not self.is_flipped:
-            self.is_flipped = True
+        if not self.costume.is_flipped:
+            self.costume.is_flipped = True
         else:
-            self.is_flipped = False
+            self.costume.is_flipped = False
         self.turn_left(180)
 

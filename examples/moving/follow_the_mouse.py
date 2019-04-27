@@ -15,6 +15,7 @@ class Robot(Actor):
         super().__init__()
         self.size = (30, 30)
         self.add_image("images/robo_green.png")
+        self.costume.orientation = - 90
 
     def act(self):
         mouse = self.board.get_mouse_position()

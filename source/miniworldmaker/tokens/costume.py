@@ -11,6 +11,7 @@ class Costume(appearance.Appearance):
         self.is_upscaled = True
         self.is_rotatable = True
         self.register_action("info_overlay", ir.ImageRenderer.info_overlay)
+        self.enable_action("orientation")
 
     def update(self):
         if self.parent.board:

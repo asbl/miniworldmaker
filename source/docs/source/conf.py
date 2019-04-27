@@ -18,7 +18,6 @@ sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../../miniworldmaker'))
 from recommonmark.parser import CommonMarkParser
 from recommonmark.transform import AutoStructify
-
 # -- Project information -----------------------------------------------------
 
 project = 'miniworldmaker'
@@ -29,7 +28,6 @@ author = 'Andreas Siebel'
 version = ''
 # The full version, including alpha/beta/rc tags
 release = '2019'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -53,6 +51,7 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.graphviz',
     'sphinx.ext.napoleon',
+    'sphinx_autodoc_future_annotations'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -214,3 +213,4 @@ def setup(app):
             'enable_auto_toc_tree' : True,
             }, True)
     app.add_transform(AutoStructify)
+

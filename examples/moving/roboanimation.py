@@ -18,6 +18,8 @@ class Robot(Actor):
         self.size = (105, 105)
         self.costume.animation_speed = 30
         self.costume.is_animated = True
+        self.costume.orientation = - 90
+        self.direction = "right"
 
     def act(self):
         if self.sensing_on_board():

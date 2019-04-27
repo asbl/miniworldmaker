@@ -8,9 +8,17 @@ Winkel sind unabhängig von der Ausrichtung der Spielfigur:
 
 ![movement](/_images/movement.jpg)
 
-  * 0° bedeutet eine Bewegung nach rechts.
+  * 0° bedeutet eine Bewegung nach oben.
   
-  * 90° eine Bewegung nach oben (usw).
+  * 90° eine Bewegung nach rechts.
+  
+  * 180° oder - 180° bedeutet eine Bewegung nach unten
+  
+  * -90° bedeutet eine Bewegung nach links
+  
+Die Interpretation von Richtungen entsprechen der populären Programmiersprache Scratch, siehe https://en.scratch-wiki.info/wiki/Direction_(value)
+
+Es gibt eine Ausnahme: Die Default-Direction ist in Miniworldmaker 0°, d.h. Tokens zeigen nach oben.
   
 ### Winkel als Strings
 

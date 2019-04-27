@@ -14,6 +14,7 @@ class Robot(Actor):
         super().__init__()
         self.add_image("images/robo_green.png")
         self.size=(30, 30)
+        self.costume.orientation = - 90
 
     def act(self):
         self.move()

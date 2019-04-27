@@ -22,6 +22,8 @@ class Player(Actor):
         super().__init__()
         self.add_image("images/ship.png")
         self.size = (30,30)
+        self.direction = 90
+        self.costume.orientation = - 90
 
     def get_event(self,event, data):
         if event == "key_pressed":

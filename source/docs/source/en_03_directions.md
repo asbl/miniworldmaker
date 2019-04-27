@@ -8,9 +8,17 @@ Angles are independent of the orientation of the character:
 
 ![movement](/_images/movement.jpg)
 
-  * 0° means a movement to the right.
+  * 0° means a movement upwards.
   
-  * 90° means a movement upwards (etc.).
+  * 90° means a movement to the right..
+  
+  * 180° oder - 180° means a movement downwards.
+  
+  * -90° means a movement to the right.
+
+The interpretation of directions corresponds to the popular programming language Scratch, see https://en.scratch-wiki.info/wiki/Direction_(value)
+
+There is one exception: The default direction in Miniworldmaker is 0°, i.e. tokens point upwards.
   
 ### Angles as Strings
 

@@ -12,7 +12,7 @@ class MyBoard(PixelBoard):
                                          position=(random.randint(60, screen_x - 30),
                                                    random.randint(60, screen_y - 30)))
             asteroids.append(asteroid)
-        self.player = self.add_to_board(Player(), position=(20, 20))
+        self.player = self.add_to_board(Player(), position=(20, 120))
         self.add_image("images/galaxy.jpg")
         # Preload explosion for faster image handling
         explosion = Explosion()
@@ -24,6 +24,7 @@ class Player(Actor):
         super().__init__()
         self.add_image("images/ship.png")
         self.size = (30,30)
+        self.costume.orientation = - 90
 
     def get_event(self,event, data):
         if event == "key_pressed":
@@ -57,7 +58,7 @@ class Laser(Actor):
         self.add_image("images/laser.png")
         self.size = (30, 30)
         self.direction = direction
-        self.costume.orientation = 270
+        self.costume.orientation = 180
         self.speed = 15
 
     def add_to_board(self, board, position):

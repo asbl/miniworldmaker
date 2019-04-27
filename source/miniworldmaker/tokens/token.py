@@ -26,7 +26,7 @@ class Token(pygame.sprite.DirtySprite):
         self._direction = 0
         # public
         self.last_position = (0,0)
-        self.last_direction = 0
+        self.last_direction = 90
         self.token_id = Token.token_count + 1
         self.is_static = True
         self.board = None
@@ -35,6 +35,7 @@ class Token(pygame.sprite.DirtySprite):
         self._image = pygame.Surface((1, 1))
         self.costumes = [self.costume]
         self.costume.is_upscaled = True
+        self.costume.orientation = 0
         self.init = 1
         self.speed = 0
         self.registered_events = ["mouse_left", "mouse_right"]
@@ -87,6 +88,7 @@ class Token(pygame.sprite.DirtySprite):
     def add_costume(self, path: str) -> costume.Costume:
         new_costume = costume.Costume(self)
         new_costume.add_image(path)
+        new_costume.orientation = self.costume.orientation
         self.costumes.append(new_costume)
         return new_costume
 
@@ -124,7 +126,7 @@ class Token(pygame.sprite.DirtySprite):
             0°:  East, x degrees clock-wise otherwise
             You can also set the direction by String ("forward", "up", "down", ...
         """
-        return self._direction
+        return (self._direction + 180) % 360 - 180
 
     @direction.setter
     def direction(self, value):
@@ -168,6 +170,26 @@ class Token(pygame.sprite.DirtySprite):
             self.board.window.send_event_to_containers("actor_moved", self)
 
     @property
+    def x(self):
+        """int: The x-value of an token
+        """
+        return self._position[0]
+
+    @x.setter
+    def x(self, value):
+        self.position = (value, self.y)
+
+    @property
+    def y(self):
+        """int: The x-value of an token
+        """
+        return self._position[1]
+
+    @y.setter
+    def y(self, value):
+        self.position = (self.x, value)
+
+    @property
     def class_name(self) -> str:
         return self.__class__.__name__
 
@@ -186,14 +208,14 @@ class Token(pygame.sprite.DirtySprite):
             self.costume.update()
 
     def _value_to_direction(self, value) -> int:
-        if value == "right":
+        if value == "top" or value == "up":
             value = 0
         if value == "left":
-            value = 180
-        if value == "up":
+            value = 270
+        if value == "right":
             value = 90
         if value == "down":
-            value = 270
+            value = 180
         if value == "forward":
             value = self.direction
         if value == "back":

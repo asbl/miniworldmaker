@@ -24,7 +24,7 @@ class Player(Actor):
     def __init__(self):
         super().__init__()
         self.add_image(path="images/char_blue.png")
-        # self.costume.show_info_overlay((0,100,255))
+        self.costume.orientation = - 90
 
     def act(self):
         if not self.sensing_on_board(distance = 1):

@@ -23,7 +23,7 @@ class Rocket(Actor):
         self.add_image("images/ship.png")
         self.started = False
         self.turn_left(90)
-        self.costume.orientation = 270
+        self.direction = "up"
 
     def act(self):
         if self.started:

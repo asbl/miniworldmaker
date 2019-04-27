@@ -7,9 +7,10 @@ class MyBoard(TiledBoard):
         robot1 = Robot()
         robot1.add_image("images/robo_green.png")
         self.add_to_board(robot1, position=(0, 0))
+        robot1.direction = "right"
         robot2 = Robot()
         robot2.add_image("images/robo_yellow.png")
-        robot2.turn_left(180)
+        robot2.direction = "left"
         self.add_to_board(robot2, position=(28, 0))
         self.add_image(path="images/water.png")
 
@@ -23,6 +24,8 @@ class Explosion(Token):
 class Robot(Actor):
     def __init__(self):
         super().__init__()
+        self.costume.orientation = - 90
+
 
     def act(self):
         self.move()

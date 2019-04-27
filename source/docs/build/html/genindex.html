@@ -18,33 +18,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -193,7 +195,7 @@
 <li class="toctree-l4"><a class="reference internal" href="de_05_sensing.html#sensing-tokens">Sensing Tokens</a></li>
 <li class="toctree-l4"><a class="reference internal" href="de_05_sensing.html#sensing-token">Sensing Token</a></li>
 <li class="toctree-l4"><a class="reference internal" href="de_05_sensing.html#sensing-border">Sensing Border</a></li>
-<li class="toctree-l4"><a class="reference internal" href="de_05_sensing.html#sensing-border">Sensing Border</a></li>
+<li class="toctree-l4"><a class="reference internal" href="de_05_sensing.html#id1">Sensing Border</a></li>
 <li class="toctree-l4"><a class="reference internal" href="de_05_sensing.html#sensing-color">Sensing Color</a></li>
 </ul>
 </li>
@@ -367,6 +369,8 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -420,9 +424,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules_appearances.html#miniworldmaker.boards.background.Background">Background (class in miniworldmaker.boards.background)</a>
 </li>
+      <li><a href="modules_boards.html#miniworldmaker.boards.board.Board">Board (class in miniworldmaker.boards.board)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules_boards.html#miniworldmaker.boards.board.Board">Board (class in miniworldmaker.boards.board)</a>
+      <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.bounce_from_border">bounce_from_border() (miniworldmaker.tokens.actor.Actor method)</a>
+</li>
+      <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.bounce_from_token">bounce_from_token() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -528,6 +536,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.move_in_direction">move_in_direction() (miniworldmaker.tokens.actor.Actor method)</a>
+</li>
       <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.move_to">move_to() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
   </ul></td>
@@ -562,11 +572,13 @@
         <li><a href="modules_appearances.html#miniworldmaker.tokens.costume.Costume.parent">(miniworldmaker.tokens.costume.Costume attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.point_in_direction">point_in_direction() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.point_towards_position">point_towards_position() (miniworldmaker.tokens.actor.Actor method)</a>
+</li>
+      <li><a href="modules_tokens.html#miniworldmaker.tokens.actor.Actor.point_towards_token">point_towards_token() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
       <li><a href="modules_tokens.html#miniworldmaker.tokens.token.Token.position">position (miniworldmaker.tokens.token.Token attribute)</a>
 </li>
@@ -643,6 +655,22 @@
   </ul></td>
 </tr></table>
 
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules_tokens.html#miniworldmaker.tokens.token.Token.x">x (miniworldmaker.tokens.token.Token attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules_tokens.html#miniworldmaker.tokens.token.Token.y">y (miniworldmaker.tokens.token.Token attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 
 
            </div>
@@ -655,7 +683,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Andreas Siebel.
+        &copy; Copyright 2019, Andreas Siebel
 
     </p>
   </div>
@@ -672,36 +700,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2019',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
