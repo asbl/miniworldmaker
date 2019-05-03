@@ -3,6 +3,8 @@ import os
 import pygame
 from miniworldmaker.tools import keys
 from miniworldmaker.containers import container
+import pkg_resources
+
 
 class MiniWorldWindow:
     log = logging.getLogger("Window")
@@ -27,10 +29,22 @@ class MiniWorldWindow:
         except:
             pass
 
-    def show(self, image):
-        self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
+    def show(self, image, fullscreen : bool = False, log = False):
+        if fullscreen:
+            self.window_surface = pygame.display.set_mode((self.window_width, self.window_height),
+                                                          pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+        else:
+            self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
+        if log == True:
+            logging.basicConfig(level=logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.INFO)
+        version = pkg_resources.require("MiniWorldMaker")[0].version
+        MiniWorldWindow.log.info("Show new MiniWorldMaker v.{0} Window".format(version))
+
         self.window.window_surface.blit(image, self.board.rect)
         # self.tokens.clear(image, self.image)
+        MiniWorldWindow.log.info("Window width: {0}, height: {1}".format(self.window_width, self.window_height))
         pygame.display.update([image.get_rect()])
         while not self._quit:
             self.update()
@@ -98,8 +112,11 @@ class MiniWorldWindow:
 
     def process_pygame_events(self):
         if pygame.key.get_pressed().count(1) != 0:
-           keys_pressed = pygame.key.get_pressed()
-           self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
+            keys_pressed = pygame.key.get_pressed()
+            key_codes = keys.key_codes_to_keys(keys_pressed)
+            if "STRG" in key_codes and "Q" in key_codes:
+                self._call_quit_event()
+            self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:

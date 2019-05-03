@@ -38,7 +38,7 @@ The API
 
 Here you will find all the information you need if you want to access classes, methods and attributes directly.
 
-  * [Modules](./modules.md)
+  * [Modules](modules.md)
 
 
 Status

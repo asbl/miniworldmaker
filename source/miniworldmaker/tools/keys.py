@@ -31,7 +31,8 @@ KEYS = {113: "Q",
         275: "RIGHT",
         13: "ENTER",
         304: "L_SHIFT",
-        303: "R_SHIFT"
+        303: "R_SHIFT",
+        306: "STRG"
         }
 
 

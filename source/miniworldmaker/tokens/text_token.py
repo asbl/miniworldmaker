@@ -10,3 +10,6 @@ class TextToken(token.Token):
 
     def set_text(self, text):
         self.costume.text = text
+
+    def get_text(self):
+        return self.costume.text

@@ -82,7 +82,7 @@ class Token(pygame.sprite.DirtySprite):
         else:
             return self._rect
 
-    def add_image(self, path: str) -> int:
+    def add_image(self, path: str, crop: tuple = (0, 0, 0, 0)) -> int:
         return self.costume.add_image(path)
 
     def add_costume(self, path: str) -> costume.Costume:

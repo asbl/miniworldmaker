@@ -6,16 +6,11 @@ Tokens
    :top-classes: miniworldmaker.tokens.token.Token
 ```
 
-### Token
-
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.token.Token
-   :members:
+.. toctree::
+   :glob:
+   
+   tokens/*
 ```
 
-### Actor
 
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
-   :members:
-```

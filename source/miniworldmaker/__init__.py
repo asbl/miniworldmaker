@@ -8,6 +8,7 @@ import miniworldmaker.tools.image_renderers
 from miniworldmaker import boards
 from miniworldmaker.tokens.token import Token
 from miniworldmaker.tokens.text_token import TextToken
+from miniworldmaker.tokens.number_token import NumberToken
 from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.boards.tiled_board import TiledBoard
 from miniworldmaker.boards.pixel_board import PixelBoard
@@ -26,6 +27,7 @@ from miniworldmaker.boards.board_position import BoardPosition
 
 __all__ = ['Token',
            'TextToken',
+           'NumberToken',
            'Actor',
            'TiledBoard',
            'SelectTokenTypeToolbar',

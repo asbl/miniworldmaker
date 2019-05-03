@@ -1,11 +1,9 @@
-from __future__ import annotations
 from logging import *
 from typing import Union
 import pygame
 import math
 from miniworldmaker.tokens import token
 from miniworldmaker.boards import board_position
-
 
 
 class Actor(token.Token):
@@ -108,7 +106,7 @@ class Actor(token.Token):
         self.direction = self.direction + degrees
         return self.direction
 
-    def move_in_direction(self, direction : int) -> Actor:
+    def move_in_direction(self, direction : Union[int, str]):
         """Moves actor *distance* steps into a *direction*.
 
         Args:
@@ -118,11 +116,13 @@ class Actor(token.Token):
             The actor
 
         """
+        direction = direction = self._value_to_direction(direction)
         self.direction = direction
+        self.costume.is_rotatable = False
         self.move()
         return self
 
-    def move_to(self, position : board_position.BoardPosition) -> Actor:
+    def move_to(self, position : board_position.BoardPosition):
         """Moves actor *distance* steps into a *direction*.
 
         Args:
@@ -135,7 +135,7 @@ class Actor(token.Token):
         self.position = position
         return self
 
-    def move(self, distance: int = 0) -> Actor:
+    def move(self, distance: int = 0):
         """Moves actor *distance* steps into a *direction*.
 
         Args:
@@ -171,7 +171,7 @@ class Actor(token.Token):
     def delta_y(self, distance):
         return - round(math.cos(math.radians(self.direction)) * distance)
 
-    def bounce_from_border(self, borders) -> Actor:
+    def bounce_from_border(self, borders):
         """ Bounces the actor from a border.
 
         Args:
@@ -201,7 +201,7 @@ class Actor(token.Token):
             pass
         return self
 
-    def bounce_from_token(self, token) -> Actor:
+    def bounce_from_token(self, token):
         """experimental: Bounces actor from another token
         Args:
             token: the token

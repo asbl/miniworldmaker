@@ -29,6 +29,5 @@ class Robot(Actor):
 
 
 board = MyBoard()
-board.show_log()
 board.speed = 100
 board.show()

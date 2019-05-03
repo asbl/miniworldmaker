@@ -1,6 +1,11 @@
 API
 ====
 
-  * [Boards](./modules_boards.md)
-  * [Tokens](./modules_tokens.md)
-  * [Backgrounds and Costumes](./modules_appearances.md)
+```eval_rst
+.. toctree::
+   :glob:
+   
+   modules/boards.md
+   modules/tokens.md
+   modules/appearances.md
+```

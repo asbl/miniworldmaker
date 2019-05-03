@@ -40,6 +40,7 @@ miniworldmaker/tokens/__init__.py
 miniworldmaker/tokens/actor.py
 miniworldmaker/tokens/actor_physics_actor.py
 miniworldmaker/tokens/costume.py
+miniworldmaker/tokens/number_token.py
 miniworldmaker/tokens/text_token.py
 miniworldmaker/tokens/token.py
 miniworldmaker/tools/__init__.py

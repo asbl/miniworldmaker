@@ -1,6 +1,5 @@
 import pygame
-from miniworldmaker.tools import image_renderers
-from tools import image_renderers as ir
+from miniworldmaker.tools import image_renderers as ir
 
 
 class Appearance:
@@ -155,6 +154,7 @@ class Appearance:
 
         Args:
             img_path: The path to the image relative to actual directory
+            crop: tuple: x,y,width, height
 
         Returns: The index of the added image.
 
@@ -168,7 +168,9 @@ class Appearance:
                 _image = pygame.image.load(img_path).convert()
             else:
                 _image = pygame.image.load(img_path).convert_alpha()
-                Appearance._images_dict[img_path] = _image
+            Appearance._images_dict[img_path] = _image
+
+
         self.images_list.append(_image)
         self.image_paths.append(img_path)
         self.dirty = 1
