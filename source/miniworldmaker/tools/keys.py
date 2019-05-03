@@ -42,4 +42,5 @@ def key_codes_to_keys(key_pressed_list: list) :
         if item:
             if index in KEYS:
                 keys.append(KEYS.get(index))
+                keys.append(KEYS.get(index).lower())
     return keys

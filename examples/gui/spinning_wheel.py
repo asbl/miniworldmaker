@@ -9,8 +9,7 @@ class MyBoard(TiledBoard):
         super().__init__(tile_size=100, columns=3, rows=3, tile_margin=1)
         toolbar = self.window.add_container(Toolbar(), dock="right")
         toolbar.add_widget(ToolbarButton("Spin"))
-        self.arrow = Arrow()
-        self.add_to_board(self.arrow, (1, 1))
+        self.arrow = Arrow((1, 1))
         self.chip = None
         self.placed = False
         self.add_image("images/greenfield.jpg")
@@ -18,27 +17,21 @@ class MyBoard(TiledBoard):
     def get_event(self, event, data):
         if event == "button":
             if data == "Spin":
-                print(self.placed)
                 if self.placed:
                     self.arrow.spin()
                 else:
                     easygui.msgbox("Du musst zuerst einen Chip setzen")
         if event == "mouse_left" and self.placed is False:
             position = self.get_board_position_from_pixel(data)
-            print("clicked", position)
-            print(position == (1, 1))
             if not position == (1, 1):
-                self.chip = Chip()
-                chip = self.add_to_board(self.chip, position)
-                print(chip)
-                if chip:
-                    print("placed, true", chip)
+                self.chip = Chip(position)
+                if self.chip:
                     self.placed = True
 
 class Arrow(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.spinning = 0
         self.add_image("images/arrow.png")
 
@@ -62,8 +55,8 @@ class Arrow(Actor):
 
 class Chip(Token):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/chip.png")
 
 my_grid = MyBoard()
