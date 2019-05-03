@@ -4,6 +4,7 @@ from typing import Union
 import pygame
 from miniworldmaker.boards import board_position
 from miniworldmaker.tokens import costume
+from miniworldmaker.windows import miniworldwindow
 
 
 class Token(pygame.sprite.DirtySprite):
@@ -12,12 +13,12 @@ class Token(pygame.sprite.DirtySprite):
     log = getLogger("Token")
     lookup = True
 
-    def __init__(self):
+    def __init__(self, position = None):
         super().__init__()
         self.costume = None
         # private
         self._size = (0, 0)  # Tuple with size
-        self._position: board_position = None
+        self._position: board_position = position
         self._on_board = False
         self._is_at_border = False
         self._at_borders_list = False
@@ -25,11 +26,11 @@ class Token(pygame.sprite.DirtySprite):
         Token.token_count += 1
         self._direction = 0
         # public
+        self.board = None
         self.last_position = (0,0)
         self.last_direction = 90
         self.token_id = Token.token_count + 1
         self.is_static = True
-        self.board = None
         # costume
         self.costume = costume.Costume(self)
         self._image = pygame.Surface((1, 1))
@@ -39,6 +40,11 @@ class Token(pygame.sprite.DirtySprite):
         self.init = 1
         self.speed = 0
         self.registered_events = ["mouse_left", "mouse_right"]
+        if position is not None:
+            self.board = miniworldwindow.MiniWorldWindow.board
+            self.board.add_to_board(self, position)
+        else:
+            board = None
 
 
     @property
@@ -116,8 +122,8 @@ class Token(pygame.sprite.DirtySprite):
             self.dirty = 1
             if self.init != 1:
                 raise UnboundLocalError("Init was not called")
-        except:
-            raise ()
+        except UnboundLocalError:
+            raise
 
     @property
     def direction(self) -> int:

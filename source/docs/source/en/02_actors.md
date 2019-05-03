@@ -44,3 +44,19 @@ Lines 3 and 4 can also be combined:
 ```
   player1 = self.add_actor(Player(), position=(3, 3))
 ```
+
+
+Alternatively you can create the actor directly by adding a parameter position and passing it to the parent class.
+```
+class Player(Actor):
+
+    def __init__(self, position):
+        super().__init__(position)
+        self.add_image(path="images/char_blue.png")
+```
+
+An object can now be created with:
+
+```
+  player1 = Player(position=(3, 3))
+```

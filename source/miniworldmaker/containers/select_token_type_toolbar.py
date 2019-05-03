@@ -17,7 +17,7 @@ class ActorButton(ToolbarWidget):
         super().__init__()
         self.parent = parent
         self.board = board
-        token = self.board.registered_token_types[token_type]()
+        token = self.board.registered_token_types[token_type](position = None)
         self._img_path = token.costume.image_paths[0]
         self._text_padding = 30
         self.set_text(token_type)

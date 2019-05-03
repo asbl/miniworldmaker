@@ -37,7 +37,25 @@ class Player(Actor):
   * Zeile 3 erstellt das Player Objekt (und ruft die init()-Methode auf.
   * Zeile 4 fügt das erstellte Objekt dem Spielfeld hinzu, damit die Figur nicht im "Niemandsland" lebt.
 
-  Zeile 3 und 4 kann man auch kombinieren:
+Zeile 3 und 4 kann man auch kombinieren:
+
 ```
   player1 = self.add_actor(Player(), position=(3, 3))
+```
+
+### Alternative
+
+Alternativ kann man den Actor auch direkt so erstelen, indem man einen Parameter position hinzufügt und diesen anschließend der Vater-Klasse übergibt.
+```
+class Player(Actor):
+
+    def __init__(self, position):
+        super().__init__(position)
+        self.add_image(path="images/char_blue.png")
+```
+
+Ein Objekt kann jetzt erstellt werden mit:
+
+```
+  player1 = Player(position=(3, 3))
 ```

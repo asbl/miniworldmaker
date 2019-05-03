@@ -8,7 +8,7 @@ class MyBoard(TiledBoard):
                          columns=20,
                          rows=20,
                          tile_margin=0)
-        robo1 = self.add_to_board(Robot(), position=(1, 1))
+        robo1 = Robot(position=(1, 1))
         # Draw border
         for i in range(self.rows):
             self.add_to_board(Wall(), position=(0, i))
@@ -23,8 +23,8 @@ class MyBoard(TiledBoard):
 
 class Robot(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image(path="images/robo_green.png")
         self.costume.orientation = - 90
 

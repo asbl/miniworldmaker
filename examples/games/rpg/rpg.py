@@ -8,21 +8,22 @@ class MyBoard(TiledBoard):
         super().__init__(columns=30, rows=20, tile_size=20, tile_margin=0)
         for i in range(self.rows):
             for j in range(self.columns):
-                self.add_to_board(Grass(), (j, i))
-        wall = self.add_to_board(Wall(), (0, 4))
-        self.add_to_board(Wall(), (1, 4))
-        self.add_to_board(Wall(), (2, 4))
-        self.add_to_board(Wall(), (3, 4))
-        self.add_to_board(Wall(), (4, 4))
-        self.add_to_board(Wall(), (5, 4))
-        self.add_to_board(Wall(), (6, 4))
-        self.add_to_board(Wall(), (6, 0))
-        self.add_to_board(Wall(), (6, 1))
-        self.add_to_board(Wall(), (6, 3))
-        self.torch = self.add_to_board(Torch(), (10, 4))
-        self.fireplace = self.add_to_board(Fireplace(), (10, 14))
-        self.door = self.add_to_board(Door(), (6, 2))
-        self.add_to_board(Player(), (8, 2))
+                Grass((j, i))
+        Wall((0, 4))
+        Wall((1, 4))
+        Wall((2, 4))
+        Wall((3, 4))
+        Wall((4, 4))
+        Wall((5, 4))
+        Wall((6, 4))
+        Wall((6, 0))
+        Wall((6, 1))
+        Wall((6, 2))
+        Wall((6, 3))
+        self.torch = Torch((10, 4))
+        self.fireplace = Fireplace((10, 14))
+        self.door = Door((6, 2))
+        Player((8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
@@ -31,8 +32,8 @@ class MyBoard(TiledBoard):
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("rpgimages/knight.png")
         self.costume.is_rotatable = False
         self.inventory = []
@@ -93,30 +94,30 @@ class Player(Actor):
 
 class Wall(Token):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.is_blocking = True
         self.add_image("rpgimages/wall.png")
 
 
 class Grass(Token):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("rpgimages/grass.png")
 
 
 class Torch(Token):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("rpgimages/torch.png")
 
 
 class Fireplace(Token):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("rpgimages/fireplace_0.png")
         burned = self.add_costume("rpgimages/fireplace_1.png")
         burned.add_image("rpgimages/fireplace_2.png")
@@ -132,8 +133,8 @@ class Fireplace(Token):
 
 class Door(Token):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("rpgimages/door_closed.png")
         self.add_costume("rpgimages/door_open.png")
         self.closed = True

@@ -8,20 +8,19 @@ class MyBoard(PixelBoard):
         super().__init__(columns=screen_x, rows=screen_y)
         asteroids = list()
         for i in range(5):
-            asteroid = self.add_to_board(Asteroid(),
-                                         position=(random.randint(60, screen_x - 30),
-                                                   random.randint(60, screen_y - 30)))
+            asteroid = Asteroid( position=(random.randint(30, screen_x - 30),
+                                                   random.randint(0 + 30, screen_y - 30))),
             asteroids.append(asteroid)
-        self.player = self.add_to_board(Player(), position=(20, 120))
+        Player(position=(40, 40))
         self.add_image("images/galaxy.jpg")
         # Preload explosion for faster image handling
-        explosion = Explosion()
+        explosion = Explosion(position = None)
 
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/ship.png")
         self.size = (30,30)
         self.costume.orientation = - 90
@@ -42,19 +41,19 @@ class Player(Actor):
         if borders:
             self.bounce_from_border(borders)
         if self.sensing_token(token=Asteroid, exact= True):
-            explosion = self.board.add_to_board(Explosion(), position=self.position.up(40).left(40))
+            explosion = Explosion( position=self.position.up(40).left(40))
             explosion.costume.is_animated = True
             self.board.play_sound("sounds/explosion.wav")
             self.remove()
 
     def shoot(self):
-        laser = Laser(self.direction)
-        self.board.add_to_board(laser, self.position.down(10))
+        laser = Laser(direction = self.direction, position = self.position.down(10))
+        print(laser)
 
 
 class Laser(Actor):
-    def __init__(self, direction):
-        super().__init__()
+    def __init__(self, direction, position):
+        super().__init__(position)
         self.add_image("images/laser.png")
         self.size = (30, 30)
         self.direction = direction
@@ -70,7 +69,7 @@ class Laser(Actor):
         token = self.sensing_token(token = Asteroid, exact = True)
         if token:
             token.remove()
-            explosion = self.board.add_to_board(Explosion(), position=token.position.up(40).left(40))
+            explosion = Explosion(position=token.position.up(40).left(40))
             explosion.costume.is_animated = True
             explosion.costume.text_position = (100,100)
             explosion.costume.text = "100"
@@ -79,8 +78,8 @@ class Laser(Actor):
 
 
 class Asteroid(Actor):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/asteroid.png")
         self.size = (30, 30)
         self.direction = random.randint(0, 360)
@@ -93,8 +92,8 @@ class Asteroid(Actor):
 
 
 class Explosion(Actor):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.size = (128,128)
         self.add_image("images/explosion00.png")
         self.add_image("images/explosion01.png")

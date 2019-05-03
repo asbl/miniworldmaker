@@ -6,17 +6,17 @@ class MyBoard(PixelBoard):
         height, width = 500, 280
         super().__init__(columns=width, rows=height)
         self.background.add_image("images/background.png")
-        self.add_to_board(Bird(), (75, 200))
-        self.pipe1 = self.add_to_board(Pipe(top=False), (260, height - 260) )
-        self.pipe2 = self.add_to_board(Pipe(top=True), (520, 0) )
-        self.score = self.add_to_board(NumberToken(0),(0, 0))
+        Bird((75, 200))
+        self.pipe1 = Pipe(top=False, position = (260, height - 260))
+        self.pipe2 = Pipe(top=True, position = (520, 0))
+        self.score = NumberToken(0, (0, 0))
         self.score.size = (80,80)
 
 
 class Bird(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/flappy.png")
         self.size = (100, 100)
         self.v_y = 1
@@ -39,8 +39,8 @@ class Bird(Actor):
 
 class Pipe(Actor):
 
-    def __init__(self, top):
-        super().__init__()
+    def __init__(self, top, position):
+        super().__init__(position)
         self.add_image("images/pipe1.png")
         self.size = (80, 260)
         self.passed = False

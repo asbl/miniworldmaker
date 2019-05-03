@@ -113,10 +113,8 @@ class Appearance:
     @is_flipped.setter
     def is_flipped(self, value):
         self._is_flipped = value
-        print("is_flipped", value)
         if value is True:
             self.enable_action("flip")
-            print("enable flip")
         else:
             self.disable_action("flip")
 
@@ -189,7 +187,8 @@ class Appearance:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
                         if action in self.image_handlers.keys():
-                            image = self.image_handlers[action](image, parent = self.parent, appearance = self)
+                            if self.parent.size!=(0,0):
+                                image = self.image_handlers[action](image, parent = self.parent, appearance = self)
                     self.parent.dirty = 1
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}

@@ -6,9 +6,9 @@ class PongBoard(PixelBoard):
     def __init__(self):
         super().__init__(600, 400)
         self.background.fill_color = (0, 0, 0)
-        self.player1 = self.add_to_board(Paddle("left"), (10, 130))
-        self.player2 = self.add_to_board(Paddle("right"), (580, 330))
-        self.ball = self.add_to_board(Ball(), (395,295))
+        self.player1 = Paddle("left", (10, 130))
+        self.player2 = Paddle("right", (580, 330))
+        self.ball = Ball((395,295))
         self.ball.direction = 100
 
     def get_event(self, event, data):
@@ -24,8 +24,8 @@ class PongBoard(PixelBoard):
 
 
 class Paddle(Actor):
-    def __init__(self, border):
-        super().__init__()
+    def __init__(self, border, position):
+        super().__init__(position)
         self.size = (10, 80)
         self.costume.fill_color = (255,255,255)
         self.costume.is_rotatable = False
@@ -34,8 +34,9 @@ class Paddle(Actor):
 
 
 class Ball(Actor):
-    def __init__(self):
-        super().__init__()
+
+    def __init__(self, position):
+        super().__init__(position)
         self.size = (10, 10)
         self.costume.fill_color = (255, 255, 255)
         self.speed = 10

@@ -5,16 +5,15 @@ class MyBoard(PixelBoard):
 
     def __init__(self):
         super().__init__(columns=200, rows=200)
-        player1 = Player()
+        player1 = Player(position=(30, 30))
         self.add_image("images/soccer_green.jpg")
-        self.add_to_board(player1, position=(30, 30))
 
 
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/robo_green.png")
         self.costume.orientation = - 90
 

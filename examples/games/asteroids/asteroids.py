@@ -8,18 +8,17 @@ class MyBoard(PixelBoard):
         super().__init__(columns=screen_x, rows=screen_y)
         asteroids = list()
         for i in range(5):
-            asteroid = self.add_to_board(Asteroid(),
-                                         position=(random.randint(30, screen_x - 30),
-                                                   random.randint(0 + 30, screen_y - 30)))
+            asteroid = Asteroid( position=(random.randint(30, screen_x - 30),
+                                                   random.randint(0 + 30, screen_y - 30))),
             asteroids.append(asteroid)
-        self.player = self.add_to_board(Player(), position=(40, 40))
+        Player(position=(40, 40))
         self.add_image("images/galaxy.jpg")
 
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/ship.png")
         self.size = (30,30)
         self.direction = 90
@@ -43,10 +42,9 @@ class Player(Actor):
             self.remove()
 
 
-
 class Asteroid(Actor):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/asteroid.png")
         self.size = (30, 30)
         self.direction = random.randint(0, 360)

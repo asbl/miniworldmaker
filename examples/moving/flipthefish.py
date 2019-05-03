@@ -5,15 +5,14 @@ class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(tile_size=50, columns=10, rows=1, tile_margin=1)
-        player1 = Player()
-        self.add_to_board(player1, position=(0, 0))
+        player1 = Player((0, 0))
         self.add_image("images/water.png")
 
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image(path="images/fish.png")
         self.costume.orientation = - 90
         self.direction = "right"

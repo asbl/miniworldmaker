@@ -2,8 +2,8 @@ from miniworldmaker.tokens import text_token
 
 class NumberToken(text_token.TextToken):
 
-    def __init__(self, number):
-        super().__init__(str(number))
+    def __init__(self, number, position):
+        super().__init__(str(number), position)
         self.number = number
 
     def inc(self):

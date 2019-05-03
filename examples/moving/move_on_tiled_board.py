@@ -5,17 +5,14 @@ class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
-        player1 = Player()
-        player = self.add_to_board(player1, position=(1, 1))
-        print(player.image.get_rect())
-        print(player.size)
+        player1 = Player(position=(1, 1))
         self.add_image(path="images/soccer_green.jpg")
 
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image(path="images/char_blue.png")
         self.costume.is_upscaled = True
         self.costume.orientation = - 90

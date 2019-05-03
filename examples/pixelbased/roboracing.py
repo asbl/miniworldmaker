@@ -6,12 +6,12 @@ class MyBoard(PixelBoard):
     def __init__(self):
         super().__init__(columns=400, rows=400)
         self.add_image("images/stone.jpg")
-        robo1 = self.add_to_board(Robot(), (20, 20))
+        robo1 = Robot((20, 20))
         print(robo1)
 
 class Robot(Actor):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/robo_green.png")
         self.size=(30, 30)
         self.costume.orientation = - 90

@@ -9,20 +9,18 @@ class MyBoard(TiledBoard):
         self.counter = TextToken(str(self.rounds))
         self.counter.size = (160,160)
         self.add_to_board(self.counter, position=(4,3))
-        player1 = Player( )
-        self.add_to_board(player1, position=(3, 3))
+        player1 = Player(position=(3, 3))
         self.add_image(path="images/stone.png")
         self.background.is_scaled_to_tile= True
         self.background.is_textured = True
         self.background.grid_overlay = True
-
         self.window.add_container(ActionBar(self), dock = "bottom")
 
 
 class Player(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image(path="images/char_blue.png")
         self.costume.orientation = - 90
 

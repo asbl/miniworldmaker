@@ -24,39 +24,39 @@ class MyBoard(TiledBoard):
     def get_event(self, event, data):
         if event == "mouse_left":
             position = self.get_board_position_from_pixel(data)
-            actor = self.add_to_board(self.create_world_toolbar.selected_actor(), position=position)
+            token = self.create_world_toolbar.selected_actor(position=position)
         elif event == "mouse_right":
             position = self.get_board_position_from_pixel(data)
             self.remove_tokens_in_area(position)
 
 
 class Robot(Actor):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/robo_green.png")
 
 
 class Wall(Token):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/rock.png")
 
 
 class Gold(Token):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/stone_gold.png")
 
 
 class Diamond(Token):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/stone_blue.png",)
 
 
 class Emerald(Token):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, position):
+        super().__init__(position)
         self.add_image("images/stone_green.png")
 
 

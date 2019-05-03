@@ -1,8 +1,9 @@
 from miniworldmaker.tokens import token
 
+
 class TextToken(token.Token):
-    def __init__(self, text):
-        super().__init__()
+    def __init__(self, text, position = None):
+        super().__init__(position)
         self.costume.fill_color=(0,0,0,0)
         self.costume.font_size = 80
         self.costume.text = text

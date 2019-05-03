@@ -9,10 +9,10 @@ from miniworldmaker.boards import board_position
 class Actor(token.Token):
     log = getLogger("Actor")
 
-    def __init__(self):
+    def __init__(self, position = None):
         """Initializes a new Actor
         """
-        super().__init__()
+        super().__init__(position)
         self.is_static = False
         self.costume.is_rotatable = True
         self.registered_events.extend(["key_pressed", "key_down"])

@@ -8,7 +8,7 @@ from miniworldmaker.boards import board_position
 
 class TiledBoard(Board):
 
-    def __init__(self, columns: int = 20, rows: int = 16, tile_size=16, tile_margin=0):
+    def __init__(self, columns: int = 20, rows: int = 16, tile_size=42, tile_margin=0):
         """Initializes the TiledBoard
 
         Args:
