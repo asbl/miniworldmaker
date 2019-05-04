@@ -239,6 +239,19 @@ class Board(container.Container):
         self.window.send_event_to_containers("Added token", token)
         return token
 
+    def reset(self):
+        """Resets the board
+        Creates a new board with init-function - recreates all tokens and actors on the board.
+
+        Returns:
+            The newly created and reseted board
+        """
+        board = self.__class__()
+        board.is_running = False
+        board.window.send_event_to_containers("reset", board)
+        board.show()
+        return board
+
     def get_token_by_pixel(self, pixel: tuple) -> list:
         """Gets all tokens by Pixel.
 
