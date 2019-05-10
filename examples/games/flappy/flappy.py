@@ -1,5 +1,6 @@
 from miniworldmaker import *
 
+
 class MyBoard(PixelBoard):
 
     def __init__(self):
@@ -11,6 +12,7 @@ class MyBoard(PixelBoard):
         self.pipe2 = Pipe(top=True, position = (520, 0))
         self.score = NumberToken(0, (0, 0))
         self.score.size = (80,80)
+        self.is_running = False
 
 
 class Bird(Actor):
@@ -31,10 +33,13 @@ class Bird(Actor):
         pipes = self.sensing_token(token = Pipe, exact= True)
         if pipes:
             self.board.is_running = False
+            self.board.reset()
 
     def get_event(self, event, data):
         if event == "key_pressed" and "SPACE" in data:
             self.v_y = -5
+            if self.board.is_running == False:
+                self.board.is_running = True
 
 
 class Pipe(Actor):

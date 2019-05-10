@@ -61,11 +61,6 @@ class Token(pygame.sprite.DirtySprite):
             self.costume.enabled_image_actions["flip"] = False
             self.costume.call_action("flip")
 
-    def colorize(self, color):
-        self.costume.color = color
-        self.costume.enabled_image_actions["colorize"] = True
-        self.costume.call_action("colorize")
-
     def __str__(self):
         if self.board:
             return "Klasse: {0}; ID: {1}, Position: {2}".format(self.class_name, self.token_id, self.rect)
@@ -88,7 +83,7 @@ class Token(pygame.sprite.DirtySprite):
         else:
             return self._rect
 
-    def add_image(self, path: str, crop: tuple = (0, 0, 0, 0)) -> int:
+    def add_image(self, path: str) -> int:
         return self.costume.add_image(path)
 
     def add_costume(self, path: str) -> costume.Costume:
@@ -98,20 +93,27 @@ class Token(pygame.sprite.DirtySprite):
         self.costumes.append(new_costume)
         return new_costume
 
-    def switch_costume(self, id=-1):
-        if id == -1:
+    def switch_costume(self, index=-1) -> costume.Costume:
+        """Switches costume
+
+        Args:
+            index: The index of the new costume. If index=-1, the next costume will be selected
+
+        Returns: The new costume
+
+        """
+        if index == -1:
             index = self.costumes.index(self.costume)
             if index < len(self.costumes) - 1:
                 index += 1
             else:
                 index = 0
         else:
-            index = id
+            index = index
         self.costume = self.costumes[index]
         self.costume.dirty = 1
         self.costume.changed_all()
         self.dirty = 1
-
         return self.costume
 
     def add_to_board(self, board, position: board_position.BoardPosition):
@@ -146,14 +148,14 @@ class Token(pygame.sprite.DirtySprite):
             self.board.window.send_event_to_containers("actor_changed_direction", self)
 
     @property
-    def size(self):
+    def size(self) -> tuple:
         """Size of the token
 
         """
         return self._size
 
     @size.setter
-    def size(self, value):
+    def size(self, value :tuple):
         self._size = value
         self.dirty = 1
         self.costume.call_action("scale")
@@ -236,23 +238,6 @@ class Token(pygame.sprite.DirtySprite):
             self.board.remove_from_board(self)
         self.kill()
         del (self)
-
-    def is_colliding(self):
-        return self.board.is_colliding(self)
-
-    def get_colliding_tokens(self):
-        return self.board.get_colliding_tokens(self)
-
-    def is_colliding_with(self, class_name):
-        colliding_tokens = self.board.get_colliding_tokens(self)
-        from boards import board
-        return board.Board.filter_actor_list(colliding_tokens, class_name)
-
-    def is_at_border(self):
-        return self.board.borders(self.rect)
-
-    def is_on_the_board(self):
-        return self.board.is_on_board(self.rect)
 
     def get_event(self, event, data):
         pass

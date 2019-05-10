@@ -92,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="en/02_actors.html">Actors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#create-new-actor-class">Create new Actor-Class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#add-the-player-to-the-board">Add the player to the board</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#actors-and-tokens">Actors and tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="en/03_directions.html">Directions</a><ul>
@@ -171,6 +172,7 @@
 <li class="toctree-l3"><a class="reference internal" href="de/02_actors.html#eine-neue-actor-klasse-erstellen">Eine neue Actor-Klasse erstellen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="de/02_actors.html#den-akteur-zum-spielfeld-hinzufugen">Den Akteur zum Spielfeld hinzufügen</a></li>
 <li class="toctree-l3"><a class="reference internal" href="de/02_actors.html#alternative">Alternative</a></li>
+<li class="toctree-l3"><a class="reference internal" href="de/02_actors.html#akteure-und-tokens">Akteure und Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="de/03_directions.html">Richtungen</a><ul>
@@ -263,7 +265,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modules/appearances.html">Costumes and Backgrounds</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="modules/appearances/appearance.html">Appearance</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modules/appearances/backround.html">Background</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/appearances/background.html">Background</a></li>
 <li class="toctree-l3"><a class="reference internal" href="modules/appearances/costume.html">Costume</a></li>
 </ul>
 </li>
@@ -273,7 +275,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="status.html">Status</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="status.html#roadmap">Roadmap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="status.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="status.html#next-goals">Next Goals</a></li>
 <li class="toctree-l2"><a class="reference internal" href="status.html#changelog">Changelog</a></li>
 </ul>
 </li>
@@ -426,7 +428,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/appearances/backround.html#miniworldmaker.boards.background.Background">Background (class in miniworldmaker.boards.background)</a>
+      <li><a href="modules/appearances/background.html#miniworldmaker.boards.background.Background">Background (class in miniworldmaker.boards.background)</a>
 </li>
       <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board">Board (class in miniworldmaker.boards.board)</a>
 </li>
@@ -492,11 +494,11 @@
 </li>
       <li><a href="modules/boards/boards_pixel_board.html#miniworldmaker.boards.tiled_board.TiledBoard.get_neighbour_cells">get_neighbour_cells() (miniworldmaker.boards.tiled_board.TiledBoard static method)</a>, <a href="modules/boards/boards_tiled_board.html#miniworldmaker.boards.tiled_board.TiledBoard.get_neighbour_cells">[1]</a>
 </li>
-      <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.get_token_by_pixel">get_token_by_pixel() (miniworldmaker.boards.board.Board method)</a>
+      <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.get_token_in_area">get_token_in_area() (miniworldmaker.boards.board.Board method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.get_token_in_area">get_token_in_area() (miniworldmaker.boards.board.Board method)</a>
+      <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.get_tokens_by_pixel">get_tokens_by_pixel() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.get_tokens_in_area">get_tokens_in_area() (miniworldmaker.boards.board.Board method)</a>
 
@@ -504,7 +506,7 @@
         <li><a href="modules/boards/boards_pixel_board.html#miniworldmaker.boards.tiled_board.TiledBoard.get_tokens_in_area">(miniworldmaker.boards.tiled_board.TiledBoard method)</a>, <a href="modules/boards/boards_tiled_board.html#miniworldmaker.boards.tiled_board.TiledBoard.get_tokens_in_area">[1]</a>
 </li>
       </ul></li>
-      <li><a href="modules/appearances/backround.html#miniworldmaker.boards.background.Background.grid_overlay">grid_overlay (miniworldmaker.boards.background.Background attribute)</a>
+      <li><a href="modules/appearances/background.html#miniworldmaker.boards.background.Background.grid_overlay">grid_overlay (miniworldmaker.boards.background.Background attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -538,7 +540,7 @@
 </li>
       <li><a href="modules/appearances/appearance.html#miniworldmaker.tools.appearance.Appearance.is_scaled">is_scaled (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
-      <li><a href="modules/appearances/backround.html#miniworldmaker.boards.background.Background.is_scaled_to_tile">is_scaled_to_tile (miniworldmaker.boards.background.Background attribute)</a>
+      <li><a href="modules/appearances/background.html#miniworldmaker.boards.background.Background.is_scaled_to_tile">is_scaled_to_tile (miniworldmaker.boards.background.Background attribute)</a>
 </li>
       <li><a href="modules/appearances/appearance.html#miniworldmaker.tools.appearance.Appearance.is_textured">is_textured (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
@@ -572,7 +574,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/appearances/backround.html#miniworldmaker.boards.background.Background.next_sprite">next_sprite() (miniworldmaker.boards.background.Background method)</a>
+      <li><a href="modules/appearances/background.html#miniworldmaker.boards.background.Background.next_sprite">next_sprite() (miniworldmaker.boards.background.Background method)</a>
 
       <ul>
         <li><a href="modules/appearances/appearance.html#miniworldmaker.tools.appearance.Appearance.next_sprite">(miniworldmaker.tools.appearance.Appearance method)</a>
@@ -592,7 +594,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/appearances/backround.html#miniworldmaker.boards.background.Background.parent">parent (miniworldmaker.boards.background.Background attribute)</a>
+      <li><a href="modules/appearances/background.html#miniworldmaker.boards.background.Background.parent">parent (miniworldmaker.boards.background.Background attribute)</a>
 
       <ul>
         <li><a href="modules/appearances/costume.html#miniworldmaker.tokens.costume.Costume.parent">(miniworldmaker.tokens.costume.Costume attribute)</a>
@@ -630,6 +632,8 @@
         <li><a href="modules/boards/boards_pixel_board.html#miniworldmaker.boards.tiled_board.TiledBoard.remove_from_board">(miniworldmaker.boards.tiled_board.TiledBoard method)</a>, <a href="modules/boards/boards_tiled_board.html#miniworldmaker.boards.tiled_board.TiledBoard.remove_from_board">[1]</a>
 </li>
       </ul></li>
+      <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.reset">reset() (miniworldmaker.boards.board.Board method)</a>
+</li>
       <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.rows">rows (miniworldmaker.boards.board.Board attribute)</a>
 </li>
   </ul></td>
@@ -641,6 +645,8 @@
       <li><a href="modules/tokens/actor.html#miniworldmaker.tokens.actor.Actor.sensing_borders">sensing_borders() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
       <li><a href="modules/tokens/actor.html#miniworldmaker.tokens.actor.Actor.sensing_color">sensing_color() (miniworldmaker.tokens.actor.Actor method)</a>
+</li>
+      <li><a href="modules/tokens/actor.html#miniworldmaker.tokens.actor.Actor.sensing_colors">sensing_colors() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
       <li><a href="modules/tokens/actor.html#miniworldmaker.tokens.actor.Actor.sensing_on_board">sensing_on_board() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
@@ -655,6 +661,8 @@
       <li><a href="modules/boards/boards_board.html#miniworldmaker.boards.board.Board.show">show() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/tokens/token.html#miniworldmaker.tokens.token.Token.size">size (miniworldmaker.tokens.token.Token attribute)</a>
+</li>
+      <li><a href="modules/tokens/token.html#miniworldmaker.tokens.token.Token.switch_costume">switch_costume() (miniworldmaker.tokens.token.Token method)</a>
 </li>
   </ul></td>
 </tr></table>

@@ -252,7 +252,7 @@ class Board(container.Container):
         board.show()
         return board
 
-    def get_token_by_pixel(self, pixel: tuple) -> list:
+    def get_tokens_by_pixel(self, pixel: tuple) -> list:
         """Gets all tokens by Pixel.
 
         This method can be used, if you want to get a token by mouse-clock
@@ -415,8 +415,8 @@ class Board(container.Container):
     def pass_event(self, event, data=None):
         tokens = [token for token in self.tokens if token.is_static is False]
         if event == "mouse_left":
-            if self.get_token_by_pixel(data):
-                self.set_active_actor(self.get_token_by_pixel(data)[0])
+            if self.get_tokens_by_pixel(data):
+                self.set_active_actor(self.get_tokens_by_pixel(data)[0])
         else:
             for token in tokens:
                 token.get_event(event, data)
@@ -497,44 +497,40 @@ class Board(container.Container):
     def register_token_type(class_name):
         Board.registered_token_types[class_name.__name__] = class_name
 
-    def play_sound(self, sound_path: str):
-        if sound_path.endswith("mp3"):
-            sound_path = sound_path[:-4] + "wav"
-        if sound_path in self.sound_effects.keys():
-            self.sound_effects[sound_path].play()
+    def play_sound(self, path: str):
+        if path.endswith("mp3"):
+            path = path[:-4] + "wav"
+        if path in self.sound_effects.keys():
+            self.sound_effects[path].play()
         else:
-            effect = self.register_sound(sound_path)
+            effect = self.register_sound(path)
             effect.play()
 
-    def register_sound(self, sound_path) -> pygame.mixer.Sound:
+    def register_sound(self, path) -> pygame.mixer.Sound:
         """
         Registers a sound effect to board-sound effects library
         Args:
-            sound_path: The path to sound
+            path: The path to sound
 
         Returns: the sound
 
         """
-        effect = pygame.mixer.Sound(sound_path)
-        self.sound_effects[sound_path] = effect
+        effect = pygame.mixer.Sound(path)
+        self.sound_effects[path] = effect
         return effect
 
-    def play_music(self, music_path : str):
+    def play_music(self, path : str):
         """
         plays a music by path
 
         Args:
-            music_path: The path to the music
+            path: The path to the music
 
         Returns:
 
         """
-        pygame.mixer.music.load(music_path)
+        pygame.mixer.music.load(path)
         pygame.mixer.music.play(-1)
-
-    def get_pixel_from_board_position(self, pos: board_position.BoardPosition) -> pygame.Rect:
-        rect = pos.to_rect()
-        return rect.topleft
 
     def get_board_position_from_pixel(self, position: tuple) -> board_position.BoardPosition:
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
@@ -545,11 +541,32 @@ class Board(container.Container):
         position = position.topleft
         return self.get_board_position_from_pixel(position)
 
-    def get_color_at_board_position(self, position: Union[tuple, board_position.BoardPosition]) -> list:
+    def get_color_at_board_position(self, position: Union[tuple, board_position.BoardPosition]) -> tuple:
         if type(position == tuple):
-            position = board_position.BoardPosition(position[1], position[0])
-        self.dirty = 1
-        return self.background.color_at(self.get_pixel_from_board_position(pos=position))
+            position = board_position.BoardPosition(position[0], position[1])
+        return self.background.color_at(position.to_pixel())
+
+    def get_color_at_rect(self, rect : pygame.Rect, directions = None) -> list:
+        colors = []
+        for x in range(rect.width):
+            if directions is None or "left" in directions:
+                color = self.background.color_at((rect.x+x, rect.y))
+                if color not in colors:
+                    colors.append(color)
+            if directions is None or "right" in directions:
+                color = self.background.color_at((rect.x+x, rect.y+rect.height))
+                if color not in colors:
+                    colors.append(color)
+        for y in range(rect.height):
+            if directions is None or "top" in directions:
+                color = self.background.color_at((rect.x, rect.y+y))
+                if color not in colors:
+                   colors.append(color)
+            if directions is None or "bottom" in directions:
+                color = self.background.color_at((rect.x+rect.width, rect.y+y))
+                if color not in colors:
+                    colors.append(color)
+        return colors
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.background.count_pixels_by_color(rect, color, threshold)
@@ -558,6 +575,6 @@ class Board(container.Container):
         pos = pygame.mouse.get_pos()
         clicked_container = self.window.get_container_by_pixel(pos[0], pos[1])
         if clicked_container == self:
-            return board_position.BoardPosition.from_pixel(self, pos)
+            return pos
         else:
             return None

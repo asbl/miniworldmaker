@@ -1,22 +1,23 @@
 Project Status
 ==============
 
-MiniWorldMaker is currently in the pre-release phase. 
-In the coming weeks some functions may change.
+Framework is now used in classroom. There won't be much API changes in the next weeks
 
 ### Roadmap
 
 
 Mid April: Version 1.0
 
-### Goals
-  
-  * Stable API
+### Next Goals
   
   * Additional examples
   
+  * Increase the robustness
+  
   
 ### Changelog
+
+  * 05.05.2019 : Framework is now used in classroom. There won't be much API changes in the next weeks.
 
   * 08.04.2019 : Again many changes in the API. Started english translation.
 

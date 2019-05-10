@@ -4,11 +4,13 @@ from miniworldmaker.tools import image_renderers as ir
 
 
 class Background(appearance.Appearance):
+
     def __init__(self, board):
         super().__init__()
         self.parent = board #: The parent of a Background is the associated board.
         self.register_action("grid", ir.ImageRenderer.show_grid)
         self.register_action("scale_to_tile", ir.ImageRenderer.scale_to_tile, begin = True)
+        self.dirty = 1
 
     def next_sprite(self):
         super().next_sprite()
@@ -50,5 +52,6 @@ class Background(appearance.Appearance):
             self.enabled_image_actions["scale_to_tile"] = True
             self.enabled_image_actions["scale"] = False
             self.enabled_image_actions["upscale"] = False
+            self.tile_size = self.parent.tile_size
         self.call_image_actions["scale_to_tile"] = True
         self.dirty = 1

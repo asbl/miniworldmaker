@@ -1,5 +1,6 @@
 import pygame
 from miniworldmaker.tools import image_renderers as ir
+from miniworldmaker.boards import board_position
 
 
 class Appearance:
@@ -9,10 +10,9 @@ class Appearance:
 
     """
 
-    _images_dict = {}  # dict with key: image_path, value: loaded image
-
     def __init__(self):
         self.dirty = 0
+        self.blit_images = []
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
@@ -146,31 +146,23 @@ class Appearance:
             self._text = value
             self.enable_action("write_text")
 
-    def add_image(self, img_path: str) -> int:
+    def add_image(self, path: str) -> int:
         """
         Adds an image to the appearance
 
         Args:
-            img_path: The path to the image relative to actual directory
+            path: The path to the image relative to actual directory
             crop: tuple: x,y,width, height
 
         Returns: The index of the added image.
 
         """
-        if img_path in Appearance._images_dict.keys():
-            # load image from img_dict
-            _image = Appearance._images_dict[img_path]
-        else:
-            # create new image and add to img_dict
-            if self.__class__.__name__ == "Background":
-                _image = pygame.image.load(img_path).convert()
-            else:
-                _image = pygame.image.load(img_path).convert_alpha()
-            Appearance._images_dict[img_path] = _image
-
-
+        alpha = False
+        if self.__class__.__name__ != "Background":
+            alpha = True
+        _image = ir.ImageRenderer.load_image(path=path, alpha=alpha)
         self.images_list.append(_image)
-        self.image_paths.append(img_path)
+        self.image_paths.append(path)
         self.dirty = 1
         return len(self.images_list) - 1
 
@@ -190,6 +182,8 @@ class Appearance:
                             if self.parent.size!=(0,0):
                                 image = self.image_handlers[action](image, parent = self.parent, appearance = self)
                     self.parent.dirty = 1
+            for blit_image in self.blit_images:
+                image.blit(blit_image[0], blit_image[1] )
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
@@ -237,7 +231,7 @@ class Appearance:
                                           search_color=color,
                                           threshold=threshold)
 
-    def color_at(self, position):
+    def color_at(self, position: board_position.BoardPosition) -> tuple:
         """
         Returns the color at a specific position
 
@@ -247,7 +241,10 @@ class Appearance:
         Returns: The color
 
         """
-        return self._image.get_at(position)
+        if type(position) == tuple:
+            position = board_position.BoardPosition(position[0], position[1])
+        if position.is_on_board():
+            return self._image.get_at(position.to_pixel())
 
     def changed_all(self):
         self.call_image_actions = {key: True for key in self.call_image_actions}
@@ -269,3 +266,14 @@ class Appearance:
         self.call_action(action)
         self.parent.dirty = 1
         self.dirty = 1
+
+    def blit(self, path, position: tuple, size: tuple = (0,0) ):
+        _blit_image = ir.ImageRenderer.load_image(path=path, alpha=True)
+        if size != (0,0):
+            _blit_image = pygame.transform.scale(_blit_image, size)
+        self.blit_images.append((_blit_image, position, size))
+
+    def colorize(self, color):
+        self.color = color
+        self.enabled_image_actions["colorize"] = True
+        self.call_action("colorize")

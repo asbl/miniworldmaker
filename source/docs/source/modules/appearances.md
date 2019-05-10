@@ -20,6 +20,6 @@ All actions performed on the images can be found in the class ImageRenderer
    appearances/*
 ```
 
-
+![](../_images/appearance_uml.png)
 
 

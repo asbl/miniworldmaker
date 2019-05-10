@@ -6,7 +6,6 @@ Basics
 
   * [Basic Framework](https://github.com/asbl/miniworldmaker/blob/master/examples/basics/basicframework.py) - Basic concepts for the creation of boards and actors.
   ![Image - Basic Framework](_images/basic_framework.gif)
-  [Video - Basic Framework](_static/basic_framework.mp4)
   
 Tiled Boards
 ------------ 

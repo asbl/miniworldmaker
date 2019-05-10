@@ -2,6 +2,8 @@ import pygame
 
 class ImageRenderer:
 
+    _images_dict = {}  # dict with key: image_path, value: loaded image
+
     @staticmethod
     def texture(image, parent, appearance):
         background = pygame.Surface(parent.size)
@@ -111,7 +113,21 @@ class ImageRenderer:
 
     @staticmethod
     def scale_to_tile(image : pygame.Surface, parent, appearance) -> pygame.Surface:
-        image = pygame.transform.scale(image, (parent.tile_size, parent.tile_size))
+        image = pygame.transform.scale(image, (appearance.tile_size, appearance.tile_size))
         with_margin = pygame.Surface((parent.tile_size + parent.tile_margin, parent.tile_size + parent.tile_margin))
         with_margin.blit(image, (parent.tile_margin, parent.tile_margin))
         return with_margin
+
+    @staticmethod
+    def load_image(path, alpha):
+        if path in ImageRenderer._images_dict.keys():
+            # load image from img_dict
+            _image = ImageRenderer._images_dict[path]
+        else:
+            # create new image and add to img_dict
+            if not alpha:
+                _image = pygame.image.load(path).convert()
+            else:
+                _image = pygame.image.load(path).convert_alpha()
+            ImageRenderer._images_dict[path] = _image
+        return _image

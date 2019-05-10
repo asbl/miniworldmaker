@@ -13,3 +13,5 @@ Boards
    
    boards/*
 ```
+
+![](../_images/board_uml.png)

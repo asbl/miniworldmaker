@@ -3,9 +3,11 @@ Kostüme und Hintergrund
 
 ### Kostüme
 
-Jeder Aktuer hat ein oder mehrere Kostüme
+Jedes Token und jeder Akteur hat ein oder mehrere Kostüme.
 
 Ein Kostüm besteht aus einem oder mehreren Bildern und Anweisungen, wie diese Bilder dargestellt werden sollen.
+
+![UML Diagramm](../_images/costume_uml.png)
 
 #### Bilder zu einem Kostüm hinzufügen: 
 

@@ -3,9 +3,11 @@ Costumes and Background
 
 ### Costumes
 
-Each actor has one or more costumes
+Each actor has one or more costumes.
 
 A costume consists of one or more pictures and instructions on how to display them.
+
+![UML Diagram](../_images/costume_uml.png)
 
 #### Add images to a costume: 
 

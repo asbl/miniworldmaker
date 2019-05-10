@@ -59,3 +59,15 @@ Ein Objekt kann jetzt erstellt werden mit:
 ```
   player1 = Player(position=(3, 3))
 ```
+
+### Akteure und Tokens
+
+Akteure sind eine Kindklasse der allgemeienen Klasse Token. Daher können sie auf alle Attribute und Methoden dieser Klasse zugreifen.
+Zusätzlich können sie sich aber auch bewegen und haben Sensoren, um ihre Umgebung abzutasten.
+
+Wenn du statische Objekte erstellen willst (Wände, Untergrund, usw.), dann ist es sinnvoller die Klasse Token zu verwenden, da diese Objekte etwas performanter dargestellt werden können.
+
+Das folgende UML-Diagramm zeigt dir, wie die Klassen modelliert sind.
+
+![](../_images/token_uml.png)
+

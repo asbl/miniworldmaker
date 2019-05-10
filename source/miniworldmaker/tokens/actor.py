@@ -10,7 +10,10 @@ class Actor(token.Token):
     log = getLogger("Actor")
 
     def __init__(self, position = None):
-        """Initializes a new Actor
+        """ Initializes a new actor
+
+        Args:
+            position: The position on the board as tuple. If None, the actor will not be placed on the board.
         """
         super().__init__(position)
         self.is_static = False
@@ -33,12 +36,12 @@ class Actor(token.Token):
         self.direction = direction
         return self.direction
 
-    def point_towards_position(self, destination_position, center = False) -> int:
+    def point_towards_position(self, destination, center = False) -> int:
         """
         Actor points towards a given position
 
         Args:
-            destination_position: The position to which the actor should pointing
+            destination: The position to which the actor should pointing
 
         Returns:
             The new direction
@@ -48,19 +51,19 @@ class Actor(token.Token):
             pos = self.rect.center
         else:
             pos = self.position
-        x =  (destination_position[0] - pos[0])
-        y =  (destination_position[1] - pos[1])
+        x =  (destination[0] - pos[0])
+        y =  (destination[1] - pos[1])
         if x != 0:
             m = y / x
         else:
             m = 0
-            if destination_position[1] > self.position[1]:
+            if destination[1] > self.position[1]:
                 self.direction = 180
                 return 180
             else:
                 self.direction = 0
                 return 0
-        if destination_position[0] > self.position[0]:
+        if destination[0] > self.position[0]:
             self.direction = 90 + math.degrees(math.atan(m))
         else:
             self.direction = 270 +  math.degrees(math.atan(m))
@@ -261,7 +264,7 @@ class Actor(token.Token):
                     return None
         return token
 
-    def sensing_borders(self, distance: int = -1) -> list:
+    def sensing_borders(self, distance: Union[int, None] = None) -> list:
         """Checks if actor is sensing a border in front
 
         Args:
@@ -271,14 +274,14 @@ class Actor(token.Token):
             a list of all borders ("top", "left", "right", "bottom") which are sensed on given position.
 
         """
-        if distance < 0:
+        if distance is None:
             distance = self.speed
         destination_rect = self.look(distance=distance)
         borders = self.board.borders(destination_rect)
         self.board.window.send_event_to_containers("actor_is_looking_at_border", (self, borders))
         return borders
 
-    def sensing_on_board(self, distance: int = -1) -> bool:
+    def sensing_on_board(self, distance:Union[int, None] = None) -> bool:
         """Checks if actor is sensing a position inside the board
 
         Args:
@@ -288,14 +291,14 @@ class Actor(token.Token):
             True if position is on board
 
         """
-        if distance < 0:
+        if distance is None:
             distance = self.speed
         position = self.look(distance=distance)
         on_board = self.board.is_on_board(position)
         return on_board
 
-    def sensing_color(self, color = None, distance: int = -1) -> Union[int, list]:
-        """Checks if actor is sensing a color
+    def sensing_color(self,  color, distance:Union[int, None] = None,) -> int:
+        """Sensing the number of pixels of a given color
 
         Args:
             distance: Number of steps to look for color
@@ -306,15 +309,42 @@ class Actor(token.Token):
             color found in the center of actor rectangle will be returned.
 
         """
-        if distance < 0:
+        if distance is None:
             distance = self.speed
         destination_rect = self.look(distance=distance)
-        if color == None:
-            return self.board.get_color_at_board_position(destination_rect.center)
         colors = self.board.find_colors(destination_rect, color)
         return colors
 
-    def flip_x(self):
+    def sensing_colors(self, distance:Union[int, None] = None) -> set:
+        """ Gets all colors the actor is sensing
+
+        Args:
+            distance: Number of steps to look for color
+
+        Returns:
+            All colors the actor is sensing as set
+
+        """
+        if distance is None:
+            distance = self.speed
+        directions = []
+        if self.direction > 0:
+            direction = self.direction
+        else:
+            direction = - self.direction
+
+        if direction > -90 and self.direction < 90:
+            directions.append("top")
+        if direction > 0 and self.direction < 180:
+            directions.append("right")
+        if direction < 0 and self.direction < -180:
+            directions.append("top")
+        if direction < -90 or self.direction > 90:
+            directions.append("bottom")
+        destination_rect = self.look(distance=distance)
+        return self.board.get_color_at_rect(destination_rect, directions = directions)
+
+    def flip_x(self) -> int:
         """Flips the actor by 180° degrees
 
         """
@@ -323,4 +353,5 @@ class Actor(token.Token):
         else:
             self.costume.is_flipped = False
         self.turn_left(180)
+        return self.direction
 

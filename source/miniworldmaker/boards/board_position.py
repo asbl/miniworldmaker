@@ -22,11 +22,12 @@ class BoardPosition:
         return self.near(other, self.board.default_actor_speed-1)
 
     @classmethod
-    def from_pixel(cls, board, position: tuple):
+    def from_pixel(cls, position: tuple, board = None):
+        if board == None:
+            board = window.MiniWorldWindow.board
         column = (position[0] - board.tile_margin) // (board.tile_size + board.tile_margin)
         row = (position[1] - board.tile_margin) // (board.tile_size + board.tile_margin)
         return cls(column, row)
-
 
     def near(self, other, distance):
         if isinstance(other, tuple):
@@ -72,3 +73,12 @@ class BoardPosition:
     def add(self, x, y):
         return BoardPosition(self.x+x, self.y+y)
 
+    def to_pixel(self) -> tuple:
+        rect = self.to_rect()
+        return rect.topleft
+
+    def is_on_board(self):
+        if self.x > 0 and self.y > 0 and self.x < self.board.width and self.y < self.board.height:
+            return True
+        else:
+            return False

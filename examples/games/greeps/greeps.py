@@ -184,7 +184,7 @@ class Greep(Actor):
             if not greep.carrys_tomato:
                 greep.carrys_tomato = True
                 tomato.get_tomato()
-                greep.switch_costume(id=1)
+                greep.switch_costume(index=1)
 
 
     def turn_home(self):
@@ -208,10 +208,9 @@ class Paint(Token):
         super().__init__()
         self.add_image("images/paint.png")
         self.intensity = 255
-        self.colorize((255, 0, 0, self.intensity))
+        self.costume.colorize((255, 0, 0, self.intensity))
         self.time = 0
         self.color = color
-
 
     def update(self):
         super().update()
@@ -219,11 +218,11 @@ class Paint(Token):
         if self.time % 50 == 0 and self.time > 0:
             self.intensity = self.intensity % 2
             if self.color == "red":
-                self.colorize((255, 0, 0, self.intensity))
+                self.costume.colorize((255, 0, 0, self.intensity))
             if self.color == "green":
-                self.colorize((0, 255, 0, self.intensity))
+                self.costume.colorize((0, 255, 0, self.intensity))
             if self.color == "blue":
-                self.colorize((0, 0, 255, self.intensity))
+                self.costume.colorize((0, 0, 255, self.intensity))
             self.dirty = 1
             if self.intensity < 50:
                 self.remove()

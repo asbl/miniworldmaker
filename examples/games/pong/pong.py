@@ -56,6 +56,3 @@ class Ball(Actor):
 
 board = PongBoard()
 board.show()
-
-
-

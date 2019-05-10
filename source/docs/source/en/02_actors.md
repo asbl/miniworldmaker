@@ -60,3 +60,14 @@ An object can now be created with:
 ```
   player1 = Player(position=(3, 3))
 ```
+
+### Actors and tokens
+
+Actors are a child class of the general class Token. Therefore they can access all attributes and methods of this class.
+In addition, they can also move and have sensors to scan their environment.
+
+If you want to create static objects (walls, subsurface, etc.), it makes more sense to use the class token, because these objects can be displayed a bit more performant.
+
+The following UML diagram shows you how the classes are modeled.
+
+![](../_images/token_uml.png)

@@ -4,18 +4,18 @@ import pygame
 from miniworldmaker.tools import keys
 from miniworldmaker.containers import container
 import pkg_resources
-
+import sys
 
 class MiniWorldWindow:
     log = logging.getLogger("Window")
     board = None
     window = None
+    quit = False
 
     def __init__(self, title):
         self.title = title
         self._containers = []
         MiniWorldWindow.window = self
-        self._quit = False
         self.dirty = 1
         self.repaint_areas = []
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height), pygame.DOUBLEBUF)
@@ -46,23 +46,24 @@ class MiniWorldWindow:
         # self.tokens.clear(image, self.image)
         MiniWorldWindow.log.info("Window width: {0}, height: {1}".format(self.window_width, self.window_height))
         pygame.display.update([image.get_rect()])
-        while not self._quit:
+        while not MiniWorldWindow.quit:
             self.update()
             pass
         pygame.quit()
 
     def update(self):
         self.process_pygame_events()
-        self.repaint_areas = []
-        if self.dirty:
-            self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
-            self.dirty = 0
-        for container in self._containers:
-            container.update()
-            container.repaint()
-            container.blit_surface_to_window_surface()
-        pygame.display.update(self.repaint_areas)
-        self.repaint_areas = []
+        if not MiniWorldWindow.quit:
+            self.repaint_areas = []
+            if self.dirty:
+                self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
+                self.dirty = 0
+            for container in self._containers:
+                container.update()
+                container.repaint()
+                container.blit_surface_to_window_surface()
+            pygame.display.update(self.repaint_areas)
+            self.repaint_areas = []
 
     def add_container(self, container, dock, size=None) -> container.Container:
         self._containers.append(container)
@@ -147,6 +148,6 @@ class MiniWorldWindow:
                 container.get_event(event, data)
 
     def _call_quit_event(self):
-        self._quit = True
-        import fileinput
-        self._quit = True
+        MiniWorldWindow.quit = True
+        pygame.quit()
+        sys.exit(0)
