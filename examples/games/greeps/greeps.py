@@ -4,7 +4,6 @@ from functools import reduce
 import random
 
 
-
 class Earth(PixelBoard):
     def __init__(self):
         super().__init__(rows=600, columns=800)
@@ -46,6 +45,7 @@ class Earth(PixelBoard):
             for token in self.tokens:
                 token.remove()
             self.background.next_sprite()
+            self._repaint_all = 1
             self.dirty = 1
             self.index += 1
         if (self.index == 0 and self.frame == 1) or (self.frame > time and self.index <= 2):
@@ -58,10 +58,7 @@ class Earth(PixelBoard):
             position = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
             self.ship = self.add_to_board(Ship(position), position=self.target[self.index])
             self.greeps = 0
-
             self.is_running = True
-
-
 
 
 class Ship(Actor):
@@ -76,7 +73,6 @@ class Ship(Actor):
         self.speed = 20
         self.stop = False
 
-
     def act(self):
         if self.position != self.target_position and not self.stop:
             self.point_towards_position(self.target_position)
@@ -85,7 +81,6 @@ class Ship(Actor):
             self.stop = True
             self.board.add_to_board(Greep(), self.position)
             self.greeps += 1
-
 
 class Tomatos(Token):
     def __init__(self, number):
@@ -101,7 +96,6 @@ class Tomatos(Token):
             if self.number % 10 == 0:
                 self.remove()
         return 1
-
 
 
 class Greep(Actor):

@@ -26,7 +26,8 @@ class Bird(Actor):
     def act(self):
         gravity = 0.3
         self.v_y += gravity
-        self.move_to(position = BoardPosition(self.position.x, self.y+self.v_y))
+        self.move_to(position=self.position.down(self.v_y))
+        #self.move_to(position = BoardPosition((self.position.x, self.y+self.v_y)))
         borders = self.sensing_borders()
         if "bottom" in borders or "top" in borders:
             self.board.is_running = False
@@ -56,7 +57,7 @@ class Pipe(Actor):
     def act(self):
         self.move_in_direction("left")
         if "left" in self.sensing_borders():
-            self.move_to(position = BoardPosition(self.position.x+520, self.y) )
+            self.move_to(position = BoardPosition((self.position.x+520, self.y) ))
             self.passed = False
         if self.position.x < 75 and self.passed is False:
             self.passed = True

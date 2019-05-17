@@ -18,7 +18,6 @@ class MyBoard(TiledBoard):
         Wall((6, 4))
         Wall((6, 0))
         Wall((6, 1))
-        Wall((6, 2))
         Wall((6, 3))
         self.torch = Torch((10, 4))
         self.fireplace = Fireplace((10, 14))
@@ -46,7 +45,6 @@ class Player(Actor):
             super().move()
 
     def get_event(self, event, data):
-        print(event, data)
         if event == "key_down":
             direction = None
             if "W" in data:
@@ -63,9 +61,8 @@ class Player(Actor):
                 self.move()
         if event == "button" and data == "Fackel":
             fireplace = self.sensing_token(distance=0, token=Fireplace)
-            print(fireplace)
             if fireplace:
-                print("burn")
+
                 self.board.console.newline("Du zündest die Feuerstelle an.")
                 self.board.fireplace.burn()
 
@@ -138,7 +135,6 @@ class Door(Token):
         self.add_image("rpgimages/door_closed.png")
         self.add_costume("rpgimages/door_open.png")
         self.closed = True
-        self.is_static = True
 
     def open(self):
         if self.closed == True:
