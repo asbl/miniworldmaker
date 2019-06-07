@@ -13,8 +13,8 @@ class MyBoard(TiledBoard):
         self.register_token_type(Diamond)
         self.register_token_type(Emerald)
         self.create_world_toolbar = LevelDesignerToolbar(self)
-        self.create_world_toolbar.add_widget(SaveButton("db_files/ctw_db.db", self, "Save"))
-        self.create_world_toolbar.add_widget(LoadButton("db_files/ctw_db.db", self, "Load", ))
+        self.create_world_toolbar.add_widget(SaveButton(filename="db_files/ctw_db.db", board=self, text="Save"))
+        self.create_world_toolbar.add_widget(LoadButton(filename="db_files/ctw_db.db", board=self, text="Load", ))
         self._window.add_container(self.create_world_toolbar, "right")
         self.event_console = EventConsole()
         self.event_console.register_events = {"all"}

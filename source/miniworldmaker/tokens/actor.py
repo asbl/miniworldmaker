@@ -157,7 +157,7 @@ class Actor(token.Token):
         self.last_direction=self.direction
         return self
 
-    def look(self, direction: int, distance: int, style="rect") -> Union[list, pygame.Surface]:
+    def look(self, direction: int = -9999, distance: int = 1, style="rect") -> Union[list, pygame.Surface]:
         """Looks *distance* steps into a *direction*.
 
         Args:
@@ -166,6 +166,8 @@ class Actor(token.Token):
         Returns:
             A destination Surface
         """
+        if direction == -9999:
+            direction = self.direction
         if style == "rect":
             return self.get_destination(direction, distance)
         elif style == "line":
