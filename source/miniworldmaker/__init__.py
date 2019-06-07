@@ -9,9 +9,7 @@ from miniworldmaker.containers.toolbar import Toolbar
 from miniworldmaker.containers.event_console import EventConsole
 from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
 from miniworldmaker.containers.console import Console
-from miniworldmaker.tools.appearance import Appearance
-from miniworldmaker.tools.image_renderers import ImageRenderer
-from miniworldmaker.containers.color_console import ColorConsole
+from miniworldmaker.containers.color_toolbar import ColorToolbar
 from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
@@ -34,7 +32,7 @@ __all__ = ['Token',
            'EventConsole',
            'ActionBar',
            'InspectActorToolbar',
-           'ColorConsole',
+           'ColorToolbar',
            'BoardPosition',
            'CounterLabel',
            'TimeLabel',

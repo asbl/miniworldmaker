@@ -9,6 +9,7 @@ from miniworldmaker.containers import inspect_actor_toolbar
 from miniworldmaker.containers import container
 from miniworldmaker.containers import event_console
 from miniworldmaker.containers import level_designer_toolbar
+from miniworldmaker.containers import color_toolbar
 from miniworldmaker.tools import keys
 
 
@@ -24,6 +25,7 @@ class MiniWorldWindow:
         self._containers_right = []
         self._containers_bottom = []
         MiniWorldWindow.window = self
+        self.default_size = 200
         self.dirty = 1
         self.repaint_areas = []
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height), pygame.DOUBLEBUF)
@@ -35,6 +37,7 @@ class MiniWorldWindow:
         self.actor_toolbar = None
         self.level_designer = None
         self.fullscreen = False
+        self.color_console = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
@@ -266,6 +269,21 @@ class MiniWorldWindow:
                     elif self.level_designer:
                         self.remove_container(self.level_designer)
                         self.level_designer = None
+                        self.docks -= 1
+                        if self.docks == 0:
+                            self.remove_container(self.actionbar)
+                if "F8" in keys_pressed:
+                    if not self.color_console:
+                        self.color_console = color_toolbar.ColorToolbar(self.board)
+                        if self.docks == 0:
+                            self.actionbar = actionbar.ActionBar(self.board)
+                            self.add_container(self.actionbar, dock="bottom")
+                        self.docks += 1
+                        self.add_container(self.color_console, dock="right")
+                        self.log.info("Added level designer")
+                    elif self.color_console:
+                        self.remove_container(self.color_console)
+                        self.color_console = None
                         self.docks -= 1
                         if self.docks == 0:
                             self.remove_container(self.actionbar)

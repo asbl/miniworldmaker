@@ -24,7 +24,10 @@ class MyBoard(PixelBoard):
         self.background.blit("images/roads/road_asphalt02.png", position=(160, 00), size=(80, 80))
         self.background.is_scaled_to_tile = True
         self.player = Player(position = (100,60))
-        self.colors = [(238, 238, 238, 255),(232, 106, 23, 255),(219, 98, 18, 255), (250, 250, 250, 255)]
+        self.colors = [(238, 238, 238, 255),
+                       (232, 106, 23, 255),
+                       (219, 98, 18, 255),
+                       (250, 250, 250, 255)]
 
     def get_event(self, event, data):
         if event == "mouse_left":
@@ -48,13 +51,13 @@ class Player(Actor):
                 self.turn_right(10)
             if "W" in data:
                 self.move()
-                sensing_colors = self.sensing_colors(distance = 0)
+                sensing_colors = self.sensing_colors(distance = 10)
                 intersections = [value for value in sensing_colors if value in self.board.colors]
                 if intersections or not self.sensing_on_board():
                     self.move(-self.speed)
             if "S" in data:
                 self.move(-1)
-                sensing_colors = self.sensing_colors(distance = 0)
+                sensing_colors = self.sensing_colors(distance = -10)
                 intersections = [value for value in sensing_colors if value in self.board.colors]
                 if intersections  or not self.sensing_on_board():
                     self.move(1)

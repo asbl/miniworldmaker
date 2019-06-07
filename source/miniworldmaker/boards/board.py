@@ -2,6 +2,7 @@ from typing import Union
 import os
 import sys
 import pygame
+import math
 from miniworldmaker.containers import container
 from miniworldmaker.windows import miniworldwindow as window
 from miniworldmaker.tools import db_manager
@@ -112,6 +113,9 @@ class Board(container.Container):
             data: The data associated with the event
         """
         pass
+
+    def get_tile_rect(self):
+        return pygame.Rect(0, 0, self.tile_size, self.tile_size)
 
     @property
     def container_width(self):
@@ -628,6 +632,16 @@ class Board(container.Container):
         if type(position == tuple):
             position = board_position.BoardPosition(position)
         return self.background.color_at(position.to_pixel())
+
+    def get_colors_at_line(self, line: list):
+        colors = []
+        print("--------------")
+        for pos in line:
+            color_at_pos = self.background.color_at(pos)
+            print(pos, color_at_pos)
+            if color_at_pos not in colors:
+                colors.append(color_at_pos)
+        return colors
 
     def get_color_at_rect(self, rect : pygame.Rect, directions = None) -> list:
         colors = []

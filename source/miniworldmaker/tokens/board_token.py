@@ -1,4 +1,3 @@
-import math
 from logging import *
 from typing import Union
 import pygame

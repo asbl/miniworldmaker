@@ -57,6 +57,17 @@ class BoardPosition:
         new_rect.topleft = (pixel_x, pixel_y)
         return new_rect
 
+    def to_surface(self, rect : pygame.Rect) -> pygame.Surface:
+        if rect is None:
+            new_surface = pygame.Surface(0, 0, self.board.tile_size, self.board.tile_size)
+        else:
+            new_surface = pygame.Rect(0, 0, rect.width, rect.height)
+        # board position to pixel
+        pixel_x = self.x * self.board.tile_size + self.x * self.board.tile_margin + self.board.tile_margin
+        pixel_y = self.y * self.board.tile_size + self.y * self.board.tile_margin + self.board.tile_margin
+        new_surface.topleft = (pixel_x, pixel_y)
+        return new_surface
+
     def __str__(self):
         return str("Pos(" + str(self.x) + "," + str(self.y) + ")")
 

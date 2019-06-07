@@ -152,23 +152,45 @@ class Actor(token.Token):
         """
         if distance == 0:
             distance = self.speed
-        destination = self.look(distance=distance)
+        destination = self.look(direction = self.direction, distance=distance)
         self.position = self.board.get_board_position_from_pixel(destination.topleft)
         self.last_direction=self.direction
         return self
 
-    def look(self, distance: int) -> pygame.Rect:
+    def look(self, direction: int, distance: int, style="rect") -> Union[list, pygame.Surface]:
         """Looks *distance* steps into a *direction*.
 
         Args:
             distance: Number of steps to look
 
         Returns:
-            A destination Rectangle
+            A destination Surface
         """
-        x = self.position[0] + self.delta_x(distance)
-        y = self.position[1] + self.delta_y(distance)
-        return board_position.BoardPosition((x, y)).to_rect(rect=self.rect)
+        if style == "rect":
+            return self.get_destination(direction, distance)
+        elif style == "line":
+            return self.get_line(direction, distance)
+
+    def get_destination(self, direction, distance):
+        x = self.position[0] + round( math.sin(math.radians(direction)) * distance)
+        y = self.position[1] - round(math.cos(math.radians(direction)) * distance)
+        return board_position.BoardPosition((x, y)).to_surface(rect=self.rect)
+
+    def get_line(self, direction, distance):
+        line = []
+        i = 0
+        while i < distance:
+            print(direction,math.sin(math.radians(direction)),math.cos(math.radians(direction)))
+            position = self.rect.center
+            x = position[0] + round(math.sin(math.radians(direction)) * i)
+            y = position[1] - round(math.cos(math.radians(direction)) * i)
+            pos = board_position.BoardPosition((x, y))
+            if not self.rect.collidepoint(pos[0], pos[1]):
+                line.append(pos)
+            else:
+                distance += 1
+            i += 1
+        return line
 
     def delta_x(self, distance):
         return round( math.sin(math.radians(self.direction)) * distance)
@@ -295,7 +317,7 @@ class Actor(token.Token):
         """
         if distance is None:
             distance = self.speed
-        position = self.look(distance=distance)
+        position = self.look(direction = self.direction, distance=distance)
         on_board = self.board.is_on_board(position)
         return on_board
 
@@ -329,22 +351,10 @@ class Actor(token.Token):
         """
         if distance is None:
             distance = self.speed
-        directions = []
-        if self.direction > 0:
-            direction = self.direction
-        else:
-            direction = - self.direction
-
-        if direction > -90 and self.direction < 90:
-            directions.append("top")
-        if direction > 0 and self.direction < 180:
-            directions.append("right")
-        if direction < 0 and self.direction < -180:
-            directions.append("top")
-        if direction < -90 or self.direction > 90:
-            directions.append("bottom")
-        destination_rect = self.look(distance=distance)
-        return self.board.get_color_at_rect(destination_rect, directions = directions)
+        direction = self.direction
+        line = self.look(distance=distance, direction = direction, style = "line")
+        colors = self.board.get_colors_at_line(line)
+        return colors
 
     def flip_x(self) -> int:
         """Flips the actor by 180° degrees
