@@ -19,10 +19,9 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
         class_list = self.all_subclasses(token.Token)
         for cls in class_list:
-            self.add_widget(TokenButton(cls, board, self))
-
+            if cls.__name__ not in ["Token", "Actor", "TextToken", "NumberToken"]:
+                self.add_widget(TokenButton(cls, board, self))
         db_file = "data.db"
-
         self.add_widget(SaveButton(board = self.board, text = "Save", filename=db_file))
         if os.path.exists(db_file):
             self.add_widget(LoadButton(board = self.board, text = "Load", filename=db_file ))
@@ -36,9 +35,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         super().get_event(event, data)
         if self.selected_token_type:
             if "mouse_left" in event:
-                print("ml")
                 if self.board.is_in_container(data[0], data[1]):
-                    print("in container")
                     keys = self.board.window.get_keys()
                     if "L_SHIFT" in keys:
                         for i in range(self.board.rows):
