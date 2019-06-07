@@ -1,10 +1,10 @@
 import os
 import pygame
-from miniworldmaker.containers.container import Container
+from miniworldmaker.containers import container
 from miniworldmaker.containers.actionbar_widgets import *
 
 
-class ActionBar(Container):
+class ActionBar(container.Container):
 
     def __init__(self, board):
         super().__init__()
@@ -32,9 +32,11 @@ class ActionBar(Container):
         widget.clear()
         widget.parent = self
         self.widgets.append(widget)
+        self.dirty = 1
         widget.dirty = 1
 
     def repaint(self):
+        self.surface = pygame.Surface((self._container_width, self._container_height))
         if self.dirty:
             self.surface.fill((255, 255, 255))
             if self.widgets:

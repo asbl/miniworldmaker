@@ -1,5 +1,6 @@
 import pygame
 
+
 class ImageRenderer:
 
     _images_dict = {}  # dict with key: image_path, value: loaded image
@@ -126,7 +127,11 @@ class ImageRenderer:
         else:
             # create new image and add to img_dict
             if not alpha:
-                _image = pygame.image.load(path).convert()
+                try:
+                    _image = pygame.image.load(path).convert()
+                except pygame.error:
+                    raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
+
             else:
                 _image = pygame.image.load(path).convert_alpha()
             ImageRenderer._images_dict[path] = _image

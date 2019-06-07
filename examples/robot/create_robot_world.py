@@ -12,7 +12,7 @@ class MyBoard(TiledBoard):
         self.register_token_type(Gold)
         self.register_token_type(Diamond)
         self.register_token_type(Emerald)
-        self.create_world_toolbar = SelectTokenTypeToolbar(self)
+        self.create_world_toolbar = LevelDesignerToolbar(self)
         self.create_world_toolbar.add_widget(SaveButton("db_files/ctw_db.db", self, "Save"))
         self.create_world_toolbar.add_widget(LoadButton("db_files/ctw_db.db", self, "Load", ))
         self._window.add_container(self.create_world_toolbar, "right")
@@ -24,7 +24,7 @@ class MyBoard(TiledBoard):
     def get_event(self, event, data):
         if event == "mouse_left":
             position = self.get_board_position_from_pixel(data)
-            token = self.create_world_toolbar.selected_actor(position=position)
+            token = self.create_world_toolbar.selected_token_type(position=position)
         elif event == "mouse_right":
             position = self.get_board_position_from_pixel(data)
             self.remove_tokens_in_area(position)

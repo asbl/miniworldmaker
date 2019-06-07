@@ -16,12 +16,12 @@ miniworldmaker/boards/tiled_board.py
 miniworldmaker/containers/__init__.py
 miniworldmaker/containers/actionbar.py
 miniworldmaker/containers/actionbar_widgets.py
-miniworldmaker/containers/active_actor_toolbar.py
 miniworldmaker/containers/color_console.py
 miniworldmaker/containers/console.py
 miniworldmaker/containers/container.py
 miniworldmaker/containers/event_console.py
-miniworldmaker/containers/select_token_type_toolbar.py
+miniworldmaker/containers/inspect_actor_toolbar.py
+miniworldmaker/containers/level_designer_toolbar.py
 miniworldmaker/containers/toolbar.py
 miniworldmaker/containers/toolbar_widgets.py
 miniworldmaker/resources/down.png
@@ -39,10 +39,10 @@ miniworldmaker/resources/up.png
 miniworldmaker/tokens/__init__.py
 miniworldmaker/tokens/actor.py
 miniworldmaker/tokens/actor_physics_actor.py
+miniworldmaker/tokens/board_token.py
 miniworldmaker/tokens/costume.py
 miniworldmaker/tokens/number_token.py
 miniworldmaker/tokens/text_token.py
-miniworldmaker/tokens/token.py
 miniworldmaker/tools/__init__.py
 miniworldmaker/tools/appearance.py
 miniworldmaker/tools/db_manager.py

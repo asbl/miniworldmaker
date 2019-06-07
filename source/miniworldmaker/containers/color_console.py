@@ -1,9 +1,9 @@
 import os
 import pygame
-from miniworldmaker.containers.container import Container
+from miniworldmaker.containers import container
 
 
-class ColorConsole(Container):
+class ColorConsole(container.Container):
     event_id = 0
 
     def __init__(self, board):

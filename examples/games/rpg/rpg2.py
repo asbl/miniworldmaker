@@ -6,23 +6,6 @@ class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(columns=30, rows=20, tile_size=20, tile_margin=0)
-        for i in range(self.rows):
-            for j in range(self.columns):
-                Grass((j, i))
-        Wall((0, 4))
-        Wall((1, 4))
-        Wall((2, 4))
-        Wall((3, 4))
-        Wall((4, 4))
-        Wall((5, 4))
-        Wall((6, 4))
-        Wall((6, 0))
-        Wall((6, 1))
-        Wall((6, 3))
-        self.torch = Torch((10, 4))
-        self.fireplace = Fireplace((10, 14))
-        self.door = Door((6, 2))
-        Player((8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
@@ -145,6 +128,6 @@ class Door(Token):
             self.board.play_sound("rpgsounds/olddoor.wav")
             self.closed = False
 
-
-my_grid = MyBoard()
-my_grid.show()
+board = MyBoard.from_db("data.db")
+board.window.send_event_to_containers("Loaded new world", "data.db")
+board.show()

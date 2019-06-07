@@ -1,8 +1,9 @@
 import logging
-from miniworldmaker.boards.board import Board
+from miniworldmaker import boards
 import pygame
 from tkinter import filedialog
 from tkinter import *
+
 
 class ToolbarWidget():
     log = logging.getLogger("toolbar")
@@ -44,6 +45,9 @@ class ToolbarWidget():
         self.dirty = 1
         return self.surface
 
+    def remove(self):
+        self.parent.widgets.remove(self)
+        self.parent.dirty = 1
 
     def repaint(self):
         if self.dirty == 1:
@@ -76,6 +80,7 @@ class ToolbarWidget():
     def __str__(self):
         return "{0} : {1}".format(self.__class__.__name__, self._text)
 
+
 class ToolbarButton(ToolbarWidget):
     log = logging.getLogger("toolbar-button")
 
@@ -100,11 +105,12 @@ class ToolbarLabel(ToolbarWidget):
         self.set_text(text)
         self.event = "label"
         self.data = text
+        self.background_color = (255, 255, 255, 0)
 
 
 class SaveButton(ToolbarWidget):
 
-    def __init__(self, filename, board, text, img_path=None, ):
+    def __init__(self, board, text, filename: str = None, img_path: str = None, ):
         super().__init__()
         if img_path != None:
             self.set_image(img_path)
@@ -119,19 +125,25 @@ class SaveButton(ToolbarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            Tk().withdraw()
-            try:
-                filename = filedialog.asksaveasfilename(initialdir="./", title="Select file",
-                                                         filetypes=(("db files", "*.db"), ("all files", "*.*")))
-                self.board.save_to_db(filename)
-                self.board.window.send_event_to_containers("Saved new world", filename)
-            except:
-                print("Not saved!")
+            print(self.file)
+            if self.file is None:
+                Tk().withdraw()
+                try:
+                    self.file = filedialog.asksaveasfilename(initialdir="./", title="Select file",
+                                                             filetypes=(("db files", "*.db"), ("all files", "*.*")))
+                    self.board.save_to_db(self.file)
+                    self.board.window.send_event_to_containers("Saved new world", self.file)
+                except:
+                    print("Not saved!")
+            else:
+                self.board.save_to_db(self.file)
+                self.board.window.send_event_to_containers("Saved new world", self.file)
+
 
 
 class LoadButton(ToolbarWidget):
 
-    def __init__(self, filename, board, text, img_path=None, ):
+    def __init__(self, board, text, filename = None, img_path=None, ):
         super().__init__()
         if img_path != None:
             self.set_image(img_path)
@@ -142,13 +154,12 @@ class LoadButton(ToolbarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             Tk().withdraw()
-            filename = filedialog.askopenfilename(initialdir="./", title="Select file",
+            if self.file is None:
+                self.file = filedialog.askopenfilename(initialdir="./", title="Select file",
                                                        filetypes=(("db files", "*.db"), ("all files", "*.*")))
-            self.board.save_to_db(filename)
             self.board = self.board.__class__.from_db(self.file)
-            self.board.window.send_event_to_containers("Loaded new world", filename)
+            self.board.window.send_event_to_containers("Loaded new world", self.file)
             self.board.show()
-
 
 
 class CounterLabel(ToolbarWidget):

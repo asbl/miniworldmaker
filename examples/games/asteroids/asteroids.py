@@ -52,7 +52,7 @@ class Player(Actor):
 
 
 class Laser(Actor):
-    def __init__(self, direction, position):
+    def __init__(self, position, direction=0 ):
         super().__init__(position)
         self.add_image("images/laser.png")
         self.size = (30, 30)

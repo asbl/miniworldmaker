@@ -1,5 +1,4 @@
 from miniworldmaker.tools import appearance
-import pygame
 from miniworldmaker.tools import image_renderers as ir
 
 

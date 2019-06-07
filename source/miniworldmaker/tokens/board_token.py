@@ -14,8 +14,10 @@ class Token(pygame.sprite.DirtySprite):
     lookup = True
 
     def __init__(self, position = None):
+        self.board = None
         super().__init__()
         self.costume = None
+
         # private
         self._size = (0, 0)  # Tuple with size
         self._position: board_position = position
@@ -26,7 +28,7 @@ class Token(pygame.sprite.DirtySprite):
         Token.token_count += 1
         self._direction = 0
         # public
-        self.board = None
+
         self.last_position = (0,0)
         self.last_direction = 90
         self.token_id = Token.token_count + 1
@@ -45,6 +47,7 @@ class Token(pygame.sprite.DirtySprite):
             self.board.add_to_board(self, position)
         else:
             board = None
+        self._dirty = 1
 
 
     @property
@@ -63,9 +66,9 @@ class Token(pygame.sprite.DirtySprite):
 
     def __str__(self):
         if self.board:
-            return "Klasse: {0}; ID: {1}, Position: {2}".format(self.class_name, self.token_id, self.rect)
+            return "{0}-Object, ID: {1} at pos {2}".format(self.class_name, self.token_id, self.position)
         else:
-            return "Klasse: {0}; ID: {1}".format(self.class_name, self.token_id)
+            return "**: {0}; ID: {1}".format(self.class_name, self.token_id)
 
     @property
     def image(self) -> pygame.Surface:
@@ -74,6 +77,15 @@ class Token(pygame.sprite.DirtySprite):
         else:
             self._image = self.costume.image
             return self.costume.image
+    @property
+    def dirty(self):
+        return self._dirty
+
+    @dirty.setter
+    def dirty(self, value):
+        self._dirty = value
+        if self.board:
+            self.board.dirty = 1
 
     @property
     def rect(self):
@@ -171,7 +183,7 @@ class Token(pygame.sprite.DirtySprite):
     def position(self, value: Union[board_position.BoardPosition, tuple]):
         self.last_position = self.position
         if type(value) == tuple:
-            value = board_position.BoardPosition(value[0], value[1])
+            value = board_position.BoardPosition(value)
         self._position = value
         self.dirty = 1
         if self.board:

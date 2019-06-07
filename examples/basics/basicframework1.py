@@ -7,6 +7,10 @@ class MyBoard(TiledBoard):
         super().__init__(columns=20, rows=8, tile_size=42)
         self.add_image(path="images/soccer_green.jpg")
         self.player = Player(position = (3,4))
+        self.speed = 5
+        stone = self.add_background(("images/stone.png"))
+        stone.is_textured = True
+        stone.is_scaled_to_tile = True
 
 
 class Player(Actor):
@@ -23,9 +27,17 @@ class Player(Actor):
             if "D" in data:
                 self.turn_right()
             if "W" in data:
-                self.move()
+                if self.sensing_on_board(distance = 1):
+                    self.move()
+            if "X" in data:
+                self.board.switch_background()
         if not self.sensing_on_board(distance = 0):
             self.move(-1)
+
+
+    def act(self):
+        if self.sensing_on_board(distance=1):
+            self.move()
 
 board = MyBoard()
 board.show()

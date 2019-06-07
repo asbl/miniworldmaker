@@ -1,6 +1,6 @@
 import pygame
-from miniworldmaker.tools import image_renderers as ir
 from miniworldmaker.boards import board_position
+from miniworldmaker.tools import image_renderers as ir
 
 
 class Appearance:
@@ -140,7 +140,7 @@ class Appearance:
     @text.setter
     def text(self, value):
         if value == "":
-            self.text = ""
+            self._text = ""
             self.disable_action("write_text")
         else:
             self._text = value
@@ -160,7 +160,10 @@ class Appearance:
         alpha = False
         if self.__class__.__name__ != "Background":
             alpha = True
-        _image = ir.ImageRenderer.load_image(path=path, alpha=alpha)
+        try:
+            _image = ir.ImageRenderer.load_image(path=path, alpha=alpha)
+        except FileExistsError:
+            raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
         self.images_list.append(_image)
         self.image_paths.append(path)
         self.dirty = 1
@@ -242,7 +245,7 @@ class Appearance:
 
         """
         if type(position) == tuple:
-            position = board_position.BoardPosition(position[0], position[1])
+            position = board_position.BoardPosition(position)
         if position.is_on_board():
             return self._image.get_at(position.to_pixel())
 

@@ -1,10 +1,11 @@
 from typing import Union
 import os
+import sys
 import pygame
 from miniworldmaker.containers import container
 from miniworldmaker.windows import miniworldwindow as window
 from miniworldmaker.tools import db_manager
-from miniworldmaker.tokens import token as pck_token
+from miniworldmaker.tokens import board_token as pck_token
 from miniworldmaker.boards import board_position
 from miniworldmaker.boards import background
 
@@ -42,19 +43,23 @@ class Board(container.Container):
         self._grid = []
         self._tile_size = 1
         self._tile_margin = 0
+
         self._columns, self._rows = columns, rows
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
         self.background = background.Background(self)
+        self.backgrounds = [self.background]
         self._image = pygame.Surface((1, 1))
+        self.surface = pygame.Surface((1, 1))
         # protected
         self.frame = 0
         self._tick = 0
+        self.clock = pygame.time.Clock()
         self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
         self.dirty = 1
         self._window = window.MiniWorldWindow("MiniWorldMaker")
-        self._window.add_container(self, "main")
+        self._window.add_container(self, "top_left")
         window.MiniWorldWindow.board = self
 
     @property
@@ -90,6 +95,7 @@ class Board(container.Container):
             for column in range(self.columns):
                 self._grid[row].append(0)
         self.dirty = 1
+        self._repaint_all = 1
 
     def __str__(self):
         return "{0} with {1} columns and {2} rows".format(self.__class__.__name__, self.columns, self.rows)
@@ -108,6 +114,11 @@ class Board(container.Container):
         pass
 
     @property
+    def container_width(self):
+        self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
+        return self._container_width
+
+    @property
     def width(self) -> int:
         """
         The width of the board in tiles (or pixels if board is pixel-board
@@ -115,8 +126,12 @@ class Board(container.Container):
         if self.dirty == 0:
             return self._container_width
         else:
-            self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
-            return self._container_width
+            return self.container_width
+
+    @property
+    def container_height(self):
+        self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
+        return self._container_height
 
     @property
     def height(self) -> int:
@@ -126,8 +141,7 @@ class Board(container.Container):
         if self.dirty == 0:
             return self._container_height
         else:
-            self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
-            return self._container_height
+            return self.container_height
 
     @property
     def window(self) -> window.MiniWorldWindow:
@@ -168,6 +182,7 @@ class Board(container.Container):
     def rows(self, value):
         self._rows = value
         self.dirty = 1
+        self._repaint_all = 1
 
     @property
     def columns(self) -> int:
@@ -180,6 +195,7 @@ class Board(container.Container):
     def columns(self, value):
         self._columns = value
         self.dirty = 1
+        self._repaint_all = 1
 
     @property
     def tokens(self) -> pygame.sprite.LayeredDirty:
@@ -202,18 +218,44 @@ class Board(container.Container):
             The index of the image.
 
         """
-        return self.background.add_image(path)
+        try:
+            image = self.background.add_image(path)
+        except FileExistsError:
+            raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
+        return image
 
-    @property
-    def image(self) -> pygame.Surface:
+    def add_background(self, path: str) -> background.Background:
+        new_background = background.Background(self)
+        new_background.add_image(path)
+        new_background.orientation = self.background.orientation
+        self.backgrounds.append(new_background)
+        return new_background
+
+    def switch_background(self, index=-1) -> background.Background:
+        """Switches costume
+
+        Args:
+            index: The index of the new costume. If index=-1, the next costume will be selected
+
+        Returns: The new costume
+
         """
-        The current displayed image
-        """
-        if not self.dirty:
-            return self._image
+        if index == -1:
+            index = self.backgrounds.index(self.background)
+            if index < len(self.backgrounds) - 1:
+                index += 1
+            else:
+                index = 0
         else:
-            self._image = self.background.image
-            return self._image
+            index = index
+        self.background = self.backgrounds[index]
+        self.background.dirty = 1
+        self.background.changed_all()
+        self.dirty = 1
+        self._repaint_all = 1
+        for token in self.tokens:
+            token.dirty = 1
+        return self.background
 
     def add_to_board(self, token: pck_token.Token, position: Union[tuple, board_position.BoardPosition]) -> pck_token.Token:
         """Adds token to board
@@ -228,7 +270,7 @@ class Board(container.Container):
         """
         self.tokens.add(token)
         if type(position) == tuple:
-            token.position = board_position.BoardPosition(position[0], position[1])
+            token.position = board_position.BoardPosition(position)
         elif type(position) == board_position.BoardPosition:
             token.position = position
         else:
@@ -296,7 +338,7 @@ class Board(container.Container):
                 tokens.append(token)
         return tokens
 
-    def get_token_in_area(self, value: Union[pygame.Rect, tuple], token=None, exclude=None) -> pck_token.Token:
+    def get_token(self, value: Union[pygame.Rect, tuple], token=None, exclude=None) -> pck_token.Token:
         """Gets  a single tokens in area
 
         Args:
@@ -372,18 +414,31 @@ class Board(container.Container):
         else:
             return True
 
+    @property
+    def image(self) -> pygame.Surface:
+        """
+        The current displayed image
+        """
+        if not self.dirty:
+            return self._image
+        else:
+            self._image = self.background.image
+            return self._image
+
     def repaint(self):
-        self.tokens.clear(self.window.window_surface, self.image)
-        repaint_rects = self.tokens.draw(self.window.window_surface)
+        self.surface = pygame.Surface((self.image.get_width(), self.image.get_height()))
+        if self.dirty:
+            self.surface.blit(self.image, self.surface.get_rect())
+        self.tokens.clear(self.surface, self.image)
+        repaint_rects = self.tokens.draw(self.surface)
         self._window.repaint_areas.extend(repaint_rects)
-        for token in self.tokens:
-            token.dirty = 0
-        if self.dirty == 1:
+        if self._repaint_all == 1:
             self._window.repaint_areas.append(self.rect)
-            self.dirty = 0
+            self._repaint_all = 0
 
     def blit_surface_to_window_surface(self):
-        pass
+        if self.dirty:
+            self._window.window_surface.blit(self.surface, self.rect)
 
     def show(self, fullscreen=False):
         """
@@ -415,16 +470,30 @@ class Board(container.Container):
     def pass_event(self, event, data=None):
         tokens = [token for token in self.tokens if token.is_static is False]
         if event == "mouse_left":
-            if self.get_tokens_by_pixel(data):
-                self.set_active_actor(self.get_tokens_by_pixel(data)[0])
+            tokens = self.get_tokens_by_pixel(data)
+            if tokens:
+                i = 0
+                while i < len(tokens):
+                    if self.active_actor == tokens[i]:
+                        if i < len(tokens)-1:
+                            self.set_active_actor(tokens[i+1])
+                            break
+                        else:
+                            self.set_active_actor(tokens[0])
+                            break
+                    i = i + 1
+                else:
+                    self.set_active_actor(tokens[0])
         else:
             for token in tokens:
-                token.get_event(event, data)
+                if data != token:
+                    token.get_event(event, data)
 
     def set_active_actor(self, token: pck_token.Token):
         self.active_actor = token
         token.dirty = 1
         self.window.send_event_to_containers("active_token", token)
+        help(token)
         return token
 
     def act(self):
@@ -437,7 +506,10 @@ class Board(container.Container):
         pass
 
     def save_to_db(self, file):
-        os.remove(file)
+        print(file)
+        if os.path.exists(file):
+            os.remove(file)
+
         db = db_manager.DBManager(file)
         query_actors = """     CREATE TABLE `token` (
                         `token_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -487,11 +559,22 @@ class Board(container.Container):
         if data:
             for tokens in data:
                 token_class_name = tokens[3]
-                if token_class_name in Board.registered_token_types.keys():
-                    token_instance = Board.registered_token_types[token_class_name]()
-                    board.add_to_board(token=token_instance, position=(tokens[1], tokens[2]))
+                token_class = pck_token.Token
+                class_list = Board.all_subclasses(pck_token.Token)
+
+                for cls_obj in class_list:
+                    if cls_obj.__name__ == token_class_name:
+                        token_class = cls_obj
+
+                print(token_class_name, token_class)
+                token_instance = token_class(position=(tokens[1], tokens[2]))
         board.window.send_event_to_containers("Loaded from db", board)
         return board
+
+    @classmethod
+    def all_subclasses(self, cls):
+        return set(cls.__subclasses__()).union(
+            [s for c in cls.__subclasses__() for s in self.all_subclasses(c)])
 
     @staticmethod
     def register_token_type(class_name):
@@ -535,7 +618,7 @@ class Board(container.Container):
     def get_board_position_from_pixel(self, position: tuple) -> board_position.BoardPosition:
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
         row = (position[1] - self.tile_margin) // (self.tile_size + self.tile_margin)
-        return board_position.BoardPosition(column, row)
+        return board_position.BoardPosition((column, row))
 
     def get_board_position_from_rect(self, position: pygame.Rect) -> board_position.BoardPosition:
         position = position.topleft
@@ -543,7 +626,7 @@ class Board(container.Container):
 
     def get_color_at_board_position(self, position: Union[tuple, board_position.BoardPosition]) -> tuple:
         if type(position == tuple):
-            position = board_position.BoardPosition(position[0], position[1])
+            position = board_position.BoardPosition(position)
         return self.background.color_at(position.to_pixel())
 
     def get_color_at_rect(self, rect : pygame.Rect, directions = None) -> list:

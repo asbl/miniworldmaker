@@ -29,6 +29,7 @@ class Player(Actor):
         if not self.sensing_on_board(distance = 0):
             self.move(-1)
 
+
 board = MyBoard()
 board.show()
 

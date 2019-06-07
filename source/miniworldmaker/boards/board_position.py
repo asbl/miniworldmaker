@@ -4,9 +4,11 @@ import pygame
 
 class BoardPosition:
 
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, pos):
+        if type(pos) == int:
+            raise TypeError("Board position requires a tuple: (x,y) as parameter, not an int value")
+        self.x = pos[0]
+        self.y = pos[1]
         self.board = window.MiniWorldWindow.board
 
     def __getitem__(self, index):
@@ -27,11 +29,11 @@ class BoardPosition:
             board = window.MiniWorldWindow.board
         column = (position[0] - board.tile_margin) // (board.tile_size + board.tile_margin)
         row = (position[1] - board.tile_margin) // (board.tile_size + board.tile_margin)
-        return cls(column, row)
+        return cls((column, row))
 
     def near(self, other, distance):
         if isinstance(other, tuple):
-            other = BoardPosition(other[0], other[1])
+            other = BoardPosition(other)
         if isinstance(other, BoardPosition):
             if self.x <= other.x + distance \
                     and self.x >= other.x - distance \
@@ -59,19 +61,19 @@ class BoardPosition:
         return str("Pos(" + str(self.x) + "," + str(self.y) + ")")
 
     def up(self, value : int):
-        return BoardPosition(self.x, self.y-value)
+        return BoardPosition((self.x, self.y-value))
 
     def down(self, value : int):
-        return BoardPosition(self.x, self.y+value)
+        return BoardPosition((self.x, self.y+value))
 
     def left(self, value : int):
-        return BoardPosition(self.x-value, self.y)
+        return BoardPosition((self.x-value, self.y))
 
     def right(self, value : int):
-        return BoardPosition(self.x+value, self.y-value)
+        return BoardPosition((self.x+value, self.y-value))
 
     def add(self, x, y):
-        return BoardPosition(self.x+x, self.y+y)
+        return BoardPosition((self.x+x, self.y+y))
 
     def to_pixel(self) -> tuple:
         rect = self.to_rect()

@@ -1,12 +1,14 @@
+import math
 from logging import *
 from typing import Union
+
 import pygame
-import math
-from miniworldmaker.tokens import token
 from miniworldmaker.boards import board_position
+import miniworldmaker.tokens.board_token as token
 
 
 class Actor(token.Token):
+
     log = getLogger("Actor")
 
     def __init__(self, position = None):
@@ -166,7 +168,7 @@ class Actor(token.Token):
         """
         x = self.position[0] + self.delta_x(distance)
         y = self.position[1] + self.delta_y(distance)
-        return board_position.BoardPosition(x, y).to_rect(rect=self.rect)
+        return board_position.BoardPosition((x, y)).to_rect(rect=self.rect)
 
     def delta_x(self, distance):
         return round( math.sin(math.radians(self.direction)) * distance)
@@ -188,7 +190,7 @@ class Actor(token.Token):
             self.point_in_direction(0)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
-        elif ("bottom" in borders and ((self.direction < -90 and self.direction > -180) or (self.direction > 90 and self.direction < 180))):
+        elif ("bottom" in borders and ((self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180))):
             self.point_in_direction(180)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
@@ -254,7 +256,7 @@ class Actor(token.Token):
         if distance < 0:
             distance = self.speed
         destination_rect = self.look(distance=distance)
-        token = self.board.get_token_in_area(destination_rect, token, exclude=self)
+        token = self.board.get_token(destination_rect, token, exclude=self)
         if exact and token is not None:
             if not pygame.sprite.collide_mask(self, token):
                 tokens = self.sensing_tokens(exact= True, token = token)
@@ -278,7 +280,7 @@ class Actor(token.Token):
             distance = self.speed
         destination_rect = self.look(distance=distance)
         borders = self.board.borders(destination_rect)
-        self.board.window.send_event_to_containers("actor_is_looking_at_border", (self, borders))
+        self.board.window.send_event_to_containers("actor_is_looking_at_border", self)
         return borders
 
     def sensing_on_board(self, distance:Union[int, None] = None) -> bool:
@@ -355,3 +357,8 @@ class Actor(token.Token):
         self.turn_left(180)
         return self.direction
 
+    def __str__(self):
+        str = super().__str__()
+        if self.board:
+            str = str + "\n  * Direction: {0}".format(self.direction)
+        return str

@@ -1,8 +1,9 @@
-from miniworldmaker.containers.container import Container
+from miniworldmaker.containers import container
 from miniworldmaker.containers import toolbar_widgets
 import pygame
 
-class Toolbar(Container):
+
+class Toolbar(container.Container):
 
     def __init__(self):
         super().__init__()
@@ -15,8 +16,8 @@ class Toolbar(Container):
         self.row_margin = 4
         self.margin_left = 10
         self.margin_right = 10
-
         self.dirty = 1
+        self.repaint_all = 1
 
     def get_widget(self, index):
         return self.widgets[index]
@@ -39,6 +40,7 @@ class Toolbar(Container):
         widget.dirty = 1
         if widget.timed:
             self.timed_widgets.append(widget)
+        self.repaint_all = 1
         return widget
 
     def remove_widget(self, widget):
@@ -50,11 +52,15 @@ class Toolbar(Container):
         """
         self.widgets.remove(widget)
         self.dirty = 1
+        self.repaint_all = 1
 
     def remove_all_widgets(self):
         self.widgets = []
+        self.dirty = 1
+        self.repaint_all = 1
 
     def repaint(self):
+        self.surface = pygame.Surface((self._container_width, self._container_height))
         if self.dirty:
             self.surface.fill((255, 255, 255))
             if self.widgets:
@@ -68,6 +74,9 @@ class Toolbar(Container):
                     self.surface.blit(widget.surface, (5, actual_height))
                     actual_height += widget.height + self.row_margin
                 self.dirty = 0
+            if self.repaint_all:
+                self._window.repaint_areas.append(self.rect)
+                self.repaint_all = False
 
     def _widgets_total_height(self):
         height = self.margin_first
@@ -79,14 +88,13 @@ class Toolbar(Container):
         if event == "mouse_left":
             height = self.margin_first
             x, y = data[0], data[1]
-            if not y > self._widgets_total_height():
-                for widget in self.widgets:
-                    if height + widget.height > y:
-                        return widget.get_event(event, data)
-                    else:
-                        height = height + widget.height + self.row_margin
-        else:
-            return "no toolbar event"
+            if self.is_in_container(x, y):
+                if not y > self._widgets_total_height():
+                    for widget in self.widgets:
+                        if height + widget.height > y:
+                            return widget.get_event(event, data)
+                        else:
+                            height = height + widget.height + self.row_margin
 
     def update(self):
         for widget in self.timed_widgets:
