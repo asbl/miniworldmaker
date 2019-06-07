@@ -12,6 +12,7 @@ class MyBoard(TiledBoard):
         self.console = self._window.add_container(Console(), "bottom")
         self.door = None
 
+
 class Player(Actor):
 
     def __init__(self, position):
@@ -19,6 +20,7 @@ class Player(Actor):
         self.add_image("rpgimages/knight.png")
         self.costume.is_rotatable = False
         self.inventory = []
+        self.is_blocking = False
 
     def move(self, distance=1):
         tokens = self.sensing_tokens()
@@ -122,12 +124,14 @@ class Door(Token):
         self.add_image("rpgimages/door_closed.png")
         self.add_costume("rpgimages/door_open.png")
         self.closed = True
+        self.is_blocking = True
 
     def open(self):
         if self.closed == True:
             self.switch_costume()
             self.board.play_sound("rpgsounds/olddoor.wav")
             self.closed = False
+            self.is_blocking = False
 
 board = MyBoard.from_db("data.db")
 board.window.send_event_to_containers("Loaded new world", "data.db")
