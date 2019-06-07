@@ -10,7 +10,7 @@ class MyBoard(TiledBoard):
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
         self.console = self._window.add_container(Console(), "bottom")
-
+        self.door = None
 
 class Player(Actor):
 
@@ -63,14 +63,15 @@ class Player(Actor):
             self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
         actors_in_front = self.sensing_tokens(distance = 1, token = Door)
-        if self.board.door in actors_in_front:
-            if self.board.door.closed:
-                message = "Die Tür ist geschlossen... möchtest du sie öffnen"
-                choices = ["Ja", "Nein"]
-                reply = easygui.buttonbox(message, "RPG", choices)
-                if reply == "Ja":
-                    self.board.door.open()
-                    self.board.console.newline("Du hast das Tor geöffnet.")
+        if self.board.door:
+            if self.board.door in actors_in_front:
+                if self.board.door.closed:
+                    message = "Die Tür ist geschlossen... möchtest du sie öffnen"
+                    choices = ["Ja", "Nein"]
+                    reply = easygui.buttonbox(message, "RPG", choices)
+                    if reply == "Ja":
+                        self.board.door.open()
+                        self.board.console.newline("Du hast das Tor geöffnet.")
 
 
 class Wall(Token):
