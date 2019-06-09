@@ -27,7 +27,8 @@ setup(name='miniworldmaker',
                    "Topic :: Education",
                    ],
       packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
-      package_dir={'miniworldmaker': 'miniworldmaker', 'pymunk'},
+      package_dir={'miniworldmaker': 'miniworldmaker',
+                   'pymunk': 'pymunk',},
       install_requires=['pygame'],
       include_package_data=True,
       )
