@@ -452,7 +452,7 @@ class Board(container.Container):
         size = self.width, self.height
         self.background.size = (size)
         image = self.image
-        self.window.show(image, fullscreen = fullscreen)
+        self.window.show(image, full_screen= fullscreen)
 
     def update(self):
         if self.is_running:
@@ -460,9 +460,9 @@ class Board(container.Container):
             if self._tick > 101 - self.speed:
                 self._act_all()
                 self._tick = 0
+            for token in self.tokens:
+                token.update()
         self.frame = self.frame + 1
-        for token in self.tokens:
-            token.update()
         self.clock.tick(40)
 
     def _act_all(self):
@@ -510,10 +510,8 @@ class Board(container.Container):
         pass
 
     def save_to_db(self, file):
-        print(file)
         if os.path.exists(file):
             os.remove(file)
-
         db = db_manager.DBManager(file)
         query_actors = """     CREATE TABLE `token` (
                         `token_id`			INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -569,9 +567,7 @@ class Board(container.Container):
                 for cls_obj in class_list:
                     if cls_obj.__name__ == token_class_name:
                         token_class = cls_obj
-
-                print(token_class_name, token_class)
-                token_instance = token_class(position=(tokens[1], tokens[2]))
+                token_class(position=(tokens[1], tokens[2])) # Create token
         board.window.send_event_to_containers("Loaded from db", board)
         return board
 
@@ -635,10 +631,8 @@ class Board(container.Container):
 
     def get_colors_at_line(self, line: list):
         colors = []
-        print("--------------")
         for pos in line:
             color_at_pos = self.background.color_at(pos)
-            print(pos, color_at_pos)
             if color_at_pos not in colors:
                 colors.append(color_at_pos)
         return colors

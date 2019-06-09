@@ -16,7 +16,7 @@ miniworldmaker/boards/tiled_board.py
 miniworldmaker/containers/__init__.py
 miniworldmaker/containers/actionbar.py
 miniworldmaker/containers/actionbar_widgets.py
-miniworldmaker/containers/color_console.py
+miniworldmaker/containers/color_toolbar.py
 miniworldmaker/containers/console.py
 miniworldmaker/containers/container.py
 miniworldmaker/containers/event_console.py

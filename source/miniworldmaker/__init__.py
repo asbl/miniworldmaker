@@ -14,6 +14,7 @@ from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
 from miniworldmaker.boards.board_position import BoardPosition
+from miniworldmaker.physics.physics import PhysicsProperty
 
 __all__ = ['Token',
            'TextToken',
@@ -37,4 +38,5 @@ __all__ = ['Token',
            'CounterLabel',
            'TimeLabel',
            'FPSLabel',
+           'PhysicsProperty',
            ]

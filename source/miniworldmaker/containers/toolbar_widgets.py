@@ -1,5 +1,4 @@
 import logging
-from miniworldmaker import boards
 import pygame
 from tkinter import filedialog
 from tkinter import *
@@ -125,7 +124,6 @@ class SaveButton(ToolbarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            print(self.file)
             if self.file is None:
                 Tk().withdraw()
                 try:

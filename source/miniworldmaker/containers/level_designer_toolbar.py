@@ -1,7 +1,5 @@
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
-import miniworldmaker.tokens.board_token as token
-import miniworldmaker.boards.board_position as board_position
 import os
 
 
@@ -17,7 +15,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.add_widget(ToolbarLabel("Left Click to add Tokens"))
         self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
-        class_list = self.all_subclasses(token.Token)
+        import miniworldmaker.tokens.board_token as tk
+        class_list = self.all_subclasses(tk.Token)
         for cls in class_list:
             if cls.__name__ not in ["Token", "Actor", "TextToken", "NumberToken"]:
                 self.add_widget(TokenButton(cls, board, self))
@@ -42,6 +41,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                             for j in range(self.board.columns):
                                 self.selected_token_type((j, i))
                     else:
+                        import miniworldmaker.boards.board_position as board_position
                         self.selected_token_type(position=board_position.BoardPosition.from_pixel(data))
 
             elif "wheel_up" in event or "wheel_down" in event:

@@ -6,9 +6,8 @@ class MyBoard(TiledBoard):
     def __init__(self):
         super().__init__(columns=20, rows=8, tile_size=42, tile_margin=0)
         self.rounds = 1
-        self.counter = TextToken(str(self.rounds))
+        self.counter = TextToken(position=(4,3), text=str(self.rounds))
         self.counter.size = (160,160)
-        self.add_to_board(self.counter, position=(4,3))
         player1 = Player(position=(3, 3))
         self.add_image(path="images/stone.png")
         self.background.is_scaled_to_tile= True

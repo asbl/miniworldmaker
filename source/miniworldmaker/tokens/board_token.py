@@ -4,7 +4,7 @@ import pygame
 from miniworldmaker.boards import board_position
 from miniworldmaker.tokens import costume
 from miniworldmaker.windows import miniworldwindow
-
+from miniworldmaker.physics import physics as ph
 
 class Token(pygame.sprite.DirtySprite):
 
@@ -27,7 +27,7 @@ class Token(pygame.sprite.DirtySprite):
         Token.token_count += 1
         self._direction = 0
         # public
-
+        self.physics = None
         self.last_position = (0,0)
         self.last_direction = 90
         self.token_id = Token.token_count + 1
@@ -225,6 +225,8 @@ class Token(pygame.sprite.DirtySprite):
     def update(self):
         if self.costume.is_animated:
             self.costume.update()
+        if self.physics:
+            self.physics.update()
 
     def _value_to_direction(self, value) -> int:
         if value == "top" or value == "up":
@@ -259,3 +261,9 @@ class Token(pygame.sprite.DirtySprite):
         for cls in base.__subclasses__():
             d[cls.__name__] = cls
         return d
+
+    def start_physics(self):
+        self.physics = ph.PhysicsProperty(token = self)
+
+    def stop_physics(self):
+        self.physics = ph.PhysicsProperty(token = self)

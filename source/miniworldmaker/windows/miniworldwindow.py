@@ -6,7 +6,7 @@ import pkg_resources
 import pygame
 import miniworldmaker.containers.actionbar as actionbar
 from miniworldmaker.containers import inspect_actor_toolbar
-from miniworldmaker.containers import container
+from miniworldmaker.containers import container as container_file
 from miniworldmaker.containers import event_console
 from miniworldmaker.containers import level_designer_toolbar
 from miniworldmaker.containers import color_toolbar
@@ -14,7 +14,7 @@ from miniworldmaker.tools import keys
 
 
 class MiniWorldWindow:
-    log = logging.getLogger("Miniworldmaker")
+    log = logging.getLogger("miniworldmaker")
     board = None
     window = None
     quit = False
@@ -32,11 +32,11 @@ class MiniWorldWindow:
         self.window_surface.set_alpha(None)
         self.log_events = "None"
         self.event_console = None
-        self.actionbar = None
+        self.action_bar = None
         self.docks = 0
         self.actor_toolbar = None
         self.level_designer = None
-        self.fullscreen = False
+        self.full_screen = False
         self.color_console = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
@@ -48,16 +48,16 @@ class MiniWorldWindow:
             pass
 
     def display_update(self):
-        if self.fullscreen:
+        if self.full_screen:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height),
                                                           pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
         else:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
 
-    def show(self, image, fullscreen : bool = False, log = False):
-        self.fullscreen = fullscreen
+    def show(self, image, full_screen : bool = False, log = False):
+        self.full_screen = full_screen
         self.display_update()
-        if log == True:
+        if log is True:
             logging.basicConfig(level=logging.DEBUG)
         else:
             logging.basicConfig(level=logging.INFO)
@@ -77,26 +77,26 @@ class MiniWorldWindow:
             if self.dirty:
                 self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
                 self.dirty = 0
-            for container in self._containers:
-                container.update()
-                if container.dirty:
-                    container.repaint()
-                    container.blit_surface_to_window_surface()
+            for ct in self._containers:
+                ct.update()
+                if ct.dirty:
+                    ct.repaint()
+                    ct.blit_surface_to_window_surface()
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []
 
     def update_containers(self):
         top_left = 0
-        for container in self._containers_right:
-            container.container_top_left_x = top_left
-            top_left += container.container_width
+        for ct in self._containers_right:
+            ct.container_top_left_x = top_left
+            top_left += ct.container_width
 
         top_left = 0
-        for container in self._containers_bottom:
-            container.container_top_left_y = top_left
-            top_left += container.container_height
+        for ct in self._containers_bottom:
+            ct.container_top_left_y = top_left
+            top_left += ct.container_height
 
-    def add_container(self, container, dock, size=None) -> container.Container:
+    def add_container(self, container, dock, size=None) -> container_file.Container:
         if dock == "right" or dock == "top_left":
             self._containers_right.append(container)
         if dock == "bottom" or dock == "top_left":
@@ -232,22 +232,22 @@ class MiniWorldWindow:
                         self.event_console = event_console.EventConsole()
                         self.add_container(self.event_console, dock="right")
                         if self.docks == 0:
-                            self.actionbar = actionbar.ActionBar(self.board)
-                            self.add_container(self.actionbar, dock="bottom")
+                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.add_container(self.action_bar, dock="bottom")
                         self.docks+=1
                         self.log.info("Added event console")
                     elif self.event_console:
                         self.remove_container(self.event_console)
                         self.docks-=1
                         if self.docks == 0:
-                            self.remove_container(self.actionbar)
+                            self.remove_container(self.action_bar)
                         self.event_console = None
                 if "F6" in keys_pressed:
                     if not self.actor_toolbar:
                         self.actor_toolbar = inspect_actor_toolbar.InspectActorToolbar()
                         if self.docks == 0:
-                            self.actionbar = actionbar.ActionBar(self.board)
-                            self.add_container(self.actionbar, dock="bottom")
+                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.add_container(self.action_bar, dock="bottom")
                         self.docks += 1
                         self.add_container(self.actor_toolbar, dock="right")
                         self.log.info("Added active actor toolbar")
@@ -255,14 +255,14 @@ class MiniWorldWindow:
                         self.remove_container(self.actor_toolbar)
                         self.docks -= 1
                         if self.docks == 0:
-                            self.remove_container(self.actionbar)
+                            self.remove_container(self.action_bar)
                         self.actor_toolbar = None
                 if "F7" in keys_pressed:
                     if not self.level_designer:
                         self.level_designer = level_designer_toolbar.LevelDesignerToolbar(self.board)
                         if self.docks == 0:
-                            self.actionbar = actionbar.ActionBar(self.board)
-                            self.add_container(self.actionbar, dock="bottom")
+                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.add_container(self.action_bar, dock="bottom")
                         self.docks += 1
                         self.add_container(self.level_designer, dock="right")
                         self.log.info("Added level designer")
@@ -271,13 +271,13 @@ class MiniWorldWindow:
                         self.level_designer = None
                         self.docks -= 1
                         if self.docks == 0:
-                            self.remove_container(self.actionbar)
+                            self.remove_container(self.action_bar)
                 if "F8" in keys_pressed:
                     if not self.color_console:
                         self.color_console = color_toolbar.ColorToolbar(self.board)
                         if self.docks == 0:
-                            self.actionbar = actionbar.ActionBar(self.board)
-                            self.add_container(self.actionbar, dock="bottom")
+                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.add_container(self.action_bar, dock="bottom")
                         self.docks += 1
                         self.add_container(self.color_console, dock="right")
                         self.log.info("Added level designer")
@@ -286,7 +286,7 @@ class MiniWorldWindow:
                         self.color_console = None
                         self.docks -= 1
                         if self.docks == 0:
-                            self.remove_container(self.actionbar)
+                            self.remove_container(self.action_bar)
                 else:
                     self.send_event_to_containers("key_down", keys_pressed)
         return False
@@ -299,10 +299,10 @@ class MiniWorldWindow:
         MiniWorldWindow.log.info("Press 'F2' to show events in command line")
         MiniWorldWindow.log.info("Press 'F3'  to show move-events in command line")
         MiniWorldWindow.log.info("Press 'F4'  to show key-events in command line")
-        MiniWorldWindow.log.info("Press 'F5'  to add event-console")
+        MiniWorldWindow.log.info("Press 'F5'  to add Event-console")
         MiniWorldWindow.log.info("Press 'F6'  to add Actor-Toolbar")
         MiniWorldWindow.log.info("Press 'F7'  to add Level-Designer")
-
+        MiniWorldWindow.log.info("Press 'F8'  to add Color-Toolbar")
 
     def send_event_to_containers(self, event, data):
         for container in self._containers:
@@ -318,7 +318,7 @@ class MiniWorldWindow:
                 else:
                     if self.log_events == "move" and event == "move":
                         MiniWorldWindow.log.info("Event: '{0}' with data: {1}".format(event, data))
-                    if self.log_events == "key" and event == "key_pressed" or event == "key_pressed":
+                    if self.log_events == "key" and (event == "key_pressed" or event == "key_pressed"):
                         MiniWorldWindow.log.info("Event: '{0}' with data: {1}".format(event, data))
 
     def get_keys(self):

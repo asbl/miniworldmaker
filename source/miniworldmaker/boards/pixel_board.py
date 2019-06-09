@@ -2,8 +2,8 @@ from miniworldmaker.boards.board import Board
 from miniworldmaker.tokens.board_token import Token
 from typing import Union
 
-class PixelBoard(Board):
 
+class PixelBoard(Board):
 
     def __init__(self, columns=40, rows=40):
         super().__init__(columns=columns, rows=rows)
