@@ -78,8 +78,8 @@ class MiniWorldWindow:
                 self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
                 self.dirty = 0
             for ct in self._containers:
-                ct.update()
                 if ct.dirty:
+                    ct.update()
                     ct.repaint()
                     ct.blit_surface_to_window_surface()
             pygame.display.update(self.repaint_areas)
@@ -198,36 +198,40 @@ class MiniWorldWindow:
                 pos = pygame.mouse.get_pos()
                 self.send_event_to_containers("mouse_motion", (pos[0], pos[1]))
                 # key-events
+            elif event.type == pygame.KEYUP:
+                keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
+                self.send_event_to_containers("key_up", keys_pressed)
+
             elif event.type == pygame.KEYDOWN:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
                 if "^" in keys_pressed:
                     tokens_at_pos = self.board.get_tokens_by_pixel(self.board.get_mouse_position())
                     for token in tokens_at_pos:
                         MiniWorldWindow.log.info(token)
-                if "F1" in keys_pressed:
+                elif "F1" in keys_pressed:
                     self.help()
-                if "F2" in keys_pressed:
+                elif "F2" in keys_pressed:
                     if self.log_events is not "all":
                         self.log_events = "all"
                         self.log.info("Log all events")
                     else:
                         self.log_events = "None"
                         self.log.info("Stopped logging events")
-                if "F3" in keys_pressed:
+                elif "F3" in keys_pressed:
                     if self.log_events is not "move":
                         self.log_events = "move"
                         self.log.info("Log move events")
                     else:
                         self.log_events = "None"
                         self.log.info("Stopped logging events")
-                if "F4" in keys_pressed:
+                elif "F4" in keys_pressed:
                     if self.log_events is not "key_events":
                         self.log_events = "key_events"
                         self.log.info("Log key events")
                     else:
                         self.log_events = "None"
                         self.log.info("Stopped logging events")
-                if "F5" in keys_pressed:
+                elif "F5" in keys_pressed:
                     if not self.event_console:
                         self.event_console = event_console.EventConsole()
                         self.add_container(self.event_console, dock="right")
@@ -242,7 +246,7 @@ class MiniWorldWindow:
                         if self.docks == 0:
                             self.remove_container(self.action_bar)
                         self.event_console = None
-                if "F6" in keys_pressed:
+                elif "F6" in keys_pressed:
                     if not self.actor_toolbar:
                         self.actor_toolbar = inspect_actor_toolbar.InspectActorToolbar()
                         if self.docks == 0:
@@ -257,7 +261,7 @@ class MiniWorldWindow:
                         if self.docks == 0:
                             self.remove_container(self.action_bar)
                         self.actor_toolbar = None
-                if "F7" in keys_pressed:
+                elif "F7" in keys_pressed:
                     if not self.level_designer:
                         self.level_designer = level_designer_toolbar.LevelDesignerToolbar(self.board)
                         if self.docks == 0:
@@ -272,7 +276,7 @@ class MiniWorldWindow:
                         self.docks -= 1
                         if self.docks == 0:
                             self.remove_container(self.action_bar)
-                if "F8" in keys_pressed:
+                elif "F8" in keys_pressed:
                     if not self.color_console:
                         self.color_console = color_toolbar.ColorToolbar(self.board)
                         if self.docks == 0:

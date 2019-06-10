@@ -23,15 +23,6 @@ class Robot(Actor):
             self.point_towards_position(mouse)
             self.move()
 
-    def get_event(self, event, data):
-        if event == "key_pressed":
-            if "A" in data:
-                self.turn_left(10)
-            if "D" in data:
-                self.turn_right(10)
-            if "W" in data:
-                self.move()
-
 
 board = MyBoard()
 board.show()

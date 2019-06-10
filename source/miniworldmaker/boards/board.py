@@ -9,7 +9,7 @@ from miniworldmaker.tools import db_manager
 from miniworldmaker.tokens import board_token as pck_token
 from miniworldmaker.boards import board_position
 from miniworldmaker.boards import background
-
+from miniworldmaker.physics import physics as physicsengine
 
 class Board(container.Container):
     """
@@ -461,7 +461,15 @@ class Board(container.Container):
                 self._act_all()
                 self._tick = 0
             for token in self.tokens:
-                token.update()
+                if token.physics:
+                    token.physics.update_physics_model()
+            steps = 1
+            for x in range(steps):
+                physicsengine.PhysicsProperty.space.step(1 / 60)
+            for token in self.tokens:
+                if token.physics:
+                    token.physics.update_token_from_physics_model()
+
         self.frame = self.frame + 1
         self.clock.tick(40)
 

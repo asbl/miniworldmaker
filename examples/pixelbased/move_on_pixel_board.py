@@ -32,6 +32,7 @@ class Player(Actor):
                 self.point_in_direction("right")
             if self.sensing_on_board():
                 self.move()
+            print(self.direction, self.direction_from_unit_circle())
 
 
 board = MyBoard()

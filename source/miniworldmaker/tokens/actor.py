@@ -4,10 +4,11 @@ from typing import Union
 
 import pygame
 from miniworldmaker.boards import board_position
-import miniworldmaker.tokens.board_token as token
+import miniworldmaker.tokens.board_token as tkn
+import miniworldmaker.physics.physics as ph
 
 
-class Actor(token.Token):
+class Actor(tkn.Token):
 
     log = getLogger("Actor")
 
@@ -265,7 +266,7 @@ class Actor(token.Token):
             return  [token for token in tokens if pygame.sprite.collide_mask(self,token)]
         return tokens
 
-    def sensing_token(self, distance: int = -1, token=None, exact = False) -> Union[token.Token,None]:
+    def sensing_token(self, distance: int = -1, token=None, exact = False) -> Union[tkn.Token, None]:
         """Checks if actor is sensing a single token in front. See sensing_tokens
 
         Args:
@@ -374,3 +375,14 @@ class Actor(token.Token):
         if self.board:
             str = str + "\n  * Direction: {0}".format(self.direction)
         return str
+
+    def start_physics(self, gravity=True, box_type="rect", can_move=True, mass=1, friction=0.5, elasticity=0.5, size=(1, 1), stable = False):
+        self.physics = ph.PhysicsProperty(token=self,
+                                          can_move=can_move,
+                                          gravity=gravity,
+                                          mass = mass,
+                                          friction = friction,
+                                          elasticity=elasticity,
+                                          size = size,
+                                          box_type = box_type,
+                                          stable = stable)

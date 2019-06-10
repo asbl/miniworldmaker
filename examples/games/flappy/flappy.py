@@ -11,7 +11,7 @@ class MyBoard(PixelBoard):
         self.pipe1 = Pipe(top=False, position= (260, height - 260))
         self.pipe2 = Pipe(top=True, position= (520, 0))
         self.score = NumberToken(position = (0, 0), number=0)
-        self.score.size = (80,80)
+        self.score.size = (80, 80)
         self.is_running = False
 
 

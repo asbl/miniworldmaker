@@ -35,6 +35,7 @@ class Token(pygame.sprite.DirtySprite):
         # costume
         self.costume = costume.Costume(self)
         self._image = pygame.Surface((1, 1))
+        self._rect = self._image.get_rect()
         self.costumes = [self.costume]
         self.costume.is_upscaled = True
         self.costume.orientation = 0
@@ -76,6 +77,7 @@ class Token(pygame.sprite.DirtySprite):
         else:
             self._image = self.costume.image
             return self.costume.image
+
     @property
     def dirty(self):
         return self._dirty
@@ -88,8 +90,8 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def rect(self):
-        self._rect = self.position.to_rect(rect=self.image.get_rect())
         if self.dirty == 1:
+            self._rect = self.position.to_rect(rect=self.image.get_rect())
             return self._rect
         else:
             return self._rect
@@ -147,6 +149,13 @@ class Token(pygame.sprite.DirtySprite):
         """
         return (self._direction + 180) % 360 - 180
 
+    def direction_to_unit_circle(self):
+        return - (self._direction + 270) % 360
+
+    def direction_from_unit_circle(self, value):
+        self.direction = - (value + 270) % 360
+
+
     @direction.setter
     def direction(self, value):
         self.last_direction = self.direction
@@ -170,6 +179,16 @@ class Token(pygame.sprite.DirtySprite):
         self._size = value
         self.dirty = 1
         self.costume.call_action("scale")
+        if self.physics:
+            self.physics.dirty = 1
+
+    @property
+    def width(self):
+        return self.size[0]
+
+    @property
+    def height(self):
+        return self.size[1]
 
     @property
     def position(self) -> board_position.BoardPosition:
@@ -212,6 +231,30 @@ class Token(pygame.sprite.DirtySprite):
     def class_name(self) -> str:
         return self.__class__.__name__
 
+    @property
+    def center_x(self):
+        return self.rect.centerx
+
+    @property
+    def center_y(self):
+        return self.rect.centery
+
+    @property
+    def center(self):
+        return self.center_x, self.center_y
+
+    @center_x.setter
+    def center_x(self, value):
+        rect = pygame.Rect.copy(self.rect)
+        rect.centerx = value
+        self.x = rect.topleft[0]
+
+    @center_y.setter
+    def center_y(self, value):
+        rect = pygame.Rect.copy(self.rect)
+        rect.centery = value
+        self.y = rect.topleft[1]
+
     # Methoden
     def act(self):
         """Custom acting
@@ -226,7 +269,7 @@ class Token(pygame.sprite.DirtySprite):
         if self.costume.is_animated:
             self.costume.update()
         if self.physics:
-            self.physics.update()
+            self.physics.update_physics_nodel()
 
     def _value_to_direction(self, value) -> int:
         if value == "top" or value == "up":
@@ -262,8 +305,16 @@ class Token(pygame.sprite.DirtySprite):
             d[cls.__name__] = cls
         return d
 
-    def start_physics(self):
-        self.physics = ph.PhysicsProperty(token = self)
+    def start_physics(self, box_type = "rect", gravity=False, can_move=False, mass=1, friction=0.5, elasticity=0.5, size=(1, 1), stable=False):
+        self.physics = ph.PhysicsProperty(token=self,
+                                          can_move=False,
+                                          gravity=gravity,
+                                          mass = mass,
+                                          friction = friction,
+                                          elasticity=elasticity,
+                                          size = size,
+                                          box_type = box_type,
+                                          stable= stable)
 
     def stop_physics(self):
-        self.physics = ph.PhysicsProperty(token = self)
+        self.physics = ph.PhysicsProperty(token=self)

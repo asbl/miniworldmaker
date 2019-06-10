@@ -38,7 +38,6 @@ class ImageRenderer:
 
     @staticmethod
     def rotate(image : pygame.Surface, parent, appearance) -> pygame.Surface:
-
         return pygame.transform.rotate(image, - (parent.direction))
 
     @staticmethod
@@ -133,6 +132,9 @@ class ImageRenderer:
                     raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
 
             else:
-                _image = pygame.image.load(path).convert_alpha()
+                try:
+                    _image = pygame.image.load(path).convert_alpha()
+                except pygame.error:
+                    raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
             ImageRenderer._images_dict[path] = _image
         return _image
