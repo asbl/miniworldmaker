@@ -16,6 +16,8 @@ Features
   * Integrated GUI elements like console for output, toolbar, ...
   
   * Load and Save to SQLite Databases
+  
+  * EXPERIMENTAL: Integrated Physics-Engine based on Pymunk
 
   * Open Source
   

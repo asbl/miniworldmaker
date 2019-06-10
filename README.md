@@ -19,8 +19,10 @@ MiniWorldMaker allows you to create 2D mini worlds and games.
     
   * Load and Save to SQLite Databases
   
+  * EXPERIMENTAL: Integrated Physics-Engine based on Pymunk
+  
   * Open Source
   
-  * Miniworldmaker is a 2D Engine based on Python 3 and pygame.
+  * Miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
   * [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.it-teaching.de/) | [PyPi](https://pypi.org/project/miniworldmaker/)
