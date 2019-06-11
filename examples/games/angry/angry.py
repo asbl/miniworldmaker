@@ -76,7 +76,7 @@ class Box(Actor):
         super().__init__(position)
         self.add_image("images/box_blue.png")
         self.size = (40, 40)
-        self.start_physics(gravity=True, elasticity=0.1, friction=0.2, stable=True, mass = 1, size=(1, 1))
+        self.start_physics(gravity=True, elasticity=0.1, friction=0.8, stable=True, mass = 1, size=(1, 1))
 
 
 class Bird(Actor):
@@ -88,8 +88,9 @@ class Bird(Actor):
         self.flip_x()
         self.size = (80, 80)
         self.start_physics(box_type="rect", gravity = True, mass=2, size=(0.8, 0.8), stable=False, elasticity=0.1, friction=0.3)
-        self.physics.body.apply_impulse_at_local_point((2400, - self.board.arrow.direction*80))
-
+        #self.physics.impuls(8000, - self.board.arrow.direction*100)
+        self.physics.velocity_x = 2500
+        self.physics.velocity_y = - self.board.arrow.direction*50
 
     def act(self):
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():

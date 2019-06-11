@@ -6,11 +6,13 @@ from miniworldmaker.tokens import costume
 from miniworldmaker.windows import miniworldwindow
 from miniworldmaker.physics import physics as ph
 
+
 class Token(pygame.sprite.DirtySprite):
 
     token_count = 0
     log = getLogger("Token")
     lookup = True
+    class_image = None
 
     def __init__(self, position = None):
         self.board = None
@@ -97,7 +99,10 @@ class Token(pygame.sprite.DirtySprite):
             return self._rect
 
     def add_image(self, path: str) -> int:
-        return self.costume.add_image(path)
+        image = self.costume.add_image(path)
+        if not self.__class__.class_image:
+            self.__class__.class_image = path
+        return image
 
     def add_costume(self, path: str) -> costume.Costume:
         new_costume = costume.Costume(self)
@@ -317,4 +322,4 @@ class Token(pygame.sprite.DirtySprite):
                                           stable= stable)
 
     def stop_physics(self):
-        self.physics = ph.PhysicsProperty(token=self)
+        self.physics = None

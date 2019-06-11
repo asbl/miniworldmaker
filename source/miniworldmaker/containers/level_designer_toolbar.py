@@ -83,9 +83,10 @@ class TokenButton(ToolbarWidget):
         super().__init__()
         self.parent = parent
         self.board = board
-        token = token_type(position = None)
-        if token.costume.image_paths != []:
-            self._img_path = token.costume.image_paths[0]
+        #token = token_type(position = None)
+        print(token_type, token_type.class_image)
+        if token_type.class_image:
+            self._img_path = token_type.class_image
         self._text_padding = 30
         self.set_text("Add " + token_type.__name__)
         self.token_type = token_type

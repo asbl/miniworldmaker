@@ -19,10 +19,11 @@ class Bird(Actor):
 
     def __init__(self, position):
         super().__init__(position)
-        self.add_image("images/flappy.png")
-        self.size = (100, 100)
+        self.add_image("images/fly.png")
+        self.size = (60, 60)
         self.start_physics()
-        self.physics.gravity = 0.3
+        self.costume.orientation = 180
+        self.flip_x()
 
     def act(self):
         borders = self.sensing_borders()
@@ -35,7 +36,7 @@ class Bird(Actor):
 
     def get_event(self, event, data):
         if event == "key_pressed" and "SPACE" in data:
-            self.physics.velocity_y = -5
+            self.physics.velocity_y = 200
             if self.board.is_running == False:
                 self.board.is_running = True
 

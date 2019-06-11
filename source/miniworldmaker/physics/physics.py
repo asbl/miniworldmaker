@@ -51,43 +51,46 @@ class PhysicsProperty:
         if not self.body.body_type == pymunk_engine.Body.STATIC:
             self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
             self.token.direction_from_unit_circle(int(math.degrees(self.body.angle)))
+            print(self.token, self.token.board.image)
         #options = pymunk.pygame_util.DrawOptions(self.token.board.image)
         #options.collision_point_color = (255, 20, 30, 40)
         #PhysicsProperty.space.debug_draw(options)
 
     def _make_pymunk(self):
-        # mass
-        mass = self.mass
+        if self.token.position != None:
+            # mass
+            mass = self.mass
 
-        # Body (dynamic, static or kinematic
-        if self.can_move and not self.stable:
-            body_type = pymunk_engine.Body.DYNAMIC
-        elif self.can_move and self.stable:
-            if self.gravity:
+            # Body (dynamic, static or kinematic
+            if self.can_move and not self.stable:
                 body_type = pymunk_engine.Body.DYNAMIC
+            elif self.can_move and self.stable:
+                if self.gravity:
+                    body_type = pymunk_engine.Body.DYNAMIC
+                else:
+                    body_type = pymunk_engine.Body.KINEMATIC
             else:
-                body_type = pymunk_engine.Body.KINEMATIC
-        else:
-            body_type = pymunk_engine.Body.STATIC
-        if self.stable:
-            moment = pymunk.inf
-        elif self.box_type == "circle":
-            moment = pymunk_engine.moment_for_circle(mass, 0, self.size[0] * self.token.width/2, (0, 0))
-        else:
-            moment = pymunk_engine.moment_for_box(mass = mass, size=(self.token.width, self.token.height))
+                body_type = pymunk_engine.Body.STATIC
+            if self.stable:
+                moment = pymunk.inf
+            elif self.box_type == "circle":
+                moment = pymunk_engine.moment_for_circle(mass, 0, self.size[0] * self.token.width/2, (0, 0))
+            else:
+                moment = pymunk_engine.moment_for_box(mass = mass, size=(self.token.width, self.token.height))
 
-        # create body
-        self.body = pymunk_engine.Body(mass=mass,moment=moment, body_type=body_type)
-        if self.box_type == "rect":
-            shape = pymunk.Poly.create_box(self.body, (self.size[0] * self.token.width, self.size[1] * self.token.height))
+            # create body
+            self.body = pymunk_engine.Body(mass=mass,moment=moment, body_type=body_type)
+            if self.box_type == "rect":
+                shape = pymunk.Poly.create_box(self.body, (self.size[0] * self.token.width, self.size[1] * self.token.height))
+            else:
+                shape = pymunk.Circle(self.body, self.size[0] * self.token.width/2, (0, 0))
+            self.body.position = pymunk.pygame_util.from_pygame((self.token.center_x, self.token.center_y), self.token.board.image)
+            shape.friction = self.friction
+            shape.elasticity = self.elasticity
+            PhysicsProperty.space.add(self.body, shape)
+            self.dirty = 0
         else:
-            shape = pymunk.Circle(self.body, self.size[0] * self.token.width/2, (0, 0))
-        self.body.position = pymunk.pygame_util.from_pygame((self.token.center_x, self.token.center_y), self.token.board.image)
-        print("center-pos", self.token, self.token.center_x, self.token.center_y, self.body.center_of_gravity, self.body.position)
-        shape.friction = self.friction
-        shape.elasticity = self.elasticity
-        PhysicsProperty.space.add(self.body, shape)
-        self.dirty = 0
+            self.debug = True
 
     @property
     def velocity_x(self):
@@ -116,3 +119,5 @@ class PhysicsProperty:
         self.stable = value
         self.dirty = 1
 
+    def impuls(self, impulse, point):
+        self.body.apply_impulse_at_local_point(impulse, point)

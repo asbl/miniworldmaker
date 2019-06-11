@@ -245,6 +245,7 @@ class MiniWorldWindow:
                         self.docks-=1
                         if self.docks == 0:
                             self.remove_container(self.action_bar)
+                            self.running = True
                         self.event_console = None
                 elif "F6" in keys_pressed:
                     if not self.actor_toolbar:
@@ -260,6 +261,7 @@ class MiniWorldWindow:
                         self.docks -= 1
                         if self.docks == 0:
                             self.remove_container(self.action_bar)
+                            self.board.is_running = True
                         self.actor_toolbar = None
                 elif "F7" in keys_pressed:
                     if not self.level_designer:
@@ -275,6 +277,7 @@ class MiniWorldWindow:
                         self.level_designer = None
                         self.docks -= 1
                         if self.docks == 0:
+                            self.board.is_running = True
                             self.remove_container(self.action_bar)
                 elif "F8" in keys_pressed:
                     if not self.color_console:
@@ -290,6 +293,7 @@ class MiniWorldWindow:
                         self.color_console = None
                         self.docks -= 1
                         if self.docks == 0:
+                            self.board.is_running = True
                             self.remove_container(self.action_bar)
                 else:
                     self.send_event_to_containers("key_down", keys_pressed)
