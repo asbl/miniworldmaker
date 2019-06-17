@@ -16,6 +16,8 @@ class PhysicsProperty:
             PhysicsProperty.space = pymunk_engine.Space()
             PhysicsProperty.space.gravity = PhysicsProperty.gravity_x, PhysicsProperty.gravity_y
             PhysicsProperty.space.iterations = 35
+            PhysicsProperty.space.damping = 0.9
+            PhysicsProperty.space.collision_persistence = 10
             pymunk.pygame_util.positive_y_is_up = True
 
             print("Create ´Physics engine")
@@ -45,13 +47,19 @@ class PhysicsProperty:
                                                                 self.token.board.image)
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.body.angle = (math.radians(round(self.token.direction_to_unit_circle(),0)))
-            print(self.token, self.body.velocity)
+            print(self.token, self.body.velocity, self.body.friction)
 
     def update_token_from_physics_model(self):
         if not self.body.body_type == pymunk_engine.Body.STATIC:
+            b_x, b_y = self.body.velocity
+            if b_x > -1 and b_x < 1:
+                self.velocity_x = 0
+            if b_y > -1 and b_y < 1:
+                self.velocity_y = 0
             self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
             self.token.direction_from_unit_circle(int(math.degrees(self.body.angle)))
-            print(self.token, self.token.board.image)
+            a_x, a_y = self.body.velocity
+            print("Velocity", self.token, b_x, b_y, a_x, a_y)
         #options = pymunk.pygame_util.DrawOptions(self.token.board.image)
         #options.collision_point_color = (255, 20, 30, 40)
         #PhysicsProperty.space.debug_draw(options)
@@ -85,7 +93,7 @@ class PhysicsProperty:
             else:
                 shape = pymunk.Circle(self.body, self.size[0] * self.token.width/2, (0, 0))
             self.body.position = pymunk.pygame_util.from_pygame((self.token.center_x, self.token.center_y), self.token.board.image)
-            shape.friction = self.friction
+            self.body.friction = self.friction
             shape.elasticity = self.elasticity
             PhysicsProperty.space.add(self.body, shape)
             self.dirty = 0

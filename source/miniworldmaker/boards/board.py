@@ -44,7 +44,7 @@ class Board(container.Container):
         self._grid = []
         self._tile_size = 1
         self._tile_margin = 0
-
+        self._repaint_all = 0
         self._columns, self._rows = columns, rows
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
         self.background = background.Background(self)
@@ -212,7 +212,7 @@ class Board(container.Container):
     def class_name(self) -> str:
         return self.__class__.__name__
 
-    def add_image(self, path: str, crop: tuple = (0, 0, 280, 500)) -> int:
+    def add_image(self, path: str) -> int:
         """Adds image to current costume
 
         Args:
@@ -348,7 +348,7 @@ class Board(container.Container):
         Args:
             value: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be added
-            excluded: A token which should not be returned e.g. the actor itself
+            exclude: A token which should not be returned e.g. the actor itself
 
         Returns:
             One token
@@ -372,7 +372,7 @@ class Board(container.Container):
         Args:
             area: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
             token: The class of the tokens which should be removed
-            excluded: A token which should not be removed e.g. the actor itself
+            exclude: A token which should not be removed e.g. the actor itself
 
         Returns: all tokens in the area
 
@@ -465,7 +465,9 @@ class Board(container.Container):
                     token.physics.update_physics_model()
             steps = 1
             for x in range(steps):
-                physicsengine.PhysicsProperty.space.step(1 / 60)
+                if physicsengine is not None and \
+                        physicsengine.PhysicsProperty.space is not None:
+                    physicsengine.PhysicsProperty.space.step(1 / 60)
             for token in self.tokens:
                 if token.physics:
                     token.physics.update_token_from_physics_model()

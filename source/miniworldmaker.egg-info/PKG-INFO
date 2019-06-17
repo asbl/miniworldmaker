@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: miniworldmaker
-Version: 0.9.80
+Version: 0.9.81
 Summary: Create 2D Miniworlds and Games
 Home-page: https://github.com/asbl/miniworldmaker
 Author: Andreas Siebel
@@ -27,6 +27,8 @@ Description: MiniWorldMaker
           * Integrated GUI elements like console for output, toolbar, ...
             
           * Load and Save to SQLite Databases
+          
+          * EXPERIMENTAL: Integrated Physics-Engine based on Pymunk
           
           * Open Source
           

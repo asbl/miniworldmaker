@@ -373,7 +373,7 @@ class Actor(tkn.Token):
     def __str__(self):
         str = super().__str__()
         if self.board:
-            str = str + "\n  * Direction: {0}".format(self.direction)
+            str = str + " with Direction: {0}".format(self.direction)
         return str
 
     def start_physics(self, gravity=True, box_type="rect", can_move=True, mass=1, friction=0.5, elasticity=0.5, size=(1, 1), stable = False):

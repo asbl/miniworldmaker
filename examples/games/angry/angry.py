@@ -63,7 +63,7 @@ class Plattform(Token):
 
     def __init__(self, position):
         super().__init__(position)
-        self.start_physics(box_type = "rect", gravity = False, elasticity=0, friction = 10, mass=1, stable=True)
+        self.start_physics(box_type = "rect", gravity = False, elasticity=0, friction = 1000000, mass=1, stable=True)
         self.add_image("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
@@ -76,7 +76,7 @@ class Box(Actor):
         super().__init__(position)
         self.add_image("images/box_blue.png")
         self.size = (40, 40)
-        self.start_physics(gravity=True, elasticity=0.1, friction=0.8, stable=True, mass = 1, size=(1, 1))
+        self.start_physics(gravity=True, elasticity=0, friction=1 , stable=True , mass = 1, size=(1, 1))
 
 
 class Bird(Actor):
