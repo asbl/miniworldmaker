@@ -13,6 +13,7 @@ miniworldmaker/boards/board.py
 miniworldmaker/boards/board_position.py
 miniworldmaker/boards/pixel_board.py
 miniworldmaker/boards/processing_board.py
+miniworldmaker/boards/processing_tools.py
 miniworldmaker/boards/tiled_board.py
 miniworldmaker/containers/__init__.py
 miniworldmaker/containers/actionbar.py
@@ -41,7 +42,6 @@ miniworldmaker/resources/run.png
 miniworldmaker/resources/up.png
 miniworldmaker/tokens/__init__.py
 miniworldmaker/tokens/actor.py
-miniworldmaker/tokens/actor_physics_actor.py
 miniworldmaker/tokens/costume.py
 miniworldmaker/tokens/number_token.py
 miniworldmaker/tokens/shapes.py

@@ -1,5 +1,5 @@
-from miniworldmaker import *
 import easygui
+from miniworldmaker import *
 
 
 class MyBoard(TiledBoard):
@@ -22,11 +22,18 @@ class MyBoard(TiledBoard):
         self.torch = Torch((10, 4))
         self.fireplace = Fireplace((10, 14))
         self.door = Door((6, 2))
-        Player((8, 2))
+        self.player = Player((8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = Toolbar()
         self._window.add_container(self.toolbar, "right")
         self.console = self._window.add_container(Console(), "bottom")
+
+    def get_event(self, event, data):
+        if event == "button" and data == "Fackel":
+            fireplace = self.player.sensing_token(distance=0, token=Fireplace)
+            if fireplace:
+                self.console.newline("Du zündest die Feuerstelle an.")
+                self.fireplace.burn()
 
 
 class Player(Actor):
@@ -45,27 +52,20 @@ class Player(Actor):
         if not blocking and not closed_doors and self.sensing_on_board():
             super().move()
 
-    def get_event(self, event, data):
-        if event == "key_down":
-            direction = None
-            if "W" in data:
-                self.point_in_direction("up")
-                self.move()
-            elif "S" in data:
-                self.point_in_direction("down")
-                self.move()
-            elif "A" in data:
-                self.point_in_direction("left")
-                self.move()
-            elif "D" in data:
-                self.point_in_direction("right")
-                self.move()
-        if event == "button" and data == "Fackel":
-            fireplace = self.sensing_token(distance=0, token=Fireplace)
-            if fireplace:
 
-                self.board.console.newline("Du zündest die Feuerstelle an.")
-                self.board.fireplace.burn()
+    def on_key_down(self, keys):
+        if "W" in keys:
+            self.point_in_direction("up")
+            self.move()
+        elif "S" in keys:
+            self.point_in_direction("down")
+            self.move()
+        elif "A" in keys:
+            self.point_in_direction("left")
+            self.move()
+        elif "D" in keys:
+            self.point_in_direction("right")
+            self.move()
 
     def act(self):
         torch = self.sensing_token(distance=0, token=Torch)

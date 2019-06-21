@@ -1,4 +1,5 @@
 import logging
+
 import pygame
 
 
@@ -63,7 +64,6 @@ class Container:
         pass
 
     def blit_surface_to_window_surface(self):
-        #if self.dirty:
         self._window.window_surface.blit(self.surface, self.rect)
 
     def remove(self):

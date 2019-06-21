@@ -6,7 +6,7 @@ Framework is now used in classroom. There won't be much API changes in the next 
 ### Roadmap
 
 
-Mid April: Version 1.0
+Mid July: Version 1.0
 
 ### Next Goals
   
@@ -14,8 +14,14 @@ Mid April: Version 1.0
   
   * Increase the robustness
   
+  * Processing Mode
+  
   
 ### Changelog
+
+  * 21.06.2019 : Added Processing Mode
+  
+  * 14.06.2019 : Experimental: Added physics API
 
   * 05.05.2019 : Framework is now used in classroom. There won't be much API changes in the next weeks.
 
