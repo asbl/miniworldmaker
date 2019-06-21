@@ -25,6 +25,8 @@ miniworldmaker/containers/inspect_actor_toolbar.py
 miniworldmaker/containers/level_designer_toolbar.py
 miniworldmaker/containers/toolbar.py
 miniworldmaker/containers/toolbar_widgets.py
+miniworldmaker/physics/__init__.py
+miniworldmaker/physics/physics.py
 miniworldmaker/resources/down.png
 miniworldmaker/resources/left.png
 miniworldmaker/resources/logo_big.png

@@ -13,6 +13,7 @@ from miniworldmaker.physics import physics as physicsengine
 from collections import defaultdict
 import types
 
+
 class Board(container.Container):
     """
     Base class for creating boards

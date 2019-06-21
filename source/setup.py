@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') \
         as f: long_description = f.read()
 
 setup(name='miniworldmaker',
-      version='0.9.83',
+      version='0.9.92',
       description='Create 2D Miniworlds and Games',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -26,9 +26,8 @@ setup(name='miniworldmaker',
                    "Intended Audience :: Education",
                    "Topic :: Education",
                    ],
-      packages=find_packages(exclude=['contrib', 'docs', 'tests']),  # Required
-      package_dir={'miniworldmaker': 'miniworldmaker',
-                   'pymunk': 'pymunk',},
-      install_requires=['pygame'],
+      packages=find_packages(exclude=['contrib', 'docs', 'tests', 'examples']),  # Required
+      package_dir={'miniworldmaker': 'miniworldmaker'},
+      install_requires=['pygame', 'pymunk'],
       include_package_data=True,
       )

@@ -1,6 +1,5 @@
 import pymunk as pymunk_engine
 import pymunk.pygame_util
-from pymunk.vec2d import Vec2d
 import math
 
 
@@ -9,7 +8,6 @@ class PhysicsProperty:
     space = None
     gravity_x = 0
     gravity_y = -900
-
 
     def __init__(self, token, can_move, box_type, gravity, mass, friction, elasticity, size, stable):
         if not PhysicsProperty.space:

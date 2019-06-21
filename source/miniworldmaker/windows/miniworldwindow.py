@@ -4,7 +4,7 @@ import sys
 
 import pkg_resources
 import pygame
-import miniworldmaker.containers.actionbar as actionbar
+import miniworldmaker.containers.actionbar as a_bar
 from miniworldmaker.containers import inspect_actor_toolbar
 from miniworldmaker.containers import container as container_file
 from miniworldmaker.containers import event_console
@@ -12,6 +12,17 @@ from miniworldmaker.containers import level_designer_toolbar
 from miniworldmaker.containers import color_toolbar
 from miniworldmaker.tools import keys
 
+version = pkg_resources.require("MiniWorldMaker")[0].version
+print("Show new MiniWorldMaker v.{0} Window".format(version))
+print("Press '^' to get Actors at mouse_position")
+print("Press 'F1' to show help")
+print("Press 'F2' to show events in command line")
+print("Press 'F3'  to show move-events in command line")
+print("Press 'F4'  to show key-events in command line")
+print("Press 'F5'  to add Event-console")
+print("Press 'F6'  to add Actor-Toolbar")
+print("Press 'F7'  to add Level-Designer")
+print("Press 'F8'  to add Color-Toolbar")
 
 class MiniWorldWindow:
     log = logging.getLogger("miniworldmaker")
@@ -61,7 +72,6 @@ class MiniWorldWindow:
             logging.basicConfig(level=logging.DEBUG)
         else:
             logging.basicConfig(level=logging.INFO)
-        self.help()
         self.window.window_surface.blit(image, self.board.rect)
         MiniWorldWindow.log.info("Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
         pygame.display.update([image.get_rect()])
@@ -236,7 +246,7 @@ class MiniWorldWindow:
                         self.event_console = event_console.EventConsole()
                         self.add_container(self.event_console, dock="right")
                         if self.docks == 0:
-                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.action_bar = a_bar.ActionBar(self.board)
                             self.add_container(self.action_bar, dock="bottom")
                         self.docks+=1
                         self.log.info("Added event console")
@@ -251,7 +261,7 @@ class MiniWorldWindow:
                     if not self.actor_toolbar:
                         self.actor_toolbar = inspect_actor_toolbar.InspectActorToolbar()
                         if self.docks == 0:
-                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.action_bar = a_bar.ActionBar(self.board)
                             self.add_container(self.action_bar, dock="bottom")
                         self.docks += 1
                         self.add_container(self.actor_toolbar, dock="right")
@@ -267,7 +277,7 @@ class MiniWorldWindow:
                     if not self.level_designer:
                         self.level_designer = level_designer_toolbar.LevelDesignerToolbar(self.board)
                         if self.docks == 0:
-                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.action_bar = a_bar.ActionBar(self.board)
                             self.add_container(self.action_bar, dock="bottom")
                         self.docks += 1
                         self.add_container(self.level_designer, dock="right")
@@ -283,7 +293,7 @@ class MiniWorldWindow:
                     if not self.color_console:
                         self.color_console = color_toolbar.ColorToolbar(self.board)
                         if self.docks == 0:
-                            self.action_bar = actionbar.ActionBar(self.board)
+                            self.action_bar = a_bar.ActionBar(self.board)
                             self.add_container(self.action_bar, dock="bottom")
                         self.docks += 1
                         self.add_container(self.color_console, dock="right")
@@ -299,18 +309,6 @@ class MiniWorldWindow:
                     self.send_event_to_containers("key_down", keys_pressed)
         return False
 
-    def help(self):
-        version = pkg_resources.require("MiniWorldMaker")[0].version
-        MiniWorldWindow.log.info("Show new MiniWorldMaker v.{0} Window".format(version))
-        MiniWorldWindow.log.info("Press '^' to get Actors at mouse_position")
-        MiniWorldWindow.log.info("Press 'F1' to show help")
-        MiniWorldWindow.log.info("Press 'F2' to show events in command line")
-        MiniWorldWindow.log.info("Press 'F3'  to show move-events in command line")
-        MiniWorldWindow.log.info("Press 'F4'  to show key-events in command line")
-        MiniWorldWindow.log.info("Press 'F5'  to add Event-console")
-        MiniWorldWindow.log.info("Press 'F6'  to add Actor-Toolbar")
-        MiniWorldWindow.log.info("Press 'F7'  to add Level-Designer")
-        MiniWorldWindow.log.info("Press 'F8'  to add Color-Toolbar")
 
     def send_event_to_containers(self, event, data):
         for container in self._containers:
