@@ -2,8 +2,18 @@ from miniworldmaker.boards import pixel_board as pb
 
 
 class ProcessingBoard(pb.PixelBoard):
+    """
+    A ProcessingBoard
 
-    def __init__(self, columns=400, rows=300, color=(0,0,0,0)):
-        super().__init__(columns=columns, rows=rows)
-        self.background.set_fill_color(color)
+    Args:
+        width: The width of the board in Pixels (default: 400)
+        height: The height of the board in pixels (default: 300)
+    """
+
+    def __init__(self, width=400, height=300):
+        super().__init__(columns=width, rows=height)
+
+
+
+
 

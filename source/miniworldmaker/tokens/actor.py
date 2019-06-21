@@ -2,10 +2,10 @@ import math
 from logging import *
 from typing import Union
 
+import miniworldmaker.physics.physics as ph
+import miniworldmaker.tokens.token as tkn
 import pygame
 from miniworldmaker.boards import board_position
-import miniworldmaker.tokens.token as tkn
-import miniworldmaker.physics.physics as ph
 
 
 class Actor(tkn.Token):
@@ -21,96 +21,45 @@ class Actor(tkn.Token):
         super().__init__(position)
         self.is_static = False
         self.costume.is_rotatable = True
-        self.registered_events.extend(["key_pressed", "key_down"])
         self._orientation = 0
+        self.registered_event_handlers["mouse_left"] = self.on_mouse_left
+        self.registered_event_handlers["mouse_right"] = self.on_mouse_left
+        self.registered_event_handlers["mouse_motion"] = self.on_mouse_motion
+        self.registered_event_handlers["key_pressed"] = self.on_key_pressed
+        self.registered_event_handlers["key_down"] = self.on_key_down
+        self.registered_event_handlers["key_up"] = self.on_key_up
+        self.board.window.send_event_to_containers("actor_created", self)
+        self.on_setup()
 
-    def point_in_direction(self, direction) -> int:
+
+    def on_key_pressed(self, keys):
         """
-        Actor points in given direction
+        This method is called by a key_pressed_event.
+        The method should be overwritten in your custom Board-Class
 
         Args:
-            direction: Direction the actor should point to
-
-        Returns:
-            The new direction as integer
+            keys: A list of keys
 
         """
-        direction = direction = self._value_to_direction(direction)
-        self.direction = direction
-        return self.direction
+        pass
 
-    def point_towards_position(self, destination, center = False) -> int:
-        """
-        Actor points towards a given position
+    def on_key_up(self, keys):
+        pass
 
-        Args:
-            destination: The position to which the actor should pointing
+    def on_key_down(self, keys):
+        pass
 
-        Returns:
-            The new direction
+    def on_mouse_left(self, mouse_pos):
+        pass
 
-        """
-        if center is True:
-            pos = self.rect.center
-        else:
-            pos = self.position
-        x =  (destination[0] - pos[0])
-        y =  (destination[1] - pos[1])
-        if x != 0:
-            m = y / x
-        else:
-            m = 0
-            if destination[1] > self.position[1]:
-                self.direction = 180
-                return 180
-            else:
-                self.direction = 0
-                return 0
-        if destination[0] > self.position[0]:
-            self.direction = 90 + math.degrees(math.atan(m))
-        else:
-            self.direction = 270 +  math.degrees(math.atan(m))
-        return self.direction
+    def on_mouse_right(self, mouse_pos):
+        pass
 
-    def point_towards_token(self, token) -> int:
-        """
-        Actor points towards a given position
+    def on_mouse_motion(self, mouse_pos):
+        pass
 
-        Args:
-            destination_position: The position to which the actor should pointing
-
-        Returns:
-            The new direction
-
-        """
-        pos = token.rect.center
-        return self.point_towards_position(pos, center = True)
-
-    def turn_left(self, degrees: int = 90) -> int:
-        """Turns actor by *degrees* degrees left
-
-        Args:
-            degrees: degrees in left direction
-
-        Returns:
-            New direction
-
-        """
-        self.direction = self.direction - degrees
-        return self.direction
-
-    def turn_right(self, degrees: int = 90):
-        """Turns actor by *degrees* degrees right
-
-        Args:
-            degrees: degrees in left direction
-
-        Returns:
-            New direction
-
-        """
-        self.direction = self.direction + degrees
-        return self.direction
+    def on_setup(self):
+        pass
 
     def move_in_direction(self, direction : Union[int, str]):
         """Moves actor *distance* steps into a *direction*.
@@ -194,12 +143,6 @@ class Actor(tkn.Token):
                 distance += 1
             i += 1
         return line
-
-    def delta_x(self, distance):
-        return round( math.sin(math.radians(self.direction)) * distance)
-
-    def delta_y(self, distance):
-        return - round(math.cos(math.radians(self.direction)) * distance)
 
     def bounce_from_border(self, borders):
         """ Bounces the actor from a border.

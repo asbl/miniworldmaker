@@ -43,8 +43,14 @@ class Appearance:
         self.font_path = None #: Path to font-file
         self.color = (255, 255, 255, 255) #: color for overlays
 
-    def set_fill_color(self, color):
-        self.fill_color = color
+    def fill(self, color):
+        try:
+            self.fill_color = color
+            self.surface_loaded = False
+            self.dirty = 1
+        except TypeError:
+            self.parent.window.log("ERROR: color should be a 4-tuple (r, g, b, alpha)")
+            raise()
 
     def register_action(self, action : str, handler, begin = False):
         if not begin:
@@ -195,16 +201,17 @@ class Appearance:
         return self._image
 
     def load_surface(self) -> pygame.Surface:
+        print(self.parent, self.surface_loaded)
         if self.surface_loaded:
             return self._image
         else:
             image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
+            print(self.fill_color)
             image.fill(self.fill_color)
             image.set_alpha(255)
             self.surface_loaded = True
             self.dirty = 1
             self._image = image
-        print(self.parent)
         return image
 
     def next_sprite(self):

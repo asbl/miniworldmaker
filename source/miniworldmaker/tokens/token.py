@@ -1,10 +1,12 @@
+import math
 from logging import *
 from typing import Union
+
 import pygame
 from miniworldmaker.boards import board_position
+from miniworldmaker.physics import physics as ph
 from miniworldmaker.tokens import costume
 from miniworldmaker.windows import miniworldwindow
-from miniworldmaker.physics import physics as ph
 
 
 class Token(pygame.sprite.DirtySprite):
@@ -34,6 +36,7 @@ class Token(pygame.sprite.DirtySprite):
         self.last_direction = 90
         self.token_id = Token.token_count + 1
         self.is_static = True
+        self.registered_event_handlers = dict()
         # costume
         self.costume = costume.Costume(self)
         self._image = pygame.Surface((1, 1))
@@ -43,7 +46,6 @@ class Token(pygame.sprite.DirtySprite):
         self.costume.orientation = 0
         self.init = 1
         self.speed = 0
-        self.registered_events = ["mouse_left", "mouse_right"]
         if position is not None:
             self.board = miniworldwindow.MiniWorldWindow.board
             self.board.add_to_board(self, position)
@@ -160,6 +162,99 @@ class Token(pygame.sprite.DirtySprite):
     def direction_from_unit_circle(self, value):
         self.direction = - (value + 270) % 360
 
+    def turn_left(self, degrees: int = 90) -> int:
+        """Turns actor by *degrees* degrees left
+
+        Args:
+            degrees: degrees in left direction
+
+        Returns:
+            New direction
+
+        """
+        self.direction = self.direction - degrees
+        return self.direction
+
+    def turn_right(self, degrees: int = 90):
+        """Turns token by *degrees* degrees right
+
+        Args:
+            degrees: degrees in left direction
+
+        Returns:
+            New direction
+
+        """
+        self.direction = self.direction + degrees
+        return self.direction
+
+    def point_in_direction(self, direction) -> int:
+        """
+        Token points in given direction
+
+        Args:
+            direction: Direction the actor should point to
+
+        Returns:
+            The new direction as integer
+
+        """
+        direction = direction = self._value_to_direction(direction)
+        self.direction = direction
+        return self.direction
+
+    def delta_x(self, distance):
+        return round( math.sin(math.radians(self.direction)) * distance)
+
+    def delta_y(self, distance):
+        return - round(math.cos(math.radians(self.direction)) * distance)
+
+    def point_towards_position(self, destination, center = False) -> int:
+        """
+        Token points towards a given position
+
+        Args:
+            destination: The position to which the actor should pointing
+
+        Returns:
+            The new direction
+
+        """
+        if center is True:
+            pos = self.rect.center
+        else:
+            pos = self.position
+        x =  (destination[0] - pos[0])
+        y =  (destination[1] - pos[1])
+        if x != 0:
+            m = y / x
+        else:
+            m = 0
+            if destination[1] > self.position[1]:
+                self.direction = 180
+                return 180
+            else:
+                self.direction = 0
+                return 0
+        if destination[0] > self.position[0]:
+            self.direction = 90 + math.degrees(math.atan(m))
+        else:
+            self.direction = 270 +  math.degrees(math.atan(m))
+        return self.direction
+
+    def point_towards_token(self, token) -> int:
+        """
+        Token points towards a given position
+
+        Args:
+            destination_position: The position to which the actor should pointing
+
+        Returns:
+            The new direction
+
+        """
+        pos = token.rect.center
+        return self.point_towards_position(pos, center = True)
 
     @direction.setter
     def direction(self, value):

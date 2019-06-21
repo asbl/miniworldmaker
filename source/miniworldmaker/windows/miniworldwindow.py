@@ -2,14 +2,14 @@ import logging
 import os
 import sys
 
+import miniworldmaker.containers.actionbar as a_bar
 import pkg_resources
 import pygame
-import miniworldmaker.containers.actionbar as a_bar
-from miniworldmaker.containers import inspect_actor_toolbar
+from miniworldmaker.containers import color_toolbar
 from miniworldmaker.containers import container as container_file
 from miniworldmaker.containers import event_console
+from miniworldmaker.containers import inspect_actor_toolbar
 from miniworldmaker.containers import level_designer_toolbar
-from miniworldmaker.containers import color_toolbar
 from miniworldmaker.tools import keys
 
 version = pkg_resources.require("MiniWorldMaker")[0].version
@@ -38,6 +38,8 @@ class MiniWorldWindow:
         MiniWorldWindow.window = self
         self.default_size = 200
         self.dirty = 1
+        self._containers_width = 0
+        self._containers_height = 0
         self.repaint_areas = []
         self.window_surface = pygame.display.set_mode((self.window_width, self.window_height), pygame.DOUBLEBUF)
         self.window_surface.set_alpha(None)
@@ -100,11 +102,11 @@ class MiniWorldWindow:
         for ct in self._containers_right:
             ct.container_top_left_x = top_left
             top_left += ct.container_width
-
         top_left = 0
         for ct in self._containers_bottom:
             ct.container_top_left_y = top_left
             top_left += ct.container_height
+        self.dirty = 1
 
     def add_container(self, container, dock, size=None) -> container_file.Container:
         if dock == "right" or dock == "top_left":
@@ -148,8 +150,7 @@ class MiniWorldWindow:
             container.remove()
             self.remove_container(container)
 
-    @property
-    def window_width(self):
+    def _recalculate_dimensions(self):
         containers_width = 0
         for container in self._containers:
             if container.window_docking_position == "top_left":
@@ -158,10 +159,6 @@ class MiniWorldWindow:
                 containers_width += container.width
             elif container.window_docking_position == "main":
                 containers_width = container.width
-        return containers_width
-
-    @property
-    def window_height(self):
         containers_height = 0
         for container in self._containers:
             if container.window_docking_position == "top_left":
@@ -170,7 +167,20 @@ class MiniWorldWindow:
                 containers_height += container.height
             elif container.window_docking_position == "main":
                 containers_height = container.height
-        return containers_height
+        self.dirty = 0
+        self._containers_width, self._containers_height = containers_width, containers_height
+
+    @property
+    def window_width(self):
+        if self.dirty:
+            self._recalculate_dimensions()
+        return self._containers_width
+
+    @property
+    def window_height(self):
+        if self.dirty:
+            self._recalculate_dimensions()
+        return self._containers_height
 
     def get_container_by_pixel(self, pixel_x: int, pixel_y: int):
         for container in self._containers:
@@ -308,7 +318,6 @@ class MiniWorldWindow:
                 else:
                     self.send_event_to_containers("key_down", keys_pressed)
         return False
-
 
     def send_event_to_containers(self, event, data):
         for container in self._containers:

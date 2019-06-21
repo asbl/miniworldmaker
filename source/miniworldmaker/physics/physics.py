@@ -1,6 +1,7 @@
+import math
+
 import pymunk as pymunk_engine
 import pymunk.pygame_util
-import math
 
 
 class PhysicsProperty:
@@ -8,6 +9,7 @@ class PhysicsProperty:
     space = None
     gravity_x = 0
     gravity_y = -900
+    count = 0
 
     def __init__(self, token, can_move, box_type, gravity, mass, friction, elasticity, size, stable):
         if not PhysicsProperty.space:
@@ -17,8 +19,6 @@ class PhysicsProperty:
             PhysicsProperty.space.damping = 0.9
             PhysicsProperty.space.collision_persistence = 10
             pymunk.pygame_util.positive_y_is_up = True
-
-            print("Create ´Physics engine")
         self.token = token
         self.gravity = gravity
         self.mass = mass
@@ -32,6 +32,7 @@ class PhysicsProperty:
         self.friction = friction
         self.dirty = 0
         self.size = size
+        PhysicsProperty.count += 1
         self._make_pymunk()
 
     def update_physics_model(self):
@@ -45,7 +46,6 @@ class PhysicsProperty:
                                                                 self.token.board.image)
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.body.angle = (math.radians(round(self.token.direction_to_unit_circle(),0)))
-            print(self.token, self.body.velocity, self.body.friction)
 
     def update_token_from_physics_model(self):
         if not self.body.body_type == pymunk_engine.Body.STATIC:
@@ -57,7 +57,6 @@ class PhysicsProperty:
             self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
             self.token.direction_from_unit_circle(int(math.degrees(self.body.angle)))
             a_x, a_y = self.body.velocity
-            print("Velocity", self.token, b_x, b_y, a_x, a_y)
         #options = pymunk.pygame_util.DrawOptions(self.token.board.image)
         #options.collision_point_color = (255, 20, 30, 40)
         #PhysicsProperty.space.debug_draw(options)

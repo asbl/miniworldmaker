@@ -1,22 +1,23 @@
-from typing import Union
 import os
-import sys
+from typing import Union
+
 import pygame
-import math
-from miniworldmaker.containers import container
-from miniworldmaker.windows import miniworldwindow as window
-from miniworldmaker.tools import db_manager
-from miniworldmaker.tokens import token as pck_token
-from miniworldmaker.boards import board_position
 from miniworldmaker.boards import background
+from miniworldmaker.boards import board_position
+from miniworldmaker.containers import container
 from miniworldmaker.physics import physics as physicsengine
-from collections import defaultdict
-import types
+from miniworldmaker.tokens import token as pck_token
+from miniworldmaker.tools import db_manager
+from miniworldmaker.windows import miniworldwindow as window
 
 
 class Board(container.Container):
-    """
-    Base class for creating boards
+    """Base Class for Boards
+
+    Args:
+        columns: columns of new board (default: 40)
+        rows: rows of new board (default:40)
+
     """
     registered_token_types = {}
 
@@ -24,12 +25,7 @@ class Board(container.Container):
                  columns: int = 40,
                  rows: int = 40,
                  ):
-        """Creates a new board
 
-        Args:
-            columns: columns of new board
-            rows: rows of new board
-        """
         super().__init__()
         pygame.init()
         # public
@@ -65,12 +61,103 @@ class Board(container.Container):
         self._window = window.MiniWorldWindow("MiniWorldMaker")
         self._window.add_container(self, "top_left")
         window.MiniWorldWindow.board = self
-        self.shapes_fill_color = (0, 0, 0, 0)
-        self.registered_event_handlers = defaultdict(list)
+        self.registered_event_handlers = dict()
+        self.registered_event_handlers["mouse_left"] = self.on_mouse_left
+        self.registered_event_handlers["mouse_right"] = self.on_mouse_left
+        self.registered_event_handlers["mouse_motion"] = self.on_mouse_motion
+        self.registered_event_handlers["key_pressed"] = self.on_key_pressed
+        self.registered_event_handlers["key_down"] = self.on_key_down
+        self.registered_event_handlers["key_up"] = self.on_key_up
+        self.registered_event_handlers["board_created"] = self.on_setup
+        self.window.send_event_to_containers("board_created", None)
+
+    def on_key_pressed(self, keys):
+        """
+        This method is called by a key_pressed_event.
+        If you hold down the key, the event is triggered again and again until you release the key.
+        The method should be overwritten in your custom Board-Class
+
+        Args:
+            keys: A list of keys
+
+        Examples:
+            Reaction to a key event:
+
+            >>> def on_key_pressed(self, keys):
+            >>>     if "W" in keys:
+            >>>         pass
+
+        """
+        pass
+
+    def on_key_up(self, keys):
+        """
+        This method is called by a key_up event.
+        The method should be overwritten in your custom Board-Class
+
+        Args:
+            keys: A list of keys
+
+        Examples:
+            Reaction to a key event:
+
+            >>> def on_key_up(self, keys):
+            >>>     if "W" in keys:
+            >>>         pass
+
+        """
+        pass
+
+    def on_key_down(self, keys):
+        """
+        This method is called by a key_down event.
+        The method should be overwritten in your custom Board-Class
+
+        Args:
+            keys: A list of keys
+
+        Examples:
+            Reaction to a key event:
+
+            >>> def on_key_up(self, keys):
+            >>>     if "W" in keys:
+            >>>         pass
+
+        """
+        pass
+
+    def get_event(self, event, data):
+        """
+        The method is triggered by all types of events.
+
+        Args:
+            event: The event (e.g. mouse_left, ...)
+            data: The data associated with the event
+
+        Examples:
+            Reaction to a key event:
+
+            >>> def get_event(self, event, data):
+            >>>     if event="key_down":
+            >>>         if "W" in data:
+            >>>             pass
+        """
+        pass
+
+    def on_mouse_left(self, mouse_pos):
+        pass
+
+    def on_mouse_right(self, mouse_pos):
+        pass
+
+    def on_mouse_motion(self, mouse_pos):
+        pass
+
+    def on_setup(self):
+        pass
 
     def fill(self, color):
-        self.shapes_fill_color = color
-
+        self.background.fill(color)
 
     @property
     def speed(self) -> int:
@@ -114,14 +201,7 @@ class Board(container.Container):
     def filter_actor_list(a_list, actor_type):
         return [actor for actor in a_list if type(actor) == actor_type]
 
-    def get_event(self, event, data):
-        """Event handling. Overwrite in your subclass
 
-        Args:
-            event: The event (e.g. mouse_left, ...)
-            data: The data associated with the event
-        """
-        pass
 
     def get_tile_rect(self):
         return pygame.Rect(0, 0, self.tile_size, self.tile_size)
@@ -319,11 +399,11 @@ class Board(container.Container):
             A list of tokens
 
         """
-        actors = []
+        token = []
         for actor in self.tokens:
             if actor.rect.collidepoint(pixel):
-                actors.append(actor)
-        return actors
+                token.append(actor)
+        return token
 
     def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token=None, exclude=None) -> list:
         """Gets all tokens in area
@@ -472,17 +552,18 @@ class Board(container.Container):
             if self._tick > 101 - self.speed:
                 self._act_all()
                 self._tick = 0
-            for token in self.tokens:
-                if token.physics:
-                    token.physics.update_physics_model()
-            steps = 1
-            for x in range(steps):
-                if physicsengine is not None and \
-                        physicsengine.PhysicsProperty.space is not None:
-                    physicsengine.PhysicsProperty.space.step(1 / 60)
-            for token in self.tokens:
-                if token.physics:
-                    token.physics.update_token_from_physics_model()
+            if physicsengine.PhysicsProperty.count > 0:
+                for token in self.tokens:
+                    if token.physics:
+                        token.physics.update_physics_model()
+                steps = 1
+                for x in range(steps):
+                    if physicsengine is not None and \
+                            physicsengine.PhysicsProperty.space is not None:
+                        physicsengine.PhysicsProperty.space.step(1 / 60)
+                for token in self.tokens:
+                    if token.physics:
+                        token.physics.update_token_from_physics_model()
 
         self.frame = self.frame + 1
         self.clock.tick(40)
@@ -511,16 +592,14 @@ class Board(container.Container):
                 else:
                     self.set_active_actor(tokens[0])
         else:
-            for token in tokens:
-                if data != token:
-                    token.get_event(event, data)
+            for token in [token for token in self.tokens if event in token.registered_event_handlers.keys()]:
+                token.get_event(event, data)
+                token.registered_event_handlers[event](data)
         if event in self.registered_event_handlers.keys():
-            lst = self.registered_event_handlers[event]
-            for handler in lst:
-                handler(event, data)
-
-    def register_act_method(self, method):
-        self.method = types.MethodType(method, self)
+            if data is None:
+                self.registered_event_handlers[event]()
+            else:
+                self.registered_event_handlers[event](data)
 
     def set_active_actor(self, token: pck_token.Token):
         self.active_actor = token
