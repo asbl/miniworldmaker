@@ -1,5 +1,5 @@
 from miniworldmaker.boards.board import Board
-from miniworldmaker.tokens.board_token import Token
+from miniworldmaker.tokens.token import Token
 from typing import Union
 
 

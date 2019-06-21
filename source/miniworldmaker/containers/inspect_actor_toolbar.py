@@ -60,7 +60,8 @@ class ActorButton(ToolbarButton):
     def __init__(self, actor, toolbar):
         super().__init__(text=str(actor.__class__.__name__) + " at " + str(actor.position))
         self.actor = actor
-        self._img_path = actor.costume.image_paths[0]
+        if actor.costume.image_paths:
+            self._img_path = actor.costume.image_paths[0]
         self.toolbar = toolbar
         self._text_padding = 30
 

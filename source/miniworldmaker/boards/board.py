@@ -6,10 +6,12 @@ import math
 from miniworldmaker.containers import container
 from miniworldmaker.windows import miniworldwindow as window
 from miniworldmaker.tools import db_manager
-from miniworldmaker.tokens import board_token as pck_token
+from miniworldmaker.tokens import token as pck_token
 from miniworldmaker.boards import board_position
 from miniworldmaker.boards import background
 from miniworldmaker.physics import physics as physicsengine
+from collections import defaultdict
+import types
 
 class Board(container.Container):
     """
@@ -62,6 +64,12 @@ class Board(container.Container):
         self._window = window.MiniWorldWindow("MiniWorldMaker")
         self._window.add_container(self, "top_left")
         window.MiniWorldWindow.board = self
+        self.shapes_fill_color = (0, 0, 0, 0)
+        self.registered_event_handlers = defaultdict(list)
+
+    def fill(self, color):
+        self.shapes_fill_color = color
+
 
     @property
     def speed(self) -> int:
@@ -454,6 +462,9 @@ class Board(container.Container):
         image = self.image
         self.window.show(image, full_screen= fullscreen)
 
+    def run(self):
+        pass
+
     def update(self):
         if self.is_running:
             self._tick = self._tick + 1
@@ -502,6 +513,13 @@ class Board(container.Container):
             for token in tokens:
                 if data != token:
                     token.get_event(event, data)
+        if event in self.registered_event_handlers.keys():
+            lst = self.registered_event_handlers[event]
+            for handler in lst:
+                handler(event, data)
+
+    def register_act_method(self, method):
+        self.method = types.MethodType(method, self)
 
     def set_active_actor(self, token: pck_token.Token):
         self.active_actor = token

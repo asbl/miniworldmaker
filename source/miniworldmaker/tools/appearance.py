@@ -12,13 +12,14 @@ class Appearance:
 
     def __init__(self):
         self.dirty = 0
+        self.surface_loaded = False
         self.blit_images = []
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
         self.image_paths = []  # list with all images
         # properties
-        self._image = pygame.Surface((5,5))
+        self._image = pygame.Surface((1,1)) # size set in image()-method
         self.call_image_actions = {}
         self.image_actions = []
         self.enabled_image_actions = {}
@@ -41,6 +42,9 @@ class Appearance:
         self.text_position = (0,0) #: Position of text relative to the top-left pixel of token
         self.font_path = None #: Path to font-file
         self.color = (255, 255, 255, 255) #: color for overlays
+
+    def set_fill_color(self, color):
+        self.fill_color = color
 
     def register_action(self, action : str, handler, begin = False):
         if not begin:
@@ -173,11 +177,9 @@ class Appearance:
     def image(self) -> pygame.Surface:
         if self.dirty == 1:
             if self.images_list and self.images_list[self._image_index]:
-                image = self.images_list[self._image_index]
+                image = self.images_list[self._image_index] # if there is a image list load image by index
             else:
-                image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
-                image.fill(self.fill_color)
-                image.set_alpha(255)
+                image = self.load_surface()
             for action in self.image_actions:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
@@ -191,6 +193,19 @@ class Appearance:
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
         return self._image
+
+    def load_surface(self) -> pygame.Surface:
+        if self.surface_loaded:
+            return self._image
+        else:
+            image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
+            image.fill(self.fill_color)
+            image.set_alpha(255)
+            self.surface_loaded = True
+            self.dirty = 1
+            self._image = image
+        print(self.parent)
+        return image
 
     def next_sprite(self):
         """

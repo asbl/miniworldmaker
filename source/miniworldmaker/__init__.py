@@ -1,10 +1,12 @@
-from miniworldmaker.tokens.board_token import Token
+from miniworldmaker.tokens.token import Token
 from miniworldmaker.tokens.text_token import TextToken
 from miniworldmaker.tokens.number_token import NumberToken
 from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.boards.tiled_board import TiledBoard
 from miniworldmaker.boards.pixel_board import PixelBoard
+from miniworldmaker.boards.processing_board import ProcessingBoard
 from miniworldmaker.boards.board import Board
+from miniworldmaker.tokens.shapes import *
 from miniworldmaker.containers.toolbar import Toolbar
 from miniworldmaker.containers.event_console import EventConsole
 from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
@@ -23,6 +25,7 @@ __all__ = ['Token',
            'TiledBoard',
            'LevelDesignerToolbar',
            'PixelBoard',
+           'ProcessingBoard',
            'Toolbar',
            'Board',
            'ToolbarLabel',
@@ -39,4 +42,9 @@ __all__ = ['Token',
            'TimeLabel',
            'FPSLabel',
            'PhysicsProperty',
+           'Circle',
+           'Ellipse',
+           'Line',
+           'Point',
+           'Polygon',
            ]

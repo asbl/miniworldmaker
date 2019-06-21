@@ -15,7 +15,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.add_widget(ToolbarLabel("Left Click to add Tokens"))
         self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
-        import miniworldmaker.tokens.board_token as tk
+        import miniworldmaker.tokens.token as tk
         class_list = self.all_subclasses(tk.Token)
         for cls in class_list:
             if cls.__name__ not in ["Token", "Actor", "TextToken", "NumberToken"]:
@@ -41,8 +41,11 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                             for j in range(self.board.columns):
                                 self.selected_token_type((j, i))
                     else:
-                        import miniworldmaker.boards.board_position as board_position
-                        self.selected_token_type(position=board_position.BoardPosition.from_pixel(data))
+                        try:
+                            import miniworldmaker.boards.board_position as bp
+                            self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
+                        except TypeError:
+                            print("Can't create tokens with more than one parameter position yet")
 
             elif "wheel_up" in event or "wheel_down" in event:
                 if self.board.is_in_container(data[0], data[1]):
@@ -58,7 +61,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                     if self.board.is_in_container(data[0], data[1]):
                         token = self.board.get_token(data)
                         if token.__class__ != self.selected_token_type:
-                            token = self.selected_token_type(position=board_position.BoardPosition.from_pixel(data))
+                            import miniworldmaker.boards.board_position as bp
+                            token = self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
         if "mouse_right" in event:
             if self.board.is_in_container(data[0], data[1]):
                 keys = self.board.window.get_keys()

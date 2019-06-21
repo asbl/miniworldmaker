@@ -10,7 +10,6 @@ class Background(appearance.Appearance):
         self.parent = board #: The parent of a Background is the associated board.
         self.register_action("grid", ir.ImageRenderer.show_grid)
         self.register_action("scale_to_tile", ir.ImageRenderer.scale_to_tile, begin = True)
-        self.dirty = 1
 
     def next_sprite(self):
         super().next_sprite()

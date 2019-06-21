@@ -4,7 +4,7 @@ from typing import Union
 
 import pygame
 from miniworldmaker.boards import board_position
-import miniworldmaker.tokens.board_token as tkn
+import miniworldmaker.tokens.token as tkn
 import miniworldmaker.physics.physics as ph
 
 

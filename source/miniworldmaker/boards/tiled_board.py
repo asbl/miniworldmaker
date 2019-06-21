@@ -2,7 +2,7 @@ from collections import defaultdict
 from typing import Union
 import pygame
 from miniworldmaker.boards.board import Board
-from miniworldmaker.tokens.board_token import Token
+from miniworldmaker.tokens.token import Token
 from miniworldmaker.boards import board_position
 
 
