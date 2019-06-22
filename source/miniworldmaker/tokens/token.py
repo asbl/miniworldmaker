@@ -20,7 +20,6 @@ class Token(pygame.sprite.DirtySprite):
         self.board = None
         super().__init__()
         self.costume = None
-
         # private
         self._size = (0, 0)  # Tuple with size
         self._position: board_position = position
@@ -144,6 +143,7 @@ class Token(pygame.sprite.DirtySprite):
             self.dirty = 1
             if self.init != 1:
                 raise UnboundLocalError("Init was not called")
+            self.board.window.send_event_to_containers("actor_created", self)
         except UnboundLocalError:
             raise
 
@@ -156,10 +156,12 @@ class Token(pygame.sprite.DirtySprite):
         """
         return (self._direction + 180) % 360 - 180
 
-    def direction_to_unit_circle(self):
+    @property
+    def direction_at_unit_circle(self):
         return - (self._direction + 270) % 360
 
-    def direction_from_unit_circle(self, value):
+    @direction_at_unit_circle.setter
+    def direction_at_unit_circle(self, value):
         self.direction = - (value + 270) % 360
 
     def turn_left(self, degrees: int = 90) -> int:
@@ -301,7 +303,7 @@ class Token(pygame.sprite.DirtySprite):
     def position(self, value: Union[board_position.BoardPosition, tuple]):
         self.last_position = self.position
         if type(value) == tuple:
-            value = board_position.BoardPosition(value)
+            value = board_position.BoardPosition(value[0], value[1])
         self._position = value
         self.dirty = 1
         if self.board:
@@ -340,8 +342,8 @@ class Token(pygame.sprite.DirtySprite):
         return self.rect.centery
 
     @property
-    def center(self):
-        return self.center_x, self.center_y
+    def center(self) -> board_position.BoardPosition:
+        return board_position.BoardPosition(self.center_x, self.center_y)
 
     @center_x.setter
     def center_x(self, value):
@@ -418,3 +420,27 @@ class Token(pygame.sprite.DirtySprite):
 
     def stop_physics(self):
         self.physics = None
+
+    def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
+        """Tests if area or position is on board
+
+        Args:
+            position: A rectangle or a position
+
+        Returns:
+            true, if area is in grid
+
+        """
+        if type(position) == tuple:
+            position = board_position.BoardPosition(position[0], position[1])
+        if type(position) == board_position.BoardPosition:
+            position = position.to_rect()
+
+        top_left_x, top_left_y, right, top = position.topleft[0], \
+                                             position.topleft[1], \
+                                             position.right, \
+                                             position.top
+        if top_left_x < 0 or top_left_y < 0 or position.right >= self.width or position.bottom >= self.height:
+            return False
+        else:
+            return True

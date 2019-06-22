@@ -1,6 +1,7 @@
 import os
-from miniworldmaker.containers import container
+
 import pygame
+from miniworldmaker.containers import container
 
 
 class Console(container.Container):
@@ -20,7 +21,6 @@ class Console(container.Container):
 
     def repaint(self):
         self.surface = pygame.Surface((self._container_width, self._container_height))
-        print (self._container_height, self._container_width)
         if self.dirty:
             self.surface.fill((255, 255, 255))
             package_directory = os.path.dirname(os.path.abspath(__file__))

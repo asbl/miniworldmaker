@@ -35,15 +35,14 @@ class Board(container.Container):
         self.default_actor_speed = 1 #: default speed for actors
         self.sound_effects = {}
         # private
-        self._world_speed = 100
+        self._world_speed = 10  # property speed
         self._tokens = pygame.sprite.LayeredDirty()
+        self.actors = None
         self._key_pressed = False
-        self._key = 0
         self._animated = False
         self._grid = []
-        self._tile_size = 1
-        self._tile_margin = 0
-        self._repaint_all = 0
+        self._tile_size, self._tile_margin = 1, 0
+        self._repaint_all = False
         self._columns, self._rows = columns, rows
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
         self.background = background.Background(self)
@@ -57,7 +56,7 @@ class Board(container.Container):
         self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
-        self.dirty = 1
+        self.dirty = 1 # Information: A board is always dirty
         self._window = window.MiniWorldWindow("MiniWorldMaker")
         self._window.add_container(self, "top_left")
         window.MiniWorldWindow.board = self
@@ -70,6 +69,11 @@ class Board(container.Container):
         self.registered_event_handlers["key_up"] = self.on_key_up
         self.registered_event_handlers["board_created"] = self.on_setup
         self.window.send_event_to_containers("board_created", None)
+
+    def update_actors(self):
+        import miniworldmaker.tokens.actor as act
+        self.actors = [token for token in self.tokens if issubclass(token.__class__, act.Actor)]
+
 
     def on_key_pressed(self, keys):
         """
@@ -86,6 +90,14 @@ class Board(container.Container):
             >>> def on_key_pressed(self, keys):
             >>>     if "W" in keys:
             >>>         pass
+
+        """
+        pass
+
+    def act(self):
+        """
+        The act() - Method is called every frame in the mainloop.
+        Overwrite this method in your subclass
 
         """
         pass
@@ -145,18 +157,64 @@ class Board(container.Container):
         pass
 
     def on_mouse_left(self, mouse_pos):
+        """
+        The method is triggered by mouse_left button.
+
+        Args:
+            mouse_pos: The mouse position as BoardPosition (x,y)
+
+        Examples:
+            Reaction to a mouse_left event
+
+            >>> def on_mouse_left(self, mouse_pos):
+            >>>     an_actor.point_towards_position(mouse_pos)
+        """
         pass
 
     def on_mouse_right(self, mouse_pos):
+        """
+         The method is triggered by mouse_right button.
+
+         Args:
+             mouse_pos: The mouse position as BoardPosition (x,y)
+
+         Examples:
+             Reaction to a mouse_right event
+
+             >>> def on_mouse_right(self, mouse_pos):
+             >>>     an_actor.point_towards_position(mouse_pos)
+         """
         pass
 
     def on_mouse_motion(self, mouse_pos):
+        """
+         The method is triggered by mouse_motion button.
+
+         Args:
+             mouse_pos: The mouse position as BoardPosition (x,y)
+
+         Examples:
+             Reaction to a mouse_motion event
+
+             >>> def on_mouse_motion(self, mouse_pos):
+             >>>     an_actor.point_towards_position(mouse_pos)
+         """
         pass
 
     def on_setup(self):
+        """
+           The method is called with __init__ when creating a new board.
+
+        """
         pass
 
     def fill(self, color):
+        """
+        Fills the background with a color
+
+        Args:
+            color: The color as 4-tuple (r, g, b, alpha
+        """
         self.background.fill(color)
 
     @property
@@ -197,50 +255,56 @@ class Board(container.Container):
     def __str__(self):
         return "{0} with {1} columns and {2} rows".format(self.__class__.__name__, self.columns, self.rows)
 
-    @staticmethod
-    def filter_actor_list(a_list, actor_type):
-        return [actor for actor in a_list if type(actor) == actor_type]
-
-
-
     def get_tile_rect(self):
         return pygame.Rect(0, 0, self.tile_size, self.tile_size)
 
     @property
-    def container_width(self):
-        self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
+    def container_width(self) -> int:
+        """
+        Gets the width of the container
+
+        Returns:
+            The width of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)
+
+        """
+        if self.dirty:
+            self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
         return self._container_width
 
     @property
     def width(self) -> int:
         """
-        The width of the board in tiles (or pixels if board is pixel-board
+        See container_width
         """
-        if self.dirty == 0:
-            return self._container_width
-        else:
-            return self.container_width
+        return self.container_width
 
     @property
-    def container_height(self):
-        self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
+    def container_height(self) -> int:
+        """
+        Gets the height of the container
+
+        Returns:
+            The height of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)
+
+        """
+        if self.dirty:
+            self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
         return self._container_height
 
     @property
     def height(self) -> int:
         """
-        The height of the board in tiles (or pixels if board is pixel-board
+        See container_height
         """
-        if self.dirty == 0:
-            return self._container_height
-        else:
-            return self.container_height
+        return self.container_height
 
     @property
     def window(self) -> window.MiniWorldWindow:
         """
-        The window
-        Returns: The window
+        Gets the parent window
+
+        Returns:
+            The window
 
         """
         return self._window
@@ -274,7 +338,6 @@ class Board(container.Container):
     @rows.setter
     def rows(self, value):
         self._rows = value
-        self.dirty = 1
         self._repaint_all = 1
 
     @property
@@ -287,7 +350,6 @@ class Board(container.Container):
     @columns.setter
     def columns(self, value):
         self._columns = value
-        self.dirty = 1
         self._repaint_all = 1
 
     @property
@@ -302,13 +364,22 @@ class Board(container.Container):
         return self.__class__.__name__
 
     def add_image(self, path: str) -> int:
-        """Adds image to current costume
+        """
+        Adds image to current background.
+        If no background is created yet, a new background will be created with this image.
 
         Args:
             path: The path to the image as relative path
 
         Returns:
             The index of the image.
+
+        Examples:
+            >>> class MyBoard(Board):
+            >>>     def __init__(self):
+            >>>         super().__init__(columns=400, rows=200)
+            >>>         self.add_image(path="images/stone.jpg")
+            Creates Board with file stone.jpg in folder images as background
 
         """
         try:
@@ -344,14 +415,17 @@ class Board(container.Container):
         self.background = self.backgrounds[index]
         self.background.dirty = 1
         self.background.changed_all()
-        self.dirty = 1
-        self._repaint_all = 1
+        self.background_changed = 1
+        self._repaint_all = True
         for token in self.tokens:
             token.dirty = 1
         return self.background
 
     def add_to_board(self, token: pck_token.Token, position: Union[tuple, board_position.BoardPosition]) -> pck_token.Token:
-        """Adds token to board
+        """Adds token to board.
+
+        Usually this method musn't be called.
+        If you create a token with position-parameter, the token will be automaticly added to the board.
 
         Args:
             token: The token which should be added
@@ -360,10 +434,20 @@ class Board(container.Container):
         Returns:
             The Token
 
+        Examples:
+
+            This code:
+
+            >>> Robot(position=(50, 50))
+
+            Does the same as:
+
+            >>> robot = Robot()
+            >>> self.add_to_board(Robot, position=(50, 50))
         """
         self.tokens.add(token)
         if type(position) == tuple:
-            token.position = board_position.BoardPosition(position)
+            token.position = board_position.BoardPosition(position[0], position[1])
         elif type(position) == board_position.BoardPosition:
             token.position = position
         else:
@@ -371,6 +455,7 @@ class Board(container.Container):
         if token.speed == 0:
             token.speed = self.default_actor_speed
         token.add_to_board(self, position)
+        self.update_actors()
         self.window.send_event_to_containers("Added token", token)
         return token
 
@@ -390,7 +475,7 @@ class Board(container.Container):
     def get_tokens_by_pixel(self, pixel: tuple) -> list:
         """Gets all tokens by Pixel.
 
-        This method can be used, if you want to get a token by mouse-clock
+        This method can be used, if you want to get a token by mouse-click
 
         Args:
             pixel: the pixel-coordinates
@@ -405,7 +490,10 @@ class Board(container.Container):
                 token.append(actor)
         return token
 
-    def get_tokens_in_area(self, area: Union[pygame.Rect, tuple], token=None, exclude=None) -> list:
+    def get_tokens_at_position(self, position, token_type=None, exclude=None) -> list:
+        pass
+
+    def get_tokens_in_area(self, area: pygame.Rect, singleitem=False, exclude=None, token_type = None):
         """Gets all tokens in area
 
         Args:
@@ -418,42 +506,17 @@ class Board(container.Container):
 
         """
         tokens = []
-        if type(area) == tuple:
-            area = pygame.Rect(area[0], area[1], self.tile_size, self.tile_size)
-        if token is not None:
-            token_list = self.filter_actor_list(self.tokens, token)
-            if exclude in token_list:
-                token_list.remove(exclude)
-        else:
-            token_list = self.tokens
+        token_list = self.tokens.copy()
+        if exclude in token_list:
+            token_list.remove(exclude)
+        if token_type is not None:
+            tokens = [token for token in token_list if type(token) == token_type]
         for token in token_list:
             if token.rect.colliderect(area):
                 tokens.append(token)
+                if singleitem:
+                    return token
         return tokens
-
-    def get_token(self, value: Union[pygame.Rect, tuple], token=None, exclude=None) -> pck_token.Token:
-        """Gets  a single tokens in area
-
-        Args:
-            value: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
-            token: The class of the tokens which should be added
-            exclude: A token which should not be returned e.g. the actor itself
-
-        Returns:
-            One token
-
-        """
-        if type(value) == tuple:
-            value = pygame.Rect(value[0], value[1], 1, 1)
-        if token is not None:
-            token_list = self.filter_actor_list(self.tokens, token)
-        else:
-            token_list = self.tokens
-        if exclude in token_list:
-            token_list.remove(exclude)
-        for token in token_list:
-            if token.rect.colliderect(value):
-                return token
 
     def remove_actors_from_area(self, area: Union[tuple, pygame.Rect], token=None, exclude=None):
         """Removes all tokens in an area
@@ -484,99 +547,75 @@ class Board(container.Container):
         if token:
             self.tokens.remove(token)
             token.board = None
-
-    def is_on_board(self, area: Union[board_position.BoardPosition, pygame.Rect]) -> bool:
-        """Tests if area or position is on board
-        Args:
-            area: A rectangle or a position
-
-        Returns: true, if area is in grid
-
-        """
-        if type(area) == tuple:
-            area = board_position.BoardPosition(area[0], area[1])
-        if type(area) == board_position.BoardPosition:
-            area = area.to_rect()
-
-        top_left_x, top_left_y, right, top = area.topleft[0], \
-                                             area.topleft[1], \
-                                             area.right, \
-                                             area.top
-        if top_left_x < 0 or top_left_y < 0 or area.right >= self.width or area.bottom >= self.height:
-            return False
-        else:
-            return True
+            self.update_actors()
 
     @property
     def image(self) -> pygame.Surface:
         """
         The current displayed image
         """
-        if not self.dirty:
-            return self._image
-        else:
-            self._image = self.background.image
-            return self._image
+        self._image = self.background.image
+        return self._image
 
     def repaint(self):
-        self.surface = pygame.Surface((self.image.get_width(), self.image.get_height()))
-        if self.dirty:
+        if self._repaint_all:
+            self.surface = pygame.Surface((self.image.get_width(), self.image.get_height()))
             self.surface.blit(self.image, self.surface.get_rect())
         self.tokens.clear(self.surface, self.image)
         repaint_rects = self.tokens.draw(self.surface)
         self._window.repaint_areas.extend(repaint_rects)
-        if self._repaint_all == 1:
+        if self._repaint_all:
             self._window.repaint_areas.append(self.rect)
-            self._repaint_all = 0
+            self._repaint_all = False
 
     def blit_surface_to_window_surface(self):
-        if self.dirty:
-            self._window.window_surface.blit(self.surface, self.rect)
+        self._window.window_surface.blit(self.surface, self.rect)
 
     def show(self, fullscreen=False):
         """
-        Starts the program.
+        The method show() should always called at the end of your program.
+        It starts the mainloop.
+
+        Examples:
+            >>> my_board = Board() # or a subclass of Board
+            >>> my_board.show()
+
         """
         self.background.is_scaled = True
-        size = self.width, self.height
-        self.background.size = (size)
+        self.background.size = self.container_width, self.container_height
         image = self.image
         self.window.show(image, full_screen= fullscreen)
-
-    def run(self):
-        pass
 
     def update(self):
         if self.is_running:
             self._tick = self._tick + 1
-            if self._tick > 101 - self.speed:
-                self._act_all()
+            if self._tick == self.speed:
                 self._tick = 0
-            if physicsengine.PhysicsProperty.count > 0:
-                for token in self.tokens:
-                    if token.physics:
-                        token.physics.update_physics_model()
-                steps = 1
-                for x in range(steps):
-                    if physicsengine is not None and \
-                            physicsengine.PhysicsProperty.space is not None:
-                        physicsengine.PhysicsProperty.space.step(1 / 60)
-                for token in self.tokens:
-                    if token.physics:
-                        token.physics.update_token_from_physics_model()
-
+                self._act_all()
+                if physicsengine.PhysicsProperty.count > 0:
+                    for token in self.tokens:
+                        if token.physics:
+                            token.physics.update_physics_model()
+                    steps = 1
+                    for x in range(steps):
+                        if physicsengine is not None and \
+                                physicsengine.PhysicsProperty.space is not None:
+                            physicsengine.PhysicsProperty.space.step(1 / 60)
+                    for token in self.tokens:
+                        if token.physics:
+                            token.physics.update_token_from_physics_model()
         self.frame = self.frame + 1
         self.clock.tick(40)
 
     def _act_all(self):
-        tokens = [token for token in self.tokens if token.is_static == False]
-        for token in tokens:
-            token.act()
+        if self.actors:
+            for actor in self.actors:
+                actor.act()
         self.act()
 
     def pass_event(self, event, data=None):
-        tokens = [token for token in self.tokens if token.is_static is False]
         if event == "mouse_left":
+            # Test an token was clicked and set the active token
             tokens = self.get_tokens_by_pixel(data)
             if tokens:
                 i = 0
@@ -592,10 +631,13 @@ class Board(container.Container):
                 else:
                     self.set_active_actor(tokens[0])
         else:
-            for token in [token for token in self.tokens if event in token.registered_event_handlers.keys()]:
-                token.get_event(event, data)
-                token.registered_event_handlers[event](data)
+            # calls all registered event handlers of tokens
+            if self.actors:
+                for actor in [actor for actor in self.actors if event in actor.registered_event_handlers.keys()]:
+                    actor.get_event(event, data)
+                    actor.registered_event_handlers[event](data)
         if event in self.registered_event_handlers.keys():
+            # calls registered event handlers of board
             if data is None:
                 self.registered_event_handlers[event]()
             else:
@@ -608,16 +650,17 @@ class Board(container.Container):
         help(token)
         return token
 
-    def act(self):
-        """Custom acting
+    def save_to_db(self, file):
+        """
+        Saves the current board an all actors to database.
+        The file is stored as db file and can be opened with sqlite.
 
-        This method is called every frame in the mainloop.
-        Overwrite this method in your subclass
+        Args:
+            file: The file as relative location
+
+        Returns:
 
         """
-        pass
-
-    def save_to_db(self, file):
         if os.path.exists(file):
             os.remove(file)
         db = db_manager.DBManager(file)
@@ -658,6 +701,15 @@ class Board(container.Container):
 
     @classmethod
     def from_db(cls, file):
+        """
+        Loads a sqlite db file.
+
+        Args:
+            file:
+
+        Returns:
+
+        """
         db = db_manager.DBManager(file)
         data = db.select_single_row("SELECT rows, columns, tile_size, tile_margin, board_class FROM Board")
         board = cls()
@@ -726,7 +778,7 @@ class Board(container.Container):
     def get_board_position_from_pixel(self, position: tuple) -> board_position.BoardPosition:
         column = (position[0] - self.tile_margin) // (self.tile_size + self.tile_margin)
         row = (position[1] - self.tile_margin) // (self.tile_size + self.tile_margin)
-        return board_position.BoardPosition((column, row))
+        return board_position.BoardPosition(column, row)
 
     def get_board_position_from_rect(self, position: pygame.Rect) -> board_position.BoardPosition:
         position = position.topleft
@@ -740,9 +792,10 @@ class Board(container.Container):
     def get_colors_at_line(self, line: list):
         colors = []
         for pos in line:
-            color_at_pos = self.background.color_at(pos)
-            if color_at_pos not in colors:
-                colors.append(color_at_pos)
+            if pos.is_on_board():
+                color_at_pos = self.background.color_at(pos)
+                if color_at_pos not in colors:
+                    colors.append(color_at_pos)
         return colors
 
     def get_color_at_rect(self, rect : pygame.Rect, directions = None) -> list:
@@ -770,7 +823,22 @@ class Board(container.Container):
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.background.count_pixels_by_color(rect, color, threshold)
 
-    def get_mouse_position(self):
+    def get_mouse_position(self) -> Union[board_position.BoardPosition, None]:
+        """
+        Gets the current mouse_position
+
+        Returns:
+            Returns the mouse position if mouse is on board. Returns "None" otherwise
+
+        Examples:
+            This example shows you how to use the mouse_position
+
+            >>> def act(self):
+            >>>     mouse = self.board.get_mouse_position()
+            >>>     if mouse:
+            >>>         self.point_towards_position(mouse)
+
+        """
         pos = pygame.mouse.get_pos()
         clicked_container = self.window.get_container_by_pixel(pos[0], pos[1])
         if clicked_container == self:

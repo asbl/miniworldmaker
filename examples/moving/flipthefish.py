@@ -20,8 +20,12 @@ class Player(Actor):
     def act(self):
         if self.sensing_on_board():
             self.move()
+            print(self.position, self.position.is_on_board())
         else:
             self.flip_x()
+            self.move()
+            print(self.position, self.position.is_on_board())
+
 
 
 board = MyBoard()

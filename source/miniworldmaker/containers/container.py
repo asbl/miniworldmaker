@@ -42,6 +42,7 @@ class Container:
             self.container_top_left_y = 0
             self.docking_position = dock
         elif dock == "right":
+
             self.container_top_left_x = self._window.window_width
             self.container_top_left_y = 0
             self.docking_position = dock

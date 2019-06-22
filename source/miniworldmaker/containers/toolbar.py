@@ -1,6 +1,6 @@
+import pygame
 from miniworldmaker.containers import container
 from miniworldmaker.containers import toolbar_widgets
-import pygame
 
 
 class Toolbar(container.Container):
@@ -17,7 +17,7 @@ class Toolbar(container.Container):
         self.margin_left = 10
         self.margin_right = 10
         self.dirty = 1
-        self.repaint_all = 1
+        self.repaint_all = True
 
     def get_widget(self, index):
         return self.widgets[index]
@@ -40,7 +40,7 @@ class Toolbar(container.Container):
         widget.dirty = 1
         if widget.timed:
             self.timed_widgets.append(widget)
-        self.repaint_all = 1
+        self.repaint_all = True
         return widget
 
     def remove_widget(self, widget):
@@ -52,31 +52,33 @@ class Toolbar(container.Container):
         """
         self.widgets.remove(widget)
         self.dirty = 1
-        self.repaint_all = 1
+        self.repaint_all = True
 
     def remove_all_widgets(self):
         self.widgets = []
         self.dirty = 1
-        self.repaint_all = 1
+        self.repaint_all = True
 
     def repaint(self):
         self.surface = pygame.Surface((self._container_width, self._container_height))
         if self.dirty:
-            self.surface.fill((255, 255, 255))
+            self.surface.fill((255, 255, 255, 255))
             if self.widgets:
                 actual_height = self.margin_first
                 for widget in self.widgets:
                     if widget.dirty == 1:
+                        print(widget)
                         widget.width = self._container_width - self.margin_left - self.margin_right
                         widget.repaint()
+                        print("repainted")
                         rect = pygame.Rect(self.rect.left, actual_height, widget.width, widget.height)
                         self._window.repaint_areas.append(rect)
                     self.surface.blit(widget.surface, (5, actual_height))
                     actual_height += widget.height + self.row_margin
-                self.dirty = 0
-            if self.repaint_all:
-                self._window.repaint_areas.append(self.rect)
-                self.repaint_all = False
+        if self.repaint_all:
+            self._window.repaint_areas.append(self.rect)
+            self.repaint_all = False
+        self.dirty = 0
 
     def _widgets_total_height(self):
         height = self.margin_first
@@ -98,4 +100,4 @@ class Toolbar(container.Container):
 
     def update(self):
         for widget in self.timed_widgets:
-            widget.update_physics_nodel()
+            widget.update()

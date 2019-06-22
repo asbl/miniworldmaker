@@ -1,6 +1,7 @@
+import os
+
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
-import os
 
 
 class LevelDesignerToolbar(toolbar.Toolbar):
@@ -49,7 +50,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 
             elif "wheel_up" in event or "wheel_down" in event:
                 if self.board.is_in_container(data[0], data[1]):
-                    token = self.board.get_token(data)
+                    token = self.board.get_token_in_area(data)
                     for cls in token.__class__.__mro__:
                         if cls.__name__ == "Actor":
                             if event == "wheel_up":
@@ -59,7 +60,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             elif "mouse_motion" in event:
                 if pygame.mouse.get_pressed()[0] == 1:
                     if self.board.is_in_container(data[0], data[1]):
-                        token = self.board.get_token(data)
+                        token = self.board.get_token_in_area(data)
                         if token.__class__ != self.selected_token_type:
                             import miniworldmaker.boards.board_position as bp
                             token = self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
@@ -67,13 +68,13 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             if self.board.is_in_container(data[0], data[1]):
                 keys = self.board.window.get_keys()
                 if "L_SHIFT" in keys:
-                    token = self.board.get_token(data)
+                    token = self.board.get_token_in_area(data)
                     while token != None:
                         if token:
                             token.remove()
-                        token = self.board.get_token(data)
+                        token = self.board.get_token_in_area(data)
                 else:
-                    token = self.board.get_token(data)
+                    token = self.board.get_token_in_area(data)
                     for cls in token.__class__.__mro__:
                         if cls.__name__ == "Actor":
                             token.turn_left(5)

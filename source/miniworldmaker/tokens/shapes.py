@@ -9,6 +9,7 @@ class Shape(tk.Token):
         self.costume.fill_color = (200, 0, 0, 0)
         self.color = color
 
+
     @staticmethod
     def bounding_box(points):
         x_coordinates, y_coordinates = zip(*points)
@@ -74,6 +75,17 @@ class Circle(Shape):
             print("Shape not created because mouse position not in screen")
             self.remove()
 
+    @property
+    def radius(self):
+        """
+        Gets the radius of the circle.
+        If you change the circle-size (e.g. with self.size = (x, y), the radius value will be changed too.
+
+        Returns: The radius
+
+        """
+        return self.width / 2
+
 
 class Ellipse(Shape):
     """
@@ -111,6 +123,28 @@ class Ellipse(Shape):
         except ValueError:
             print("ERROR: thickness of {0} is greater than ellipse-radius".format(thickness))
             self.remove()
+
+    @property
+    def width(self):
+        """
+        Gets the width of the ellipse
+        If you change the ellipse-size (e.g. with self.size = (x, y), the value will be changed too.
+
+        Returns: The width of the ellipse
+
+        """
+        return self.width
+
+    @property
+    def height(self):
+        """
+        Gets the height of the ellipse
+        If you change the ellipse-size (e.g. with self.size = (x, y), the value will be changed too.
+
+        Returns: The height of the ellipse
+
+        """
+        return self.height
 
 
 class Line(Shape):

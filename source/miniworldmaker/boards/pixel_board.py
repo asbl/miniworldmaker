@@ -7,6 +7,7 @@ class PixelBoard(bd.Board):
     def __init__(self, columns=40, rows=40):
         super().__init__(columns=columns, rows=rows)
         self.default_actor_speed = 3
+        self.speed = 1
 
     def add_to_board(self, token: tk.Token, position) -> tk.Token:
         super().add_to_board(token, position)

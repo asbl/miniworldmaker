@@ -13,13 +13,23 @@ All actions performed on the images can be found in the class ImageRenderer
    :parts: 1
 ```
 
+### Appearance
+
 ```eval_rst
-.. toctree::
-   :glob:
-   
-   appearances/*
+.. autoclass:: miniworldmaker.tools.appearance.Appearance
+   :members:
 ```
 
-![](../_images/appearance_uml.png)
+### Background
 
+```eval_rst
+.. autoclass:: miniworldmaker.boards.background.Background
+   :members:
+```
 
+### Costume
+
+```eval_rst
+.. autoclass:: miniworldmaker.tokens.costume.Costume
+   :members:
+```

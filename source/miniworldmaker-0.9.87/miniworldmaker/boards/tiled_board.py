@@ -47,7 +47,7 @@ class TiledBoard(Board):
         else:
             position = self.get_board_position_from_pixel(area.topleft)
         tokens_in_area = []
-        if self.is_on_board(self.rect):
+        if self.is_position_on_board(self.rect):
             if self._dynamic_actors_dict[position.x, position.y]:
                 tokens_in_area.extend(self._dynamic_actors_dict[(position.x, position.y)])
             if self._static_tokens_dict[position.x, position.y]:
@@ -113,12 +113,12 @@ class TiledBoard(Board):
         cells.append([x_pos + 1, y_pos - 1])
         return cells
 
-    def is_on_board(self, area: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> bool:
-        if type(area) == tuple:
-            area = board_position.BoardPosition(area[0], area[1])
-        if type(area) == board_position.BoardPosition:
-            area = area.to_rect()
-        position = self.get_board_position_from_pixel(area.center)
+    def is_position_on_board(self, position: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> bool:
+        if type(position) == tuple:
+            position = board_position.BoardPosition(position[0], position[1])
+        if type(position) == board_position.BoardPosition:
+            position = position.to_rect()
+        position = self.get_board_position_from_pixel(position.center)
         if position.x > self.columns - 1:
             return False
         elif position.y > self.rows - 1:

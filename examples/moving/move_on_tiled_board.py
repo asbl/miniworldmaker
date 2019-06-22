@@ -4,8 +4,8 @@ from miniworldmaker import *
 class MyBoard(TiledBoard):
 
     def __init__(self):
-        super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
-        player1 = Player(position=(1, 1))
+        super().__init__(columns=4, rows=4, tile_size=42, tile_margin=1)
+        self.player = Player(position=(1, 1))
         self.add_image(path="images/soccer_green.jpg")
 
 
@@ -18,7 +18,7 @@ class Player(Actor):
         self.costume.orientation = - 90
 
     def act(self):
-        if self.sensing_on_board():
+        if self.sensing_on_board(1):
             self.move()
 
     def get_event(self, event, data):

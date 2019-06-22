@@ -1,7 +1,8 @@
 import logging
-import pygame
-from tkinter import filedialog
 from tkinter import *
+from tkinter import filedialog
+
+import pygame
 
 
 class ToolbarWidget():
@@ -51,6 +52,7 @@ class ToolbarWidget():
     def repaint(self):
         if self.dirty == 1:
             self.clear()
+            print("repaint widget", self)
             self.surface.fill(self.background_color)
             label = self.myfont.render(self._text, 1, (0, 0, 0))
             self.surface.blit(label, (self._text_padding, 5))
@@ -136,7 +138,6 @@ class SaveButton(ToolbarWidget):
             else:
                 self.board.save_to_db(self.file)
                 self.board.window.send_event_to_containers("Saved new world", self.file)
-
 
 
 class LoadButton(ToolbarWidget):

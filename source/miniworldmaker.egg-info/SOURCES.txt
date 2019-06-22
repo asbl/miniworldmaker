@@ -13,7 +13,6 @@ miniworldmaker/boards/board.py
 miniworldmaker/boards/board_position.py
 miniworldmaker/boards/pixel_board.py
 miniworldmaker/boards/processing_board.py
-miniworldmaker/boards/processing_tools.py
 miniworldmaker/boards/tiled_board.py
 miniworldmaker/containers/__init__.py
 miniworldmaker/containers/actionbar.py

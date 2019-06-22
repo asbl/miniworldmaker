@@ -18,8 +18,7 @@ class Robot(Actor):
         self.costume.orientation = - 90
 
     def act(self):
-        if not self.sensing_on_board():
-            self.turn_left(270)
+        pass
 
     def get_event(self, event, data):
         if event == "key_pressed":
@@ -29,6 +28,8 @@ class Robot(Actor):
                 self.turn_right(10)
             if "W" in data:
                 self.move()
+                if not self.sensing_on_board(self.speed):
+                    self.move_back()
 
 
 board = MyBoard()

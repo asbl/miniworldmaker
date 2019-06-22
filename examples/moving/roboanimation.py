@@ -25,6 +25,7 @@ class Robot(Actor):
             self.move()
         else:
             self.flip_x()
+            self.move()
 
 
 board = MyBoard()

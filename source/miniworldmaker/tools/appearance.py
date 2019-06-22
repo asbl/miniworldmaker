@@ -37,9 +37,9 @@ class Appearance:
         self._is_flipped = False
         self._orientation = 90
         self._text = ""
-        self.fill_color = (0,0,255,255) #: background_color if actor has no background image
+        self.fill_color = (0, 0, 255, 255) #: background_color if actor has no background image
         self.font_size = 0 #: font_size if token-text != ""
-        self.text_position = (0,0) #: Position of text relative to the top-left pixel of token
+        self.text_position = (0, 0) #: Position of text relative to the top-left pixel of token
         self.font_path = None #: Path to font-file
         self.color = (255, 255, 255, 255) #: color for overlays
 
@@ -144,17 +144,26 @@ class Appearance:
 
     @property
     def text(self):
-        """str: If text!= "", a text is drawn over the parent."""
+        """
+        Returns the current text
+        """
         return self._text
 
     @text.setter
     def text(self, value):
+        """
+        Sets the current text
+        Args:
+            value: A new text as string
+        """
         if value == "":
             self._text = ""
             self.disable_action("write_text")
+            self.surface_loaded = False
         else:
             self._text = value
             self.enable_action("write_text")
+            self.surface_loaded = False
 
     def add_image(self, path: str) -> int:
         """
@@ -201,12 +210,10 @@ class Appearance:
         return self._image
 
     def load_surface(self) -> pygame.Surface:
-        print(self.parent, self.surface_loaded)
         if self.surface_loaded:
             return self._image
         else:
             image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
-            print(self.fill_color)
             image.fill(self.fill_color)
             image.set_alpha(255)
             self.surface_loaded = True
@@ -267,7 +274,7 @@ class Appearance:
 
         """
         if type(position) == tuple:
-            position = board_position.BoardPosition(position)
+            position = board_position.BoardPosition(position[0],position[1])
         if position.is_on_board():
             return self._image.get_at(position.to_pixel())
 

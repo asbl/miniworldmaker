@@ -1,23 +1,36 @@
 import math
-from logging import *
 from typing import Union
 
 import miniworldmaker.physics.physics as ph
 import miniworldmaker.tokens.token as tkn
 import pygame
 from miniworldmaker.boards import board_position
+from miniworldmaker.boards import board_position as bp
 
 
 class Actor(tkn.Token):
+    """ Initializes a new actor
 
-    log = getLogger("Actor")
+    Args:
+        position: The position on the board as tuple.
+        If None, the actor will not be placed on the board.
+
+    Examples:
+
+        Usually you create your own subclass of Actor:
+
+        >>> class Player(Actor):
+        >>>     def __init__(self, position):
+        >>>     super().__init__(position)
+        >>>
+        >>>
+        >>> class MyBoard(PixelBoard):
+        >>>     def __init__(self):
+        >>>     self.player = Player(position = (100,60))
+    """
 
     def __init__(self, position = None):
-        """ Initializes a new actor
 
-        Args:
-            position: The position on the board as tuple. If None, the actor will not be placed on the board.
-        """
         super().__init__(position)
         self.is_static = False
         self.costume.is_rotatable = True
@@ -28,19 +41,22 @@ class Actor(tkn.Token):
         self.registered_event_handlers["key_pressed"] = self.on_key_pressed
         self.registered_event_handlers["key_down"] = self.on_key_down
         self.registered_event_handlers["key_up"] = self.on_key_up
-        self.board.window.send_event_to_containers("actor_created", self)
         self.on_setup()
+
+    def add_to_board(self, board, position: board_position.BoardPosition):
+        super().add_to_board(board, position)
+        from miniworldmaker.boards import pixel_board as pb
+        from miniworldmaker.boards import tiled_board as tb
+        if issubclass(self.board.__class__, pb.PixelBoard):
+            cls = self.__class__
+            self.__class__ = cls.__class__(cls.__name__ , (cls, PixelBoardActor), {})
+        elif issubclass(self.board.__class__, tb.TiledBoard):
+            cls = self.__class__
+            self.__class__ = cls.__class__(cls.__name__ , (cls, TiledBoardActor), {})
+        print(self.__class__)
 
 
     def on_key_pressed(self, keys):
-        """
-        This method is called by a key_pressed_event.
-        The method should be overwritten in your custom Board-Class
-
-        Args:
-            keys: A list of keys
-
-        """
         pass
 
     def on_key_up(self, keys):
@@ -65,13 +81,13 @@ class Actor(tkn.Token):
         """Moves actor *distance* steps into a *direction*.
 
         Args:
-            distance: Number of steps to move
+            direction: Direction as angle
 
         Returns:
             The actor
 
         """
-        direction = direction = self._value_to_direction(direction)
+        direction = self._value_to_direction(direction)
         self.direction = direction
         self.costume.is_rotatable = False
         self.move()
@@ -91,27 +107,45 @@ class Actor(tkn.Token):
         return self
 
     def move(self, distance: int = 0):
-        """Moves actor *distance* steps into a *direction*.
+        """Moves actor *distance* steps.
 
         Args:
-            distance: Number of steps to move. If distance = 0, the actor speed will be used.
+            distance: Number of steps to move.
+            If distance = 0, the actor speed will be used.
 
         Returns:
             The actor
 
+        Examples:
+
+            >>> class Robot(Actor):
+            >>>    def act(self):
+            >>>         if self.sensing_on_board():
+            >>>             self.move()
         """
         if distance == 0:
             distance = self.speed
-        destination = self.look(direction = self.direction, distance=distance)
-        self.position = self.board.get_board_position_from_pixel(destination.topleft)
+        destination = self.get_destination(self.direction, distance)
+        self.last_position = self.position
+        self.position = destination
         self.last_direction=self.direction
         return self
 
-    def look(self, direction: int = -9999, distance: int = 1, style="rect") -> Union[list, pygame.Surface]:
+    def move_back(self):
+        self.position = self.last_position
+        self.direction = self.last_direction
+
+    def get_destination(self, direction, distance) -> bp.BoardPosition:
+        x = self.position[0] + round(math.sin(math.radians(direction)) * distance)
+        y = self.position[1] - round(math.cos(math.radians(direction)) * distance)
+        return board_position.BoardPosition(x, y)
+
+    def look(self, distance: int = 1, direction: int = -9999, style="rect") -> Union[list, pygame.Surface]:
         """Looks *distance* steps into a *direction*.
 
         Args:
             distance: Number of steps to look
+            direction: The direction to look
 
         Returns:
             A destination Surface
@@ -123,20 +157,14 @@ class Actor(tkn.Token):
         elif style == "line":
             return self.get_line(direction, distance)
 
-    def get_destination(self, direction, distance):
-        x = self.position[0] + round( math.sin(math.radians(direction)) * distance)
-        y = self.position[1] - round(math.cos(math.radians(direction)) * distance)
-        return board_position.BoardPosition((x, y)).to_surface(rect=self.rect)
-
     def get_line(self, direction, distance):
         line = []
         i = 0
         while i < distance:
-            print(direction,math.sin(math.radians(direction)),math.cos(math.radians(direction)))
             position = self.rect.center
             x = position[0] + round(math.sin(math.radians(direction)) * i)
             y = position[1] - round(math.cos(math.radians(direction)) * i)
-            pos = board_position.BoardPosition((x, y))
+            pos = board_position.BoardPosition(x, y)
             if not self.rect.collidepoint(pos[0], pos[1]):
                 line.append(pos)
             else:
@@ -189,52 +217,35 @@ class Actor(tkn.Token):
         self.turn_left(180 - incidence)
         return self
 
-    def sensing_tokens(self, distance: int = -1, token=None, exact = False) -> list:
+    def sensing_tokens(self, distance: int = -1, token_type=None, exact = False) -> list:
         """Checks if Actor is sensing Tokens in front
 
         Args:
             distance: Number of steps to look for tokens  (0: at actor position)
-            token: Class name of token types to look for. If token == None, all token are returned
+            token_type: Class name of token types to look for. If token == None, all token are returned
             exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
 
         Returns:
             a list of tokens
 
         """
-        if distance < 0:
-            distance = self.speed
-        destination_rect = self.look(distance=distance)
-        tokens = self.board.get_tokens_in_area(destination_rect, token, exclude=self)
-        if exact:
-            return  [token for token in tokens if pygame.sprite.collide_mask(self,token)]
-        return tokens
+        pass
 
-    def sensing_token(self, distance: int = -1, token=None, exact = False) -> Union[tkn.Token, None]:
+    def sensing_token(self, distance: int = -1, token_type=None, exact = False) -> Union[tkn.Token, None]:
         """Checks if actor is sensing a single token in front. See sensing_tokens
 
         Args:
             distance: Number of steps to look for tokens  (0: at actor position)
-            token: Class name of token types to look for. If token == None, all token are returned
+            token_type: Class name of token types to look for. If token == None, all token are returned
             exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
 
         Returns:
             A single token
 
         """
-        if distance < 0:
-            distance = self.speed
-        destination_rect = self.look(distance=distance)
-        token = self.board.get_token(destination_rect, token, exclude=self)
-        if exact and token is not None:
-            if not pygame.sprite.collide_mask(self, token):
-                tokens = self.sensing_tokens(exact= True, token = token)
-                if tokens:
-                    return tokens[0]
-                else:
-                    return None
-        return token
+        pass
 
-    def sensing_borders(self, distance: Union[int, None] = None) -> list:
+    def sensing_borders(self, distance: int = 1, ) -> list:
         """Checks if actor is sensing a border in front
 
         Args:
@@ -244,14 +255,9 @@ class Actor(tkn.Token):
             a list of all borders ("top", "left", "right", "bottom") which are sensed on given position.
 
         """
-        if distance is None:
-            distance = self.speed
-        destination_rect = self.look(distance=distance)
-        borders = self.board.borders(destination_rect)
-        self.board.window.send_event_to_containers("actor_is_looking_at_border", self)
-        return borders
+        pass
 
-    def sensing_on_board(self, distance:Union[int, None] = None) -> bool:
+    def sensing_on_board(self = None, distance = 0) -> bool:
         """Checks if actor is sensing a position inside the board
 
         Args:
@@ -261,31 +267,9 @@ class Actor(tkn.Token):
             True if position is on board
 
         """
-        if distance is None:
-            distance = self.speed
-        position = self.look(direction = self.direction, distance=distance)
-        on_board = self.board.is_on_board(position)
-        return on_board
+        pass
 
-    def sensing_color(self,  color, distance:Union[int, None] = None,) -> int:
-        """Sensing the number of pixels of a given color
-
-        Args:
-            distance: Number of steps to look for color
-            color: The color to look for
-
-        Returns:
-            The number of pixels filled with the given color. If no color ist given, the
-            color found in the center of actor rectangle will be returned.
-
-        """
-        if distance is None:
-            distance = self.speed
-        destination_rect = self.look(distance=distance)
-        colors = self.board.find_colors(destination_rect, color)
-        return colors
-
-    def sensing_colors(self, distance:Union[int, None] = None) -> set:
+    def sensing_colors(self, distance:Union[int, None] = None, colors: Union[tuple, list]=[]) -> set:
         """ Gets all colors the actor is sensing
 
         Args:
@@ -299,8 +283,13 @@ class Actor(tkn.Token):
             distance = self.speed
         direction = self.direction
         line = self.look(distance=distance, direction = direction, style = "line")
-        colors = self.board.get_colors_at_line(line)
-        return colors
+        colorlist = self.board.get_colors_at_line(line)
+        if type(colors) == tuple:
+            colors = [colors]
+        if not colors:
+            return colorlist
+        intersections = [value for value in colorlist if value in colors]
+        return intersections
 
     def flip_x(self) -> int:
         """Flips the actor by 180° degrees
@@ -329,3 +318,130 @@ class Actor(tkn.Token):
                                           size = size,
                                           box_type = box_type,
                                           stable = stable)
+
+
+class PixelBoardActor(Actor):
+
+    def get_target_rect(self, distance):
+        target = self.get_destination(self.direction, distance)
+        return target.to_rect(self.rect)
+
+    @staticmethod
+    def filter_actor_list(a_list, actor_type):
+        return [actor for actor in a_list if type(actor) == actor_type]
+
+    def sensing_on_board(self = None, distance = 0) -> bool:
+        """Checks if actor is sensing a position inside the board
+
+        Args:
+            distance: Number of steps to look for
+
+        Returns:
+            True if position is on board
+
+        """
+        target_rect = self.get_target_rect(distance)
+        topleft_on_board = board_position.BoardPosition(target_rect.left, target_rect.top).is_on_board()
+        bottom_right_on_board = board_position.BoardPosition(target_rect.right, target_rect.bottom).is_on_board()
+        return topleft_on_board and bottom_right_on_board
+
+    def sensing_borders(self, distance: int = 1, ) -> list:
+        """Checks if actor is sensing a border in front
+
+        Args:
+            distance: Number of steps to look for borders  (0: at actor position)
+
+        Returns:
+            a list of all borders ("top", "left", "right", "bottom") which are sensed on given position.
+
+        """
+
+        for i in range(distance + 1):
+            target_rect = self.get_target_rect(distance)
+            borders = self.board.borders(target_rect)
+            if borders:
+                self.board.window.send_event_to_containers("actor_is_looking_at_border", self)
+                return borders
+        else:
+            return []
+
+    def sensing_tokens(self, distance: int = 1, token_type=None, exact = False) -> list:
+        """Checks if Actor is sensing Tokens in front
+
+        Args:
+            distance: Number of steps to look for tokens  (0: at actor position)
+            token_type: Class name of token types to look for. If token == None, all token are returned
+            exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
+
+        Returns:
+            a list of tokens
+
+        """
+        pass
+
+    def sensing_token(self, distance: int = 1, token_type=None, exact = False) -> Union[tkn.Token, None]:
+        """Checks if actor is sensing a single token in front. See sensing_tokens
+
+        Args:
+            distance: Number of steps to look for tokens  (0: at actor position)
+            token_type: Class name of token types to look for. If token == None, all token are returned
+            exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
+
+        Returns:
+            A single token
+
+        """
+        destination_rect = self.get_target_rect(distance)
+        token = self.board.get_tokens_in_area(destination_rect, singleitem= True, exclude= self, token_type = token_type)
+        if exact and token:
+            if not pygame.sprite.collide_mask(self, token):
+                return token
+            else:
+                return None
+        return None
+
+
+class TiledBoardActor(Actor):
+    def sensing_on_board(self = None, distance = 0) -> bool:
+        """Checks if actor is sensing a position inside the board
+
+        Args:
+            distance: Number of steps to look for
+
+        Returns:
+            True if position is on board
+
+        """
+        target = self.get_destination(self.direction, distance)
+        on_board = target.is_on_board()
+        return on_board
+
+    def sensing_tokens(self, distance: int = 1, token_type=None, exact = False) -> list:
+        """Checks if Actor is sensing Tokens in front
+
+        Args:
+            distance: Number of steps to look for tokens  (0: at actor position)
+            token_type: Class name of token types to look for. If token == None, all token are returned
+            exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
+
+        Returns:
+            a list of tokens
+
+        """
+        target = self.get_destination(self.direction, distance)
+        return self.board.get_tokens_at_position(target, token_type)
+
+    def sensing_token(self, distance: int = 1, token_type=None, exact = False) -> list:
+        """Checks if Actor is sensing Tokens in front
+
+        Args:
+            distance: Number of steps to look for tokens  (0: at actor position)
+            token_type: Class name of token types to look for. If token == None, all token are returned
+            exact: If exact is True, then collision handling will be done with masks (slower, more precise) instead of rectangles
+
+        Returns:
+            a list of tokens
+
+        """
+        target = self.get_destination(self.direction, distance)
+        return self.board.get_tokens_at_position(target, token_type, singleitem = True)

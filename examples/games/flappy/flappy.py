@@ -29,13 +29,13 @@ class Bird(Actor):
         borders = self.sensing_borders()
         if "bottom" in borders or "top" in borders:
             self.board.is_running = False
-        pipes = self.sensing_token(token = Pipe, exact= True)
+        pipes = self.sensing_token(token_type = Pipe, exact= True)
         if pipes:
             self.board.is_running = False
             self.board.reset()
 
-    def get_event(self, event, data):
-        if event == "key_pressed" and "SPACE" in data:
+    def on_key_pressed(self, keys):
+        if "SPACE" in keys:
             self.physics.velocity_y = 200
             if self.board.is_running == False:
                 self.board.is_running = True
@@ -55,7 +55,7 @@ class Pipe(Actor):
     def act(self):
         self.move_in_direction("left")
         if "left" in self.sensing_borders():
-            self.move_to(position = BoardPosition((self.position.x+520, self.y) ))
+            self.move_to(position = BoardPosition(self.position.x+520, self.y) )
             self.passed = False
         if self.position.x < 75 and self.passed is False:
             self.passed = True

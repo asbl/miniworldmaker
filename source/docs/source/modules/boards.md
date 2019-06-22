@@ -7,11 +7,30 @@ Boards
    :parts: 1
 ```
 
+### Board
+
 ```eval_rst
-.. toctree::
-   :glob:
-   
-   boards/*
+.. autoclass:: miniworldmaker.boards.board.Board
+   :members:
 ```
 
-![](../_images/board_uml.png)
+### PixelBoard
+
+```eval_rst
+.. autoclass:: miniworldmaker.boards.tiled_board.TiledBoard
+   :members:
+```
+
+### TiledBoard
+
+```eval_rst
+.. autoclass:: miniworldmaker.boards.tiled_board.TiledBoard
+   :members:
+```
+
+### BoardPosition
+
+```eval_rst
+.. autoclass:: miniworldmaker.boards.board_position.BoardPosition
+   :members:
+```

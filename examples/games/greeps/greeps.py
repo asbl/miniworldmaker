@@ -1,7 +1,6 @@
-from miniworldmaker import *
-from typing import *
-from functools import reduce
 import random
+
+from miniworldmaker import *
 
 
 class Earth(PixelBoard):
@@ -34,6 +33,14 @@ class Earth(PixelBoard):
         self.target.append((20, 30))
         self.target.append((20, 30))
         self.time_label = toolbar.add_widget(TimeLabel(self, "Time"))
+        self.water_colors = [(49,84,130, 255),
+                             (49,84,129, 255),
+                             (50, 84, 129, 255),
+                             (44, 84, 133, 255),
+                             (41, 84, 127, 255),
+                             (49, 94, 136, 255),
+                             (56, 88, 129, 255),
+                             ]
 
     def show_map(self, map_no):
         pass
@@ -49,16 +56,23 @@ class Earth(PixelBoard):
             self.dirty = 1
             self.index += 1
         if (self.index == 0 and self.frame == 1) or (self.frame > time and self.index <= 2):
-            self.is_running = False
-            self.frame = 0
-            for tomatopile in self.tomato_piles[self.index]:
-                tomatos = Tomatos(tomatopile[0])
-                position = (tomatopile[1], tomatopile[2])
-                self.add_to_board(tomatos, position)
-            position = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
-            self.ship = self.add_to_board(Ship(position), position=self.target[self.index])
-            self.greeps = 0
-            self.is_running = True
+            print(self.frame)
+            self.create_new_world()
+
+    def create_new_world(self):
+        print("create new world")
+        self.is_running = False
+        self.frame = 0
+        for tomatopile in self.tomato_piles[self.index]:
+            tomatos = Tomatos(tomatopile[0])
+            position = (tomatopile[1], tomatopile[2])
+            self.add_to_board(tomatos, position)
+        position = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
+        self.ship = self.add_to_board(Ship(position), position=self.target[self.index])
+        self.greeps = 0
+        self.is_running = True
+        self.index += 1
+
 
 
 class Ship(Actor):
@@ -114,30 +128,26 @@ class Greep(Actor):
     def move(self, distance: int = 1) -> BoardPosition:
         if self.is_valid_move():
             return super().move()
+        else:
+            return None
 
     def is_looking_at_water(self):
-        if self.sensing_color((40, 60, 120, 255), distance=self.speed) < 1:
-            return False
-        else:
-            return True
-
-    def is_looking_on_board(self):
-        if self.sensing_on_board(distance=self.speed):
+        sensing_colors = self.sensing_colors(distance=10, colors=self.board.water_colors)
+        if sensing_colors:
             return True
         else:
             return False
 
     def is_valid_move(self):
-        if not self.is_looking_at_water() and self.is_looking_on_board():
-            return True
-        else:
+        if self.sensing_borders(distance = self.speed) or self.is_looking_at_water():
             return False
+        else:
+            return True
 
     def act(self):
-        if self.is_valid_move():
-            self.think()
-            self.move()
-        else:
+        self.think()
+        self.move()
+        if not self.is_valid_move():
             self.turn_left(random.randint(120, 240))
 
     def think(self):
@@ -148,15 +158,15 @@ class Greep(Actor):
             else:
                 self.spit("blue")
 
-        greep = self.sensing_token(token=Greep, distance=0)
-        tomato = self.sensing_token(token=Tomatos, distance=0)
+        greep = self.sensing_token(token_type=Greep, distance=0)
+        tomato = self.sensing_token(token_type=Tomatos, distance=0)
 
         if greep and tomato:
             self.charge(greep, tomato)
             # self.point_towards_position(self.board.ship.position)
         if self.carrys_tomato:
             self.turn_home()
-            if self.sensing_token(token=Ship, distance=0):
+            if self.sensing_token(token_type=Ship, distance=0):
                 self.deliver_to_ship()
 
     def deliver_to_ship(self):
@@ -224,15 +234,5 @@ class Paint(Token):
 
 
 
-def main():
-    earth = Earth()
-    earth.show()
-
-
-import cProfile
-
-pr = cProfile.Profile()
-pr.enable()
-main()
-pr.disable()
-pr.dump_stats("profile")
+earth = Earth()
+earth.show()

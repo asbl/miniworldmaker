@@ -81,8 +81,6 @@ class ImageRenderer:
             my_font = pygame.font.SysFont("monospace", font_size)
         else:
             my_font = pygame.font.Font(appearance.font_path)
-        if appearance.color is None:
-            color = (0, 0, 0)
         label = my_font.render(appearance.text, 1, appearance.color)
         image.blit(label, appearance.text_position)
         return image

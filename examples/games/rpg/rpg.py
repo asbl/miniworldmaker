@@ -24,13 +24,12 @@ class MyBoard(TiledBoard):
         self.door = Door((6, 2))
         self.player = Player((8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
-        self.toolbar = Toolbar()
-        self._window.add_container(self.toolbar, "right")
+        self.toolbar = self._window.add_container(Toolbar(), "right")
         self.console = self._window.add_container(Console(), "bottom")
 
     def get_event(self, event, data):
         if event == "button" and data == "Fackel":
-            fireplace = self.player.sensing_token(distance=0, token=Fireplace)
+            fireplace = self.player.sensing_token(distance=0, token_type=Fireplace)
             if fireplace:
                 self.console.newline("Du zündest die Feuerstelle an.")
                 self.fireplace.burn()
@@ -43,10 +42,11 @@ class Player(Actor):
         self.add_image("rpgimages/knight.png")
         self.costume.is_rotatable = False
         self.inventory = []
+        self.is_blocking = False
 
     def move(self, distance=1):
         tokens = self.sensing_tokens()
-        doors = self.sensing_tokens(token=Door)
+        doors = self.sensing_tokens(token_type=Door)
         closed_doors = [door for door in doors if door.closed is True]
         blocking = [token for token in tokens if token.is_blocking is True]
         if not blocking and not closed_doors and self.sensing_on_board():
@@ -68,7 +68,7 @@ class Player(Actor):
             self.move()
 
     def act(self):
-        torch = self.sensing_token(distance=0, token=Torch)
+        torch = self.sensing_token(distance=0, token_type=Torch)
         if torch:
             message = "Du findest eine Fackel. Möchtest du sie aufheben?"
             choices = ["Ja", "Nein"]
@@ -79,7 +79,7 @@ class Player(Actor):
                 self.board.console.newline("Du hebst die Fackel auf.")
             self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
-        actors_in_front = self.sensing_tokens(distance = 1, token = Door)
+        actors_in_front = self.sensing_tokens(distance = 1, token_type = Door)
         if self.board.door in actors_in_front:
             if self.board.door.closed:
                 message = "Die Tür ist geschlossen... möchtest du sie öffnen"
@@ -138,6 +138,7 @@ class Door(Token):
         self.add_image("rpgimages/door_closed.png")
         self.add_costume("rpgimages/door_open.png")
         self.closed = True
+        self.is_blocking = True
 
     def open(self):
         if self.closed == True:

@@ -41,8 +41,7 @@ class MiniWorldWindow:
         self._containers_width = 0
         self._containers_height = 0
         self.repaint_areas = []
-        self.window_surface = pygame.display.set_mode((self.window_width, self.window_height), pygame.DOUBLEBUF)
-        self.window_surface.set_alpha(None)
+        self.window_surface = None
         self.log_events = "None"
         self.event_console = None
         self.action_bar = None
@@ -61,14 +60,17 @@ class MiniWorldWindow:
             pass
 
     def display_update(self):
+        self._recalculate_dimensions()
         if self.full_screen:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height),
                                                           pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
         else:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
+        self.window_surface.set_alpha(None)
 
     def show(self, image, full_screen : bool = False, log = False):
         self.full_screen = full_screen
+        self._recalculate_dimensions()
         self.display_update()
         if log is True:
             logging.basicConfig(level=logging.DEBUG)
@@ -109,6 +111,9 @@ class MiniWorldWindow:
         self.dirty = 1
 
     def add_container(self, container, dock, size=None) -> container_file.Container:
+        self._recalculate_dimensions()
+        for ct in self._containers:
+            print("container", container, self.window_height)
         if dock == "right" or dock == "top_left":
             self._containers_right.append(container)
         if dock == "bottom" or dock == "top_left":
@@ -151,35 +156,33 @@ class MiniWorldWindow:
             self.remove_container(container)
 
     def _recalculate_dimensions(self):
+        self.update_containers()
         containers_width = 0
         for container in self._containers:
             if container.window_docking_position == "top_left":
-                containers_width = container.width
+                containers_width = container.container_width
             elif container.window_docking_position == "right":
-                containers_width += container.width
+                containers_width += container.container_width
             elif container.window_docking_position == "main":
-                containers_width = container.width
+                containers_width = container.container_width
         containers_height = 0
         for container in self._containers:
             if container.window_docking_position == "top_left":
-                containers_height = container.height
+                containers_height = container.container_height
             elif container.window_docking_position == "bottom":
-                containers_height += container.height
+                containers_height += container.container_height
             elif container.window_docking_position == "main":
-                containers_height = container.height
-        self.dirty = 0
+                containers_height = container.container_height
+        self.dirty = 1
+        self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
         self._containers_width, self._containers_height = containers_width, containers_height
 
     @property
     def window_width(self):
-        if self.dirty:
-            self._recalculate_dimensions()
         return self._containers_width
 
     @property
     def window_height(self):
-        if self.dirty:
-            self._recalculate_dimensions()
         return self._containers_height
 
     def get_container_by_pixel(self, pixel_x: int, pixel_y: int):

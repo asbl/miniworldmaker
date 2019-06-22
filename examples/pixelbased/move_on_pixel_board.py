@@ -18,7 +18,8 @@ class Player(Actor):
         self.costume.orientation = - 90
 
     def act(self):
-        self.move()
+        if not self.sensing_borders(self.speed):
+            self.move()
 
     def get_event(self, event, data):
         if event == "key_pressed":
@@ -30,9 +31,6 @@ class Player(Actor):
                 self.point_in_direction("left")
             elif "D" in data:
                 self.point_in_direction("right")
-            if self.sensing_on_board():
-                self.move()
-            print(self.direction, self.direction_from_unit_circle())
 
 
 board = MyBoard()

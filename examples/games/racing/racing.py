@@ -51,9 +51,8 @@ class Player(Actor):
                 self.turn_right(10)
             if "W" in data:
                 self.move()
-                sensing_colors = self.sensing_colors(distance = 10)
-                intersections = [value for value in sensing_colors if value in self.board.colors]
-                if intersections or not self.sensing_on_board():
+                sensing_colors = self.sensing_colors(distance = 10, colors = self.board.colors)
+                if sensing_colors or not self.sensing_on_board():
                     self.move(-self.speed)
             if "S" in data:
                 self.move(-1)

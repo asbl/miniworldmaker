@@ -1,5 +1,6 @@
-from miniworldmaker import *
 import random
+
+from miniworldmaker import *
 
 
 class MyBoard(PixelBoard):
@@ -40,7 +41,7 @@ class Player(Actor):
         borders = self.sensing_borders()
         if borders:
             self.bounce_from_border(borders)
-        if self.sensing_token(token=Asteroid, exact= True):
+        if self.sensing_token(token_type=Asteroid, exact= True):
             explosion = Explosion( position=self.position.up(40).left(40))
             explosion.costume.is_animated = True
             self.board.play_sound("sounds/explosion.wav")
