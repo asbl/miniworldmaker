@@ -367,15 +367,34 @@ class Token(pygame.sprite.DirtySprite):
         rect.centery = value
         self.y = rect.topleft[1]
 
-    # Methoden
-    def act(self):
-        """Custom acting
+    def move(self, distance: int = 0):
+        """Moves actor *distance* steps.
 
-        This method is called every frame in the mainloop.
-        Overwrite this method in your subclass
+        Args:
+            distance: Number of steps to move.
+            If distance = 0, the actor speed will be used.
 
+        Returns:
+            The actor
+
+        Examples:
+
+            >>> class Robot(Actor):
+            >>>    def act(self):
+            >>>         if self.sensing_on_board():
+            >>>             self.move()
         """
-        pass
+        if distance == 0:
+            distance = self.speed
+        destination = self.get_destination(self.direction, distance)
+        self.last_position = self.position
+        self.position = destination
+        self.last_direction=self.direction
+        return self
+
+    def move_back(self):
+        self.position = self.last_position
+        self.direction = self.last_direction
 
     def _value_to_direction(self, value) -> int:
         if value == "top" or value == "up":
@@ -392,6 +411,35 @@ class Token(pygame.sprite.DirtySprite):
             value = 360 - self.direction
         value = value % 360
         return value
+
+    def move_in_direction(self, direction : Union[int, str]):
+        """Moves actor *distance* steps into a *direction*.
+
+        Args:
+            direction: Direction as angle
+
+        Returns:
+            The actor
+
+        """
+        direction = self._value_to_direction(direction)
+        self.direction = direction
+        self.costume.is_rotatable = False
+        self.move()
+        return self
+
+    def move_to(self, position : board_position.BoardPosition):
+        """Moves actor *distance* steps into a *direction*.
+
+        Args:
+            position: The position to which the actor should move
+
+        Returns:
+            The actor
+
+        """
+        self.position = position
+        return self
 
     def remove(self):
         """Removes this actor from board
@@ -412,8 +460,7 @@ class Token(pygame.sprite.DirtySprite):
         return d
 
     def start_physics(self):
-        if self.physics:
-            self.physics.start_physics()
+        self.physics.start_physics()
 
     def setup_physics(self):
         self.physics = ph.PhysicsProperty()
@@ -426,7 +473,7 @@ class Token(pygame.sprite.DirtySprite):
         self.physics.stable = True
         self.physics.friction = 10
 
-def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
+    def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
         """Tests if area or position is on board
 
         Args:
@@ -449,3 +496,49 @@ def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
             return False
         else:
             return True
+
+    def flip_x(self) -> int:
+        """Flips the actor by 180° degrees
+
+        """
+        if not self.costume.is_flipped:
+            self.costume.is_flipped = True
+        else:
+            self.costume.is_flipped = False
+        self.turn_left(180)
+        return self.direction
+
+    def get_destination(self, direction, distance) -> board_position.BoardPosition:
+        x = self.position[0] + round(math.sin(math.radians(direction)) * distance)
+        y = self.position[1] - round(math.cos(math.radians(direction)) * distance)
+        return board_position.BoardPosition(x, y)
+
+    def bounce_from_border(self, borders):
+        """ Bounces the actor from a border.
+
+        Args:
+            borders: A list of borders as strings e.g. ["left", "right"]
+
+        Returns: The actor
+
+        """
+        angle = self.direction
+        if ("top" in borders and ((self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction>=0))):
+            self.point_in_direction(0)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        elif ("bottom" in borders and ((self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180))):
+            self.point_in_direction(180)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        elif ("left" in borders and self.direction <= 0):
+            self.point_in_direction(-90)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        elif ("right" in borders and (self.direction >= 0)):
+            self.point_in_direction(90)
+            incidence = self.direction - angle
+            self.turn_left(180 - incidence)
+        else:
+            pass
+        return self

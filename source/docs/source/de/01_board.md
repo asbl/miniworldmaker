@@ -30,9 +30,19 @@ und erlaubt es dir, alle möglichen Spiele zu bauen, die auf Tiles basieren.
   welche die Größe des Spielfeldes und der einzelnen Kacheln festlegt.
   * Zeile 7: Deinem Board wird ein Hintergrund hinzugefügt. Achte darauf, dass die Datei an dem angegebenen Pfad liegt.
 
+Diese beiden Zeilen:
+```
+board = MyBoard()
+board.show()
+```
+
+Sind so ähnlich immer die letzten beiden Zeilen deines Programms: 
+Hier wird mit dem Befehl MyBoard() ein konkretes Spielfeld erzeugt und anschießend wird mit
+board.show() das Board angewiesen, sich zu zeigen.
+
 Je nach Hintergrundbild sieht das Ergebnis bei dir so aus:
 
-![tiles](_images/first.jpg)
+![tiles](../_images/first.jpg)
 
 ### Das Grid anzeigen
 
@@ -48,7 +58,7 @@ Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen la
 
 So sieht es dann aus:
 
-![tiles](_images/grid.jpg)
+![tiles](../_images/grid.jpg)
 
 ### PixelBoards und TiledBoards
 

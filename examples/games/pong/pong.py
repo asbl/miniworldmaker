@@ -3,12 +3,25 @@ from miniworldmaker import *
 
 class PongBoard(PixelBoard):
     def __init__(self):
-        super().__init__(600, 400)
+        super().__init__(800, 600)
         self.background.fill_color = (0, 0, 0)
         self.player1 = Paddle("left", (10, 130))
-        self.player2 = Paddle("right", (580, 330))
+        self.player2 = Paddle("right", (780, 130))
         self.ball = Ball((395,295))
         self.ball.direction = 100
+
+        self.physics_property.damping = 1
+        self.lines = [Line((0, 0), (0, 600), 5),
+                      Line((0, 0), (800, 0), 5),
+                      Line((800, 600), (800, 0), 5),
+                      Line((800, 600), (0, 600), 5),
+                      ]
+
+        for line in self.lines:
+            line.physics.friction = 0
+            line.physics.mass = 0
+            line.physics.elasticity = 1
+            line.start_physics()
 
     def get_event(self, event, data):
         if event == "key_pressed":
@@ -30,27 +43,23 @@ class Paddle(Actor):
         self.costume.is_rotatable = False
         self.speed = 5
         self.border = border
+        self.physics.gravity = False
+        self.physics.elasticity = 1
+        self.start_physics()
 
 
-class Ball(Actor):
+class Ball(Circle):
 
     def __init__(self, position):
-        super().__init__(position)
-        self.size = (10, 10)
+        super().__init__(position, 5, 0)
         self.costume.fill_color = (255, 255, 255)
-        self.speed = 10
-
-    def act(self):
-        self.move()
-        paddle = self.sensing_token(token_type= Paddle)
-        if paddle:
-            self.bounce_from_border(paddle.border)
-            hit_pos = 40 + paddle.y - self.y
-            self.turn_left(hit_pos)
-            self.speed = 10 + abs(hit_pos) / 4
-        borders = self.sensing_borders()
-        if borders:
-            self.bounce_from_border(borders)
+        self.speed = 5
+        self.physics.gravity = False
+        self.physics.mass = 1000
+        self.physics.elasticity = 1
+        self.start_physics()
+        self.physics.velocity_x = 500
+        self.physics.velocity_y = 200
 
 
 board = PongBoard()

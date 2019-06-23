@@ -72,12 +72,13 @@ class Plattform(Token):
         self.physics.gravity = False
         self.physics.can_move = False
         self.stable = True
+        self.physics.friction = 0.5
         self.start_physics()
         self.add_image("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
         self.costume.enable_action("textured")
-        self.physics.friction = 0.1
+
 
 
 
@@ -105,8 +106,7 @@ class Bird(Actor):
         self.physics.stable = False
         self.start_physics()
         self.physics.velocity_x = 1500
-        self.physics.velocity_y = - self.board.arrow.direction*50
-        print(self.physics.body.moment)
+        self.physics.velocity_y = - self.board.arrow.direction * 50
 
     def act(self):
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():

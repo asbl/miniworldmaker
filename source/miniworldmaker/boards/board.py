@@ -75,7 +75,7 @@ class Board(container.Container):
 
     def start_physics(self):
         for token in self.tokens:
-            token.start_physics()
+            token.setup_physics_model()
 
     def update_actors(self):
         import miniworldmaker.tokens.actor as act
@@ -609,17 +609,16 @@ class Board(container.Container):
                     token.costume.next_sprite()
                 # If there are physic objects, run a physics simulation step
                 if physicsengine.PhysicsProperty.count > 0:
-                    for token in self.tokens:
-                        if token.physics and token.physics.started:
-                            token.physics.update_physics_model()
+                    physics_tokens = [token for token in self.tokens if token.physics and token.physics.started]
+                    for token in physics_tokens:
+                        token.physics.update_physics_model()
                     steps = self.physics_accuracy
                     for x in range(steps):
                         if physicsengine is not None and \
                                 physicsengine.PhysicsProperty.space is not None:
                             physicsengine.PhysicsProperty.space.step(1 / (60 * steps))
-                    for token in self.tokens:
-                        if token.physics and token.physics.started:
-                            token.physics.update_token_from_physics_model()
+                    for token in physics_tokens:
+                        token.physics.update_token_from_physics_model()
         self.frame = self.frame + 1
         self.clock.tick(40)
 

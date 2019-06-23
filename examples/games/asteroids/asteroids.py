@@ -16,6 +16,7 @@ class MyBoard(PixelBoard):
         self.add_image("images/galaxy.jpg")
         # Preload explosion for faster image handling
         explosion = Explosion(position = None)
+        self.speed = 2
 
 
 class Player(Actor):

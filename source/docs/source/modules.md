@@ -9,4 +9,5 @@ API
    modules/tokens.md
    modules/appearances.md
    modules/processing.md
+   modules/physics.md
 ```

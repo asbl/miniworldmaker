@@ -37,7 +37,7 @@ class Bird(Actor):
     def on_key_pressed(self, keys):
         if "SPACE" in keys:
             self.physics.velocity_y = 200
-            if self.board.is_running == False:
+            if self.board.is_running is False:
                 self.board.is_running = True
 
 

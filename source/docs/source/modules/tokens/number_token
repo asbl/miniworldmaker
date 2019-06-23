@@ -1,6 +1,0 @@
-### NumberToken
-
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.number_token.NumberToken
-   :members:
-```

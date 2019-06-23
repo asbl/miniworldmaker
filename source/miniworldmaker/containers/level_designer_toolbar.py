@@ -1,5 +1,6 @@
 import os
 
+from miniworldmaker.boards import board_position
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
 
@@ -19,7 +20,20 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         import miniworldmaker.tokens.token as tk
         class_list = self.all_subclasses(tk.Token)
         for cls in class_list:
-            if cls.__name__ not in ["Token", "Actor", "TextToken", "NumberToken"]:
+            if cls.__name__ not in ["Token",
+                                    "Actor",
+                                    "TextToken",
+                                    "NumberToken",
+                                    "Circle",
+                                    "Line",
+                                    "Ellipse",
+                                    "Polygon",
+                                    "Rectangle",
+                                    "Shape",
+                                    "TiledBoardActor",
+                                    "PixelBoardActor",
+                                    "Point",
+                                    ]:
                 self.add_widget(TokenButton(cls, board, self))
         db_file = "data.db"
         self.add_widget(SaveButton(board = self.board, text = "Save", filename=db_file))
@@ -60,7 +74,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             elif "mouse_motion" in event:
                 if pygame.mouse.get_pressed()[0] == 1:
                     if self.board.is_in_container(data[0], data[1]):
-                        token = self.board.get_token_in_area(data)
+                        rect = board_position.BoardPosition(data[0],data[1]).to_rect()
+                        token = self.board.get_tokens_in_area(rect, singleitem=True)
                         if token.__class__ != self.selected_token_type:
                             import miniworldmaker.boards.board_position as bp
                             token = self.selected_token_type(position=bp.BoardPosition.from_pixel(data))

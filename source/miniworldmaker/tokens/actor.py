@@ -31,8 +31,6 @@ class Actor(tkn.Token):
     def __init__(self, position = None):
 
         super().__init__(position)
-        self.is_static = False
-        self.costume.is_rotatable = True
         self._orientation = 0
         self.registered_event_handlers["mouse_left"] = self.on_mouse_left
         self.registered_event_handlers["mouse_right"] = self.on_mouse_left
@@ -52,7 +50,6 @@ class Actor(tkn.Token):
         elif issubclass(self.board.__class__, tb.TiledBoard):
             cls = self.__class__
             self.__class__ = cls.__class__(cls.__name__ , (cls, TiledBoardActor), {})
-
 
     def on_key_pressed(self, keys):
         pass
@@ -75,130 +72,26 @@ class Actor(tkn.Token):
     def on_setup(self):
         pass
 
-    def move_in_direction(self, direction : Union[int, str]):
-        """Moves actor *distance* steps into a *direction*.
+    # Methoden
+    def act(self):
+        """Custom acting
 
-        Args:
-            direction: Direction as angle
-
-        Returns:
-            The actor
+        This method is called every frame in the mainloop.
+        Overwrite this method in your subclass
 
         """
-        direction = self._value_to_direction(direction)
-        self.direction = direction
-        self.costume.is_rotatable = False
-        self.move()
-        return self
+        pass
 
-    def move_to(self, position : board_position.BoardPosition):
-        """Moves actor *distance* steps into a *direction*.
-
-        Args:
-            position: The position to which the actor should move
-
-        Returns:
-            The actor
-
-        """
-        self.position = position
-        return self
-
-    def move(self, distance: int = 0):
-        """Moves actor *distance* steps.
-
-        Args:
-            distance: Number of steps to move.
-            If distance = 0, the actor speed will be used.
-
-        Returns:
-            The actor
-
-        Examples:
-
-            >>> class Robot(Actor):
-            >>>    def act(self):
-            >>>         if self.sensing_on_board():
-            >>>             self.move()
-        """
-        if distance == 0:
-            distance = self.speed
-        destination = self.get_destination(self.direction, distance)
-        self.last_position = self.position
-        self.position = destination
-        self.last_direction=self.direction
-        return self
-
-    def move_back(self):
-        self.position = self.last_position
-        self.direction = self.last_direction
-
-    def get_destination(self, direction, distance) -> bp.BoardPosition:
-        x = self.position[0] + round(math.sin(math.radians(direction)) * distance)
-        y = self.position[1] - round(math.cos(math.radians(direction)) * distance)
-        return board_position.BoardPosition(x, y)
-
-    def look(self, distance: int = 1, direction: int = -9999, style="rect") -> Union[list, pygame.Surface]:
-        """Looks *distance* steps into a *direction*.
+    def look(self, distance: int = 1) -> Union[bp.BoardPosition, list]:
+        """Looks *distance* steps into current direction
 
         Args:
             distance: Number of steps to look
-            direction: The direction to look
 
         Returns:
             A destination Surface
         """
-        if direction == -9999:
-            direction = self.direction
-        if style == "rect":
-            return self.get_destination(direction, distance)
-        elif style == "line":
-            return self.get_line(direction, distance)
-
-    def get_line(self, direction, distance):
-        line = []
-        i = 0
-        while i < distance:
-            position = self.rect.center
-            x = position[0] + round(math.sin(math.radians(direction)) * i)
-            y = position[1] - round(math.cos(math.radians(direction)) * i)
-            pos = board_position.BoardPosition(x, y)
-            if not self.rect.collidepoint(pos[0], pos[1]):
-                line.append(pos)
-            else:
-                distance += 1
-            i += 1
-        return line
-
-    def bounce_from_border(self, borders):
-        """ Bounces the actor from a border.
-
-        Args:
-            borders: A list of borders as strings e.g. ["left", "right"]
-
-        Returns: The actor
-
-        """
-        angle = self.direction
-        if ("top" in borders and ((self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction>=0))):
-            self.point_in_direction(0)
-            incidence = self.direction - angle
-            self.turn_left(180 - incidence)
-        elif ("bottom" in borders and ((self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180))):
-            self.point_in_direction(180)
-            incidence = self.direction - angle
-            self.turn_left(180 - incidence)
-        elif ("left" in borders and self.direction <= 0):
-            self.point_in_direction(-90)
-            incidence = self.direction - angle
-            self.turn_left(180 - incidence)
-        elif ("right" in borders and (self.direction >= 0)):
-            self.point_in_direction(90)
-            incidence = self.direction - angle
-            self.turn_left(180 - incidence)
-        else:
-            pass
-        return self
+        pass
 
     def bounce_from_token(self, token):
         """experimental: Bounces actor from another token
@@ -277,34 +170,14 @@ class Actor(tkn.Token):
             All colors the actor is sensing as set
 
         """
-        if distance is None:
-            distance = self.speed
-        direction = self.direction
-        line = self.look(distance=distance, direction = direction, style = "line")
-        colorlist = self.board.get_colors_at_line(line)
-        if type(colors) == tuple:
-            colors = [colors]
-        if not colors:
-            return colorlist
-        intersections = [value for value in colorlist if value in colors]
-        return intersections
-
-    def flip_x(self) -> int:
-        """Flips the actor by 180° degrees
-
-        """
-        if not self.costume.is_flipped:
-            self.costume.is_flipped = True
-        else:
-            self.costume.is_flipped = False
-        self.turn_left(180)
-        return self.direction
+        pass
 
     def __str__(self):
         str = super().__str__()
         if self.board:
             str = str + " with Direction: {0}".format(self.direction)
         return str
+
 
 class PixelBoardActor(Actor):
 
@@ -386,6 +259,46 @@ class PixelBoardActor(Actor):
                 return None
         return None
 
+    def look(self, distance: int = 1) -> Union[bp.BoardPosition, list]:
+        direction = self.direction
+        return self.get_line(direction, distance)
+
+    def get_line(self, direction, distance):
+        line = []
+        i = 0
+        while i < distance:
+            position = self.rect.center
+            x = position[0] + round(math.sin(math.radians(direction)) * i)
+            y = position[1] - round(math.cos(math.radians(direction)) * i)
+            pos = board_position.BoardPosition(x, y)
+            if not self.rect.collidepoint(pos[0], pos[1]):
+                line.append(pos)
+            else:
+                distance += 1
+            i += 1
+        return line
+
+    def sensing_colors(self, distance:Union[int, None] = None, colors: Union[tuple, list]=()) -> list:
+        """ Gets all colors the actor is sensing
+
+        Args:
+            distance: Number of steps to look for color
+
+        Returns:
+            All colors the actor is sensing as set
+
+        """
+        if distance is None:
+            distance = self.speed
+        line = self.look(distance=distance)
+        colorlist = self.board.get_colors_at_line(line)
+        # if type is tupel, transform into list
+        if type(colors) == tuple:
+            colors = [colors]
+        if not colors:
+            return colorlist
+        intersections = [value for value in colorlist if value in colors]
+        return intersections
 
 class TiledBoardActor(Actor):
 

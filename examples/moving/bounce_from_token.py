@@ -1,5 +1,6 @@
-from miniworldmaker import *
 import random
+
+from miniworldmaker import *
 
 
 class MyBoard(PixelBoard):
@@ -19,7 +20,7 @@ class SmallBall(Actor):
         self.speed = 4
 
     def act(self):
-        obstacle = self.sensing_token(token = Obstacle, exact=True)
+        obstacle = self.sensing_token(token_type = Obstacle, exact=True)
         if obstacle:
             self.bounce_from_token(obstacle)
         borders = self.sensing_borders()

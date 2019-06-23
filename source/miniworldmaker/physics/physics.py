@@ -56,15 +56,32 @@ class PhysicsProperty:
         self.friction = 0.2
         self.dirty = 1
         self.started = False
+        self.model_setup_complete = False
         self.size = (1, 1) # scale factor for physics box model
 
     def start_physics(self):
         """
-        Starts the physics simulation for one object.
+        Starts the physcis-simulation for this object. If you want to use Physics-Sumulation with your object,
+        you have to use this method.
 
-        The Attributes for the object should be set before calling the start_physics-method.
+        WARNING: This method should be called AFTER all changes of attributes but BEFORE you add an impulse to the object
+
+        Examples:
+            >>> # These attributes are changed BEFORE start_physics()
+            >>> self.physics.size = 0.7, 0.7
+            >>> self.physics.shape_type = "circle"
+            >>> self.physics.stable = False
+            >>> # The physics simulation is started
+            >>> self.start_physics()
+            >>> # The impulse is applied to the object AFTER starting the physics simulation
+            >>> self.physics.velocity_x = 1500
+            >>> self.physics.velocity_y = - self.board.arrow.direction * 50
         """
+        self.started = True
+        PhysicsProperty.count += 1
+        self.setup_physics_model()
 
+    def setup_physics_model(self):
         if self.dirty and self.token.position: # if token is on board
             # mass
             mass = self.mass
@@ -85,7 +102,6 @@ class PhysicsProperty:
 
             # Sets the moment
             # if stable: pymunk.inf: Object won't be rotated by an impuls
-            print(self.token, self.stable)
             if self.stable:
                 moment = pymunk.inf
             elif self.shape_type == "circle":
@@ -111,6 +127,9 @@ class PhysicsProperty:
 
             # create body
             self.body = pymunk_engine.Body(mass=mass, moment=moment, body_type=body_type)
+
+            if not self.gravity:
+                self.body.velocity_func = lambda body, gravity, damping, dt: None
 
             # Sets the shape-type
             if self.shape_type.lower() == "rect":
@@ -142,10 +161,7 @@ class PhysicsProperty:
             shape.friction = self.friction
             shape.elasticity = self.elasticity
             self.dirty = 0
-        else:
-            self.debug = True
-        self.started = True
-        PhysicsProperty.count += 1
+            self.model_setup_complete = True
 
     def update_physics_model(self):
         """
@@ -159,7 +175,7 @@ class PhysicsProperty:
             PhysicsProperty.space.remove(self.body.shapes)
             PhysicsProperty.space.remove(self.body)
             # Set new properties and reset to space
-            self.start_physics()
+            self.setup_physics_model()
         if not self.body.body_type == pymunk_engine.Body.STATIC:
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
                                                                 self.token.board.image)

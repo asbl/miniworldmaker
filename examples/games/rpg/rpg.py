@@ -144,6 +144,7 @@ class Door(Token):
         if self.closed == True:
             self.switch_costume()
             self.board.play_sound("rpgsounds/olddoor.wav")
+            self.is_blocking = False
             self.closed = False
 
 
