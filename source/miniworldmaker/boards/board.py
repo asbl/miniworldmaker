@@ -32,12 +32,12 @@ class Board(container.Container):
         self.active_actor = None
         self.register_events = {"all"}
         self.is_running = True
-        self.default_actor_speed = 1 #: default speed for actors
+        self.default_actor_speed = 3 #: default speed for actors
         self.sound_effects = {}
         self.physics_accuracy = 1
         self.physics_property = physicsengine.PhysicsProperty
         # private
-        self._world_speed = 10  # property speed
+        self._world_speed = 1  # property speed
         self._tokens = pygame.sprite.LayeredDirty()
         self.actors = None
         self._key_pressed = False
@@ -226,6 +226,11 @@ class Board(container.Container):
 
     @property
     def speed(self) -> int:
+        """
+        The world speed.
+        A value of 1 means the game will run at full speed.
+        A value of x means that the act-Methods of all actors will run every x frames
+        """
         return self._world_speed
 
     @speed.setter
@@ -599,6 +604,10 @@ class Board(container.Container):
             if self._tick == self.speed:
                 self._tick = 0
                 self._act_all()
+                # run animations
+                for token in self.tokens:
+                    token.costume.next_sprite()
+                # If there are physic objects, run a physics simulation step
                 if physicsengine.PhysicsProperty.count > 0:
                     for token in self.tokens:
                         if token.physics and token.physics.started:

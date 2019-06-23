@@ -16,7 +16,6 @@ class PixelBoard(bd.Board):
         return token
 
     def remove_from_board(self, token: tk.Token):
-        token_id = token.token_id
         super().remove_from_board(token)
 
     def borders(self, rect):

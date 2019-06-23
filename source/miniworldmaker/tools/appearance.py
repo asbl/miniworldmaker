@@ -12,7 +12,7 @@ class Appearance:
 
     def __init__(self):
         self.dirty = 0
-        #self.blit_images = []
+        self.blit_images = [] # Images which are blitted on the background
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
@@ -44,6 +44,7 @@ class Appearance:
         self.color = (255, 255, 255, 255) #: color for overlays
         self.dirty = 1
         self.surface_loaded = False
+        self.last_image = None
 
     def fill(self, color):
         try:
@@ -144,7 +145,6 @@ class Appearance:
         else:
             self.disable_action("scale")
 
-
     @property
     def text(self):
         """
@@ -196,17 +196,17 @@ class Appearance:
         if self.dirty == 1:
             if self.images_list and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index] # if there is a image list load image by index
-            else:
+            else: # no image files - Render raw surface
                 image = self.load_surface()
             for action in self.image_actions:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
                         if action in self.image_handlers.keys():
                             if self.parent.size != (0, 0):
-                                image = self.image_handlers[action](image, parent = self.parent, appearance = self)
+                                    image = self.image_handlers[action](image, parent = self.parent, appearance = self)
                     self.parent.dirty = 1
-            #for blit_image in self.blit_images:
-            #    image.blit(blit_image[0], blit_image[1] )
+            for blit_image in self.blit_images:
+               image.blit(blit_image[0], blit_image[1] )
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
@@ -228,12 +228,13 @@ class Appearance:
         Returns: Switches the image of the appearance
 
         """
-        if self._image_index < len(self.images_list) - 1:
-            self._image_index = self._image_index + 1
-        else:
-            self._image_index = 0
-        self.dirty = 1
-        self.parent.dirty = 1
+        if self.is_animated:
+            if self._image_index < len(self.images_list) - 1:
+                self._image_index = self._image_index + 1
+            else:
+                self._image_index = 0
+            self.dirty = 1
+            self.parent.dirty = 1
 
     @property
     def is_animated(self):
@@ -300,11 +301,24 @@ class Appearance:
         self.parent.dirty = 1
         self.dirty = 1
 
-    #def blit(self, path, position: tuple, size: tuple = (0,0) ):
-    #    _blit_image = ir.ImageRenderer.load_image(path=path, alpha=True)
-    #    if size != (0,0):
-    #        _blit_image = pygame.transform.scale(_blit_image, size)
-    #    self.blit_images.append((_blit_image, position, size))
+    def blit(self, path, position: tuple, size: tuple = (0,0) ):
+        """
+        Blits an image to the background
+
+        Args:
+            path: Path to the image
+            position: Top left position
+            size: Size of blitted image
+
+        Returns:
+
+        """
+
+    def blit(self, path, position: tuple, size: tuple = (0, 0)):
+        _blit_image = ir.ImageRenderer.load_image(path=path, alpha=True)
+        if size != (0,0):
+            _blit_image = pygame.transform.scale(_blit_image, size)
+        self.blit_images.append((_blit_image, position, size))
 
     def colorize(self, color):
         self.color = color

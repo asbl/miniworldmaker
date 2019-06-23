@@ -1,11 +1,13 @@
 from miniworldmaker import *
 
+
 class MyBoard(PixelBoard):
 
     def __init__(self):
         super().__init__(columns=280, rows=100)
         self.add_image("images/water.png")
         player1 = Robot(position=(0, 0))
+        self.speed = 92
 
 
 class Robot(Actor):
@@ -29,5 +31,4 @@ class Robot(Actor):
 
 
 board = MyBoard()
-board.speed = 100
 board.show()

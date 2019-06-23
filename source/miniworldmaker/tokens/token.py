@@ -377,12 +377,6 @@ class Token(pygame.sprite.DirtySprite):
         """
         pass
 
-    def update(self):
-        if self.costume.is_animated:
-            self.costume.update()
-        if self.physics:
-            self.physics.update_physics_nodel()
-
     def _value_to_direction(self, value) -> int:
         if value == "top" or value == "up":
             value = 0

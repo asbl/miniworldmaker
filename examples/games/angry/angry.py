@@ -12,7 +12,7 @@ class MyBoard(PixelBoard):
         self.arrow = Arrow(position=(160, 250))
         self.arrow.direction = -10
         self.plattform = Plattform(position=(600, 250))
-        self.physics_property.debug = True
+        #self.physics_property.debug = True
         Box(position=(610, 210))
         Box(position=(655, 210))
         Box(position=(700, 210))
@@ -35,6 +35,7 @@ class MyBoard(PixelBoard):
         #print(self.plattform .physics.shape_type)
         #print(self.plattform .physics.body.position)
         #print(self.plattform .physics.body.moment)
+
 
 class Arrow(Actor):
     def __init__(self, position):
@@ -76,7 +77,7 @@ class Plattform(Token):
         self.size = (256, 64)
         self.costume.is_textured = True
         self.costume.enable_action("textured")
-
+        self.physics.friction = 0.1
 
 
 
@@ -86,6 +87,7 @@ class Box(Actor):
         super().__init__(position)
         self.add_image("images/box_blue.png")
         self.size = (40, 40)
+        self.physics.friction = 0.1
         self.start_physics()
 
 
@@ -97,11 +99,14 @@ class Bird(Actor):
         self.costume.orientation = 180
         self.flip_x()
         self.size = (80, 80)
-        self.mass = 1
-        self.start_physics()
-        self.physics.velocity_x = 500
+        self.mass = 20
         self.physics.size = 0.7, 0.7
+        self.physics.shape_type = "circle"
+        self.physics.stable = False
+        self.start_physics()
+        self.physics.velocity_x = 1500
         self.physics.velocity_y = - self.board.arrow.direction*50
+        print(self.physics.body.moment)
 
     def act(self):
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():

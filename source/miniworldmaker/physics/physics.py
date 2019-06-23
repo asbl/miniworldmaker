@@ -19,8 +19,12 @@ class PhysicsProperty:
         friction (int): Friction is the force resisting the relative motion of solid surfaces,
             fluid layers, and material elements sliding against each other.
             Friction has a value > 0
+        elasticity (int): continuum mechanics of bodies that deform reversibly under stress
         mass: The mass of an object. Default: 1
-        stable: Does the object has an moment and can be rotated by an impulse
+        stable: If True, the Object has no moment and can't be rotated by an impulse
+        can_move: Defines if the object can move
+        gravity: Defines if the object affected by gravity
+        shape_type: line, circle or rect
 
 
     """
@@ -43,18 +47,23 @@ class PhysicsProperty:
         self.gravity = 0
         self.mass = 0
         self.can_move = False
-        self._stable = False
+        self.stable = False
         self._velocity_x = 0
         self._velocity_y = 0
         self.shape_type = "rect"
         self.body = None
         self.elasticity = 0
-        self.friction = 1
+        self.friction = 0.2
         self.dirty = 1
         self.started = False
         self.size = (1, 1) # scale factor for physics box model
 
     def start_physics(self):
+        """
+        Starts the physics simulation for one object.
+
+        The Attributes for the object should be set before calling the start_physics-method.
+        """
 
         if self.dirty and self.token.position: # if token is on board
             # mass
@@ -76,7 +85,7 @@ class PhysicsProperty:
 
             # Sets the moment
             # if stable: pymunk.inf: Object won't be rotated by an impuls
-
+            print(self.token, self.stable)
             if self.stable:
                 moment = pymunk.inf
             elif self.shape_type == "circle":
@@ -122,10 +131,6 @@ class PhysicsProperty:
                                                                       self.token.board.image),
                                        self.token.thickness,
                                        )
-            # Sets position, friction, elasticity
-
-            self.body.friction = self.friction
-            shape.elasticity = self.elasticity
             # Adds object to space
             PhysicsProperty.space.add(self.body, shape)
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
@@ -134,8 +139,8 @@ class PhysicsProperty:
             self.body.angle = (math.radians(round(self.token.direction, 0)))
             if self.shape_type.lower() != "line":
                 PhysicsProperty.space.reindex_shapes_for_body(self.body)
-
-            #
+            shape.friction = self.friction
+            shape.elasticity = self.elasticity
             self.dirty = 0
         else:
             self.debug = True
@@ -143,6 +148,12 @@ class PhysicsProperty:
         PhysicsProperty.count += 1
 
     def update_physics_model(self):
+        """
+        Updates the physics model in every frame
+
+        Returns:
+
+        """
         if self.dirty:
             # Remove shape and body from space
             PhysicsProperty.space.remove(self.body.shapes)
@@ -153,14 +164,14 @@ class PhysicsProperty:
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
                                                                 self.token.board.image)
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
-            self.body.angle = (math.radians(round(self.token.direction_at_unit_circle, 0)))
+            self.body.angle = (math.radians(round(self.token.direction, 0)))
 
     def update_token_from_physics_model(self):
-        #b_x, b_y = self.body.velocity
-        #if -1 < b_x < 1:
-        #    self.velocity_x = 0
-        #if -1 < b_y < 1:
-        #    self.velocity_y = 0
+        """
+        Reloads physics model from pygame data
+        Returns:
+
+        """
         self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
         self.token.direction = int(math.degrees(self.body.angle))
         a_x, a_y = self.body.velocity
