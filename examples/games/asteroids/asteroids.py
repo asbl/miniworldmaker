@@ -67,7 +67,7 @@ class Laser(Actor):
 
     def act(self):
         self.move()
-        token = self.sensing_token(token = Asteroid, exact = True)
+        token = self.sensing_token(token_type = Asteroid, exact = True)
         if token:
             token.remove()
             explosion = Explosion(position=token.position.up(40).left(40))

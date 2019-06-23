@@ -11,8 +11,8 @@ class MyBoard(PixelBoard):
         self.background.add_image("images/backgroundColorGrass.png")
         self.arrow = Arrow(position=(160, 250))
         self.arrow.direction = -10
-        Plattform(position=(600, 250))
-
+        self.plattform = Plattform(position=(600, 250))
+        self.physics_property.debug = True
         Box(position=(610, 210))
         Box(position=(655, 210))
         Box(position=(700, 210))
@@ -30,6 +30,11 @@ class MyBoard(PixelBoard):
 
         Box(position=(700, 90))
 
+    def act(self):
+        pass
+        #print(self.plattform .physics.shape_type)
+        #print(self.plattform .physics.body.position)
+        #print(self.plattform .physics.body.moment)
 
 class Arrow(Actor):
     def __init__(self, position):
@@ -63,11 +68,16 @@ class Plattform(Token):
 
     def __init__(self, position):
         super().__init__(position)
-        self.start_physics(box_type = "rect", gravity = False, elasticity=0, friction = 1000000, mass=1, stable=True)
+        self.physics.gravity = False
+        self.physics.can_move = False
+        self.stable = True
+        self.start_physics()
         self.add_image("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
         self.costume.enable_action("textured")
+
+
 
 
 class Box(Actor):
@@ -76,7 +86,7 @@ class Box(Actor):
         super().__init__(position)
         self.add_image("images/box_blue.png")
         self.size = (40, 40)
-        self.start_physics(gravity=True, elasticity=0, friction=1 , stable=True , mass = 1, size=(1, 1))
+        self.start_physics()
 
 
 class Bird(Actor):
@@ -87,9 +97,10 @@ class Bird(Actor):
         self.costume.orientation = 180
         self.flip_x()
         self.size = (80, 80)
-        self.start_physics(box_type="rect", gravity = True, mass=2, size=(0.8, 0.8), stable=False, elasticity=0.1, friction=0.3)
-        #self.physics.impuls(8000, - self.board.arrow.direction*100)
-        self.physics.velocity_x = 2500
+        self.mass = 1
+        self.start_physics()
+        self.physics.velocity_x = 500
+        self.physics.size = 0.7, 0.7
         self.physics.velocity_y = - self.board.arrow.direction*50
 
     def act(self):

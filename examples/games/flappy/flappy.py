@@ -29,7 +29,7 @@ class Bird(Actor):
         borders = self.sensing_borders()
         if "bottom" in borders or "top" in borders:
             self.board.is_running = False
-        pipes = self.sensing_token(token_type = Pipe, exact= True)
+        pipes = self.sensing_token(token_type=Pipe, exact=True)
         if pipes:
             self.board.is_running = False
             self.board.reset()

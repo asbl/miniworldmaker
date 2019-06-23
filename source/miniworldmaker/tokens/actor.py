@@ -1,7 +1,6 @@
 import math
 from typing import Union
 
-import miniworldmaker.physics.physics as ph
 import miniworldmaker.tokens.token as tkn
 import pygame
 from miniworldmaker.boards import board_position
@@ -53,7 +52,6 @@ class Actor(tkn.Token):
         elif issubclass(self.board.__class__, tb.TiledBoard):
             cls = self.__class__
             self.__class__ = cls.__class__(cls.__name__ , (cls, TiledBoardActor), {})
-        print(self.__class__)
 
 
     def on_key_pressed(self, keys):
@@ -308,18 +306,6 @@ class Actor(tkn.Token):
             str = str + " with Direction: {0}".format(self.direction)
         return str
 
-    def start_physics(self, gravity=True, box_type="rect", can_move=True, mass=1, friction=0.5, elasticity=0.5, size=(1, 1), stable = False):
-        self.physics = ph.PhysicsProperty(token=self,
-                                          can_move=can_move,
-                                          gravity=gravity,
-                                          mass = mass,
-                                          friction = friction,
-                                          elasticity=elasticity,
-                                          size = size,
-                                          box_type = box_type,
-                                          stable = stable)
-
-
 class PixelBoardActor(Actor):
 
     def get_target_rect(self, distance):
@@ -394,7 +380,7 @@ class PixelBoardActor(Actor):
         destination_rect = self.get_target_rect(distance)
         token = self.board.get_tokens_in_area(destination_rect, singleitem= True, exclude= self, token_type = token_type)
         if exact and token:
-            if not pygame.sprite.collide_mask(self, token):
+            if pygame.sprite.collide_mask(self, token):
                 return token
             else:
                 return None
@@ -402,6 +388,7 @@ class PixelBoardActor(Actor):
 
 
 class TiledBoardActor(Actor):
+
     def sensing_on_board(self = None, distance = 0) -> bool:
         """Checks if actor is sensing a position inside the board
 
@@ -429,7 +416,7 @@ class TiledBoardActor(Actor):
 
         """
         target = self.get_destination(self.direction, distance)
-        return self.board.get_tokens_at_position(target, token_type)
+        return self.board.get_tokens_at_position(target, token_type, exclude = self)
 
     def sensing_token(self, distance: int = 1, token_type=None, exact = False) -> list:
         """Checks if Actor is sensing Tokens in front
@@ -444,4 +431,4 @@ class TiledBoardActor(Actor):
 
         """
         target = self.get_destination(self.direction, distance)
-        return self.board.get_tokens_at_position(target, token_type, singleitem = True)
+        return self.board.get_tokens_at_position(target, token_type, exclude = self, singleitem = True)

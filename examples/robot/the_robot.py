@@ -29,7 +29,7 @@ class Robot(Actor):
         self.costume.orientation = - 90
 
     def act(self):
-        actors = self.sensing_tokens(token=Wall)
+        actors = self.sensing_tokens(token_type=Wall)
         if not actors:
             self.move()
         else:

@@ -1,5 +1,4 @@
 from miniworldmaker import *
-import random
 
 
 class PongBoard(PixelBoard):
@@ -43,7 +42,7 @@ class Ball(Actor):
 
     def act(self):
         self.move()
-        paddle = self.sensing_token(token = Paddle)
+        paddle = self.sensing_token(token_type= Paddle)
         if paddle:
             self.bounce_from_border(paddle.border)
             hit_pos = 40 + paddle.y - self.y

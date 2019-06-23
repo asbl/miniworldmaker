@@ -38,13 +38,17 @@ class TiledBoard(Board):
         self._update_token_positions()
         token_list = []
         if self.is_position_on_board(self.rect):
+            #print(position.x, position.y, self._dynamic_actors_dict, self._static_tokens_dict)
             if self._dynamic_actors_dict[position.x, position.y]:
                 token_list.extend(self._dynamic_actors_dict[(position.x, position.y)])
             if self._static_tokens_dict[position.x, position.y]:
                 token_list.extend(self._static_tokens_dict[(position.x, position.y)])
+        # Remove excluded
+        if exclude in token_list:
+            token_list.remove(exclude)
         # Filter by token type
         if token_type is not None:
-            token_list = [token for token in token_list if type(token) == token_type]
+            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
         if singleitem:
             if token_list:
                 return token_list[0]
@@ -66,7 +70,8 @@ class TiledBoard(Board):
     def add_to_board(self, token: Token, position: Union[tuple, board_position.BoardPosition]) -> Token:
         if type(position) == board_position.BoardPosition:
             position = position.to_tuple()
-        if token.is_static:
+        from miniworldmaker.tokens import actor
+        if not issubclass(token.__class__, actor.Actor):
             self._static_tokens_dict[position].append(token)
         else:
             self._dynamic_actors.append(token)

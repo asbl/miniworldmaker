@@ -9,7 +9,6 @@ class Shape(tk.Token):
         self.costume.fill_color = (200, 0, 0, 0)
         self.color = color
 
-
     @staticmethod
     def bounding_box(points):
         x_coordinates, y_coordinates = zip(*points)
@@ -35,9 +34,11 @@ class Point(Shape):
         try:
             rect = pygame.Rect(0, 0, thickness, thickness)
             rect.center = (position[0], position[1])
-            super().__init__(rect.topleft, color)
             self.size = (thickness, thickness)
-            pygame.draw.circle(self.costume.image, self.color, self.costume.image.get_rect().center, thickness, thickness)
+            self.thickness = thickness
+            super().__init__(rect.topleft, color)
+            self.costume.load_surface()
+            pygame.draw.circle(self.costume.raw_surface, self.color, self.costume.image.get_rect().center, thickness, thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
@@ -68,9 +69,11 @@ class Circle(Shape):
         try:
             rect = pygame.Rect(0, 0, radius, radius)
             rect.center = (position[0], position[1])
+            self.thickness = thickness
             super().__init__(rect.topleft, color)
             self.size = (radius*2, radius*2)
-            pygame.draw.circle(self.costume.image, self.color, self.costume.image.get_rect().center, radius, thickness)
+            self.costume.load_surface()
+            pygame.draw.circle(self.costume.raw_surface, self.color, self.costume.image.get_rect().center, radius, thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
@@ -85,6 +88,12 @@ class Circle(Shape):
 
         """
         return self.width / 2
+
+    def setup_physics(self):
+        super().setup_physics()
+        self.physics.shape_type = "circle"
+        self.physics.can_move = True
+        self.physics.stable = False
 
 
 class Ellipse(Shape):
@@ -116,7 +125,9 @@ class Ellipse(Shape):
             rect.center = (position[0], position[1])
             super().__init__(rect.topleft, color)
             self.size = (width, height)
-            pygame.draw.ellipse(self.costume.image, self.color, self.costume.image.get_rect(), thickness)
+            self.thickness= thickness
+            self.costume.load_surface()
+            pygame.draw.ellipse(self.costume.raw_surface, self.color, self.costume.image.get_rect(), thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
@@ -167,7 +178,6 @@ class Line(Shape):
     def __init__(self, start_position, end_position, thickness=1, color: tuple = (255, 255, 255, 255), ):
         try:
             box = self.bounding_box([start_position,end_position])
-            super().__init__((box[0], box[1]), color)
             # mod_start
             x = start_position[0] - box[0]
             y = start_position[1] - box[1]
@@ -176,11 +186,70 @@ class Line(Shape):
             x = end_position[0] - box[0]
             y = end_position[1] - box[1]
             mod_end = (x, y)
+            self.start_position = start_position
+            self.end_position = end_position
+            self.local_start_position = mod_start
+            self.local_end_position = mod_end
+            self.thickness = thickness
+            super().__init__((box[0], box[1]), color)
             self.size = (abs(box[0]-box[2])+4, abs(box[1]-box[3])+4)
-            pygame.draw.line(self.costume.image, color, mod_start, mod_end, thickness)
+            self.costume.load_surface()
+            pygame.draw.line(self.costume.raw_surface, color, mod_start, mod_end, thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
+
+    def setup_physics(self):
+        super().setup_physics()
+        self.physics.shape_type = "line"
+        self.physics.gravity = False
+        self.physics.can_move = False
+
+
+class Rectangle(Shape):
+    """
+    A Rect-Shape.
+
+    Args:
+        topleft: Topleft Position of Rect
+        height: The height of the rect
+        width: The width of the rect
+        thickness: The thickness of the bounding line
+        color: The color as 4-tuple (r, g, b, alpha)
+
+    Examples:
+        Example Creation of a polygon
+
+        >>> Rectangle((200, 100), 10, 10, 1, color=(255,0,0,255))
+        Creates a red rect with the topleft position (200, 100), the height 10 and the width 10
+    """
+
+    def __init__(self, topleft, width, height, thickness=1, color: tuple = (255, 255, 255, 255)):
+        try:
+            plist = []
+            mod_pointlist = []
+            plist.append(topleft)
+            plist.append((topleft[0] + width, topleft[1]))
+            plist.append((topleft[0] + width, topleft[1] + height))
+            plist.append((topleft[0], topleft[1] + height))
+            box = self.bounding_box(plist)
+            for point in plist:
+                x = point[0]-box[0]
+                y = point[1]-box[1]
+                mod_pointlist.append((x, y))
+            self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
+            super().__init__((box[0], box[1]), color)
+            self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
+            self.costume.load_surface()
+            pygame.draw.polygon(self.costume.raw_surface, color, mod_pointlist, thickness)
+        except TypeError as e:
+            print("WARNING: Type Error")
+            raise e
+
+    def setup_physics(self):
+        super().setup_physics()
+        self.physics.shape_type = "rect"
+        self.stable = False
 
 
 class Polygon(Shape):
@@ -195,12 +264,12 @@ class Polygon(Shape):
     Examples:
         Example Creation of a polygon
 
-        >>> Line([(200, 100), (400,100), (0, 0)], 1, color=(255,0,0,255))
+        >>> Polygon([(200, 100), (400,100), (0, 0)], 1, color=(255,0,0,255))
         Creates a red polygon with the vertices (200, 100) , (400, 100) and (0, 0)
 
         Example Creation of a filled polygon
 
-        >>> Line([(200, 100), (400,100), (0, 0)], 0, color=(255,0,0,255))
+        >>> Polygon([(200, 100), (400,100), (0, 0)], 0, color=(255,0,0,255))
         Creates a red polygon with the vertices (200, 100) , (400, 100) and (0, 0)
     """
 
@@ -214,9 +283,9 @@ class Polygon(Shape):
                 x = point[0]-box[0]
                 y = point[1]-box[1]
                 mod_pointlist.append((x, y))
-            pygame.draw.polygon(self.costume.image, color, mod_pointlist, thickness)
+                self.costume.load_surface()
+            pygame.draw.polygon(self.costume.raw_surface, color, mod_pointlist, thickness)
         except TypeError:
-            print("Shape not created because mouse position not in screen")
             self.remove()
 
 

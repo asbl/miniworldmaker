@@ -19,6 +19,7 @@ class Appearance:
         self._image_index = 0  # current_image index (for animations)
         self.image_paths = []  # list with all images
         # properties
+        self.raw_surface = pygame.Surface((1, 1)) # size set in image()-method
         self._image = pygame.Surface((1,1)) # size set in image()-method
         self.call_image_actions = {}
         self.image_actions = []
@@ -42,6 +43,7 @@ class Appearance:
         self.text_position = (0, 0) #: Position of text relative to the top-left pixel of token
         self.font_path = None #: Path to font-file
         self.color = (255, 255, 255, 255) #: color for overlays
+        self.dirty = 1
 
     def fill(self, color):
         try:
@@ -211,15 +213,15 @@ class Appearance:
 
     def load_surface(self) -> pygame.Surface:
         if self.surface_loaded:
-            return self._image
+            return self.raw_surface
         else:
             image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
             image.fill(self.fill_color)
             image.set_alpha(255)
             self.surface_loaded = True
             self.dirty = 1
-            self._image = image
-        return image
+            self.raw_surface = image
+        return self.raw_surface
 
     def next_sprite(self):
         """

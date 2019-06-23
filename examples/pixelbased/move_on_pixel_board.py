@@ -9,7 +9,6 @@ class MyBoard(PixelBoard):
         self.add_image("images/soccer_green.jpg")
 
 
-
 class Player(Actor):
 
     def __init__(self, position):
@@ -20,6 +19,9 @@ class Player(Actor):
     def act(self):
         if not self.sensing_borders(self.speed):
             self.move()
+            print("scratch style", self.direction)
+            print("unit circle", self.direction_at_unit_circle,Token.dir_to_unit_circle(self.direction))
+            print("scratch style", Token.unit_circle_to_dir(Token.dir_to_unit_circle(self.direction)))
 
     def get_event(self, event, data):
         if event == "key_pressed":
@@ -31,7 +33,6 @@ class Player(Actor):
                 self.point_in_direction("left")
             elif "D" in data:
                 self.point_in_direction("right")
-
 
 board = MyBoard()
 board.show()

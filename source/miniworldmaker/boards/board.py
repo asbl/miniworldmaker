@@ -34,6 +34,8 @@ class Board(container.Container):
         self.is_running = True
         self.default_actor_speed = 1 #: default speed for actors
         self.sound_effects = {}
+        self.physics_accuracy = 1
+        self.physics_property = physicsengine.PhysicsProperty
         # private
         self._world_speed = 10  # property speed
         self._tokens = pygame.sprite.LayeredDirty()
@@ -69,6 +71,11 @@ class Board(container.Container):
         self.registered_event_handlers["key_up"] = self.on_key_up
         self.registered_event_handlers["board_created"] = self.on_setup
         self.window.send_event_to_containers("board_created", None)
+
+
+    def start_physics(self):
+        for token in self.tokens:
+            token.start_physics()
 
     def update_actors(self):
         import miniworldmaker.tokens.actor as act
@@ -510,7 +517,7 @@ class Board(container.Container):
         if exclude in token_list:
             token_list.remove(exclude)
         if token_type is not None:
-            tokens = [token for token in token_list if type(token) == token_type]
+            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
         for token in token_list:
             if token.rect.colliderect(area):
                 tokens.append(token)
@@ -594,15 +601,15 @@ class Board(container.Container):
                 self._act_all()
                 if physicsengine.PhysicsProperty.count > 0:
                     for token in self.tokens:
-                        if token.physics:
+                        if token.physics and token.physics.started:
                             token.physics.update_physics_model()
-                    steps = 1
+                    steps = self.physics_accuracy
                     for x in range(steps):
                         if physicsengine is not None and \
                                 physicsengine.PhysicsProperty.space is not None:
-                            physicsengine.PhysicsProperty.space.step(1 / 60)
+                            physicsengine.PhysicsProperty.space.step(1 / (60 * steps))
                     for token in self.tokens:
-                        if token.physics:
+                        if token.physics and token.physics.started:
                             token.physics.update_token_from_physics_model()
         self.frame = self.frame + 1
         self.clock.tick(40)

@@ -24,10 +24,9 @@ class Robot(Actor):
         super().__init__(position)
         self.costume.orientation = - 90
 
-
     def act(self):
         self.move()
-        other = self.sensing_token(distance=0, token=Robot)
+        other = self.sensing_token(distance=0, token_type=Robot)
         if other:
             explosion = Explosion()
             self.board.add_to_board(explosion, position=self.position)

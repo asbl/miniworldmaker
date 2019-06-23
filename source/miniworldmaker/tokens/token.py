@@ -45,6 +45,7 @@ class Token(pygame.sprite.DirtySprite):
         self.costume.orientation = 0
         self.init = 1
         self.speed = 0
+        self.setup_physics()
         if position is not None:
             self.board = miniworldwindow.MiniWorldWindow.board
             self.board.add_to_board(self, position)
@@ -88,7 +89,7 @@ class Token(pygame.sprite.DirtySprite):
     @dirty.setter
     def dirty(self, value):
         self._dirty = value
-        if self.board:
+        if hasattr(self, "board") and self.board:
             self.board.dirty = 1
 
     @property
@@ -158,11 +159,19 @@ class Token(pygame.sprite.DirtySprite):
 
     @property
     def direction_at_unit_circle(self):
-        return - (self._direction + 270) % 360
+        return  Token.dir_to_unit_circle(self._direction)
 
     @direction_at_unit_circle.setter
     def direction_at_unit_circle(self, value):
-        self.direction = - (value + 270) % 360
+        self.direction = Token.unit_circle_to_dir(value)
+
+    @staticmethod
+    def dir_to_unit_circle(direction):
+        return -(direction + 90) % 360 - 180
+
+    @staticmethod
+    def unit_circle_to_dir(direction):
+            return - (direction + 270) % 360
 
     def turn_left(self, degrees: int = 90) -> int:
         """Turns actor by *degrees* degrees left
@@ -280,8 +289,9 @@ class Token(pygame.sprite.DirtySprite):
     def size(self, value :tuple):
         self._size = value
         self.dirty = 1
-        self.costume.call_action("scale")
-        if self.physics:
+        if hasattr(self, "costume"):
+            self.costume.call_action("scale")
+        if hasattr(self, "physics") and self.physics:
             self.physics.dirty = 1
 
     @property
@@ -407,21 +417,22 @@ class Token(pygame.sprite.DirtySprite):
             d[cls.__name__] = cls
         return d
 
-    def start_physics(self, box_type = "rect", gravity=False, can_move=False, mass=1, friction=0.5, elasticity=0.5, size=(1, 1), stable=False):
-        self.physics = ph.PhysicsProperty(token=self,
-                                          can_move=False,
-                                          gravity=gravity,
-                                          mass = mass,
-                                          friction = friction,
-                                          elasticity=elasticity,
-                                          size = size,
-                                          box_type = box_type,
-                                          stable= stable)
+    def start_physics(self):
+        if self.physics:
+            self.physics.start_physics()
 
-    def stop_physics(self):
-        self.physics = None
+    def setup_physics(self):
+        self.physics = ph.PhysicsProperty()
+        self.physics.token = self
+        self.physics.can_move = True
+        self.physics.shape_type = "rect"
+        self.physics.gravity = True
+        self.physics.mass = 1
+        self.physics.elasticity = 0
+        self.physics.stable = True
+        self.physics.friction = 10
 
-    def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
+def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
         """Tests if area or position is on board
 
         Args:

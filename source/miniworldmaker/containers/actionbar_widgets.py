@@ -1,6 +1,7 @@
 import logging
-import pygame
 import os
+
+import pygame
 
 
 class ActionBarWidget():
@@ -157,10 +158,7 @@ class ResetButton(ActionBarWidget):
             self.parent.window.send_event_to_containers(self.event, self._text)
             for token in self.board.tokens:
                 token.remove()
-            board = self.board.__class__()
-            board.is_running = False
-            board.window.send_event_to_containers("reset", board)
-            board.show()
+            self.board.reset()
 
 
 class InfoButton(ActionBarWidget):
