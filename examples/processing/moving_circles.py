@@ -9,11 +9,15 @@ class MyBoard(ProcessingBoard):
         self.fill((255, 255, 255, 255))
         self.lst = []
         for i in range(50):
-            self.lst.append(Circle((random.randint(0, 800), random.randint(0, 600)), random.randint(10, 20), 0, color=(255, 0, 0, 100)))
+            self.lst.append(Circle((random.randint(0, 800),
+                                    random.randint(200, 600)),
+                                   random.randint(40, 80),
+                                   0,
+                                   color=(100, 0, 255, 100)))
 
     def act(self):
         for circle in self.lst:
-            circle.y -= (21 - circle.radius) / 2
+            circle.y -= (81 - circle.radius) / 10
 
 
 my_board = MyBoard(800, 600)

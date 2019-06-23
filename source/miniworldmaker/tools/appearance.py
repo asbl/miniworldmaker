@@ -12,8 +12,7 @@ class Appearance:
 
     def __init__(self):
         self.dirty = 0
-        self.surface_loaded = False
-        self.blit_images = []
+        #self.blit_images = []
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
@@ -44,10 +43,12 @@ class Appearance:
         self.font_path = None #: Path to font-file
         self.color = (255, 255, 255, 255) #: color for overlays
         self.dirty = 1
+        self.surface_loaded = False
 
     def fill(self, color):
         try:
             self.fill_color = color
+            print("Appearance fill")
             self.surface_loaded = False
             self.dirty = 1
         except TypeError:
@@ -201,20 +202,18 @@ class Appearance:
                 if self.dirty == 1:
                     if self.enabled_image_actions[action]:
                         if action in self.image_handlers.keys():
-                            if self.parent.size!=(0,0):
+                            if self.parent.size != (0, 0):
                                 image = self.image_handlers[action](image, parent = self.parent, appearance = self)
                     self.parent.dirty = 1
-            for blit_image in self.blit_images:
-                image.blit(blit_image[0], blit_image[1] )
+            #for blit_image in self.blit_images:
+            #    image.blit(blit_image[0], blit_image[1] )
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
         return self._image
 
     def load_surface(self) -> pygame.Surface:
-        if self.surface_loaded:
-            return self.raw_surface
-        else:
+        if not self.surface_loaded:
             image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
             image.fill(self.fill_color)
             image.set_alpha(255)
@@ -301,11 +300,11 @@ class Appearance:
         self.parent.dirty = 1
         self.dirty = 1
 
-    def blit(self, path, position: tuple, size: tuple = (0,0) ):
-        _blit_image = ir.ImageRenderer.load_image(path=path, alpha=True)
-        if size != (0,0):
-            _blit_image = pygame.transform.scale(_blit_image, size)
-        self.blit_images.append((_blit_image, position, size))
+    #def blit(self, path, position: tuple, size: tuple = (0,0) ):
+    #    _blit_image = ir.ImageRenderer.load_image(path=path, alpha=True)
+    #    if size != (0,0):
+    #        _blit_image = pygame.transform.scale(_blit_image, size)
+    #    self.blit_images.append((_blit_image, position, size))
 
     def colorize(self, color):
         self.color = color

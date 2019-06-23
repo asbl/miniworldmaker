@@ -6,7 +6,7 @@ class Shape(tk.Token):
 
     def __init__(self, position: tuple, color: tuple):
         super().__init__(position)
-        self.costume.fill_color = (200, 0, 0, 0)
+        self.costume.fill_color = (100, 100, 0, 0)
         self.color = color
 
     @staticmethod
@@ -38,7 +38,7 @@ class Point(Shape):
             self.thickness = thickness
             super().__init__(rect.topleft, color)
             self.costume.load_surface()
-            pygame.draw.circle(self.costume.raw_surface, self.color, self.costume.image.get_rect().center, thickness, thickness)
+            pygame.draw.circle(self.costume.raw_surface, self.color, self.costume.raw_surface.get_rect().center, thickness, thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
@@ -73,7 +73,12 @@ class Circle(Shape):
             super().__init__(rect.topleft, color)
             self.size = (radius*2, radius*2)
             self.costume.load_surface()
-            pygame.draw.circle(self.costume.raw_surface, self.color, self.costume.image.get_rect().center, radius, thickness)
+            pygame.draw.circle(self.costume.raw_surface,
+                               self.color,
+                               self.costume.raw_surface.get_rect().center,
+                               radius,
+                               thickness,
+                               )
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
@@ -127,7 +132,7 @@ class Ellipse(Shape):
             self.size = (width, height)
             self.thickness= thickness
             self.costume.load_surface()
-            pygame.draw.ellipse(self.costume.raw_surface, self.color, self.costume.image.get_rect(), thickness)
+            pygame.draw.ellipse(self.costume.raw_surface, self.color, self.costume.raw_surface.get_rect(), thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
