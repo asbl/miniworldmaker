@@ -1,5 +1,4 @@
 from miniworldmaker.tools import appearance
-import pygame
 from miniworldmaker.tools import image_renderers as ir
 
 
@@ -8,8 +7,10 @@ class Background(appearance.Appearance):
     def __init__(self, board):
         super().__init__()
         self.parent = board #: The parent of a Background is the associated board.
+        # Register image actions which you can be triggered
         self.register_action("grid", ir.ImageRenderer.show_grid)
         self.register_action("scale_to_tile", ir.ImageRenderer.scale_to_tile, begin = True)
+        self.is_scaled = True
 
     def next_sprite(self):
         super().next_sprite()

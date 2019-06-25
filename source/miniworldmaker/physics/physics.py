@@ -143,13 +143,17 @@ class PhysicsProperty:
                                       (0, 0),
                                       )
             elif self.shape_type.lower() == "line":
-                shape = pymunk.Segment(self.body,
-                                       pymunk.pygame_util.from_pygame(self.token.start_position,
-                                                                      self.token.board.image),
-                                       pymunk.pygame_util.from_pygame(self.token.end_position,
-                                                                      self.token.board.image),
-                                       self.token.thickness,
-                                       )
+                print("line", self.token)
+                try:
+                    shape = pymunk.Segment(self.body,
+                                           pymunk.pygame_util.from_pygame(self.token.start_position,
+                                                                          self.token.board.image),
+                                           pymunk.pygame_util.from_pygame(self.token.end_position,
+                                                                          self.token.board.image),
+                                           self.token.thickness,
+                                           )
+                except AttributeError:
+                    raise AttributeError("ERROR: token.board is not set.")
             # Adds object to space
             PhysicsProperty.space.add(self.body, shape)
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,

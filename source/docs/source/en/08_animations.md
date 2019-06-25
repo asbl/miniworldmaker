@@ -37,4 +37,4 @@ In the last two lines it is indicated that the costume of the actor should chang
 
 See also the example [roboanimation](https://github.com/asbl/miniworldmaker/blob/master/examples/moving/roboanimation.py) on github:
 
-![_images/roboanimation.gif](_images/roboanimation.gif)
+![_images/roboanimation.gif](../_images/roboanimation.gif)

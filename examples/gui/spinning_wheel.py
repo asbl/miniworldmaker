@@ -1,6 +1,7 @@
-from miniworldmaker import *
 import random
+
 import easygui
+from miniworldmaker import *
 
 
 class MyBoard(TiledBoard):
@@ -12,6 +13,7 @@ class MyBoard(TiledBoard):
         self.arrow = Arrow((1, 1))
         self.chip = None
         self.placed = False
+        self.speed = 1
         self.add_image("images/greenfield.jpg")
 
     def get_event(self, event, data):

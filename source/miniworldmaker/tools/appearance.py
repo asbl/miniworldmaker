@@ -49,7 +49,6 @@ class Appearance:
     def fill(self, color):
         try:
             self.fill_color = color
-            print("Appearance fill")
             self.surface_loaded = False
             self.dirty = 1
         except TypeError:
@@ -188,6 +187,7 @@ class Appearance:
             raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
         self.images_list.append(_image)
         self.image_paths.append(path)
+        self._image = self.image
         self.dirty = 1
         return len(self.images_list) - 1
 
@@ -203,10 +203,12 @@ class Appearance:
                     if self.enabled_image_actions[action]:
                         if action in self.image_handlers.keys():
                             if self.parent.size != (0, 0):
-                                    image = self.image_handlers[action](image, parent = self.parent, appearance = self)
+                                    image = self.image_handlers[action](image,
+                                                                        parent=self.parent,
+                                                                        appearance=self)
                     self.parent.dirty = 1
             for blit_image in self.blit_images:
-               image.blit(blit_image[0], blit_image[1] )
+               image.blit(blit_image[0], blit_image[1])
             self._image = image
             self.call_image_actions = {key: False for key in self.call_image_actions}
             self.dirty = 0
@@ -313,8 +315,6 @@ class Appearance:
         Returns:
 
         """
-
-    def blit(self, path, position: tuple, size: tuple = (0, 0)):
         _blit_image = ir.ImageRenderer.load_image(path=path, alpha=True)
         if size != (0,0):
             _blit_image = pygame.transform.scale(_blit_image, size)

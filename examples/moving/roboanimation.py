@@ -7,7 +7,7 @@ class MyBoard(PixelBoard):
         super().__init__(columns=280, rows=100)
         self.add_image("images/water.png")
         player1 = Robot(position=(0, 0))
-        self.speed = 92
+        self.speed = 1
 
 
 class Robot(Actor):

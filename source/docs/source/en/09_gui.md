@@ -26,7 +26,7 @@ You can add the following widgets at this time:
 
 See also the example [spinning_wheel](https://github.com/asbl/miniworldmaker/blob/master/examples/gui/spinning_wheel.py) on Github.
   
-![_images/roboanimation.gif](_images/spinning_wheel.gif)
+![_images/roboanimation.gif](../_images/spinning_wheel.gif)
 
 ### The console
 

@@ -84,7 +84,7 @@ The code results in the following image:
 
 The computer usually uses a slightly different coordinate system than in mathematics lessons.
 
-[](../_images/coordinates.jpg)
+![](../_images/coordinates.jpg)
 
 The upper left corner is the origin (0|0). Therefore, large y-values mean that a point is further down.
 
@@ -123,11 +123,13 @@ class MyBoard(ProcessingBoard):
         self.circle3 = Circle((120, 40), 60, 0, color = (0, 0, 255, 100))
 
 
-
 my_board = MyBoard(230, 200)
 my_board.show()
 ```
-[](../_images/colors.jpg)
+
+Beispiel:
+
+![](../_images/colors.jpg)
 
 ### Animations
 

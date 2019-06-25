@@ -45,6 +45,9 @@ class Board(container.Container):
         self._grid = []
         self._tile_size, self._tile_margin = 1, 0
         self._repaint_all = False
+        if type(columns) != int or type(rows) != int:
+            raise TypeError("ERROR: columns and rows should be int values but types are",
+                            str(type(columns)), "and", str(type(rows)))
         self._columns, self._rows = columns, rows
         self.set_size(self.tile_size, columns, rows, self.tile_margin)
         self.background = background.Background(self)
@@ -72,15 +75,9 @@ class Board(container.Container):
         self.registered_event_handlers["board_created"] = self.on_setup
         self.window.send_event_to_containers("board_created", None)
 
-
-    def start_physics(self):
-        for token in self.tokens:
-            token.setup_physics_model()
-
     def update_actors(self):
         import miniworldmaker.tokens.actor as act
         self.actors = [token for token in self.tokens if issubclass(token.__class__, act.Actor)]
-
 
     def on_key_pressed(self, keys):
         """

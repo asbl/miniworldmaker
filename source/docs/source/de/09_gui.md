@@ -26,7 +26,7 @@ Folgende Widgets kannst du zur Zeit hinzufügen:
 
 Siehe auch das Beispiel [spinning_wheel](https://github.com/asbl/miniworldmaker/blob/master/examples/gui/spinning_wheel.py) auf Github.
   
-![_images/roboanimation.gif](_images/spinning_wheel.gif)
+![_images/roboanimation.gif](../_images/spinning_wheel.gif)
 
 ### Die Konsole
 

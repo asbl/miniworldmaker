@@ -32,6 +32,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                                     "Shape",
                                     "TiledBoardActor",
                                     "PixelBoardActor",
+                                    "TiledBoardToken",
+                                    "PixelBoardToken",
                                     "Point",
                                     ]:
                 self.add_widget(TokenButton(cls, board, self))

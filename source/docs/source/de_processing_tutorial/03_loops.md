@@ -1,4 +1,4 @@
-Schleifen und Listen
+Listen und Schleifen
 ====================
 
 Listen
