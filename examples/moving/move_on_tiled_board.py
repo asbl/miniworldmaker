@@ -3,16 +3,15 @@ from miniworldmaker import *
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(columns=4, rows=4, tile_size=42, tile_margin=1)
+    def on_setup(self):
+        self.tile_size = 60
         self.player = Player(position=(1, 1))
         self.add_image(path="images/soccer_green.jpg")
 
 
 class Player(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image(path="images/char_blue.png")
         self.costume.is_upscaled = True
         self.costume.orientation = - 90
@@ -33,15 +32,5 @@ class Player(Actor):
                 self.direction = "right"
 
 
-def main():
-    board = MyBoard()
-    board.show()
-
-
-import cProfile
-
-pr = cProfile.Profile()
-pr.enable()
-main()
-pr.disable()
-pr.dump_stats("profilefile.profile")
+board = MyBoard(4, 2)
+board.show()

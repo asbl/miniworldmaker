@@ -3,8 +3,7 @@ from miniworldmaker import *
 
 class MyBoard(PixelBoard):
 
-    def __init__(self):
-        super().__init__(columns=600, rows=400)
+    def on_setup(self):
         self.add_image(path="images/grass/land_grass11.png")
         self.background.is_textured = True
         self.background.tile_size = 40
@@ -37,8 +36,7 @@ class MyBoard(PixelBoard):
 
 class Player(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image(path="images/motorcycles/motorcycle_green.png")
         self.costume.orientation = 0
         self.turn_left(180)
@@ -62,5 +60,5 @@ class Player(Actor):
                     self.move(1)
 
 
-board = MyBoard()
+board = MyBoard(600, 400)
 board.show()

@@ -24,6 +24,8 @@ class Board(container.Container):
     def __init__(self,
                  columns: int = 40,
                  rows: int = 40,
+                 tile_size = 1,
+                 tile_margin = 0,
                  ):
 
         super().__init__()
@@ -32,7 +34,7 @@ class Board(container.Container):
         self.active_actor = None
         self.register_events = {"all"}
         self.is_running = True
-        self.default_actor_speed = 3 #: default speed for actors
+        self.default_token_speed = 3 #: default speed for tokens
         self.sound_effects = {}
         self.physics_accuracy = 1
         self.physics_property = physicsengine.PhysicsProperty
@@ -43,13 +45,15 @@ class Board(container.Container):
         self._key_pressed = False
         self._animated = False
         self._grid = []
-        self._tile_size, self._tile_margin = 1, 0
         self._repaint_all = False
         if type(columns) != int or type(rows) != int:
             raise TypeError("ERROR: columns and rows should be int values but types are",
                             str(type(columns)), "and", str(type(rows)))
-        self._columns, self._rows = columns, rows
-        self.set_size(self.tile_size, columns, rows, self.tile_margin)
+        self._columns, self._rows, self.tile_size, self.tile_margin = columns, rows, tile_size, tile_margin
+        self.set_size(columns = self.columns,
+                      rows = self.rows,
+                      tile_size = self.tile_size,
+                      tile_margin = self.tile_margin)
         self.background = background.Background(self)
         self.backgrounds = [self.background]
         self._image = pygame.Surface((1, 1))
@@ -72,8 +76,7 @@ class Board(container.Container):
         self.registered_event_handlers["key_pressed"] = self.on_key_pressed
         self.registered_event_handlers["key_down"] = self.on_key_down
         self.registered_event_handlers["key_up"] = self.on_key_up
-        self.registered_event_handlers["board_created"] = self.on_setup
-        self.window.send_event_to_containers("board_created", None)
+        self.registered_event_handlers["board_setup"] = self.on_setup
 
     def update_actors(self):
         import miniworldmaker.tokens.actor as act
@@ -236,9 +239,9 @@ class Board(container.Container):
         self.window.send_event_to_containers("board_speed_changed", self._world_speed)
 
     def set_size(self,
-                 tile_size: int = 1,
                  columns: int = 40,
                  rows: int = 40,
+                 tile_size: int = 1,
                  tile_margin: int = 0):
         """Sets size of a board
 
@@ -317,25 +320,6 @@ class Board(container.Container):
 
         """
         return self._window
-
-    @property
-    def tile_size(self) -> int:
-        """
-        The size of the tiles
-        """
-        return self._tile_size
-
-    @tile_size.setter
-    def tile_size(self, value: int):
-        """ Sets the tile-size"""
-        self._tile_size = value
-
-    @property
-    def tile_margin(self) -> int:
-        """
-        The margin between tiles
-        """
-        return self._tile_margin
 
     @property
     def rows(self) -> int:
@@ -462,7 +446,7 @@ class Board(container.Container):
         else:
             raise AttributeError("Position has wrong type" + str(type(position)))
         if token.speed == 0:
-            token.speed = self.default_actor_speed
+            token.speed = self.default_token_speed
         token.add_to_board(self, position)
         self.update_actors()
         self.window.send_event_to_containers("Added token", token)
@@ -475,7 +459,7 @@ class Board(container.Container):
         Returns:
             The newly created and reseted board
         """
-        board = self.__class__()
+        board = self.__class__(self.width, self.height)
         board.is_running = False
         board.window.send_event_to_containers("reset", board)
         board.show()
@@ -593,6 +577,7 @@ class Board(container.Container):
         self.background.is_scaled = True
         self.background.size = self.container_width, self.container_height
         image = self.image
+        self.window.send_event_to_containers("board_setup", None)
         self.window.show(image, full_screen= fullscreen)
 
     def update(self):

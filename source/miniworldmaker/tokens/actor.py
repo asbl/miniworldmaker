@@ -41,7 +41,6 @@ class Actor(board_token.Token):
         self.registered_event_handlers["key_pressed"] = self.on_key_pressed
         self.registered_event_handlers["key_down"] = self.on_key_down
         self.registered_event_handlers["key_up"] = self.on_key_up
-        self.on_setup()
 
     def add_to_board(self, board, position: board_position.BoardPosition):
         super().add_to_board(board, position)

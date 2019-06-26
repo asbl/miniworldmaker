@@ -33,7 +33,7 @@ class Token(pygame.sprite.DirtySprite):
         self.last_position = (0, 0)
         self.last_direction = 90
         self.token_id = Token.token_count + 1
-        self.is_static = True
+        self.is_static = False
         self.registered_event_handlers = dict()
         # costume
         self.costume = costume.Costume(self)
@@ -201,6 +201,17 @@ class Token(pygame.sprite.DirtySprite):
             raise UnboundLocalError("Init was not called")
         self.board.window.send_event_to_containers("actor_created", self)
         self.set_token_mode()
+        self.on_setup()
+
+    def on_setup(self):
+        """
+        The setup()-Method is called after initialisation of object
+
+        You can define own initialialisation operations here
+        Returns:
+
+        """
+        pass
 
     def set_token_mode(self):
         from miniworldmaker.boards import pixel_board as pb

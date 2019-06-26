@@ -1,12 +1,9 @@
-import sqlite3 as lite
 from miniworldmaker import *
-import easygui
 
 
 class MyBoard(TiledBoard):
 
-    def __init__(self, **kwargs):
-        super().__init__(rows=12, columns=12, tile_size=40)
+    def on_setup(self):
         self.register_token_type(Robot)
         self.register_token_type(Wall)
         self.register_token_type(Gold)
@@ -31,34 +28,29 @@ class MyBoard(TiledBoard):
 
 
 class Robot(Actor):
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/robo_green.png")
 
 
 class Wall(Token):
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/rock.png")
 
 
 class Gold(Token):
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/stone_gold.png")
 
 
 class Diamond(Token):
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/stone_blue.png",)
 
 
 class Emerald(Token):
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/stone_green.png")
 
 
-my_board = MyBoard()
+my_board = MyBoard(12, 12)
 my_board.show()

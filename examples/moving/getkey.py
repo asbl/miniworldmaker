@@ -1,10 +1,8 @@
-import pygame
 import miniworldmaker
+import pygame
 
 
 class MyGrid(miniworldmaker.PixelBoard):
-    def __init__(self):
-        super().__init__(columns=29, rows=1)
 
     def get_event(self, event: str = None, data=None):
         keys_pressed = pygame.key.get_pressed()
@@ -14,5 +12,5 @@ class MyGrid(miniworldmaker.PixelBoard):
 
 
 
-mygrid = MyGrid()
+mygrid = MyGrid(29, 1)
 mygrid.show()

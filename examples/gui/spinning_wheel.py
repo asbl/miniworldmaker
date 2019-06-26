@@ -6,8 +6,8 @@ from miniworldmaker import *
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(tile_size=100, columns=3, rows=3, tile_margin=1)
+    def on_setup(self):
+        self.tile_size = 100
         toolbar = self.window.add_container(Toolbar(), dock="right")
         toolbar.add_widget(ToolbarButton("Spin"))
         self.arrow = Arrow((1, 1))
@@ -23,8 +23,10 @@ class MyBoard(TiledBoard):
                     self.arrow.spin()
                 else:
                     easygui.msgbox("Du musst zuerst einen Chip setzen")
-        if event == "mouse_left" and self.placed is False:
-            position = self.get_board_position_from_pixel(data)
+
+    def on_mouse_left(self, mouse_pos):
+        if not self.placed:
+            position = self.get_board_position_from_pixel(mouse_pos)
             if not position == (1, 1):
                 self.chip = Chip(position)
                 if self.chip:
@@ -32,8 +34,7 @@ class MyBoard(TiledBoard):
 
 class Arrow(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.spinning = 0
         self.add_image("images/arrow.png")
 
@@ -57,9 +58,8 @@ class Arrow(Actor):
 
 class Chip(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/chip.png")
 
-my_grid = MyBoard()
+my_grid = MyBoard(3, 3)
 my_grid.show()

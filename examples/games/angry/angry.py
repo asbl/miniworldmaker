@@ -5,14 +5,11 @@ class MyBoard(PixelBoard):
 
     birds = 0
 
-    def __init__(self):
-        height, width = 700, 1024
-        super().__init__(columns=width, rows=height)
+    def on_setup(self):
         self.background.add_image("images/backgroundColorGrass.png")
         self.arrow = Arrow(position=(160, 250))
         self.arrow.direction = -10
         self.plattform = Plattform(position=(600, 250))
-        #self.physics_property.debug = True
         Box(position=(610, 210))
         Box(position=(655, 210))
         Box(position=(700, 210))
@@ -32,14 +29,10 @@ class MyBoard(PixelBoard):
 
     def act(self):
         pass
-        #print(self.plattform .physics.shape_type)
-        #print(self.plattform .physics.body.position)
-        #print(self.plattform .physics.body.moment)
 
 
 class Arrow(Actor):
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.size = (30,30)
         self.costume.add_image("images/tank_arrowFull.png")
         self.costume.enable_action("scale")
@@ -67,25 +60,22 @@ class Arrow(Actor):
 
 class Plattform(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.physics.gravity = False
         self.physics.can_move = False
         self.stable = True
         self.physics.friction = 0.5
-        self.start_physics()
         self.add_image("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
         self.costume.enable_action("textured")
-
+        self.start_physics()
 
 
 
 class Box(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/box_blue.png")
         self.size = (40, 40)
         self.physics.friction = 0.1
@@ -94,8 +84,7 @@ class Box(Actor):
 
 class Bird(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/fly.png")
         self.costume.orientation = 180
         self.flip_x()
@@ -113,7 +102,5 @@ class Bird(Actor):
             self.remove()
 
 
-
-
-board = MyBoard()
+board = MyBoard(1024, 700)
 board.show()

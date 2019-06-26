@@ -3,16 +3,14 @@ from miniworldmaker import *
 
 class MyBoard(PixelBoard):
 
-    def __init__(self):
-        super().__init__(columns=200, rows=200)
+    def on_setup(self):
         player1 = Player(position=(30, 30))
         self.add_image("images/soccer_green.jpg")
 
 
 class Player(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("images/robo_green.png")
         self.costume.orientation = - 90
 
@@ -34,6 +32,6 @@ class Player(Actor):
             elif "D" in data:
                 self.point_in_direction("right")
 
-board = MyBoard()
+board = MyBoard(800, 600)
 board.show()
 

@@ -17,7 +17,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
 
     def __eq__(self, other):
         board = window.MiniWorldWindow.board
-        return self.near(other, board.default_actor_speed-1)
+        return self.near(other, board.default_token_speed-1)
 
     @classmethod
     def from_pixel(cls, position: tuple):

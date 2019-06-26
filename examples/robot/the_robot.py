@@ -3,11 +3,8 @@ from miniworldmaker import *
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(tile_size=30,
-                         columns=20,
-                         rows=20,
-                         tile_margin=0)
+    def on_setup(self):
+        self.tile_size = 30
         robo1 = Robot(position=(1, 1))
         # Draw border
         for i in range(self.rows):
@@ -23,8 +20,7 @@ class MyBoard(TiledBoard):
 
 class Robot(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image(path="images/robo_green.png")
         self.costume.orientation = - 90
 
@@ -38,10 +34,9 @@ class Robot(Actor):
 
 class Wall(Token):
 
-    def __init__(self):
-        super().__init__()
+    def on_setup(self):
         self.add_image("images/rock.png")
 
 
-board = MyBoard()
+board = MyBoard(20, 20)
 board.show()

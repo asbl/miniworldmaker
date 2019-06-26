@@ -37,8 +37,7 @@ class MyBoard(TiledBoard):
 
 class Player(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("rpgimages/knight.png")
         self.costume.is_rotatable = False
         self.inventory = []
@@ -51,7 +50,6 @@ class Player(Actor):
         blocking = [token for token in tokens if token.is_blocking is True]
         if not blocking and not closed_doors and self.sensing_on_board():
             super().move()
-
 
     def on_key_down(self, keys):
         if "W" in keys:
@@ -92,32 +90,28 @@ class Player(Actor):
 
 class Wall(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.is_blocking = True
         self.add_image("rpgimages/wall.png")
 
 
 class Grass(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("rpgimages/grass.png")
         self.is_blocking = False
 
 
 class Torch(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("rpgimages/torch.png")
         self.is_blocking = False
 
 
 class Fireplace(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("rpgimages/fireplace_0.png")
         burned = self.add_costume("rpgimages/fireplace_1.png")
         burned.add_image("rpgimages/fireplace_2.png")
@@ -133,8 +127,7 @@ class Fireplace(Token):
 
 class Door(Token):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image("rpgimages/door_closed.png")
         self.add_costume("rpgimages/door_open.png")
         self.closed = True

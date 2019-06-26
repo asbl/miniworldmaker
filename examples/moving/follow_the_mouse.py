@@ -3,16 +3,14 @@ from miniworldmaker import *
 
 class MyBoard(PixelBoard):
 
-    def __init__(self):
-        super().__init__(columns=400, rows=200)
+    def on_setup(self):
         self.add_image(path="images/stone.jpg")
         Robot(position=(50, 50))
 
 
 class Robot(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.size = (30, 30)
         self.add_image("images/robo_green.png")
         self.costume.orientation = - 90
@@ -24,5 +22,5 @@ class Robot(Actor):
             self.move()
 
 
-board = MyBoard()
+board = MyBoard(800, 600)
 board.show()

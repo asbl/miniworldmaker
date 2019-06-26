@@ -18,15 +18,13 @@ class TiledBoard(Board):
             tile_size: The size of a tile
             tile_margin: The margin between tiles
         """
-        super().__init__(columns=columns, rows=rows)
-        self._tile_size = tile_size
-        self._tile_margin = tile_margin
-        self.set_size(self.tile_size, columns, rows, self._tile_margin)
         self._dynamic_actors_dict = defaultdict(list)  # the dict is regularly updated
         self._dynamic_actors = []  # List with all dynamic actors
         self._static_tokens_dict = defaultdict(list)
+        super().__init__(columns=columns, rows=rows, tile_size = tile_size, tile_margin = tile_margin)
+        self.default_token_speed = 1
+        self.set_size(columns, rows, tile_size, tile_margin)
         self.speed = 10
-        self.default_actor_speed = 1
 
     def _update_token_positions(self) -> None:
         self._dynamic_actors_dict.clear()
@@ -39,7 +37,7 @@ class TiledBoard(Board):
         self._update_token_positions()
         token_list = []
         if self.is_position_on_board(self.rect):
-            #print(position.x, position.y, self._dynamic_actors_dict, self._static_tokens_dict)
+            print(position.x, position.y, self._dynamic_actors_dict, self._static_tokens_dict)
             if self._dynamic_actors_dict[position.x, position.y]:
                 token_list.extend(self._dynamic_actors_dict[(position.x, position.y)])
             if self._static_tokens_dict[position.x, position.y]:
@@ -71,11 +69,12 @@ class TiledBoard(Board):
     def add_to_board(self, token: Token, position: Union[tuple, board_position.BoardPosition]) -> Token:
         if type(position) == board_position.BoardPosition:
             position = position.to_tuple()
-        from miniworldmaker.tokens import actor
-        if not issubclass(token.__class__, actor.Actor):
+        if hasattr(token, "is_static") and token.is_static is True:
             self._static_tokens_dict[position].append(token)
         else:
             self._dynamic_actors.append(token)
+        if token.speed == 0:
+            token.speed = self.default_token_speed
         super().add_to_board(token, position)
         if token.size == (0, 0):
             token.size = (self.tile_size, self.tile_size)
