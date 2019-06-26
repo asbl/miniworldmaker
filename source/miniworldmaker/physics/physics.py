@@ -52,6 +52,7 @@ class PhysicsProperty:
         self._velocity_y = 0
         self.shape_type = "rect"
         self.body = None
+        self.shape = None
         self.elasticity = 0
         self.friction = 0.2
         self.dirty = 1
@@ -155,7 +156,8 @@ class PhysicsProperty:
                 except AttributeError:
                     raise AttributeError("ERROR: token.board is not set.")
             # Adds object to space
-            PhysicsProperty.space.add(self.body, shape)
+            self.shape = shape
+            PhysicsProperty.space.add(self.body, self.shape)
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
                                                                 self.token.board.image)
             self.body.size = (self.token.width, self.token.height)
@@ -164,6 +166,7 @@ class PhysicsProperty:
                 PhysicsProperty.space.reindex_shapes_for_body(self.body)
             shape.friction = self.friction
             shape.elasticity = self.elasticity
+
             self.dirty = 0
             self.model_setup_complete = True
 
@@ -185,6 +188,12 @@ class PhysicsProperty:
                                                                 self.token.board.image)
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.body.angle = (math.radians(round(self.token.direction, 0)))
+
+    def remove(self):
+            if self.body:
+                PhysicsProperty.space.remove(self.body)
+            if self.shape:
+                PhysicsProperty.space.remove(self.shape)
 
     def update_token_from_physics_model(self):
         """
@@ -228,3 +237,4 @@ class PhysicsProperty:
 
     def impulse(self, impulse, point):
         self.body.apply_impulse_at_local_point(impulse, point)
+

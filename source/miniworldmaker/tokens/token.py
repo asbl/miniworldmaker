@@ -325,7 +325,7 @@ class Token(pygame.sprite.DirtySprite):
     def delta_y(self, distance):
         return - round(math.cos(math.radians(self.direction)) * distance)
 
-    def point_towards_position(self, destination, center=False) -> int:
+    def point_towards_position(self, destination, center=True) -> int:
         """
         Token points towards a given position
 
@@ -489,7 +489,6 @@ class Token(pygame.sprite.DirtySprite):
         if distance == 0:
             distance = self.speed
         destination = self.get_destination(self.direction, distance)
-        self.last_position = self.position
         self.position = destination
         self.last_direction = self.direction
         return self
@@ -559,6 +558,9 @@ class Token(pygame.sprite.DirtySprite):
         """
         if self.board:
             self.board.remove_from_board(self)
+        if self.physics:
+            self.physics.remove()
+            self.physics = None
         self.kill()
         del (self)
 

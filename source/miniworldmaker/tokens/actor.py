@@ -36,7 +36,7 @@ class Actor(board_token.Token):
         super().__init__(position)
         self._orientation = 0
         self.registered_event_handlers["mouse_left"] = self.on_mouse_left
-        self.registered_event_handlers["mouse_right"] = self.on_mouse_left
+        self.registered_event_handlers["mouse_right"] = self.on_mouse_right
         self.registered_event_handlers["mouse_motion"] = self.on_mouse_motion
         self.registered_event_handlers["key_pressed"] = self.on_key_pressed
         self.registered_event_handlers["key_down"] = self.on_key_down
