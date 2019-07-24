@@ -39,4 +39,5 @@ class TextToken(token.Token):
         Returns: The currently displayed text
 
         """
+        self.costume.call_action("text changed")
         return self.costume.text

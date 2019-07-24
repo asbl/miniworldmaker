@@ -4,6 +4,7 @@ from miniworldmaker import *
 
 
 class Earth(PixelBoard):
+
     def __init__(self):
         super().__init__(rows=600, columns=800)
         self.index = 0
@@ -33,8 +34,8 @@ class Earth(PixelBoard):
         self.target.append((20, 30))
         self.target.append((20, 30))
         self.time_label = toolbar.add_widget(TimeLabel(self, "Time"))
-        self.water_colors = [(49,84,130, 255),
-                             (49,84,129, 255),
+        self.water_colors = [(49, 84, 130, 255),
+                             (49, 84, 129, 255),
                              (50, 84, 129, 255),
                              (44, 84, 133, 255),
                              (41, 84, 127, 255),
@@ -51,12 +52,11 @@ class Earth(PixelBoard):
             self.is_running = False
             for token in self.tokens:
                 token.remove()
-            self.background.next_sprite()
+            self.background.next_image()
             self._repaint_all = 1
             self.dirty = 1
             self.index += 1
         if (self.index == 0 and self.frame == 1) or (self.frame > time and self.index <= 2):
-            print(self.frame)
             self.create_new_world()
 
     def create_new_world(self):
@@ -64,21 +64,19 @@ class Earth(PixelBoard):
         self.is_running = False
         self.frame = 0
         for tomatopile in self.tomato_piles[self.index]:
-            tomatos = Tomatos(tomatopile[0])
             position = (tomatopile[1], tomatopile[2])
-            self.add_to_board(tomatos, position)
+            Tomatos(position = position, number = tomatopile[0])
         position = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
-        self.ship = self.add_to_board(Ship(position), position=self.target[self.index])
+        self.ship = Ship(position=self.target[self.index], target_position=position)
         self.greeps = 0
         self.is_running = True
         self.index += 1
 
 
-
 class Ship(Actor):
 
-    def __init__(self, target_position):
-        super().__init__()
+    def on_setup(self, target_position):
+        print("setup")
         self.add_image("images/spaceship.png")
         self.size = (80, 80)
         self.target_position = target_position
@@ -91,14 +89,15 @@ class Ship(Actor):
         if self.position != self.target_position and not self.stop:
             self.point_towards_position(self.target_position)
             self.move()
-        if self.greeps < 20 and self.position.near(self.target_position, self.speed):
+        if self.greeps < 20 and self.center.near(self.target_position, self.speed):
             self.stop = True
-            self.board.add_to_board(Greep(), self.position)
+            Greep(self.position)
             self.greeps += 1
 
 class Tomatos(Token):
-    def __init__(self, number):
-        super().__init__()
+
+    def on_setup(self, number):
+        print("tomato setup")
         self.size = (40, 40)
         self.number = number
         for i in range(self.number // 10):
@@ -114,8 +113,8 @@ class Tomatos(Token):
 
 class Greep(Actor):
 
-    def __init__(self):
-        super().__init__()
+    def on_setup(self):
+        self.orientation = - 90
         self.add_image("images/greeps/greep.png")
         self.add_costume("images/greeps/greep_with_food.png")
         self.size = (35, 35)
@@ -123,7 +122,6 @@ class Greep(Actor):
         self.carrys_tomato = False
         self.memory = 0
         self.speed = 5
-        self.costume.orientation = - 90
 
     def move(self, distance: int = 1) -> BoardPosition:
         if self.is_valid_move():
@@ -139,7 +137,7 @@ class Greep(Actor):
             return False
 
     def is_valid_move(self):
-        if self.sensing_borders(distance = self.speed) or self.is_looking_at_water():
+        if self.sensing_borders(distance=self.speed) or self.is_looking_at_water():
             return False
         else:
             return True
@@ -179,7 +177,6 @@ class Greep(Actor):
             board.counter[board.index].add(1)
             board.counter[len(board.counter) - 1].add(1)
 
-
     def charge(self, greep, tomato):
         greep = self.sensing_token(token=Greep, distance=0)
         tomato = self.sensing_token(token=Tomatos, distance=0)
@@ -190,29 +187,26 @@ class Greep(Actor):
                 tomato.get_tomato()
                 greep.switch_costume(index=1)
 
-
     def turn_home(self):
         self.point_towards_position(self.board.ship.position)
 
     def spit(self, color):
 
         if color == "red":
-            paint = Paint(color="red")
-            self.board.add_to_board(paint, position=self.position)
+            paint = Paint(position = self.position, color = color)
         if color == "green":
-            paint = Paint(color="green")
-            self.board.add_to_board(paint, position=self.position)
+            paint = Paint(position = self.position, color = color)
         if color == "blue":
-            paint = Paint(color="blue")
-            self.board.add_to_board(paint, position=self.position)
+            paint = Paint(position=self.position, color = color)
+
 
 
 class Paint(Token):
-    def __init__(self, color):
-        super().__init__()
+
+    def on_setup(self, color):
         self.add_image("images/paint.png")
         self.intensity = 255
-        self.costume.colorize((255, 0, 0, self.intensity))
+        self.costume.coloring = (255, 0, 0, self.intensity)
         self.time = 0
         self.color = color
 
@@ -222,16 +216,14 @@ class Paint(Token):
         if self.time % 50 == 0 and self.time > 0:
             self.intensity = self.intensity % 2
             if self.color == "red":
-                self.costume.colorize((255, 0, 0, self.intensity))
+                self.costume.color((255, 0, 0, self.intensity))
             if self.color == "green":
-                self.costume.colorize((0, 255, 0, self.intensity))
+                self.costume.color((0, 255, 0, self.intensity))
             if self.color == "blue":
-                self.costume.colorize((0, 0, 255, self.intensity))
+                self.costume.color((0, 0, 255, self.intensity))
             self.dirty = 1
             if self.intensity < 50:
                 self.remove()
-
-
 
 
 earth = Earth()

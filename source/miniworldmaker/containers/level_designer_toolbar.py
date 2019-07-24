@@ -12,40 +12,37 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.default_size = 400
         self.board = board
         self.selected_token_type = None
-        self.register_events.add("all")
-        self.register_events.add("debug")
+        self.registered_events.add("all")
+        self.registered_events.add("debug")
         self.add_widget(ToolbarLabel("Left Click to add Tokens"))
         self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
         import miniworldmaker.tokens.token as tk
-        class_list = self.all_subclasses(tk.Token)
-        for cls in class_list:
-            if cls.__name__ not in ["Token",
-                                    "Actor",
-                                    "TextToken",
-                                    "NumberToken",
-                                    "Circle",
-                                    "Line",
-                                    "Ellipse",
-                                    "Polygon",
-                                    "Rectangle",
-                                    "Shape",
-                                    "TiledBoardActor",
-                                    "PixelBoardActor",
-                                    "TiledBoardToken",
-                                    "PixelBoardToken",
-                                    "Point",
-                                    ]:
-                self.add_widget(TokenButton(cls, board, self))
+        class_set = self.all_subclasses(tk.Token)
+        excluded = ["Token",
+                    "Actor",
+                    "TextToken",
+                    "NumberToken",
+                    "Circle",
+                    "Line",
+                    "Ellipse",
+                    "Polygon",
+                    "Rectangle",
+                    "Shape",
+                    "TiledBoardToken",
+                    "PixelBoardToken",
+                    "Point",
+                    ]
+        [self.add_widget(TokenButton(cls, board, self)) for cls in class_set if cls.__name__ not in excluded]
         db_file = "data.db"
-        self.add_widget(SaveButton(board = self.board, text = "Save", filename=db_file))
+        self.add_widget(SaveButton(board=self.board, text="Save", filename=db_file))
         if os.path.exists(db_file):
-            self.add_widget(LoadButton(board = self.board, text = "Load", filename=db_file ))
+            self.add_widget(LoadButton(board=self.board, text="Load", filename=db_file))
         self.board.is_running = False
 
-    def all_subclasses(self, cls):
-        return set(cls.__subclasses__()).union(
-            [s for c in cls.__subclasses__() for s in self.all_subclasses(c)])
+    def all_subclasses(self, parent_cls) -> set:
+        return set(parent_cls.__subclasses__()).union(
+            [s for c in parent_cls.__subclasses__() for s in self.all_subclasses(c)])
 
     def get_event(self, event, data):
         super().get_event(event, data)
@@ -76,8 +73,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             elif "mouse_motion" in event:
                 if pygame.mouse.get_pressed()[0] == 1:
                     if self.board.is_in_container(data[0], data[1]):
-                        rect = board_position.BoardPosition(data[0],data[1]).to_rect()
-                        token = self.board.get_tokens_in_area(rect, singleitem=True)
+                        rect = board_position.BoardPosition(data[0], data[1]).to_rect()
+                        token = self.board.get_tokens_at_rect(rect, singleitem=True)
                         if token.__class__ != self.selected_token_type:
                             import miniworldmaker.boards.board_position as bp
                             token = self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
@@ -85,18 +82,14 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             if self.board.is_in_container(data[0], data[1]):
                 keys = self.board.window.get_keys()
                 if "L_SHIFT" in keys:
-                    token = self.board.get_token_in_area(data)
-                    while token != None:
-                        if token:
-                            token.remove()
-                        token = self.board.get_token_in_area(data)
+                    tokens = self.board.get_tokens_by_pixel(data)
+                    while tokens:
+                        token = tokens.pop()
+                        token.remove()
                 else:
-                    token = self.board.get_token_in_area(data)
-                    for cls in token.__class__.__mro__:
-                        if cls.__name__ == "Actor":
-                            token.turn_left(5)
-
-
+                    tokens = self.board.get_tokens_by_pixel(data)
+                    if tokens:
+                        tokens[0].turn_left(5)
 
 
 class TokenButton(ToolbarWidget):
@@ -105,14 +98,14 @@ class TokenButton(ToolbarWidget):
         super().__init__()
         self.parent = parent
         self.board = board
-        #token = token_type(position = None)
+        # token = token_type(position = None)
         print(token_type, token_type.class_image)
         if token_type.class_image:
             self._img_path = token_type.class_image
         self._text_padding = 30
         self.set_text("Add " + token_type.__name__)
         self.token_type = token_type
-        self.background_color = (180,180,180, 255)
+        self.background_color = (180, 180, 180, 255)
 
     def get_event(self, event, data):
         if event == "mouse_left":
@@ -124,4 +117,3 @@ class TokenButton(ToolbarWidget):
                     widget.dirty = 1
             self.background_color = (100, 100, 100, 255)
             self.dirty = 1
-

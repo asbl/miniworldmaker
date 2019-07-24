@@ -4,10 +4,11 @@ from miniworldmaker.tokens import token as tk
 
 class Shape(tk.Token):
 
-    def __init__(self, position: tuple, color: tuple):
+    def __init__(self, position: tuple = None, color: tuple = (255, 255, 255, 255)):
         super().__init__(position)
         self.costume.fill_color = (100, 100, 0, 0)
         self.color = color
+        self.costume.is_upscaled = False
 
     @staticmethod
     def bounding_box(points):
@@ -31,16 +32,19 @@ class Point(Shape):
         Creates a red point at position (200,100)
     """
 
-    def __init__(self, position, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
+    def __init__(self, position=None, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
         try:
             rect = pygame.Rect(0, 0, thickness, thickness)
             rect.center = (position[0], position[1])
-            self.size = (thickness, thickness)
+            self.radius = thickness
             self.thickness = thickness
             super().__init__(rect.topleft, color)
+            self.size = (thickness, thickness)
+            self.costume.draw_shape_append(pygame.draw.circle, [self.color,
+                                                                (int(self.radius), int(self.radius)),
+                                                                int(self.radius),
+                                                                self.thickness])
             self.costume.load_surface()
-            pygame.draw.circle(self.costume.raw_surface, self.color, self.costume.raw_surface.get_rect().center,
-                               thickness, thickness)
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
@@ -68,23 +72,26 @@ class Circle(Shape):
         Creates a red circle at position (200,100) with radius 20. The circle is filled
     """
 
-    def __init__(self, position, radius: int = 10, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
+    def __init__(self, position=None, radius: int = 10, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
         try:
-            rect = pygame.Rect(0, 0, radius, radius)
-            rect.center = (position[0], position[1])
-            self.thickness = thickness
-            super().__init__(rect.topleft, color)
+
+            self._thickness = thickness
+            self.color = color
+            super().__init__(position, color)
             self.size = (radius * 2, radius * 2)
-            self.costume.load_surface()
-            pygame.draw.circle(self.costume.raw_surface,
-                               self.color,
-                               self.costume.raw_surface.get_rect().center,
-                               radius,
-                               thickness,
-                               )
-        except TypeError:
-            print("Shape not created because mouse position not in screen")
-            self.remove()
+            self.costume.draw_shape_set(*self.draw_shape)
+            rect = pygame.Rect(0, 0, radius, radius)
+            rect.center = (self.position[0], self.position[1])
+            self.position = rect.center
+        except TypeError as e:
+            raise e
+
+    @property
+    def draw_shape(self):
+        return pygame.draw.circle, [self.color,
+                                    (int(self.radius), int(self.radius)),
+                                    int(self.radius),
+                                    self.thickness]
 
     @property
     def radius(self):
@@ -102,6 +109,15 @@ class Circle(Shape):
         self.physics.shape_type = "circle"
         self.physics.can_move = True
         self.physics.stable = False
+
+    @property
+    def thickness(self):
+        return self._thickness
+
+    @thickness.setter
+    def thickness(self, value):
+        self._thickness = value
+        self.costume.draw_shape_set(*self.draw_shape)
 
 
 class Ellipse(Shape):
@@ -127,21 +143,27 @@ class Ellipse(Shape):
         Creates a red circle at position (200,100) with width 20 and height 40. The ellipse is filled
     """
 
-    def __init__(self, position, width=20, height=20, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
+    def __init__(self, position=None, width=20, height=20, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
         try:
             rect = pygame.Rect(0, 0, width, height)
             rect.center = (position[0], position[1])
             super().__init__(rect.topleft, color)
             self.size = (width, height)
+            self._thickness = thickness
+            self._width = width
+            self._height = height
             self.thickness = thickness
-            self.costume.load_surface()
-            pygame.draw.ellipse(self.costume.raw_surface, self.color, self.costume.raw_surface.get_rect(), thickness)
-        except TypeError:
-            print("Shape not created because mouse position not in screen")
-            self.remove()
         except ValueError:
             print("ERROR: thickness of {0} is greater than ellipse-radius".format(thickness))
             self.remove()
+
+
+    @property
+    def draw_shape(self):
+        return pygame.draw.ellipse, [self.color,
+                                    pygame.Rect(0, 0,
+                                    int(self.width), int(self.height)),
+                                    self.thickness]
 
     @property
     def width(self):
@@ -152,7 +174,7 @@ class Ellipse(Shape):
         Returns: The width of the ellipse
 
         """
-        return self.width
+        return self._width
 
     @property
     def height(self):
@@ -163,7 +185,16 @@ class Ellipse(Shape):
         Returns: The height of the ellipse
 
         """
-        return self.height
+        return self._height
+
+    @property
+    def thickness(self):
+        return self._thickness
+
+    @thickness.setter
+    def thickness(self, value):
+        self._thickness = value
+        self.costume.draw_shape_set(*self.draw_shape)
 
 
 class Line(Shape):
@@ -183,8 +214,16 @@ class Line(Shape):
         Creates a line from (200, 100) to (400, 100)
     """
 
-    def __init__(self, start_position, end_position, thickness=1, color: tuple = (255, 255, 255, 255), ):
+    def __init__(self,
+                 start_position: tuple,
+                 end_position: tuple,
+                 thickness: int = 1,
+                 color: tuple = (255, 255, 255, 255), ):
         try:
+            if type(start_position) == int :
+                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", start_position, ", type:", type(start_position))
+            if type(end_position) == int:
+                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position, ", type:", type(end_position))
             box = self.bounding_box([start_position, end_position])
             # mod_start
             x = start_position[0] - box[0]
@@ -202,12 +241,12 @@ class Line(Shape):
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[0] - box[2]) + 4, abs(box[1] - box[3]) + 4)
             self.costume.load_surface()
-            pygame.draw.line(self.costume.raw_surface, color, mod_start, mod_end, thickness)
+            self.costume.draw_shape_append(pygame.draw.line, [self.color,
+                                                              mod_start,
+                                                              mod_end,
+                                                              self.thickness])
         except TypeError as e:
-            if self.board:
-                self.board.window.log.info("WARNING: shape position not in screen. Shape was not created")
-            else:
-                raise e
+            raise e
 
     def setup_physics(self):
         super().setup_physics()
@@ -236,25 +275,35 @@ class Rectangle(Shape):
 
     def __init__(self, topleft, width, height, thickness=1, color: tuple = (255, 255, 255, 255)):
         try:
+            if type(topleft) != tuple:
+                raise TypeError("Error: First argument topleft should be a 2-tuple")
             plist = []
-            mod_pointlist = []
+            self.mod_pointlist = []
             plist.append(topleft)
             plist.append((topleft[0] + width, topleft[1]))
             plist.append((topleft[0] + width, topleft[1] + height))
             plist.append((topleft[0], topleft[1] + height))
             box = self.bounding_box(plist)
+            self.thickness = thickness
             for point in plist:
                 x = point[0] - box[0]
                 y = point[1] - box[1]
-                mod_pointlist.append((x, y))
+                self.mod_pointlist.append((x, y))
             self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
-            self.costume.load_surface()
-            pygame.draw.polygon(self.costume.raw_surface, color, mod_pointlist, thickness)
+            self.costume.draw_shape_set(*self.draw_shape)
+
         except TypeError as e:
-            print("WARNING: Type Error")
+            self.remove()
             raise e
+
+    @property
+    def draw_shape(self):
+        return pygame.draw.polygon, [self.color,
+                                     self.mod_pointlist,
+                                     self.thickness,
+                                     ]
 
     def setup_physics(self):
         super().setup_physics()
@@ -288,12 +337,20 @@ class Polygon(Shape):
             box = self.bounding_box(pointlist)
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[0] - box[2]) + 4, abs(box[1] - box[3]) + 4)
-            mod_pointlist = []
+            self.mod_pointlist = []
+            self.thickness = thickness
             for point in pointlist:
                 x = point[0] - box[0]
                 y = point[1] - box[1]
-                mod_pointlist.append((x, y))
-                self.costume.load_surface()
-            pygame.draw.polygon(self.costume.raw_surface, color, mod_pointlist, thickness)
-        except TypeError:
-            self.remove()
+                self.mod_pointlist.append((x, y))
+            self.costume.draw_shape_set(*self.draw_shape)
+        except TypeError as e:
+            raise e
+
+    @property
+    def draw_shape(self):
+        return pygame.draw.polygon, [self.color,
+                                     self.mod_pointlist,
+                                     self.thickness,
+                                     ]
+

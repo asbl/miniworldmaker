@@ -11,7 +11,7 @@ class Container:
         self.surface = pygame.Surface((1, 1))
         self.background_color = (255, 255, 255)
         self.default_size = 100
-        self.register_events = {"mouse_left", "mouse_right"}
+        self.registered_events = {"mouse_left", "mouse_right"}
         # private
         self._window = None  # Set in add_to_window
         self._container_width = 0  # Set in add_to_window
@@ -70,8 +70,10 @@ class Container:
     def remove(self):
         pass
 
-    def pass_event(self, event, data):
-        pass
+    def handle_event(self, event, data):
+        if "mouse_left" in event:
+            print("handle event", self)
+        self.get_event(event, data)
 
     def get_event(self, event, data):
         pass

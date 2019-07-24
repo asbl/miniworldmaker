@@ -27,10 +27,11 @@ class Rocket(Actor):
 
     def act(self):
         if self.started:
-            if not self.sensing_on_board():
-                self.remove()
-            else:
-                self.move()
+            self.move()
+
+    def on_sensing_not_on_board(self):
+        self.remove()
+
 
 
 class MyToolbar(Toolbar):

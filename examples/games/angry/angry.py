@@ -27,35 +27,32 @@ class MyBoard(PixelBoard):
 
         Box(position=(700, 90))
 
-    def act(self):
-        pass
-
 
 class Arrow(Actor):
+
     def on_setup(self):
         self.size = (30,30)
         self.costume.add_image("images/tank_arrowFull.png")
-        self.costume.enable_action("scale")
+        self.costume.is_scaled = True
         self.speed = 0
         self.shoot = 0
 
-    def get_event(self, event, data):
-        if event == "key_pressed":
-            if "w" in data:
-                self.direction -= 1
-                #self.y -= 1
-            elif "s" in data:
-                self.direction += 1
-               # self.y += 1
-            elif "space" in data:
-                self.speed += 1
-                self.shoot = 1
-        elif event == "key_up":
+    def on_key_pressed(self, keys):
+        if "w" in keys:
+            self.direction -= 1
+        elif "s" in keys:
+            self.direction += 1
+
+    def on_key_down(self, keys):
+        if "space" in keys:
+            self.speed += 1
+            self.shoot = 1
             if self.shoot == 1:
                 self.shoot = -1
                 print("Bäm")
-                Bird(position=self.position)
+                bird = Bird(position=self.position)
                 self.speed = 0
+                print(bird)
 
 
 class Plattform(Token):
@@ -63,15 +60,11 @@ class Plattform(Token):
     def on_setup(self):
         self.physics.gravity = False
         self.physics.can_move = False
-        self.stable = True
         self.physics.friction = 0.5
         self.add_image("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
-        self.costume.enable_action("textured")
         self.start_physics()
-
-
 
 class Box(Actor):
 
@@ -86,19 +79,21 @@ class Bird(Actor):
 
     def on_setup(self):
         self.add_image("images/fly.png")
-        self.costume.orientation = 180
+        self.orientation = 180
         self.flip_x()
         self.size = (80, 80)
-        self.mass = 20
+        self.physics.mass = 20
         self.physics.size = 0.7, 0.7
         self.physics.shape_type = "circle"
         self.physics.stable = False
         self.start_physics()
-        self.physics.velocity_x = 1500
+        self.physics.velocity_x = 600
         self.physics.velocity_y = - self.board.arrow.direction * 50
 
     def act(self):
+        print(self.position)
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():
+            print("remove")
             self.remove()
 
 

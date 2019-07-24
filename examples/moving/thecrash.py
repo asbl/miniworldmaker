@@ -24,11 +24,10 @@ class Robot(Actor):
 
     def act(self):
         self.move()
-        print(self.__class__)
         other = self.sensing_token(distance = 0, token_type=Robot)
+        print("other", other)
         if other:
-            explosion = Explosion()
-            self.board.add_to_board(explosion, position=self.position)
+            explosion = Explosion(position=self.position)
             self.remove()
             other.remove()
 

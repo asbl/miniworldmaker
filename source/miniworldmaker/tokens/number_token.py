@@ -47,4 +47,5 @@ class NumberToken(text_token.TextToken):
         Returns: The current number
 
         """
+        self.costume.call_action("text changed")
         return int(self.costume.text)

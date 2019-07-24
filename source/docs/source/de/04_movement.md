@@ -21,10 +21,10 @@ Dies bedeutet:
   
 ### Methoden und Attribute
 
-Bewegt einen Akteur
+Bewegt ein Akteur.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: move
    :noindex:
 ```

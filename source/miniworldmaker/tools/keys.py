@@ -49,7 +49,7 @@ KEYS = {113: "Q",
         }
 
 
-def key_codes_to_keys(key_pressed_list: list) :
+def key_codes_to_keys(key_pressed_list: list):
     keys = []
     for index, item in enumerate(key_pressed_list):
         if item:

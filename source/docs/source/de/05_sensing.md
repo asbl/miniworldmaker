@@ -31,7 +31,7 @@ actors_in_front = self.sensing_tokens(distance = 1, token = Door)
 Spürt Tokens auf
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: sensing_tokens
    :noindex:
 ```
@@ -41,7 +41,7 @@ Spürt Tokens auf
 Spürt ein einzelnes Token auf. Die Methode ist effizienter als sensing_tokens
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: sensing_token
    :noindex:
 ```
@@ -52,7 +52,7 @@ Spürt ein einzelnes Token auf. Die Methode ist effizienter als sensing_tokens
 Prüft, ob ein Rand in der Nähe ist.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: sensing_borders
    :noindex:
 ```
@@ -62,7 +62,7 @@ Prüft, ob ein Rand in der Nähe ist.
 Prüft, ob die Position auf dem Spielfeld ist.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: sensing_on_board
    :noindex:
 ```
@@ -72,7 +72,7 @@ Prüft, ob die Position auf dem Spielfeld ist.
 Prüft die Farbe unter dem Actor (bezogen auf den Background der Spielwelt)
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: sensing_on_board
    :noindex:
 ```

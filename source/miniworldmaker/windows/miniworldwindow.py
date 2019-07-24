@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from collections import deque
 
 import miniworldmaker.containers.actionbar as a_bar
 import pkg_resources
@@ -14,21 +15,25 @@ from miniworldmaker.tools import keys
 
 version = pkg_resources.require("MiniWorldMaker")[0].version
 print("Show new MiniWorldMaker v.{0} Window".format(version))
-print("Press '^' to get Actors at mouse_position")
-print("Press 'F1' to show help")
-print("Press 'F2' to show events in command line")
-print("Press 'F3'  to show move-events in command line")
-print("Press 'F4'  to show key-events in command line")
 print("Press 'F5'  to add Event-console")
 print("Press 'F6'  to add Actor-Toolbar")
 print("Press 'F7'  to add Level-Designer")
 print("Press 'F8'  to add Color-Toolbar")
+
 
 class MiniWorldWindow:
     log = logging.getLogger("miniworldmaker")
     board = None
     window = None
     quit = False
+    input_events = ["act",
+                      "setup",
+                      "mouse_left",
+                      "mouse_right",
+                      "mouse_motion",
+                      "key_pressed",
+                      "key_down",
+                      "key_up"]
 
     def __init__(self, title):
         self.title = title
@@ -45,11 +50,13 @@ class MiniWorldWindow:
         self.log_events = "None"
         self.event_console = None
         self.action_bar = None
+        self.event_queue = deque()
         self.docks = 0
         self.actor_toolbar = None
         self.level_designer = None
         self.full_screen = False
         self.color_console = False
+        self.dirty = True
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
@@ -68,16 +75,19 @@ class MiniWorldWindow:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
         self.window_surface.set_alpha(None)
 
-    def show(self, image, full_screen : bool = False, log = False):
+    def show(self, image, full_screen: bool = False, log=False):
         self.full_screen = full_screen
         self._recalculate_dimensions()
+        self.board.register_collision_handlers()
+        self.board.register_event_handlers()
         self.display_update()
         if log is True:
             logging.basicConfig(level=logging.DEBUG)
         else:
             logging.basicConfig(level=logging.INFO)
         self.window.window_surface.blit(image, self.board.rect)
-        MiniWorldWindow.log.info("Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
+        MiniWorldWindow.log.info(
+            "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
         pygame.display.update([image.get_rect()])
         while not MiniWorldWindow.quit:
             self.update()
@@ -86,11 +96,21 @@ class MiniWorldWindow:
 
     def update(self):
         self.process_pygame_events()
+        if self.dirty:
+            self.display_update()
+            self.dirty = False
         if not MiniWorldWindow.quit:
             self.repaint_areas = []
             if self.dirty:
                 self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
                 self.dirty = 0
+            # Event handling
+            while self.event_queue:
+                element = self.event_queue.pop()
+                for ct in self._containers:
+                    ct.handle_event(element[0], element[1])
+            self.event_queue.clear()
+            # self.board.collision_handling
             for ct in self._containers:
                 if ct.dirty:
                     ct.update()
@@ -113,7 +133,7 @@ class MiniWorldWindow:
     def add_container(self, container, dock, size=None) -> container_file.Container:
         self._recalculate_dimensions()
         for ct in self._containers:
-            print("container", container, self.window_height)
+            print("add container", container, self.window_height)
         if dock == "right" or dock == "top_left":
             self._containers_right.append(container)
         if dock == "bottom" or dock == "top_left":
@@ -127,7 +147,7 @@ class MiniWorldWindow:
         for ct in self._containers:
             ct.dirty = 1
         if self.board:
-            for token in self.board._tokens:
+            for token in self.board.tokens:
                 token.dirty = 1
         return container
 
@@ -224,55 +244,27 @@ class MiniWorldWindow:
             elif event.type == pygame.KEYUP:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
                 self.send_event_to_containers("key_up", keys_pressed)
-
             elif event.type == pygame.KEYDOWN:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
-                if "^" in keys_pressed:
-                    tokens_at_pos = self.board.get_tokens_by_pixel(self.board.get_mouse_position())
-                    for token in tokens_at_pos:
-                        MiniWorldWindow.log.info(token)
-                elif "F1" in keys_pressed:
-                    self.help()
-                elif "F2" in keys_pressed:
-                    if self.log_events is not "all":
-                        self.log_events = "all"
-                        self.log.info("Log all events")
-                    else:
-                        self.log_events = "None"
-                        self.log.info("Stopped logging events")
-                elif "F3" in keys_pressed:
-                    if self.log_events is not "move":
-                        self.log_events = "move"
-                        self.log.info("Log move events")
-                    else:
-                        self.log_events = "None"
-                        self.log.info("Stopped logging events")
-                elif "F4" in keys_pressed:
-                    if self.log_events is not "key_events":
-                        self.log_events = "key_events"
-                        self.log.info("Log key events")
-                    else:
-                        self.log_events = "None"
-                        self.log.info("Stopped logging events")
-                elif "F5" in keys_pressed:
+                if "F5" in keys_pressed:
                     if not self.event_console:
                         self.event_console = event_console.EventConsole()
                         self.add_container(self.event_console, dock="right")
                         if self.docks == 0:
                             self.action_bar = a_bar.ActionBar(self.board)
                             self.add_container(self.action_bar, dock="bottom")
-                        self.docks+=1
+                        self.docks += 1
                         self.log.info("Added event console")
                     elif self.event_console:
                         self.remove_container(self.event_console)
-                        self.docks-=1
+                        self.docks -= 1
                         if self.docks == 0:
                             self.remove_container(self.action_bar)
                             self.running = True
                         self.event_console = None
                 elif "F6" in keys_pressed:
                     if not self.actor_toolbar:
-                        self.actor_toolbar = inspect_actor_toolbar.InspectActorToolbar()
+                        self.actor_toolbar = inspect_actor_toolbar.InspectActorToolbar(self.board)
                         if self.docks == 0:
                             self.action_bar = a_bar.ActionBar(self.board)
                             self.add_container(self.action_bar, dock="bottom")
@@ -323,21 +315,12 @@ class MiniWorldWindow:
         return False
 
     def send_event_to_containers(self, event, data):
+        events = []
         for container in self._containers:
-            if event in container.register_events or "all" in container.register_events:
-                container.pass_event(event, data)
-                if "mouse" in event:
-                    if "debug" in container.register_events or "mouse" in container.register_events or container == self.get_container_by_pixel(data[0], data[1]):
-                        container.get_event(event, data)
-                else:
-                    container.get_event(event, data)
-                if self.log_events == "all":
-                    MiniWorldWindow.log.info("Event: '{0}' with data: {1}".format(event, data))
-                else:
-                    if self.log_events == "move" and event == "move":
-                        MiniWorldWindow.log.info("Event: '{0}' with data: {1}".format(event, data))
-                    if self.log_events == "key" and (event == "key_pressed" or event == "key_pressed"):
-                        MiniWorldWindow.log.info("Event: '{0}' with data: {1}".format(event, data))
+            e = event, data
+            if (event in container.registered_events or "all" in container.registered_events) and event not in events:
+                self.event_queue.appendleft(e)
+                events.append(event)
 
     def get_keys(self):
         key_codes = []
@@ -350,3 +333,6 @@ class MiniWorldWindow:
         MiniWorldWindow.quit = True
         pygame.quit()
         sys.exit(0)
+
+
+

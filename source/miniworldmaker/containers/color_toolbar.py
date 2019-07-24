@@ -6,8 +6,8 @@ class ColorToolbar(toolbar.Toolbar):
 
     def __init__(self, board):
         super().__init__()
-        self.register_events.add("all")
-        self.register_events.add("debug")
+        self.registered_events.add("all")
+        self.registered_events.add("debug")
         self.board = board
         self.default_size = 220
         self.color_label = ColorLabel("Color")

@@ -67,10 +67,8 @@ class Toolbar(container.Container):
                 actual_height = self.margin_first
                 for widget in self.widgets:
                     if widget.dirty == 1:
-                        print(widget)
                         widget.width = self._container_width - self.margin_left - self.margin_right
                         widget.repaint()
-                        print("repainted")
                         rect = pygame.Rect(self.rect.left, actual_height, widget.width, widget.height)
                         self._window.repaint_areas.append(rect)
                     self.surface.blit(widget.surface, (5, actual_height))

@@ -1,42 +1,35 @@
-Actors
+Akteure
 =======
 
-### Create a new Actor class
+#### Eine neue Actor-Klasse erstellen
 
-Next, an actor is placed on the board.
+Als nächstes wird ein Akteur auf dem Board platziert.
 
-This is done as follows
+Dies ist folgendermaßen
 
 
 ```
-class Player(Actor):
+Klasse Spieler (Schauspieler):
 
-    def __init__(self):
-        super().__init__()
+    def setup(self):
         self.add_image(path="images/char_blue.png")
 ```
 
-  * The first line creates a new class as a child class of the class Actor.
+  * The Zeile 1 erstellt eine neue Klasse als Kindklasse des Klassenschauspielers.
   
-  * In the third line, the __init__() method is created again,
-   which is called when a new Player object is created.
-   
-  * Line 4 calls the parent class init() method,
-   which initializes many things behind the scenes.
-   
-  * Row 5 then adds an image to the Player object.
+  * In Zeile 3 wird die setup()-Methode definiert, 
+  the created a new player objects aufgerufen wird.
+  
+  * In Zeile 4 wird dann das Player-Objekt ein Bild hinzugefügt.
 
-### Add the actor to the playing field
+#### Den Akteur zum Spielfeld hinzufügen
 
 
-  So far we have only created one template to create player objects.
-  Now we want to create concrete objects and add them to the playing field.
-    Add the __init__() method of the playing field class:
+  Bis jetzt haben wir nur ein Schablone erstellt, um Player-Objekte zu erzeugen.
+  Jetzt werden konkrete Objekte erzeugt und das Spielfeld hinzugefügt.
+    Ergänze to the setup() - Methode the Spielfeld-Klasse:
 
 ```
-  player1 = Player(position = (3, 3)
-```
+  Spieler1 = Spieler (Position = (3, 3, 3))
 
-
-
-Translated with www.DeepL.com/Translator
+Übersetzt mit www.DeepL.com/Translator

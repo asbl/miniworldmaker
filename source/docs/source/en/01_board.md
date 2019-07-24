@@ -1,4 +1,4 @@
-The Board
+The playing field
 =============
 
 Here we go!
@@ -10,10 +10,13 @@ We create the first world. This works with the following code:
 ```
 from miniworldmaker import *
 
+
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
+    def setup(self):
+        self.columns = 20
+        self.rows = 8
+        self.tile_size = 42
         self.add_image(path="images/soccer_green.jpg")
 
 board = MyBoard()
@@ -24,10 +27,9 @@ First a new *class* MyBoard is created. This is a child class of TiledBoard
 and allows you to build all sorts of games based on tiles.
 
   * Line 1: The **import** statement imports the miniworldmaker library.
-  * Line 3: The own playing field is created as child class of the class Tiledboard.
-  * Line 5-6: The __init__() method is called when a new object is created (i.e. here in line 7).
-  At the beginning of the __init__() method the method of the parent class is called with super().__init__(),
-  which determines the size of the playing field and the individual tiles.
+  * Line 4: The own playing field is created as child class of the class Tiledboard.
+  * Line 6: The setup() method is called when a new object is created (i.e. here in line 7).
+  * Lines 7-9: The size of the playing field is initialized.
   * Line 7: A background is added to your board. Make sure that the file is on the specified path.
 
 These two lines:
@@ -47,13 +49,12 @@ Depending on your background image, the result will look like this:
 ### Show the grid
 
 If you like, you can also have the borders of the individual tiles displayed.
-Change the method __init__() in the class MyBoard:
+Change the method setup() in the class MyBoard:
 
 ```
-    def __init__(self):
-        super().__init__(columns=20, rows=8, tile_size=42, tile_margin=1)
+    def setup()
+        ...
         self.background.grid_overlay = True
-        self.add_image(path="images/soccer_green.jpg")
 ```
 
 That's how it looks:
@@ -75,16 +76,6 @@ Most of the functions differ only slightly, since both boards are subclasses of 
    :top-classes: miniworldmaker.tokens.boards.board
    :parts: 1
 ```
-
-The two boards are created slightly differently:
-
-```
-pixel_board = PixelBoard(colums = 100, rows = 100)
-tiled_board = TiledBoard(columns = 10, rows = 10, tile_size = 5, tile_margin = 0)
-```
-
-Since the size of the individual cells is always 1, you do not have to specify the values when creating such a board.
-
 
 
 

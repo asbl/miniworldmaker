@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') \
         as f: long_description = f.read()
 
 setup(name='miniworldmaker',
-      version='0.9.9993',
+      version='0.9.90000',
       description='Create 2D Miniworlds and Games',
       long_description=long_description,
       long_description_content_type='text/markdown',

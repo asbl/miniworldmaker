@@ -43,14 +43,6 @@ class Player(Actor):
         self.inventory = []
         self.is_blocking = False
 
-    def move(self, distance=1):
-        tokens = self.sensing_tokens()
-        doors = self.sensing_tokens(token_type=Door)
-        closed_doors = [door for door in doors if door.closed is True]
-        blocking = [token for token in tokens if token.is_blocking is True]
-        if not blocking and not closed_doors and self.sensing_on_board():
-            super().move()
-
     def on_key_down(self, keys):
         if "W" in keys:
             self.point_in_direction("up")
@@ -65,33 +57,38 @@ class Player(Actor):
             self.point_in_direction("right")
             self.move()
 
-    def act(self):
-        torch = self.sensing_token(distance=0, token_type=Torch)
-        if torch:
-            message = "Du findest eine Fackel. Möchtest du sie aufheben?"
+    def on_sensing_torch(self, torch):
+        message = "Du findest eine Fackel. Möchtest du sie aufheben?"
+        choices = ["Ja", "Nein"]
+        reply = easygui.buttonbox(message, "RPG", choices)
+        if reply == "Ja":
+            self.inventory.append("Torch")
+            self.board.torch.remove()
+            self.board.console.newline("Du hebst die Fackel auf.")
+        self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+
+    def on_sensing_wall(self, wall):
+        self.move_back()
+
+    def on_sensing_door(self, door):
+        if self.board.door.closed:
+            message = "Die Tür ist geschlossen... möchtest du sie öffnen"
             choices = ["Ja", "Nein"]
             reply = easygui.buttonbox(message, "RPG", choices)
             if reply == "Ja":
-                self.inventory.append("Torch")
-                self.board.torch.remove()
-                self.board.console.newline("Du hebst die Fackel auf.")
-            self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+                self.board.door.open()
+                self.board.console.newline("Du hast das Tor geöffnet.")
+
+    def act(self):
         # look forward
-        actors_in_front = self.sensing_tokens(distance = 1, token_type = Door)
-        if self.board.door in actors_in_front:
-            if self.board.door.closed:
-                message = "Die Tür ist geschlossen... möchtest du sie öffnen"
-                choices = ["Ja", "Nein"]
-                reply = easygui.buttonbox(message, "RPG", choices)
-                if reply == "Ja":
-                    self.board.door.open()
-                    self.board.console.newline("Du hast das Tor geöffnet.")
+        actors_in_front = self.sensing_tokens(distance=1, token_type=Door)
 
 
 class Wall(Token):
 
     def on_setup(self):
         self.is_blocking = True
+        self.is_static = True
         self.add_image("rpgimages/wall.png")
 
 
@@ -99,6 +96,7 @@ class Grass(Token):
 
     def on_setup(self):
         self.add_image("rpgimages/grass.png")
+        self.is_static = True
         self.is_blocking = False
 
 

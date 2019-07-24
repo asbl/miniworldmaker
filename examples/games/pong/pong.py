@@ -52,7 +52,7 @@ class Ball(Circle):
 
     def __init__(self, position):
         super().__init__(position, 5, 0)
-        self.costume.fill_color = (255, 255, 255)
+        self.color = (255, 255, 255)
         self.speed = 5
         self.physics.gravity = False
         self.physics.mass = 1000

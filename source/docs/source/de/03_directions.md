@@ -42,7 +42,7 @@ Eine spezielle Angabe ist "forward": Im Gegensatz zu den anderen Angaben bedeute
 Setzt die Richtung des Akteurs.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: direction
    :noindex:
 ```
@@ -52,7 +52,7 @@ Setzt die Richtung des Akteurs.
 Dreht den Akteur nach links.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: turn_left
    :noindex:
 ```
@@ -62,7 +62,7 @@ Dreht den Akteur nach links.
 Dreht den Akteur nach rechts.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: turn_right
    :noindex:
 ```
@@ -72,7 +72,7 @@ Dreht den Akteur nach rechts.
 Der Akteur wird über eine zentrale y-Achse gespiegelt.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: flip_x
    :noindex:
 ```

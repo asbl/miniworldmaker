@@ -1,17 +1,33 @@
-from miniworldmaker.tools import appearance
-from miniworldmaker.tools import image_renderers as ir
+import math
+
+import pygame
+from miniworldmaker.tools import appearance as appear
 
 
-class Costume(appearance.Appearance):
+class Costume(appear.Appearance):
 
     def __init__(self, token):
         super().__init__()
-        self.parent = token #: the parent of a costume is the associated token.
-        self.is_upscaled = True
-        self.is_rotatable = True
-        self.register_action("info_overlay", ir.ImageRenderer.info_overlay)
-        self.enable_action("orientation")
-        self.is_scaled = True
+        self.parent = token  #: the parent of a costume is the associated token.
+        self._is_upscaled = True
+        self._info_overlay = False
+        self._is_rotatable = True
+        self.image_actions_pipeline.append(("info_overlay", self.image_action_info_overlay, "info_overlay"))
+
+    @property
+    def info_overlay(self):
+        return self._info_overlay
+
+    @info_overlay.setter
+    def info_overlay(self, value):
+        """
+        Shows info overlay (Rectangle around the token and Direction marker)
+        Args:
+            color: Color of info_overlay
+        """
+        self._info_overlay = value
+        self.dirty = 1
+        self.call_action("info_overlay")
 
     def update(self):
         if self.parent.board:
@@ -21,18 +37,15 @@ class Costume(appearance.Appearance):
     def set_costume(self, index):
         self._image_index = index
 
-    @property
-    def info_overlay(self):
-        return self.enabled_image_actions["info_overlay"]
-
-    @info_overlay.setter
-    def info_overlay(self, value):
-        """
-        Shows info overlay (Rectangle around the token and Direction marker)
-        Args:
-            color: Color of info_overlay
-        """
-        if value is True:
-            self.enable_action("info_overlay")
-        else:
-            self.disable_action("info_overlay")
+    def image_action_info_overlay(self, image: pygame.Surface, parent) -> pygame.Surface:
+        pygame.draw.rect(image, (255, 0, 0, 100),
+                         image.get_rect(), 4)
+        # draw direction marker on image
+        rect = parent.rect
+        center = rect.centerx - parent.x, rect.centery - parent.y
+        x = center[0] + round(math.sin(math.radians(parent.direction)) * rect.width / 2)
+        y = center[1] - round(math.cos(math.radians(parent.direction)) * rect.width / 2)
+        start_pos, end_pos = (center[0], center[1]), (x, y)
+        print(parent.position, parent.center, start_pos, end_pos)
+        pygame.draw.line(image, (255, 0, 0, 100), start_pos, end_pos, 3)
+        return image

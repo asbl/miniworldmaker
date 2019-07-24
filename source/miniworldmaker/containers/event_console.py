@@ -7,8 +7,8 @@ class EventConsole(console.Console):
 
     def __init__(self):
         super().__init__()
-        self.register_events.add("all")
-        self.register_events.add("debug")
+        self.registered_events.add("all")
+        self.registered_events.add("debug")
         self.default_size = 600
 
 

@@ -5,26 +5,28 @@ class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(tile_size=50, columns=10, rows=1, tile_margin=1)
-        player1 = Player((0, 0))
+        player1 = Fish((0, 0))
         self.add_image("images/water.png")
 
 
-class Player(Actor):
+class Fish(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def on_setup(self):
         self.add_image(path="images/fish.png")
         self.costume.orientation = - 90
         self.direction = "right"
+        print(self.__class__.__bases__)
 
     def act(self):
-        if self.sensing_on_board():
-            self.move()
-            print(self.position, self.position.is_on_board())
-        else:
-            self.flip_x()
-            self.move()
-            print(self.position, self.position.is_on_board())
+        self.move()
+
+    def on_sensing_not_on_board(self):
+        self.move_back()
+        self.flip_x()
+
+    #def on_sensing_borders(self, borders):
+    #    self.move_back()
+    #    self.flip_x()
 
 
 

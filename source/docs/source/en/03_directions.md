@@ -45,7 +45,7 @@ You can use the following functions to change the alignment of an actor:
 Sets the direction directly.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: direction
    :noindex:
 ```
@@ -55,7 +55,7 @@ Sets the direction directly.
 Turns the actor in left direction.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: turn_left
    :noindex:
 ```
@@ -65,7 +65,7 @@ Turns the actor in left direction.
 Turns the actor in right direction.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: turn_right
    :noindex:
 ```
@@ -75,7 +75,7 @@ Turns the actor in right direction.
 The actor rotates 180°. The figure is mirrored so that the actor is not upside down after the rotation.
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: flip_x
    :noindex:
 ```

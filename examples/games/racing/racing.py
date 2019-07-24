@@ -31,33 +31,34 @@ class MyBoard(PixelBoard):
     def get_event(self, event, data):
         if event == "mouse_left":
             position = BoardPosition.from_pixel(data)
-            print(position, str(self.get_color_at_board_position(position)))
 
-
-class Player(Actor):
+class Player(Token):
 
     def on_setup(self):
         self.add_image(path="images/motorcycles/motorcycle_green.png")
         self.costume.orientation = 0
+        self.size=(40,40)
         self.turn_left(180)
 
-    def get_event(self, event, data):
-        if event == "key_pressed":
-            if "A" in data:
+    def on_key_pressed(self, keys):
+            if "A" in keys:
                 self.turn_left(10)
-            if "D" in data:
+            if "D" in keys:
                 self.turn_right(10)
-            if "W" in data:
+            if "W" in keys:
                 self.move()
-                sensing_colors = self.sensing_colors(distance = 10, colors = self.board.colors)
-                if sensing_colors or not self.sensing_on_board():
-                    self.move(-self.speed)
-            if "S" in data:
+                sensing_colors = self.sensing_colors(distance = 1, colors = self.board.colors)
+                if (sensing_colors) or (not self.sensing_on_board()):
+                    self.move_back()
+            if "S" in keys:
                 self.move(-1)
-                sensing_colors = self.sensing_colors(distance = -10)
+                sensing_colors = self.sensing_colors(distance = 1, colors = self.board.colors)
                 intersections = [value for value in sensing_colors if value in self.board.colors]
                 if intersections  or not self.sensing_on_board():
                     self.move(1)
+
+    def on_mouse_left(self, pos):
+        print(pos)
 
 
 board = MyBoard(600, 400)

@@ -23,10 +23,10 @@ This means
  
  ### Methoden und Attribute
 
-Moves an actor
+Moves an token
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.actor.Actor
+.. autoclass:: miniworldmaker.tokens.token.Token
    :members: move
    :noindex:
 ```

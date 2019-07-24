@@ -18,8 +18,8 @@ class Player(Actor):
         if not self.sensing_borders(self.speed):
             self.move()
             print("scratch style", self.direction)
-            print("unit circle", self.direction_at_unit_circle,Token.dir_to_unit_circle(self.direction))
-            print("scratch style", Token.unit_circle_to_dir(Token.dir_to_unit_circle(self.direction)))
+            print("unit circle style", Token.dir_to_unit_circle(self.direction))
+            print("scratch style again", Token.unit_circle_to_dir(Token.dir_to_unit_circle(self.direction)))
 
     def get_event(self, event, data):
         if event == "key_pressed":

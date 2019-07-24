@@ -1,5 +1,3 @@
-import os
-import pygame
 from miniworldmaker.containers import container
 from miniworldmaker.containers.actionbar_widgets import *
 
@@ -25,15 +23,20 @@ class ActionBar(container.Container):
 
     def add_widget(self, widget):
         """
-        adds a widget to the toolbar
-        :param widget: A toolbar widget
-        :return:
+        Adds a widget to the toolbar
+
+        Args:
+            widget: A toolbar widget
+
+        Returns: the widget
+
         """
         widget.clear()
         widget.parent = self
         self.widgets.append(widget)
         self.dirty = 1
         widget.dirty = 1
+        return widget
 
     def repaint(self):
         self.surface = pygame.Surface((self._container_width, self._container_height))
@@ -59,12 +62,14 @@ class ActionBar(container.Container):
         if event == "mouse_left":
             actual_position = 5
             x, y = data[0], data[1]
-            if not x > self._widgets_total_width():
-                for widget in self.widgets:
-                    if actual_position + widget.width + 5 > x:
-                        return widget.get_event(event, data)
-                    else:
-                        actual_position = actual_position + widget.width + 5
+            if self.is_in_container(x, y):
+                print("get event,", self)
+                if not x > self._widgets_total_width():
+                    for widget in self.widgets:
+                        if actual_position + widget.width + 5 > x:
+                            return widget.get_event(event, data)
+                        else:
+                            actual_position = actual_position + widget.width + 5
         elif event == "board_speed_changed":
             for widget in self.widgets:
                 widget.get_event(event, data)

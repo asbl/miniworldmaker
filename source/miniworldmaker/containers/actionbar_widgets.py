@@ -177,12 +177,12 @@ class InfoButton(ActionBarWidget):
         if event == "mouse_left":
             if self.state is False:
                 for token in self.board.tokens:
-                    token.costume.info_overlay = False
+                    token.costume.info_overlay = True
                     self.state = True
 
             else:
                 for token in self.board.tokens:
-                    token.costume.info_overlay = True
+                    token.costume.info_overlay = False
                     self.state = False
 
 
@@ -190,7 +190,7 @@ class SpeedLabel(ActionBarWidget):
 
     def __init__(self, board):
         super().__init__(board)
-        self.set_text(str(board.speed))
+        self.set_text(str(board.fps))
         self.event = "button"
         self.data = self._text
         self.width = 30
@@ -198,7 +198,7 @@ class SpeedLabel(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "board_speed_changed":
-            self._text = str(self.board.speed)
+            self._text = str(self.board.fps)
             self.dirty = 1
 
 
@@ -215,7 +215,7 @@ class SpeedDownButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.board.speed -= 1
+            self.board.fps -= 1
 
 
 class SpeedUpButton(ActionBarWidget):
@@ -231,4 +231,4 @@ class SpeedUpButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.board.speed += 1
+            self.board.fps += 1
