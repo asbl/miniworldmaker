@@ -83,15 +83,15 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_english.html">Tutorial English</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="en/00_installation.html">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="en/01_board.html">The Board</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="en/01_board.html">The playing field</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="en/01_board.html#a-first-world">A first world</a></li>
 <li class="toctree-l3"><a class="reference internal" href="en/01_board.html#show-the-grid">Show the grid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="en/01_board.html#pixelboards-and-tiledboards">PixelBoards and TiledBoards</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="en/02_actors.html">Actors</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#create-a-new-actor-class">Create a new Actor class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#add-the-actor-to-the-playing-field">Add the actor to the playing field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="en/02_actors.html">Akteure</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#eine-neue-actor-klasse-erstellen">Eine neue Actor-Klasse erstellen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/02_actors.html#den-akteur-zum-spielfeld-hinzufugen">Den Akteur zum Spielfeld hinzufügen</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="en/03_directions.html">Directions</a><ul>
@@ -112,7 +112,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="en/05_sensing.html">Sensing</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="en/05_sensing.html#sensing-tokens">Sensing Tokens</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/05_sensing.html#example">Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="en/05_sensing.html#functions-to-find-objects">Functions to find objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="en/05_sensing.html#sensing-tokens">Sensing Tokens</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en/05_sensing.html#sensing-token">Sensing Token</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en/05_sensing.html#sensing-border">Sensing Border</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en/05_sensing.html#id1">Sensing Border</a></li>
+<li class="toctree-l4"><a class="reference internal" href="en/05_sensing.html#sensing-color">Sensing Color</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="en/06_events.html">events</a><ul>
@@ -438,13 +446,11 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.act">act() (miniworldmaker.boards.board.Board method)</a>
-
-      <ul>
-        <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.act">(miniworldmaker.tokens.actor.Actor method)</a>
-</li>
-      </ul></li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor">Actor (class in miniworldmaker.tokens.actor)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.add">add() (miniworldmaker.boards.board_position.BoardPosition method)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.add_background">add_background() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.add_costume">add_costume() (miniworldmaker.tokens.token.Token method)</a>
 </li>
@@ -463,10 +469,6 @@
       <ul>
         <li><a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard.add_to_board">(miniworldmaker.boards.tiled_board.TiledBoard method)</a>, <a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard.add_to_board">[1]</a>
 </li>
-        <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.add_to_board">(miniworldmaker.tokens.actor.Actor method)</a>
-</li>
-        <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.add_to_board">(miniworldmaker.tokens.token.Token method)</a>
-</li>
       </ul></li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.animation_speed">animation_speed (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
@@ -480,15 +482,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/appearances.html#miniworldmaker.boards.background.Background">Background (class in miniworldmaker.boards.background)</a>
 </li>
+      <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.blit">blit() (miniworldmaker.tools.appearance.Appearance method)</a>
+</li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board">Board (class in miniworldmaker.boards.board)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition">BoardPosition (class in miniworldmaker.boards.board_position)</a>
 </li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.bounce_from_border">bounce_from_border() (miniworldmaker.tokens.token.Token method)</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.borders">borders() (miniworldmaker.boards.board_position.BoardPosition method)</a>
+
+      <ul>
+        <li><a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard.borders">(miniworldmaker.boards.tiled_board.TiledBoard method)</a>, <a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard.borders">[1]</a>
 </li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.bounce_from_token">bounce_from_token() (miniworldmaker.tokens.actor.Actor method)</a>
+      </ul></li>
+      <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.bounce_from_border">bounce_from_border() (miniworldmaker.tokens.token.Token method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -504,10 +512,14 @@
 </li>
       <li><a href="modules/processing.html#miniworldmaker.tokens.shapes.Circle">Circle (class in miniworldmaker.tokens.shapes)</a>
 </li>
+      <li><a href="modules/physics.html#miniworldmaker.physics.physics.PhysicsProperty.collision_types">collision_types (miniworldmaker.physics.physics.PhysicsProperty attribute)</a>
+</li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.color">color (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.color">color() (miniworldmaker.boards.board_position.BoardPosition method)</a>
+</li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.color_at">color_at() (miniworldmaker.tools.appearance.Appearance method)</a>
 </li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.columns">columns (miniworldmaker.boards.board.Board attribute)</a>
@@ -526,7 +538,7 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.default_actor_speed">default_actor_speed (miniworldmaker.boards.board.Board attribute)</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.default_token_speed">default_token_speed (miniworldmaker.boards.board.Board attribute)</a>
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.dir_to_unit_circle">dir_to_unit_circle() (miniworldmaker.tokens.token.Token static method)</a>
 </li>
@@ -554,21 +566,29 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.fill">fill() (miniworldmaker.boards.board.Board method)</a>
-</li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.fill_color">fill_color (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.flip_x">flip_x() (miniworldmaker.tokens.token.Token method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.font_path">font_path (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.font_size">font_size (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.fps">fps (miniworldmaker.boards.board.Board attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/physics.html#miniworldmaker.physics.physics.PhysicsProperty.friction">friction (miniworldmaker.physics.physics.PhysicsProperty attribute)</a>
 </li>
+      <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.from_center">from_center() (miniworldmaker.tokens.token.Token class method)</a>
+</li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.from_db">from_db() (miniworldmaker.boards.board.Board class method)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.from_float">from_float() (miniworldmaker.boards.board_position.BoardPosition class method)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.from_pixel">from_pixel() (miniworldmaker.boards.board_position.BoardPosition class method)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.from_tuple">from_tuple() (miniworldmaker.boards.board_position.BoardPosition class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -576,7 +596,7 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_event">get_event() (miniworldmaker.boards.board.Board method)</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_colors_at_line">get_colors_at_line() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_mouse_position">get_mouse_position() (miniworldmaker.boards.board.Board method)</a>
 </li>
@@ -588,9 +608,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.text_token.TextToken.get_text">get_text() (miniworldmaker.tokens.text_token.TextToken method)</a>
 </li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_tokens_by_pixel">get_tokens_by_pixel() (miniworldmaker.boards.board.Board method)</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_tokens_at_rect">get_tokens_at_rect() (miniworldmaker.boards.board.Board method)</a>
 </li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_tokens_in_area">get_tokens_in_area() (miniworldmaker.boards.board.Board method)</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.get_tokens_by_pixel">get_tokens_by_pixel() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/physics.html#miniworldmaker.physics.physics.PhysicsProperty.gravity">gravity (miniworldmaker.physics.physics.PhysicsProperty attribute)</a>
 </li>
@@ -622,6 +642,8 @@
         <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.image">(miniworldmaker.tokens.token.Token attribute)</a>
 </li>
       </ul></li>
+      <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.image_action_color_mixture">image_action_color_mixture() (miniworldmaker.tools.appearance.Appearance method)</a>
+</li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.number_token.NumberToken.inc">inc() (miniworldmaker.tokens.number_token.NumberToken method)</a>
 </li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.is_animated">is_animated (miniworldmaker.tools.appearance.Appearance attribute)</a>
@@ -636,7 +658,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.is_on_board">is_on_board() (miniworldmaker.boards.board_position.BoardPosition method)</a>
 </li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.is_position_on_board">is_position_on_board() (miniworldmaker.tokens.token.Token method)</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.is_position_on_board">is_position_on_board() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.is_rotatable">is_rotatable (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
@@ -659,8 +681,6 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/processing.html#miniworldmaker.tokens.shapes.Line">Line (class in miniworldmaker.tokens.shapes)</a>
-</li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.look">look() (miniworldmaker.tokens.actor.Actor method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -686,10 +706,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.near">near() (miniworldmaker.boards.board_position.BoardPosition method)</a>
 </li>
-      <li><a href="modules/appearances.html#miniworldmaker.boards.background.Background.next_sprite">next_sprite() (miniworldmaker.boards.background.Background method)</a>
+      <li><a href="modules/appearances.html#miniworldmaker.boards.background.Background.next_image">next_image() (miniworldmaker.boards.background.Background method)</a>
 
       <ul>
-        <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.next_sprite">(miniworldmaker.tools.appearance.Appearance method)</a>
+        <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.next_image">(miniworldmaker.tools.appearance.Appearance method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -702,22 +722,6 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_key_down">on_key_down() (miniworldmaker.boards.board.Board method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_key_pressed">on_key_pressed() (miniworldmaker.boards.board.Board method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_key_up">on_key_up() (miniworldmaker.boards.board.Board method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_mouse_left">on_mouse_left() (miniworldmaker.boards.board.Board method)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_mouse_motion">on_mouse_motion() (miniworldmaker.boards.board.Board method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_mouse_right">on_mouse_right() (miniworldmaker.boards.board.Board method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.on_setup">on_setup() (miniworldmaker.boards.board.Board method)</a>
-</li>
       <li><a href="modules/appearances.html#miniworldmaker.tools.appearance.Appearance.orientation">orientation (miniworldmaker.tools.appearance.Appearance attribute)</a>
 </li>
   </ul></td>
@@ -762,20 +766,16 @@
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.rect">rect (miniworldmaker.tokens.token.Token attribute)</a>
 </li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.register_event_handlers">register_event_handlers() (miniworldmaker.boards.board.Board method)</a>
+</li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.register_sound">register_sound() (miniworldmaker.boards.board.Board method)</a>
-</li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.remove">remove() (miniworldmaker.tokens.token.Token method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.remove_actors_from_area">remove_actors_from_area() (miniworldmaker.boards.board.Board method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.remove_from_board">remove_from_board() (miniworldmaker.boards.board.Board method)</a>
-
-      <ul>
-        <li><a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard.remove_from_board">(miniworldmaker.boards.tiled_board.TiledBoard method)</a>, <a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard.remove_from_board">[1]</a>
+      <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.remove">remove() (miniworldmaker.tokens.token.Token method)</a>
 </li>
-      </ul></li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.remove_tokens_from_rect">remove_tokens_from_rect() (miniworldmaker.boards.board.Board method)</a>
+</li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.reset">reset() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.right">right() (miniworldmaker.boards.board_position.BoardPosition method)</a>
@@ -790,19 +790,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.save_to_db">save_to_db() (miniworldmaker.boards.board.Board method)</a>
 </li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.sensing_borders">sensing_borders() (miniworldmaker.tokens.actor.Actor method)</a>
-</li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.sensing_colors">sensing_colors() (miniworldmaker.tokens.actor.Actor method)</a>
-</li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.sensing_on_board">sensing_on_board() (miniworldmaker.tokens.actor.Actor method)</a>
-</li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.sensing_token">sensing_token() (miniworldmaker.tokens.actor.Actor method)</a>
-</li>
-      <li><a href="modules/tokens.html#miniworldmaker.tokens.actor.Actor.sensing_tokens">sensing_tokens() (miniworldmaker.tokens.actor.Actor method)</a>
-</li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.number_token.NumberToken.set_number">set_number() (miniworldmaker.tokens.number_token.NumberToken method)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.set_size">set_size() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.text_token.TextToken.set_text">set_text() (miniworldmaker.tokens.text_token.TextToken method)</a>
 </li>
@@ -814,15 +802,13 @@
         <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.setup_physics">(miniworldmaker.tokens.token.Token method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/physics.html#miniworldmaker.physics.physics.PhysicsProperty.shape_type">shape_type (miniworldmaker.physics.physics.PhysicsProperty attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.show">show() (miniworldmaker.boards.board.Board method)</a>
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token.size">size (miniworldmaker.tokens.token.Token attribute)</a>
-</li>
-      <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.speed">speed (miniworldmaker.boards.board.Board attribute)</a>
 </li>
       <li><a href="modules/physics.html#miniworldmaker.physics.physics.PhysicsProperty.stable">stable (miniworldmaker.physics.physics.PhysicsProperty attribute)</a>
 </li>
@@ -852,9 +838,15 @@
 </li>
       <li><a href="modules/boards.html#miniworldmaker.boards.board.Board.tile_size">tile_size (miniworldmaker.boards.board.Board attribute)</a>
 </li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard">TiledBoard (class in miniworldmaker.boards.tiled_board)</a>, <a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard">[1]</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard">TiledBoard (class in miniworldmaker.boards.tiled_board)</a>, <a href="modules/boards.html#miniworldmaker.boards.tiled_board.TiledBoard">[1]</a>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.to_pixel">to_pixel() (miniworldmaker.boards.board_position.BoardPosition method)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.to_rect">to_rect() (miniworldmaker.boards.board_position.BoardPosition method)</a>
+</li>
+      <li><a href="modules/boards.html#miniworldmaker.boards.board_position.BoardPosition.to_tuple">to_tuple() (miniworldmaker.boards.board_position.BoardPosition method)</a>
 </li>
       <li><a href="modules/tokens.html#miniworldmaker.tokens.token.Token">Token (class in miniworldmaker.tokens.token)</a>
 </li>

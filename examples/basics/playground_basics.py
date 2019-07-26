@@ -14,8 +14,9 @@ class MyBoard(TiledBoard):
 
 class Player(Actor):
 
-    def setup(self):
+    def on_setup(self):
         self.add_image(path="images/char_blue.png")
+        print("player setup<s")
 
 board = MyBoard()
 board.show()

@@ -146,10 +146,11 @@ class Board(container.Container):
             token = self.setup_tokens.popleft()
             if not token.setup_completed:
                 if not token.setup_completed:
-                    print(self.registered_event_handlers_for_tokens)
-                    if "setup" in self.registered_event_handlers_for_tokens[token]:
-                        self.registered_event_handlers_for_tokens[token]["setup"](**token.kwargs)
-                    token.setup_completed = True
+                    print("call token setups", self.registered_event_handlers_for_tokens)
+                    if "setup" in self.registered_event_handlers_for_tokens[token.__class__]:
+                        self.registered_event_handlers_for_tokens[token.__class__]["setup"](token, **token.kwargs)
+                        print("setup called")
+                        token.setup_completed = True
                 token.dirty = 1
             token.setup_completed = True
 
