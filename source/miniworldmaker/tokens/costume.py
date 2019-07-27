@@ -46,6 +46,5 @@ class Costume(appear.Appearance):
         x = center[0] + round(math.sin(math.radians(parent.direction)) * rect.width / 2)
         y = center[1] - round(math.cos(math.radians(parent.direction)) * rect.width / 2)
         start_pos, end_pos = (center[0], center[1]), (x, y)
-        print(parent.position, parent.center, start_pos, end_pos)
         pygame.draw.line(image, (255, 0, 0, 100), start_pos, end_pos, 3)
         return image

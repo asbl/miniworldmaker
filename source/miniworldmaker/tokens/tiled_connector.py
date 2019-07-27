@@ -63,7 +63,7 @@ class TiledBoardConnector(board_connector.BoardConnector):
         target = self.get_destination(self.token.position, self.token.direction, distance)
         self._update_token_positions()
         token_list = []
-        if self.board.on_board(self.token.rect):
+        if self.board.on_board(self.token.position):
             position = self.token.position
             if self.board.dynamic_tokens_dict[position.x, position.y]:
                 token_list.extend(self.board.dynamic_tokens_dict[(position.x, position.y)])

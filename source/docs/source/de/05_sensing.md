@@ -1,6 +1,9 @@
 Aufspüren
 ==========
 
+Aktives Aufspüren
+-----------------
+
 Ein Akteur kann aufspüren, ob sich an seiner Position oder vor 
 ihm andere Akteure usw. befinden.
 
@@ -23,6 +26,14 @@ actors_in_front = self.sensing_tokens(distance = 1, token = Door)
             if self.board.door.closed:
                 message = "The Door is closes"
 ```
+
+Aufspüren über Event-Methoden
+-----------------------------
+
+Alternativ kann man auch Event-Methoden implementieren: 
+Die Methode on_sensing_xy wird aufgerufen, jedesmal dann, wenn ein Akteur etwas bestimmtes aufspürt.
+
+--> Siehe dazu auch [events](()06_events.md)
 
 ### Funktionen zum Aufspüren von Objekten
 

@@ -1,7 +1,10 @@
 Ereignisse
 ===========
 
-Es gibt zwei wichtige Methoden, die du mit Inhalten füllen kannst:
+Es gibt mehrere wichtige Methoden, die du mit Inhalten füllen kannst:
+
+Spezielle Event-Methoden
+-------------------------
 
 ### Die act() - Methode
 
@@ -16,6 +19,18 @@ Hier kannst du Code platzieren, der immer wieder ausgeführt werden soll, z.B.:
 
 Der Actor schaut ein Feld nach vorne und überprüft, ob dieses noch auf dem Spielfeld liegt. 
 Wenn ja, geht er ein Feld vorwärts. Andernfalls dreht er sich um 90° nach links.
+
+### Sensing-Methoden
+
+Jedesmal, wenn ein Akteur etwas anderes aufspürt, werden seine entsprechenden sensing-Methoden aufgerufen:
+
+  * **on_sensing_tokens(token_list)**: Spürt alle Tokens am selben Ort auf.
+  * **on_sensing_borders(borders)**: Gibt eine Liste mit Rändern zurück, die zur Zeit berührt werden (z.B. ["right", "top"]
+  * **on_sensing_on_board()**: Wird aufgerufen, wenn der Akteur sich auf dem Spielfeld befindet.
+  * **on_sensing_not_on_board()**: Wird aufgerufen, wenn sich der Akteur nicht auf dem Spielfeld befindet.
+  
+Allgemeines Event-Handling mit der get_event-Methode
+----------------------------------------------------
 
 ### Die get_event(event, data)-Methode
 

@@ -49,7 +49,6 @@ class PixelBoard(bd.Board):
 
         """
 
-
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
         tk.Token, list]:
         """Returns all tokens that collide with a rectangle.

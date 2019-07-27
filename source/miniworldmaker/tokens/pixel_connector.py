@@ -25,6 +25,8 @@ class PixelBoardConnector(board_connector.BoardConnector):
         for i in range(distance + 1):
             target_rect = self.get_destination_rect(distance)
             borders = target_rect.borders()
+        if borders:
+            return borders
         else:
             return []
 

@@ -1,5 +1,5 @@
-from miniworldmaker import *
 import easygui
+from miniworldmaker import *
 
 
 class MyBoard(TiledBoard):
@@ -24,7 +24,7 @@ class Player(Actor):
 
     def move(self, distance=1):
         tokens = self.sensing_tokens()
-        doors = self.sensing_tokens(token=Door)
+        doors = self.sensing_tokens(token_type=Door)
         closed_doors = [door for door in doors if door.closed is True]
         blocking = [token for token in tokens if token.is_blocking is True]
         if not blocking and not closed_doors and self.sensing_on_board():
@@ -46,14 +46,14 @@ class Player(Actor):
                 self.point_in_direction("right")
                 self.move()
         if event == "button" and data == "Fackel":
-            fireplace = self.sensing_token(distance=0, token=Fireplace)
+            fireplace = self.sensing_token(distance=0, token_type=Fireplace)
             if fireplace:
 
                 self.board.console.newline("Du zündest die Feuerstelle an.")
                 self.board.fireplace.burn()
 
     def act(self):
-        torch = self.sensing_token(distance=0, token=Torch)
+        torch = self.sensing_token(distance=0, token_type=Torch)
         if torch:
             message = "Du findest eine Fackel. Möchtest du sie aufheben?"
             choices = ["Ja", "Nein"]
@@ -64,7 +64,7 @@ class Player(Actor):
                 self.board.console.newline("Du hebst die Fackel auf.")
             self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
         # look forward
-        actors_in_front = self.sensing_tokens(distance = 1, token = Door)
+        actors_in_front = self.sensing_tokens(distance = 1, token_type = Door)
         if self.board.door:
             if self.board.door in actors_in_front:
                 if self.board.door.closed:

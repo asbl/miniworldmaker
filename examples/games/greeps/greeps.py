@@ -191,40 +191,37 @@ class Greep(Actor):
         self.point_towards_position(self.board.ship.position)
 
     def spit(self, color):
-
-        if color == "red":
-            paint = Paint(position = self.position, color = color)
-        if color == "green":
-            paint = Paint(position = self.position, color = color)
-        if color == "blue":
-            paint = Paint(position=self.position, color = color)
+        marker = Marker(position=self.position)
+        marker.color = color
 
 
+class Marker(Token):
 
-class Paint(Token):
-
-    def on_setup(self, color):
+    def on_setup(self):
         self.add_image("images/paint.png")
         self.intensity = 255
-        self.costume.coloring = (255, 0, 0, self.intensity)
+        self.color = ""
         self.time = 0
-        self.color = color
 
-    def update(self):
-        super().update()
-        self.time = self.time + 1
-        if self.time % 50 == 0 and self.time > 0:
-            self.intensity = self.intensity % 2
-            if self.color == "red":
-                self.costume.color((255, 0, 0, self.intensity))
-            if self.color == "green":
-                self.costume.color((0, 255, 0, self.intensity))
-            if self.color == "blue":
-                self.costume.color((0, 0, 255, self.intensity))
-            self.dirty = 1
-            if self.intensity < 50:
+    def act(self):
+        self.time += 1
+        if self.time == 1:
+            self.colorize()
+        elif self.time % 30 == 0 and self.time > 0:
+            self.intensity /= 2
+            self.colorize()
+            if self.intensity < 60:
                 self.remove()
 
+    def colorize(self):
+        if self.color == "red":
+            self.costume.color = (255, 0, 0, self.intensity)
+        elif self.color == "green":
+            self.costume.color = (0, 255, 0, self.intensity)
+        elif self.color == "blue":
+            self.costume.color = (0, 0, 255, self.intensity)
+        self.costume.coloring = True
+        self.costume.call_action("coloring")
 
 earth = Earth()
 earth.show()

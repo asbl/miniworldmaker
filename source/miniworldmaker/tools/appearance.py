@@ -35,6 +35,7 @@ class Appearance:
         self._text = ""
         self._coloring = None  # Color for colorize operation
         self.draw_shapes = []
+        # "Action name", image_action_method, "Attribute", default value)
         self.image_preprocess_pipeline = [("orientation", self.image_action_set_orientation, "orientation", None), ]
         self.image_actions_pipeline = [("texture", self.image_action_texture, "is_textured", False),
                                        ("write_text", self.image_action_write_text, "text", False),
@@ -42,7 +43,7 @@ class Appearance:
                                        ("upscale", self.image_action_upscale, "is_upscaled", False),
                                        ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
                                        ("flip", self.image_action_flip, "is_flipped", False),
-                                       ("colorize", self.image_action_color_mixture, "coloring", False),
+                                       ("coloring", self.image_action_coloring, "coloring", False),
                                        ("rotate", self.image_action_rotate, "is_rotatable", False),
                                        ]
         self.fill_color = (0, 0, 255, 255)  #: background_color if actor has no background image
@@ -130,8 +131,8 @@ class Appearance:
         return self._coloring
 
     @coloring.setter
-    def coloring(self, color):
-        self._coloring = color
+    def coloring(self, value):
+        self._coloring = value
         self.dirty = 1
 
     @property
@@ -238,6 +239,7 @@ class Appearance:
         if self.dirty == 1:
             if self.images_list and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]  # if there is a image list load image by index
+                # Preprocess pipeline
                 if not self._image_index in self.preprocessed.keys() or not self.preprocessed[self._image_index]:
                     for action in self.image_preprocess_pipeline:
                         if getattr(self, action[2]):
@@ -246,12 +248,12 @@ class Appearance:
                     self.preprocessed[self._image_index] = True
             else:  # no image files - Render raw surface
                 image = self.load_surface()
+            # image action pipeline
             for action in self.image_actions_pipeline:
-                if self.dirty == 1:
-                    if getattr(self, action[2]):
-                        if self.parent.size != (0, 0):
-                            image = action[1](image, parent=self.parent)
-                    self.parent.dirty = 1
+                if getattr(self, action[2]):
+                    if self.parent.size != (0, 0):
+                        image = action[1](image, parent=self.parent)
+                self.parent.dirty = 1
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
             self._image = image
@@ -331,6 +333,7 @@ class Appearance:
         self.call_image_actions[action] = True
         self.dirty = 1
         self.parent.dirty = 1
+        return self.image
 
     def image_action_texture(self, image, parent):
         background = pygame.Surface(parent.size)
@@ -375,7 +378,7 @@ class Appearance:
     def image_action_flip(self, image: pygame.Surface, parent) -> pygame.Surface:
         return pygame.transform.flip(image, self.is_flipped, False)
 
-    def image_action_color_mixture(self, image: pygame.Surface, parent) -> pygame.Surface:
+    def image_action_coloring(self, image: pygame.Surface, parent) -> pygame.Surface:
         """
         Create a "colorized" copy of a surface (replaces RGB values with the given color, preserving the per-pixel alphas of
         original).
@@ -386,9 +389,12 @@ class Appearance:
         """
         image = image.copy()
         # zero out RGB values
-        image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)
+        image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT) # Fill black
         # add in new RGB values
-        image.fill(self.coloring[0:3] + (0,), None, pygame.BLEND_RGBA_ADD)
+        new_color = self.color [0:3] + (0,)
+        image.fill(new_color, None, pygame.BLEND_RGBA_ADD) # Add color
+        new_color = (255, 255,255) + (self.color[3],)
+        image.fill(new_color, None, pygame.BLEND_RGBA_MULT) # Multiply transparency
         return image
 
     @staticmethod

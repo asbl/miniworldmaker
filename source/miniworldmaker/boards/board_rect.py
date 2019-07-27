@@ -25,7 +25,6 @@ class BoardRect(pygame.Rect):
             borders.append("right")
         if self.topleft[1] <= 0:
             borders.append("top")
-        print(borders)
         return borders
 
     def is_on_board(self):

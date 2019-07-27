@@ -37,11 +37,16 @@ class Token(pygame.sprite.DirtySprite):
         self.init = 1
         self.speed = 0
         self.setup_physics()
-        self.board = miniworldwindow.MiniWorldWindow.board
         self.kwargs = kwargs
+        self.board = miniworldwindow.MiniWorldWindow.board
         self._orientation = 0
         self.board_connector = None
         self.board.add_to_board(self, self.position)
+        if hasattr(self, "on_setup"):
+            self.on_setup(**kwargs)
+        if hasattr(self, "setup"):
+            self.setup(**kwargs)
+        self.setup_completed = True
         self._dirty = 1
 
     @classmethod
@@ -321,26 +326,7 @@ class Token(pygame.sprite.DirtySprite):
             The new direction
 
         """
-        pos = self.rect.center
-        x = (destination[0] - pos[0])
-        y = (destination[1] - pos[1])
-        if x != 0:
-            m = y / x
-            if x < 0:
-                # destination is left
-                self.direction = self.unit_circle_to_dir(math.degrees(math.atan(m)) - 180)
-            else:
-                # destination is right
-                self.direction = self.unit_circle_to_dir(math.degrees(math.atan(m)))
-            return self.direction
-        else:
-            m = 0
-            if destination[1] > self.position[1]:
-                self.direction = 180
-                return self.direction
-            else:
-                self.direction = 0
-                return self.direction
+        return self.board_connector.point_towards_position(destination)
 
     def point_towards_token(self, other) -> int:
         """

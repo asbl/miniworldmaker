@@ -86,7 +86,7 @@ class TiledBoard(Board):
         elif type(parameter) == board_position.BoardPosition:
             pos = parameter
         elif type(parameter) == pygame.Rect:
-            pos = board_position.BoardPosition.from_rect(value)
+            pos = board_position.BoardPosition.from_rect(parameter)
         else:
             raise TypeError("Parameter must be tuple, BoardPosition or Rect")
         return parameter

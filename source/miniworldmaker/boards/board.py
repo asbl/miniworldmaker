@@ -146,10 +146,8 @@ class Board(container.Container):
             token = self.setup_tokens.popleft()
             if not token.setup_completed:
                 if not token.setup_completed:
-                    print("call token setups", self.registered_event_handlers_for_tokens)
                     if "setup" in self.registered_event_handlers_for_tokens[token.__class__]:
                         self.registered_event_handlers_for_tokens[token.__class__]["setup"](token, **token.kwargs)
-                        print("setup called")
                         token.setup_completed = True
                 token.dirty = 1
             token.setup_completed = True
@@ -526,8 +524,6 @@ class Board(container.Container):
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
 
-
-
     def handle_event(self, event, data=None):
         self._call_all_token_setups()
         # calls all registered event handlers of tokens
@@ -565,21 +561,21 @@ class Board(container.Container):
                     if borders:
                         method = getattr(token, 'on_sensing_borders'.lower())
                         if callable(method):
-                            print("on_sensing_borders")
-                            method(borders)
+                            try:
+                                method(borders)
+                            except TypeError:
+                                raise TypeError ("Wrong number of arguments for on_sensing_borders(self, borders) in Token. Should be 1 Argument")
                 elif coll_class == "not_on_board":
                     on_board = token.sensing_on_board()
                     if not on_board:
                         method = getattr(token, 'on_sensing_not_on_board'.lower())
                         if callable(method):
-                            print("on_sensing_not_on_board")
                             method()
                 elif coll_class == "on_board":
                     on_board = token.sensing_on_board()
                     if on_board:
                         method = getattr(token, 'on_sensing_on_board'.lower())
                         if callable(method):
-                            print("on_sensing_on_board")
                             method()
 
     def save_to_db(self, file):

@@ -59,14 +59,15 @@ class Pipe(Token):
 
     def act(self):
         self.move_in_direction("left")
+        if self.position.x < 75 and self.passed is False:
+            self.passed = True
+            self.board.score.inc()
 
     def on_sensing_borders(self, borders):
         if "left" in borders:
             self.move_to(position=BoardPosition(self.position.x + random.randint(750, 800), self.y))
             self.passed = False
-        if self.position.x < 75 and self.passed is False:
-            self.passed = True
-            self.board.score.inc()
+
 
 
 board = MyBoard(800, 600)
