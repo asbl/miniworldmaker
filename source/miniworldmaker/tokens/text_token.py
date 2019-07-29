@@ -31,6 +31,7 @@ class TextToken(token.Token):
             text: The text
         """
         self.costume.text = text
+        self.costume.call_action(("text"))
 
     def get_text(self):
         """

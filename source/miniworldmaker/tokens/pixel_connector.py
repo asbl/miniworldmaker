@@ -101,7 +101,7 @@ class PixelBoardConnector(board_connector.BoardConnector):
 
         """
         angle = self.token.direction
-        self.token.move(-self.token.fps)
+        self.token.move(-self.token.speed)
         self.token.point_towards_token(other)
         incidence = self.token.direction - angle
         self.token.turn_left(180 - incidence)

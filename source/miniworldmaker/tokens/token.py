@@ -1,3 +1,4 @@
+import inspect
 import math
 from typing import Union
 
@@ -8,12 +9,32 @@ from miniworldmaker.tokens import costume
 from miniworldmaker.windows import miniworldwindow
 
 
-class Token(pygame.sprite.DirtySprite):
+class Meta(type):
+    def __call__(cls, *args, **kwargs):
+        try:
+            instance = super().__call__(*args, **kwargs)
+        except TypeError:
+            raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+        if hasattr(instance, "setup_physics"):
+            instance.physics = ph.PhysicsProperty()
+            if hasattr(instance, "set_physics_default_values"):
+                instance.set_physics_default_values()
+            instance.setup_physics()
+            instance._start_physics()
+        if hasattr(instance, "on_setup"):
+            instance.on_setup()
+        if hasattr(instance, "setup"):
+            instance.setup()
+        return instance
+
+
+class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     token_count = 0
     class_image = None
+    class_id = 0
 
-    def __init__(self, position=None, **kwargs):
-        super().__init__()
+    def __init__(self, position=None):
+        pygame.sprite.DirtySprite.__init__(self)
         self.setup_completed = False
         self.board = miniworldwindow.MiniWorldWindow.board
         self.costume = None
@@ -36,17 +57,10 @@ class Token(pygame.sprite.DirtySprite):
         self.costume.is_upscaled = True
         self.init = 1
         self.speed = 0
-        self.setup_physics()
-        self.kwargs = kwargs
         self.board = miniworldwindow.MiniWorldWindow.board
         self._orientation = 0
         self.board_connector = None
         self.board.add_to_board(self, self.position)
-        if hasattr(self, "on_setup"):
-            self.on_setup(**kwargs)
-        if hasattr(self, "setup"):
-            self.setup(**kwargs)
-        self.setup_completed = True
         self._dirty = 1
 
     @classmethod
@@ -351,12 +365,13 @@ class Token(pygame.sprite.DirtySprite):
 
     @size.setter
     def size(self, value: tuple):
-        self._size = value
-        self.dirty = 1
-        if hasattr(self, "costume"):
-            self.costume.call_action("scale")
-        if hasattr(self, "physics") and self.physics:
-            self.physics.dirty = 1
+        if value!= self._size:
+            self._size = value
+            self.dirty = 1
+            if hasattr(self, "costume"):
+                self.costume.call_action("scale")
+            if hasattr(self, "physics") and self.physics:
+                self.physics.reload_physics()
 
     @property
     def width(self):
@@ -536,7 +551,7 @@ class Token(pygame.sprite.DirtySprite):
     def remove(self):
         """Removes this actor from board
         """
-        if self.board:
+        if hasattr(self,  "board") and self.board:
             self.board_connector.remove_from_board()
         if self.physics:
             self.physics.remove()
@@ -546,45 +561,13 @@ class Token(pygame.sprite.DirtySprite):
         self.kill()
         del (self)
 
-    def start_physics(self):
+    def _start_physics(self):
         """
         Starts the physics engine.
-        The following values can be changed BEFORE calling this method:
-
-        self.physics.can_move = True
-        self.physics.shape_type = "rect"
-        self.physics.gravity = True
-        self.physics.mass = 1
-        self.physics.elasticity = 0
-        self.physics.stable = True
-        self.physics.friction = 10
-
         """
+        self.physics.token = self
+        self.physics.setup_physics_model()
         self.physics.start_physics()
-
-    def setup_physics(self):
-        """
-        Setups physics engine. Is called with init and should be called BEFORE start_physics
-        These are the standard-values:
-
-        self.physics.token = self
-        self.physics.can_move = True
-        self.physics.shape_type = "rect"
-        self.physics.gravity = True
-        self.physics.mass = 1
-        self.physics.elasticity = 0
-        self.physics.stable = True
-        self.physics.friction = 10
-        """
-        self.physics = ph.PhysicsProperty()
-        self.physics.token = self
-        self.physics.can_move = True
-        self.physics.shape_type = "rect"
-        self.physics.gravity = True
-        self.physics.mass = 1
-        self.physics.elasticity = 0
-        self.physics.stable = True
-        self.physics.friction = 10
 
     def flip_x(self) -> int:
         """Flips the actor by 180° degrees

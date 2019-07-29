@@ -27,6 +27,7 @@ class MyBoard(TiledBoard):
     def on_mouse_left(self, mouse_pos):
         if not self.placed:
             position = self.get_board_position_from_pixel(mouse_pos)
+            print(position)
             if not position == (1, 1):
                 self.chip = Chip(position)
                 if self.chip:

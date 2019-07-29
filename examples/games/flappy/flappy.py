@@ -24,9 +24,11 @@ class Bird(Token):
     def on_setup(self):
         self.add_image("images/fly.png")
         self.size = (60, 60)
-        self.start_physics()
         self.costume.orientation = 180
         self.flip_x()
+
+    def setup_physics(self):
+        pass
 
     def act(self):
         pass

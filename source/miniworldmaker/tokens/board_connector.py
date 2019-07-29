@@ -25,7 +25,6 @@ class BoardConnector():
         pos = self.token.rect.center
         x = (destination[0] - pos[0])
         y = (destination[1] - pos[1])
-        print(pos, (x,y))
         if x != 0:
             m = y / x
             if x < 0:
@@ -33,7 +32,6 @@ class BoardConnector():
                 self.token.direction =  (math.degrees(math.atan(m)) - 90 )
             else:
                 # destination is right
-                print(math.degrees(math.atan(m)))
                 self.token.direction = math.degrees(math.atan(m) + 90)
             return self.token.direction
         else:

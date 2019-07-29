@@ -58,21 +58,24 @@ class Arrow(Actor):
 class Plattform(Token):
 
     def on_setup(self):
-        self.physics.gravity = False
-        self.physics.can_move = False
-        self.physics.friction = 0.5
         self.add_image("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
-        self.start_physics()
+
+    def setup_physics(self):
+        self.physics.gravity = False
+        self.physics.can_move = False
+        self.physics.friction = 0.5
+
 
 class Box(Actor):
 
     def on_setup(self):
         self.add_image("images/box_blue.png")
         self.size = (40, 40)
+
+    def setup_physics(self):
         self.physics.friction = 0.1
-        self.start_physics()
 
 
 class Bird(Actor):
@@ -82,19 +85,26 @@ class Bird(Actor):
         self.orientation = 180
         self.flip_x()
         self.size = (80, 80)
-        self.physics.mass = 20
-        self.physics.size = 0.7, 0.7
-        self.physics.shape_type = "circle"
-        self.physics.stable = False
-        self.start_physics()
         self.physics.velocity_x = 600
         self.physics.velocity_y = - self.board.arrow.direction * 50
 
     def act(self):
-        print(self.position)
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():
-            print("remove")
             self.remove()
+
+    def setup_physics(self):
+        self.physics.mass = 20
+        self.physics.size = 0.7, 0.7
+        self.gravity = True
+        self.physics.shape_type = "circle"
+        self.physics.stable = False
+
+    def on_sensing_collision_with_box(self, box, collision):
+        print("hit a box")
+
+    def on_sensing_separation_with_box(self, box, collision):
+        print("hit a box")
+
 
 
 board = MyBoard(1024, 700)

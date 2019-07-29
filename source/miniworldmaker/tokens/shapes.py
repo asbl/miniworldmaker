@@ -104,8 +104,7 @@ class Circle(Shape):
         """
         return self.width / 2
 
-    def setup_physics(self):
-        super().setup_physics()
+    def set_physics_default_values(self):
         self.physics.shape_type = "circle"
         self.physics.can_move = True
         self.physics.stable = False
@@ -225,11 +224,12 @@ class Line(Shape):
             if type(end_position) == int:
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position, ", type:", type(end_position))
             box = self.bounding_box([start_position, end_position])
+            self.thickness = thickness
             # mod_start
             x = start_position[0] - box[0]
             y = start_position[1] - box[1]
             mod_start = (x, y)
-            # mod_start
+            # mod end
             x = end_position[0] - box[0]
             y = end_position[1] - box[1]
             mod_end = (x, y)
@@ -237,9 +237,9 @@ class Line(Shape):
             self.end_position = end_position
             self.local_start_position = mod_start
             self.local_end_position = mod_end
-            self.thickness = thickness
+
             super().__init__((box[0], box[1]), color)
-            self.size = (abs(box[0] - box[2]) + 4, abs(box[1] - box[3]) + 4)
+            self.size = (abs(box[0] - box[2])+self.thickness, abs(box[1] - box[3])+self.thickness)
             self.costume.load_surface()
             self.costume.draw_shape_append(pygame.draw.line, [self.color,
                                                               mod_start,
@@ -248,8 +248,7 @@ class Line(Shape):
         except TypeError as e:
             raise e
 
-    def setup_physics(self):
-        super().setup_physics()
+    def set_physics_default_values(self):
         self.physics.shape_type = "line"
         self.physics.gravity = False
         self.physics.can_move = False
@@ -289,7 +288,6 @@ class Rectangle(Shape):
                 x = point[0] - box[0]
                 y = point[1] - box[1]
                 self.mod_pointlist.append((x, y))
-            self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
             self.costume.draw_shape_set(*self.draw_shape)
@@ -305,8 +303,7 @@ class Rectangle(Shape):
                                      self.thickness,
                                      ]
 
-    def setup_physics(self):
-        super().setup_physics()
+    def set_physics_default_values(self):
         self.physics.shape_type = "rect"
         self.physics.stable = False
 

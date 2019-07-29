@@ -45,17 +45,17 @@ class PhysicsProperty:
             PhysicsProperty.space.collision_persistence = 10
             # pymunk.pygame_util.positive_y_is_up = True
         self.token = None
-        self.gravity = 0
-        self.mass = 0
-        self.can_move = False
-        self.stable = False
+        self.mass = 1
+        self.gravity = True
+        self.stable = True
+        self.friction = 10
+        self.can_move = True
         self._velocity_x = 0
         self._velocity_y = 0
+        self.elasticity = 0.5
         self.shape_type = "rect"
         self.body = None
         self.shape = None
-        self.elasticity = 0
-        self.friction = 0.2
         self.dirty = 1
         self.started = False
         self.model_setup_complete = False
@@ -86,7 +86,10 @@ class PhysicsProperty:
     def setup_physics_model(self):
         if self.dirty and self.token.position:  # if token is on board
             # mass
-            mass = self.mass
+            if self.mass != "inf":
+                mass = self.mass
+            else:
+                mass = pymunk.inf
 
             # Sets the body type:
             # dynamic: Influenced by physic (e.g. actors)
@@ -94,19 +97,23 @@ class PhysicsProperty:
             # kinematic: e.g. moving plattforms
             if self.can_move and not self.stable:
                 body_type = pymunk_engine.Body.DYNAMIC
+                print(self.token, "is dynamic1")
             elif self.can_move and self.stable:
                 if self.gravity:
                     body_type = pymunk_engine.Body.DYNAMIC
+                    print(self.token, "is dynamic")
                 else:
                     body_type = pymunk_engine.Body.KINEMATIC
+                    print(self.token, "is kinematic")
             else:
                 body_type = pymunk_engine.Body.STATIC
-
+                print(self.token, "is static")
             # Sets the moment
-            # if stable: pymunk.inf: Object won't be rotated by an impuls
+            # if stable: pymunk.inf: Object won't be rotated by an impulse
+            print("stable", self.stable)
             if self.stable:
                 moment = pymunk.inf
-            elif self.shape_type == "circle":
+            elif self.shape_type == "rect":
                 moment = pymunk_engine.moment_for_box(mass,
                                                       (self.size[0] * self.token.width,
                                                        self.size[1] * self.token.height,
@@ -126,12 +133,11 @@ class PhysicsProperty:
                 moment = pymunk_engine.moment_for_box(mass=mass,
                                                       size=(self.size[0] * self.token.width,
                                                             self.size[1] * self.token.height))
-
             # create body
             self.body = pymunk_engine.Body(mass=mass, moment=moment, body_type=body_type)
-
             if not self.gravity:
                 self.body.velocity_func = lambda body, gravity, damping, dt: None
+
 
             # Sets the shape-type
             if self.shape_type.lower() == "rect":
@@ -164,14 +170,22 @@ class PhysicsProperty:
             self.body.angle = math.radians(self.token.direction_at_unit_circle + 90)
             if self.shape_type.lower() != "line":
                 PhysicsProperty.space.reindex_shapes_for_body(self.body)
-            shape.friction = self.friction
+            self.shape.friction = self.friction
             shape.elasticity = self.elasticity
-
+            shape.token = self.token
+            self.shape.collision_type = self.token.__class__.class_id
             self.dirty = 0
             self.model_setup_complete = True
 
-    def add_collision_handler(self, type_a, type_b):
-        return pymunk_engine.add_collision_handler(type_a, type_b)
+    def reload_physics(self):
+        self.dirty = 1
+        # Remove shape and body from space
+        PhysicsProperty.space.remove(self.body.shapes)
+        PhysicsProperty.space.remove(self.body)
+        # Set new properties and reset to space
+        self.setup_physics_model()
+        self.dirty = 0
+        self.token.board._register_physics_collision_handler(self.token)
 
     def update_physics_model(self):
         """
@@ -180,12 +194,6 @@ class PhysicsProperty:
         Returns:
 
         """
-        if self.dirty:
-            # Remove shape and body from space
-            PhysicsProperty.space.remove(self.body.shapes)
-            PhysicsProperty.space.remove(self.body)
-            # Set new properties and reset to space
-            self.setup_physics_model()
         if not self.body.body_type == pymunk_engine.Body.STATIC:
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
                                                                 self.token.board.image)

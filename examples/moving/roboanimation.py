@@ -23,12 +23,12 @@ class Robot(Actor):
         self.direction = "right"
 
     def act(self):
-
         if self.sensing_on_board():
             self.move()
-        #else:
-        #    self.flip_x()
-        #    self.move()
+
+    def on_sensing_not_on_board(self):
+        self.flip_x()
+        self.move()
 
 
 board = MyBoard()
