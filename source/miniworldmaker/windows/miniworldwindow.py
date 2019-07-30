@@ -78,8 +78,9 @@ class MiniWorldWindow:
     def show(self, image, full_screen: bool = False, log=False):
         self.full_screen = full_screen
         self._recalculate_dimensions()
-        self.board.register_collision_handlers()
+        self.board._register_collision_handlers()
         self.board.register_event_handlers()
+        self.setup_images()
         self.display_update()
         if log is True:
             logging.basicConfig(level=logging.DEBUG)
@@ -93,6 +94,17 @@ class MiniWorldWindow:
             self.update()
             pass
         pygame.quit()
+
+    def setup_images(self):
+        from pathlib import Path
+        from miniworldmaker.tools import appearance
+        jpgs = list(Path("./").rglob("*.[jJ][pP][gG]"))
+        jpegs = list(Path("./").rglob("*.[jJ][pP][eE][gG]"))
+        pngs = list(Path("./").rglob("*.[pP][nN][gG]"))
+        images = jpgs + jpegs + pngs
+        print(images)
+        for img_path in images:
+            _image = appearance.Appearance.load_image(img_path)
 
     def update(self):
         self.process_pygame_events()

@@ -17,14 +17,14 @@ class Appearance:
         self.parent = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
+
         self.image_paths = []  # list with all images
         # properties
         self.raw_image = pygame.Surface((1, 1))  # size set in image()-method
         self._image = pygame.Surface((1, 1))  # size set in image()-method
         self.cached_image = pygame.Surface((1, 1))
         self.call_image_actions = {}
-        self.alpha = True
-        self.animation_speed = 60  #: The animation speed for animations
+        self.animation_speed = 100  #: The animation speed for animations
         self._is_animated = False
         self._is_flipped = False
         self._is_textured = False
@@ -186,8 +186,7 @@ class Appearance:
         Returns: The index of the added image.
 
         """
-        _image = Appearance.load_image(path, self.alpha)
-        Appearance._images_dict[path] = _image
+        _image = Appearance.load_image(path)
         self.images_list.append(_image)
         self.image_paths.append(path)
         self._image = self.image
@@ -195,23 +194,29 @@ class Appearance:
         return len(self.images_list) - 1
 
     @staticmethod
-    def load_image(path, alpha):
+    def load_image(path):
+        """
+        Loads an image from an path.
+
+        Args:
+            path: The path to image
+
+        Returns: The image loaded
+
+        """
+
         try:
-            if path in Appearance._images_dict.keys():
+            import os
+            canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+            if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
-                _image = Appearance._images_dict[path]
+                _image = Appearance._images_dict[canonicalized_path]
             else:
-                # create new image and add to img_dict
-                if not alpha:
-                    try:
-                        _image = pygame.image.load(path).convert()
-                    except pygame.error:
-                        raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
-                else:
-                    try:
-                        _image = pygame.image.load(path).convert_alpha()
-                    except pygame.error:
-                        raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
+                try:
+                    _image = pygame.image.load(canonicalized_path).convert_alpha()
+                    Appearance._images_dict[canonicalized_path] = _image
+                except pygame.error:
+                    raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
             return _image
         except FileExistsError:
             raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
@@ -280,6 +285,20 @@ class Appearance:
                 self._image_index = 0
             self.dirty = 1
             self.parent.dirty = 1
+
+    def set_image(self, value):
+        if 0 <= value < len(self.images_list)-1:
+            self.image_index = value
+            self.dirty = 1
+            self.parent.dirty = 1
+            return True
+        else:
+            return False
+
+    def update(self):
+        if self.parent.board:
+            if self.parent.board.frame % self.animation_speed == 0:
+                self.next_image()
 
     @property
     def is_animated(self):

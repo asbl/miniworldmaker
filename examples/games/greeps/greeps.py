@@ -65,9 +65,11 @@ class Earth(PixelBoard):
         self.frame = 0
         for tomatopile in self.tomato_piles[self.index]:
             position = (tomatopile[1], tomatopile[2])
-            Tomatos(position = position, number = tomatopile[0])
-        position = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
-        self.ship = Ship(position=self.target[self.index], target_position=position)
+            tomatoes = Tomatoes(position = position)
+            tomatoes.number =  tomatopile[0]
+        target = (self.ship_pos[self.index][1], self.ship_pos[self.index][0])
+        self.ship = Ship(position=self.target[self.index])
+        self.ship.target_position = target
         self.greeps = 0
         self.is_running = True
         self.index += 1
@@ -75,11 +77,11 @@ class Earth(PixelBoard):
 
 class Ship(Actor):
 
-    def on_setup(self, target_position):
+    def on_setup(self):
         print("setup")
         self.add_image("images/spaceship.png")
         self.size = (80, 80)
-        self.target_position = target_position
+        self.target_position = (0, 0)
         self.greeps = 0
         self.costume.is_rotatable = False
         self.speed = 20
@@ -94,19 +96,31 @@ class Ship(Actor):
             Greep(self.position)
             self.greeps += 1
 
-class Tomatos(Token):
 
-    def on_setup(self, number):
-        print("tomato setup")
+class Tomatoes(Token):
+
+    def on_setup(self):
         self.size = (40, 40)
-        self.number = number
-        for i in range(self.number // 10):
-            self.add_image("images/tomatopile{0}.png".format(self.number // 10 - (i)))
+        self._number = 0
+        for i in range(7):
+            self.add_image("images/tomatopile{0}.png".format(i+1))
 
-    def get_tomato(self) -> int:
-        self.number -= 1
-        if self.number == 1:
-            if self.number % 10 == 0:
+    @property
+    def number(self):
+        return self._number
+
+    @number.setter
+    def number(self, value):
+        self._number = value
+        tomatopile = self._number // 10
+        if tomatopile == 0:
+            tomatopile = 1
+        self.costume.set_image(tomatopile)
+
+    def take_tomato(self) -> int:
+        self._number -= 1
+        if self._number == 1:
+            if self._number % 10 == 0:
                 self.remove()
         return 1
 
@@ -157,7 +171,7 @@ class Greep(Actor):
                 self.spit("blue")
 
         greep = self.sensing_token(token_type=Greep, distance=0)
-        tomato = self.sensing_token(token_type=Tomatos, distance=0)
+        tomato = self.sensing_token(token_type=Tomatoes, distance=0)
 
         if greep and tomato:
             self.charge(greep, tomato)
@@ -179,7 +193,7 @@ class Greep(Actor):
 
     def charge(self, greep, tomato):
         greep = self.sensing_token(token=Greep, distance=0)
-        tomato = self.sensing_token(token=Tomatos, distance=0)
+        tomato = self.sensing_token(token=Tomatoes, distance=0)
         print("charge", self, greep, tomato, greep.carrys_tomato)
         if greep and tomato:
             if not greep.carrys_tomato:

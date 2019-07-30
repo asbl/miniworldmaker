@@ -15,10 +15,9 @@ class Meta(type):
             instance = super().__call__(*args, **kwargs)
         except TypeError:
             raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+        if hasattr(instance, "set_physics_default_values"):
+            instance.set_physics_default_values()
         if hasattr(instance, "setup_physics"):
-            instance.physics = ph.PhysicsProperty()
-            if hasattr(instance, "set_physics_default_values"):
-                instance.set_physics_default_values()
             instance.setup_physics()
             instance._start_physics()
         if hasattr(instance, "on_setup"):
@@ -44,7 +43,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         Token.token_count += 1
         self._direction = 0
         # public
-        self.physics = None
+        self.physics = ph.PhysicsProperty()
         self.last_position = (0, 0)
         self.last_direction = 90
         self.token_id = Token.token_count + 1
@@ -370,7 +369,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self.dirty = 1
             if hasattr(self, "costume"):
                 self.costume.call_action("scale")
-            if hasattr(self, "physics") and self.physics:
+            if hasattr(self, "physics") and self.physics.started:
                 self.physics.reload_physics()
 
     @property
@@ -627,3 +626,4 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def sensing_colors(self, distance, colors):
         colors = self.board_connector.sensing_colors(distance, colors)
         return colors
+

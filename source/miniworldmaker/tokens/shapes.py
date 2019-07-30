@@ -219,29 +219,36 @@ class Line(Shape):
                  thickness: int = 1,
                  color: tuple = (255, 255, 255, 255), ):
         try:
+            start = start_position[0], start_position[1]
+            end = end_position[0] , end_position[1]
             if type(start_position) == int :
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", start_position, ", type:", type(start_position))
             if type(end_position) == int:
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position, ", type:", type(end_position))
-            box = self.bounding_box([start_position, end_position])
+            box = self.bounding_box([start, end])
             self.thickness = thickness
+            box_topleft = (box[0], box[1])
+            box_width = abs(box[0] - box[2])+self.thickness
+            box_height = abs(box[1] - box[3])+self.thickness
+            print("w,h", box_width, box_height)
             # mod_start
-            x = start_position[0] - box[0]
-            y = start_position[1] - box[1]
+            x = start_position[0] - box_topleft[0]+self.thickness / 2
+            y = start_position[1] - box_topleft[1] + self.thickness
             mod_start = (x, y)
             # mod end
-            x = end_position[0] - box[0]
-            y = end_position[1] - box[1]
+            x = end_position[0] - box_topleft[0]+self.thickness  / 2
+            y = end_position[1] - box_topleft[1]+self.thickness
             mod_end = (x, y)
             self.start_position = start_position
             self.end_position = end_position
             self.local_start_position = mod_start
             self.local_end_position = mod_end
-
             super().__init__((box[0], box[1]), color)
-            self.size = (abs(box[0] - box[2])+self.thickness, abs(box[1] - box[3])+self.thickness)
-            self.costume.load_surface()
-            self.costume.draw_shape_append(pygame.draw.line, [self.color,
+            self.size = (box_width, box_height)
+            #self.costume.load_surface()
+            print(self.costume.image, "at position", self.position)
+            print(mod_start, mod_end)
+            self.costume.draw_shape_append(pygame.draw.line, [(255,255,255,255),
                                                               mod_start,
                                                               mod_end,
                                                               self.thickness])
@@ -276,15 +283,15 @@ class Rectangle(Shape):
         try:
             if type(topleft) != tuple:
                 raise TypeError("Error: First argument topleft should be a 2-tuple")
-            plist = []
+            point_list = []
             self.mod_pointlist = []
-            plist.append(topleft)
-            plist.append((topleft[0] + width, topleft[1]))
-            plist.append((topleft[0] + width, topleft[1] + height))
-            plist.append((topleft[0], topleft[1] + height))
-            box = self.bounding_box(plist)
+            point_list.append(topleft)
+            point_list.append((topleft[0] + width, topleft[1]))
+            point_list.append((topleft[0] + width, topleft[1] + height))
+            point_list.append((topleft[0], topleft[1] + height))
+            box = self.bounding_box(point_list)
             self.thickness = thickness
-            for point in plist:
+            for point in point_list:
                 x = point[0] - box[0]
                 y = point[1] - box[1]
                 self.mod_pointlist.append((x, y))

@@ -1,3 +1,4 @@
+import inspect
 import os
 from collections import defaultdict
 from typing import Union
@@ -14,7 +15,19 @@ from miniworldmaker.tools import db_manager
 from miniworldmaker.windows import miniworldwindow as window
 
 
-class Board(container.Container):
+class MetaBoard(type):
+    def __call__(cls, *args, **kwargs):
+        try:
+            instance = super().__call__(*args, **kwargs)
+        except TypeError:
+            raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+        if hasattr(instance, "on_setup"):
+            instance.on_setup()
+        if hasattr(instance, "setup"):
+            instance.setup()
+        return instance
+
+class Board(container.Container, metaclass = MetaBoard):
     """Base Class for Boards
 
     Args:
@@ -70,7 +83,7 @@ class Board(container.Container):
         self.surface = pygame.Surface((1, 1))
         # protected
         self.frame = 0
-        self._tick = 0
+        self.speed = 1
         self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
@@ -81,12 +94,8 @@ class Board(container.Container):
         self.tokens_with_eventhandler = defaultdict(list)
         self.tokens_with_collisionhandler = defaultdict(list)
         self.dirty = 1
+        self.timed_objects = []
         self._repaint_all = 1
-        if hasattr(self, "on_setup"):
-            self.on_setup()
-        if hasattr(self, "setup"):
-            self.setup()
-
 
     @classmethod
     def from_db(cls, file):
@@ -488,13 +497,15 @@ class Board(container.Container):
         # Called in miniworldwindow.update as ct.update()
         # Event handling is in miniworldwindow and is called before update().
         if self.is_running:
-            self._tick = 0
             # Acting for all actors
-            self._act_all()
-            self.collision_handling()
+            if self.frame % self.speed == 0:
+                self._act_all()
+                self.collision_handling()
             # run animations
             for token in self.tokens:
-                token.costume.next_image()
+                token.costume.update()
+            for obj in self.timed_objects:
+                obj.tick()
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
                 physics_tokens = [token for token in self.tokens if token.physics and token.physics.started]
@@ -738,27 +749,21 @@ class Board(container.Container):
             handler.data["method"] = getattr(token, method)
             if method.startswith(begin_prefix):
                 handler.data["type"] = "begin"
-                handler.begin = self.collision_handling_with_physics
+                handler.begin = self._collision_handling_with_physics
             elif method.startswith(separate_prefix):
                 handler.data["type"] = "separate"
-                handler.separate = self.collision_handling_with_physics
+                handler.separate = self._collision_handling_with_physics
 
-    #def default_collision_handling(self, arbiter, space, data):
-    #    print("colliding", arbiter.shapes, arbiter.shapes[0].collision_type, arbiter.shapes[1].collision_type)
-    #    return True
-
-    def collision_handling_with_physics(self, arbiter, space, data):
+    def _collision_handling_with_physics(self, arbiter, space, data):
         rvalue = None
         collision = dict()
         other_class = str(arbiter.shapes[1].token.__class__.__name__).lower()
         if data["type"] == "begin":
             method = getattr(arbiter.shapes[0].token, "on_sensing_collision_with_"+other_class)
-            print(method)
             if method and callable(method):
                 rvalue = method(arbiter.shapes[1].token, collision)
         if data["type"] == "separate":
             method = getattr(arbiter.shapes[0].token, "on_sensing_separation_with_"+other_class)
-            print(method)
             if method and callable(method):
                 rvalue = method(arbiter.shapes[1].token, collision)
         if rvalue is None:
@@ -766,15 +771,17 @@ class Board(container.Container):
         else:
             return rvalue
 
-    def register_collision_handlers(self):
+    def _register_collision_handlers(self):
         from miniworldmaker.tokens import token
         token_subclasses = token.Token.all_subclasses()
         dict_with_all_token_subclasses = dict()
+        for cls in token_subclasses:
+            dict_with_all_token_subclasses[cls.__name__] = cls
         for subcls in token_subclasses: # Search subclasses for method names
             method_list = [func for func in dir(subcls) if
                            callable(getattr(subcls, func)) and func.startswith("on_sensing_")]
             for method in method_list:
-                sensed_target = method[11:]
+                sensed_target = method[len("on_sensing_"):]
                 sensed_class = dict_with_all_token_subclasses.get(sensed_target.capitalize(), None)
                 if sensed_class:
                     self.registered_collision_handlers_for_tokens[subcls].append(sensed_class)
@@ -835,3 +842,14 @@ class Board(container.Container):
                 if act and callable(act):
                     self.registered_event_handlers["act"] = act
         self.update_event_handling()
+
+    def fill(self, color):
+        """
+        deprecated
+        Args:
+            color:
+
+        Returns:
+
+        """
+        self.background.fill(color)
