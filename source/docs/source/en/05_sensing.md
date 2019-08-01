@@ -1,10 +1,13 @@
 Sensing
 ==========
 
-An actor can sense whether he is at his position or before 
+Active tracking
+-----------------
+
+An actor can track down whether he is at his position or before 
 other actors and so on.
 
-This can be done with the following function:
+This can be done with the following function, for example:
 
 ```
 actor.sensing_tokens(distance, token)
@@ -23,6 +26,14 @@ actors_in_front = self.sensing_tokens(distance = 1, token = door)
             if self.board.door.closed:
                 message = "The Door is closes"
 ```
+
+Sensing via event methods
+-----------------------------
+
+Alternatively, you can also implement event methods: 
+The on_sensing_xy method is called every time an actor detects something.
+
+--> see also [events](06_events.md)
 
 ### Functions to find objects
 

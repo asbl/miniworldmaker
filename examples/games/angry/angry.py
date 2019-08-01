@@ -99,13 +99,5 @@ class Bird(Actor):
         self.physics.shape_type = "circle"
         self.physics.stable = False
 
-    def on_sensing_collision_with_box(self, box, collision):
-        print("hit a box")
-
-    def on_sensing_separation_with_box(self, box, collision):
-        print("hit a box")
-
-
-
 board = MyBoard(1024, 700)
 board.show()

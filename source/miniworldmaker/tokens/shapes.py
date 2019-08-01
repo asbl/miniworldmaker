@@ -230,7 +230,6 @@ class Line(Shape):
             box_topleft = (box[0], box[1])
             box_width = abs(box[0] - box[2])+self.thickness
             box_height = abs(box[1] - box[3])+self.thickness
-            print("w,h", box_width, box_height)
             # mod_start
             x = start_position[0] - box_topleft[0]+self.thickness / 2
             y = start_position[1] - box_topleft[1] + self.thickness
@@ -246,8 +245,6 @@ class Line(Shape):
             super().__init__((box[0], box[1]), color)
             self.size = (box_width, box_height)
             #self.costume.load_surface()
-            print(self.costume.image, "at position", self.position)
-            print(mod_start, mod_end)
             self.costume.draw_shape_append(pygame.draw.line, [(255,255,255,255),
                                                               mod_start,
                                                               mod_end,

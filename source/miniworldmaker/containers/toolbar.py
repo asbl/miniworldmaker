@@ -76,7 +76,7 @@ class Toolbar(container.Container):
         if self.repaint_all:
             self._window.repaint_areas.append(self.rect)
             self.repaint_all = False
-        self.dirty = 0
+        self.dirty = 1 # Always dirty so that timed widgets can run
 
     def _widgets_total_height(self):
         height = self.margin_first

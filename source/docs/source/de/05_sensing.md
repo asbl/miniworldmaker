@@ -33,7 +33,7 @@ Aufspüren über Event-Methoden
 Alternativ kann man auch Event-Methoden implementieren: 
 Die Methode on_sensing_xy wird aufgerufen, jedesmal dann, wenn ein Akteur etwas bestimmtes aufspürt.
 
---> Siehe dazu auch [events](()06_events.md)
+--> Siehe dazu auch [events](06_events.md)
 
 ### Funktionen zum Aufspüren von Objekten
 

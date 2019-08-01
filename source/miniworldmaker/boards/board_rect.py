@@ -1,13 +1,13 @@
 import pygame
+from miniworldmaker.app import app as app
 from miniworldmaker.boards import board_position
-from miniworldmaker.windows import miniworldwindow as window
 
 
 class BoardRect(pygame.Rect):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.board = window.MiniWorldWindow.board
+        self.board = app.App.board
 
     def is_tile(self):
         if self.width == self.board.tile_size and self.height == self.board.tile_size:

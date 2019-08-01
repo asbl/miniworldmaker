@@ -35,6 +35,7 @@ class PhysicsProperty:
     count = 0
     debug = False
     collision_types = list
+    accuracy = 1
 
     def __init__(self):
         if not PhysicsProperty.space:
@@ -97,20 +98,15 @@ class PhysicsProperty:
             # kinematic: e.g. moving plattforms
             if self.can_move and not self.stable:
                 body_type = pymunk_engine.Body.DYNAMIC
-                print(self.token, "is dynamic1")
             elif self.can_move and self.stable:
                 if self.gravity:
                     body_type = pymunk_engine.Body.DYNAMIC
-                    print(self.token, "is dynamic")
                 else:
                     body_type = pymunk_engine.Body.KINEMATIC
-                    print(self.token, "is kinematic")
             else:
                 body_type = pymunk_engine.Body.STATIC
-                print(self.token, "is static")
             # Sets the moment
             # if stable: pymunk.inf: Object won't be rotated by an impulse
-            print("stable", self.stable)
             if self.stable:
                 moment = pymunk.inf
             elif self.shape_type == "rect":
@@ -187,7 +183,7 @@ class PhysicsProperty:
         self.dirty = 0
         self.token.board._register_physics_collision_handler(self.token)
 
-    def update_physics_model(self):
+    def simulation_preprocess_token(self):
         """
         Updates the physics model in every frame
 
@@ -200,25 +196,34 @@ class PhysicsProperty:
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.body.angle = math.radians(self.token.direction_at_unit_circle - 90)
 
-    def remove(self):
-        if self.body:
-            PhysicsProperty.space.remove(self.body)
-        if self.shape:
-            PhysicsProperty.space.remove(self.shape)
 
-    def update_token_from_physics_model(self):
+    @staticmethod
+    def simulation(physics_tokens):
+        [token.physics.simulation_preprocess_token() for token in physics_tokens]
+        steps = PhysicsProperty.accuracy
+        for x in range(steps):
+            if PhysicsProperty.space is not None:
+                PhysicsProperty.space.step(1 / (60 * steps))
+        [token.physics.simulation_postprocess_token() for token in physics_tokens]
+
+    def simulation_postprocess_token(self):
         """
         Reloads physics model from pygame data
         Returns:
 
         """
-        self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position,
-                                                                                self.token.board.image)
+        self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
         self.token.direction_at_unit_circle = math.degrees(self.body.angle) + 90
         if PhysicsProperty.debug:
             options = pymunk.pygame_util.DrawOptions(self.token.board.image)
             options.collision_point_color = (255, 20, 30, 40)
             PhysicsProperty.space.debug_draw(options)
+
+    def remove(self):
+        if self.body:
+            PhysicsProperty.space.remove(self.body)
+        if self.shape:
+            PhysicsProperty.space.remove(self.shape)
 
     @property
     def velocity_x(self):
@@ -246,5 +251,8 @@ class PhysicsProperty:
     def stable(self, value):
         self._stable = value
 
-    def impulse(self, impulse, point):
-        self.body.apply_impulse_at_local_point(impulse, point)
+    def impulse_in_direction(self, power):
+        impulse = pymunk.Vec2d(1, 0)
+        impulse.rotate_degrees(- self.token.direction_at_unit_circle - 90 )
+        impulse = power * impulse.normalized()
+        self.body.apply_impulse_at_local_point(impulse)

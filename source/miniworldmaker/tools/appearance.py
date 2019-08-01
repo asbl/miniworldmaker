@@ -233,7 +233,7 @@ class Appearance:
         Returns:
 
         """
-        _blit_image = Appearance.load_image(path, True)
+        _blit_image = Appearance.load_image(path)
         if size != (0, 0):
             _blit_image = pygame.transform.scale(_blit_image, size)
         self.image.blit(_blit_image, position)

@@ -1,82 +1,82 @@
-Listen und Schleifen
+Lists and loops
 ====================
 
-Listen
+lists
 ------
 
-### Listen erstellen
-Eine Liste enthält mehrere Objekte, ohne dass du für jedes einen neuen Namen geben musst.
+### Create lists
+A list contains several objects without you having to give each one a new name.
 
-Beispiel:
-
-```
-liste = [0, 1, 2, 3, 4]
-```
-
-Die Liste enthält die Zahlen 0-4.
-
-Man kann Listen auch erstellen, indem man zuerst eine leere Liste erstellt und dann nacheinander Zahlen ergänzt:
+Example:
 
 ```
-liste2 = []
-liste2.append(5)
-liste2.append(6)
-liste2.append(7)
+list = [0, 1, 2, 3, 4]
 ```
 
-Diese Liste enthält die Zahlen 5, 6 und 7
+The list contains the numbers 0-4.
 
-Genauso kann eine Liste aber auch Objekte beliebiger Art enthalten.
+You can also create lists by first creating an empty list and then adding numbers one after the other:
+
+```
+list2 = []
+list2.append(5)
+list2.append(6)
+list2.append(7)
+```
+
+This list contains the numbers 5, 6 and 7.
+
+In the same way, a list can also contain objects of any kind.
 
 ```
 cliste = []
-cliste.append(Circle((40, 40), 60, 0, color=(255, 0, 0, 100)))
+cliste.append(Circle((40, 40), 60, 0, color=(255, 0, 0, 100))))
 ```
 
-Dies fügt einen Kreis einer Liste hinzu.
+This adds a circle to a list.
 
 
-### Auf Listenelemente zugreifen
+### Accessing list items
 
 
-Auf die Listenelemente kann man mit einem **Index** zugreifen:
+The list elements can be accessed with a **index**:
 
 ```
-liste2 = []
-liste2.append(5)
-liste2.append(6)
-liste2.append(7)
-print(liste2[0], liste2[1])
+list2 = []
+list2.append(5)
+list2.append(6)
+list2.append(7)
+print(list2[0], list2[1])
 ```
 
-gibt 5 6 aus. Das 0-te Listenelement ist 6, das 1-te Listenelement ist 6.
+Spends 5 6. The 0th list element is 6, the 1st list element is 6.
 
 
-Schleifen
+Loops
 ---------
 
-Mit Hilfe von Schleifen kannst du Dinge wiederholen. Wenn du z.B. nicht 5, sondern 50 Kreise erstellen willst,
-dann geht dies am einfachsten mit einer Schleife:
+With the help of loops you can repeat things. For example, if you want to create 50 circles instead of 5,
+the easiest way to do this is with a loop:
 
 ```
 class MyBoard(ProcessingBoard):
 
     def on_setup(self):
-        self.fill((255, 255, 255, 255))
+        self.fill((255, 255, 255, 255)))
         for i in range(50):
             Circle((random.randint(0,260), random.randint(0,200)), 10, 0, color=(255, 0, 0, 100))
 ```
 
 [![](../_images/replit.png)](https://repl.it/@a_siebel/circles)
 
-Das Programm erstellt 50 Kreise an zufälliger Position
+The program creates 50 circles at random position.
 
-Mit Hilfe von Listen kannst du alle Kreise auch gleichzeitig bewegen
+With the help of lists you can also move all circles at the same time.
 ```
 class MyBoard(ProcessingBoard):
 
     def on_setup(self):
-        self.fill((255, 255, 255, 255))
+        self.fill((255, 255, 255, 255)))
         self.lst = []
         for i in range(50):
             self.lst.append(Circle((random.randint(0, 800), random.randint(0, 600)), random.randint(10, 20), 0, color=(255, 0, 0, 100)))

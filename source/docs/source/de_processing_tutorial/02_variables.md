@@ -1,26 +1,29 @@
-Variablen
+variables
 =========
 
-Variablen definieren
+Defining Variables
 --------------------
 
-Bereits in den vorherigen Beispielen haben wir Variablen verwendet.
+We have already used variables in the previous examples.
 
-Du kannst neue Variablen definieren, indem du schreibst:
+You can define new variables by writing:
 
 ```
-self.variablenname = wert
+self.variable name = value
 ```
 
-  * Das **self** bezieht sich immer auf das aktuelle Objekt. 
-  Hast du z.B. mehrere Kreise erzeugt, so bedeuted **self**, das sich der Variablenname
-  auf *diesen* Kreis und auf keinen anderen bezieht.
-  * Eine Variable ist ein **Name** für ein Objekt. Ein Objekt kann eine Zahl, ein Wort,
-  eine geometrische Form oder vieles mehr sein. Dadurch, dass du dem Objekt einen Namen gibst,
-  kannst du darauf zugreifen und es verändern.
+  * The **self** always refers to the current object. 
+  For example, if you have created several circles, **self** means that the variable name
+  to *this* circle and to no other.
+  * A variable is a **Name** for an object. An object can be a number, a word,
+  a geometric shape or much more. By giving the object a name,
+  you can access it and change it.
   
-Betrachte dazu folgendes Beispiel:
+Consider the following example:
 ```
+from miniworldmaker import *
+
+
 class MyBoard(ProcessingBoard):
 
     def on_setup(self):
@@ -29,34 +32,37 @@ class MyBoard(ProcessingBoard):
 
     def on_mouse_left(self, mouse_pos):
         self.circle1.x = 150
+
+my_board = MyBoard(400, 400)
+my_board.show()
 ```
 
-Ein Board vom Typ MyBoard besitzt zwei Kreise. Dadurch, dass den Kreisen **Namen** gegeben wurden
-(nämlich self.circle1 und self.circle2) kann man auch an anderer Stelle auf die Kreise zugreifen.
+A board of the type MyBoard has two circles. By giving the circles **names**.
+(namely self.circle1 and self.circle2) you can also access the circles elsewhere.
 
-Hier wird die x-Koordinate des ersten Kreises auf den Wert 150 gesetzt.
+Here the x-coordinate of the first circle is set to 150.
 
 ![](../_images/movement.gif)
 
-Die Random-Funktion
+The Random Function
 ---------------------
 
-Die Random-Funktion erlaubt es dir, Dingen zufällige Werte zuzuweisen. 
-Zunächst musst du am Anfang deiner Datei die Bibliothek random importieren:
+The Random function allows you to assign random values to things. 
+First you have to randomly import the library at the beginning of your file:
 ```
 import random
 ```
 
-Dann reicht für das erste ein einzelner Befehl aus.
+Then a single command is sufficient for the first one.
 
 ```
 random.randint(0, 5)
 ```
 
-Dies erzeugt eine zufällige Zahl zwischen 0 und 5
+This creates a random number between 0 and 5
 
 
-Das folgende Programm lässt einen Kreis an eine zufällige Stelle springen:
+The following program lets a circle jump to a random position:
 ```
 from miniworldmaker import *
 import random
@@ -65,7 +71,7 @@ import random
 class MyBoard(ProcessingBoard):
 
     def on_setup(self):
-        self.circle1 = Circle((40, 40), 60, 0, color=(255, 0, 0, 255))
+        self.circle1 = Circle((40, 40), 60, 0, color=(255, 0, 0, 255)))
 
     def on_mouse_left(self, mouse_pos):
         self.circle1.x = random.randint(0, 260)

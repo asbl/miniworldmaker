@@ -20,7 +20,6 @@ class MyBoard(ProcessingBoard):
         self.line3._start_physics()
         self.box = Rectangle((300, 90), 80, 10,0)
         self.box._start_physics()
-        #self.physics_property.debug = True
 
     def act(self):
         print(self.box.position, self.box.physics.body.position)

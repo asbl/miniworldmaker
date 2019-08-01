@@ -1,8 +1,8 @@
 import collections
 
 import pygame
+from miniworldmaker.app import app
 from miniworldmaker.boards import board_rect
-from miniworldmaker.windows import miniworldwindow as window
 
 
 class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
@@ -19,7 +19,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         return str("Pos(" + str(self.x) + "," + str(self.y) + ")")
 
     def __eq__(self, other):
-        board = window.MiniWorldWindow.board
+        board = app.App.board
         return self.near(other, board.default_token_speed - 1)
 
     @classmethod
@@ -35,7 +35,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         Returns:
 
         """
-        board = window.MiniWorldWindow.board
+        board = app.App.board
         column = (position[0] - board.tile_margin) // (board.tile_size + board.tile_margin)
         row = (position[1] - board.tile_margin) // (board.tile_size + board.tile_margin)
         return cls(column, row)
@@ -117,7 +117,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         Returns: The rect at the given position
 
         """
-        board = window.MiniWorldWindow.board
+        board = app.App.board
         if rect is None:
             new_rect = board_rect.BoardRect(0, 0, board.tile_size, board.tile_size)
         else:
@@ -207,7 +207,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         Returns:
             True, if Position is on board.
         """
-        board = window.MiniWorldWindow.board
+        board = app.App.board
         if self.x >= 0 and self.y >= 0 and self.x < board.columns and self.y < board.rows:
             return True
         else:
@@ -221,7 +221,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
 
         """
         rect = self.to_rect()
-        board =  window.MiniWorldWindow.board
+        board =  app.App.board
         position = board.get_board_position_from_pixel(rect.center)
         borders = []
         if position.x == board.columns - 1:
@@ -242,7 +242,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         with r,g,b value and transparency (e.g. (255, 0, 0, 100)
 
         """
-        board = window.MiniWorldWindow.board
+        board = app.App.board
         if self.is_on_board():
             return board.background.color_at(self.to_pixel())
         else:

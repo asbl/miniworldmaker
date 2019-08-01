@@ -14,7 +14,6 @@ class MyBoard(PixelBoard):
             asteroids.append(asteroid)
         Player(position=(40, 40))
         self.add_image("images/galaxy.jpg")
-        self.speed = 40
 
 
 class Player(Actor):

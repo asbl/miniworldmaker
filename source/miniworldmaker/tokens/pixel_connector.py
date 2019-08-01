@@ -2,10 +2,10 @@ import math
 from typing import Union
 
 import pygame
-from boards import board_position
-from boards import board_rect
-from tokens import board_connector
-from tokens import token
+from miniworldmaker.boards import board_position
+from miniworldmaker.boards import board_rect
+from miniworldmaker.tokens import board_connector
+from miniworldmaker.tokens import token
 
 
 class PixelBoardConnector(board_connector.BoardConnector):

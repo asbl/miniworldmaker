@@ -1,8 +1,10 @@
-
 events
 ===========
 
-There are two important methods that you can fill with content:
+There are several important methods that you can fill with content:
+
+Special Event Methods
+-------------------------
 
 ### The act() method
 
@@ -17,6 +19,18 @@ Here you can place code that should be executed over and over again, e.g:
 
 The Actor looks one square forward and checks whether it is still on the playing field. 
 If so, he moves one square forward. Otherwise he turns 90° to the left.
+
+### Sensing methods
+
+Each time an actor detects something different, its corresponding sensing methods are called:
+
+  **on_sensing_tokens(token_list)**: Tracks all tokens at the same location.
+  **on_sensing_borders(borders)**: Returns a list of borders that are currently touched (e.g. ["right", "top"]).
+  **on_sensing_on_board()**: Called when the player is on the field.
+  **on_sensing_not_on_board()**: Called when the player is not on the field.
+  
+General event handling with the get_event method
+----------------------------------------------------
 
 ### The get_event(event, data) method
 

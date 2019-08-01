@@ -21,7 +21,7 @@ print("Press 'F7'  to add Level-Designer")
 print("Press 'F8'  to add Color-Toolbar")
 
 
-class MiniWorldWindow:
+class App:
     log = logging.getLogger("miniworldmaker")
     board = None
     window = None
@@ -40,7 +40,7 @@ class MiniWorldWindow:
         self._containers = []
         self._containers_right = []
         self._containers_bottom = []
-        MiniWorldWindow.window = self
+        App.window = self
         self.default_size = 200
         self.dirty = 1
         self._containers_width = 0
@@ -87,10 +87,10 @@ class MiniWorldWindow:
         else:
             logging.basicConfig(level=logging.INFO)
         self.window.window_surface.blit(image, self.board.rect)
-        MiniWorldWindow.log.info(
+        App.log.info(
             "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
         pygame.display.update([image.get_rect()])
-        while not MiniWorldWindow.quit:
+        while not App.quit:
             self.update()
             pass
         pygame.quit()
@@ -102,7 +102,6 @@ class MiniWorldWindow:
         jpegs = list(Path("./").rglob("*.[jJ][pP][eE][gG]"))
         pngs = list(Path("./").rglob("*.[pP][nN][gG]"))
         images = jpgs + jpegs + pngs
-        print(images)
         for img_path in images:
             _image = appearance.Appearance.load_image(img_path)
 
@@ -111,7 +110,7 @@ class MiniWorldWindow:
         if self.dirty:
             self.display_update()
             self.dirty = False
-        if not MiniWorldWindow.quit:
+        if not App.quit:
             self.repaint_areas = []
             if self.dirty:
                 self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
@@ -342,7 +341,7 @@ class MiniWorldWindow:
         return key_codes
 
     def _call_quit_event(self):
-        MiniWorldWindow.quit = True
+        App.quit = True
         pygame.quit()
         sys.exit(0)
 

@@ -1,9 +1,9 @@
 import math
 
 import pygame
-from boards import board_position
-from tokens import board_connector
-from tokens import token
+from miniworldmaker.boards import board_position
+from miniworldmaker.tokens import board_connector
+from miniworldmaker.tokens import token
 
 
 class TiledBoardConnector(board_connector.BoardConnector):

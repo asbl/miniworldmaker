@@ -4,6 +4,7 @@ from collections import defaultdict
 from typing import Union
 
 import pygame
+from miniworldmaker.app import app
 from miniworldmaker.boards import background
 from miniworldmaker.boards import board_position
 from miniworldmaker.boards import board_rect
@@ -12,7 +13,6 @@ from miniworldmaker.physics import physics
 from miniworldmaker.physics import physics as physicsengine
 from miniworldmaker.tokens import token as tkn
 from miniworldmaker.tools import db_manager
-from miniworldmaker.windows import miniworldwindow as window
 
 
 class MetaBoard(type):
@@ -40,6 +40,7 @@ class Board(container.Container, metaclass = MetaBoard):
     registered_collision_handlers_for_tokens = defaultdict(list)
     token_class_ids = defaultdict()
     token_class_id_counter = 0
+    subclasses = None
 
     def __init__(self,
                  columns: int = 40,
@@ -56,7 +57,6 @@ class Board(container.Container, metaclass = MetaBoard):
         if not hasattr(self, "default_token_speed"):
             self.default_token_speed = 3  #: default speed for tokens
         self.sound_effects = {}
-        self.physics_accuracy = 1
         self.physics_property = physicsengine.PhysicsProperty
         # private
         if not hasattr(self, "_fps"):
@@ -87,9 +87,9 @@ class Board(container.Container, metaclass = MetaBoard):
         self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
-        self._window = window.MiniWorldWindow("MiniWorldMaker")
+        self._window = app.App("MiniWorldMaker")
         self._window.add_container(self, "top_left")
-        window.MiniWorldWindow.board = self
+        app.App.board = self
         self.registered_event_handlers = dict()
         self.tokens_with_eventhandler = defaultdict(list)
         self.tokens_with_collisionhandler = defaultdict(list)
@@ -132,8 +132,11 @@ class Board(container.Container, metaclass = MetaBoard):
     @classmethod
     def all_subclasses(cls):
         def rec_all_subs(base_cls) -> set:
-            return set(base_cls.__subclasses__()).union(
-                [s for c in base_cls.__subclasses__() for s in rec_all_subs(c)])
+            if cls.subclasses is None:
+                return set(base_cls.__subclasses__()).union(
+                    [s for c in base_cls.__subclasses__() for s in rec_all_subs(c)])
+            else:
+                return cls.subclasses
         return rec_all_subs(cls)
 
     def __str__(self):
@@ -141,8 +144,7 @@ class Board(container.Container, metaclass = MetaBoard):
             .format(self.__class__.__name__, self.columns, self.rows)
 
     def _act_all(self):
-        for token in self.tokens_with_eventhandler["act"]:
-            token.act()
+        [token.act() for token in self.tokens_with_eventhandler["act"]]
         if "act" in self.registered_event_handlers:
             if hasattr(self, "act"):
                 self.act()
@@ -200,7 +202,7 @@ class Board(container.Container, metaclass = MetaBoard):
         return self.container_height
 
     @property
-    def window(self) -> window.MiniWorldWindow:
+    def window(self) -> app.App:
         """
         Gets the parent window
 
@@ -333,7 +335,8 @@ class Board(container.Container, metaclass = MetaBoard):
         if token.speed == 0:
             token.speed = self.default_token_speed
         self._register_physics_collision_handler(token)
-        self.update_event_handling()
+        for event_handler in self.registered_event_handlers_for_tokens[token.__class__].keys():
+            self.tokens_with_eventhandler[event_handler].append(token)
 
     def blit_surface_to_window_surface(self):
         self._window.window_surface.blit(self.surface, self.rect)
@@ -379,11 +382,12 @@ class Board(container.Container, metaclass = MetaBoard):
             >>> tokens = board.get_tokens_by_pixel(position)
 
         """
-        token = []
-        for actor in self.tokens:
-            if actor.rect.collidepoint(pixel):
-                token.append(actor)
-        return token
+        #token = []
+        return [token for token in self.tokens if token.rect.collidepoint(pixel)]
+        #for actor in self.tokens:
+        #    if actor.rect.collidepoint(pixel):
+        #        token.append(actor)
+        #return token
 
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
         tkn.Token, list]:
@@ -424,8 +428,7 @@ class Board(container.Container, metaclass = MetaBoard):
         tokens = self.get_tokens_at_rect(rect)
         if token is not None:
             tokens = Board.filter_actor_list(tokens, token)
-        for token in tokens:
-            token.remove()
+        [token.remove() for token in tokens]
 
     def reset(self):
         """Resets the board
@@ -488,8 +491,9 @@ class Board(container.Container, metaclass = MetaBoard):
         self.background.changed_all()
         self.background_changed = 1
         self._repaint_all = True
-        for token in self.tokens:
-            token.dirty = 1
+        [token.set_dirty() for token in self.tokens]
+        ##for token in self.tokens:
+        ##    token.dirty = 1
         return self.background
 
     def update(self):
@@ -502,33 +506,29 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._act_all()
                 self.collision_handling()
             # run animations
-            for token in self.tokens:
-                token.costume.update()
-            for obj in self.timed_objects:
-                obj.tick()
+            [token.costume.update() for token in self.tokens]
+            ##for token in self.tokens:
+            ##    token.costume.update()
+            [ob.tick() for obj in self.timed_objects]
+            ##for obj in self.timed_objects:
+            ##    obj.tick()
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
                 physics_tokens = [token for token in self.tokens if token.physics and token.physics.started]
-                for token in physics_tokens:
-                    token.physics.update_physics_model()
-                steps = self.physics_accuracy
-                for x in range(steps):
-                    if physicsengine is not None and \
-                            physicsengine.PhysicsProperty.space is not None:
-                        physicsengine.PhysicsProperty.space.step(1 / (60 * steps))
-                for token in physics_tokens:
-                    token.physics.update_token_from_physics_model()
+                physics.PhysicsProperty.simulation(physics_tokens)
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
 
     def handle_event(self, event, data=None):
         # calls all registered event handlers of tokens
-        tokens = self.tokens_with_eventhandler[event]
-        for token in tokens:
-            return self.registered_event_handlers_for_tokens[token.__class__][event](token, data)
-        tokens = self.tokens_with_eventhandler["get_event"]
-        for token in tokens:
-            return self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data)
+        ##tokens = self.tokens_with_eventhandler[event]
+        [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
+        ##for token in tokens:
+        ##    return self.registered_event_handlers_for_tokens[token.__class__][event](token, data)
+        ##tokens = self.tokens_with_eventhandler["get_event"]
+        ##for token in tokens:
+        ##    return self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data)
+        [self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data) for token in self.tokens_with_eventhandler["get_event"]]
         # Call events of board
         if event in self.registered_event_handlers.keys():
             # calls registered event handlers of board
@@ -544,7 +544,6 @@ class Board(container.Container, metaclass = MetaBoard):
     def collision_handling(self):
         # Collisions with other tokens
         for token in self.tokens:
-            # registered collision handlers are set in
             for coll_class in self.registered_collision_handlers_for_tokens[token.__class__]:
                 if coll_class not in ["borders", "on_board", "not_on_board"]:
                     collision_tokens = token.sensing_tokens(token_type=coll_class, exact=True)
@@ -804,7 +803,7 @@ class Board(container.Container, metaclass = MetaBoard):
         token_subclasses = token.Token.all_subclasses()
         for subcls in token_subclasses:
             # Adds the on_key_up, on_mouse... events, if the corresponding method exists
-            for event in window.MiniWorldWindow.input_events:
+            for event in app.App.input_events:
                 # Adds Event handler, e.g. method on_key_up for event "key_up"
                 handler = getattr(subcls, event, None)
                 if handler and callable(handler):
@@ -829,7 +828,7 @@ class Board(container.Container, metaclass = MetaBoard):
             if callable(on_setup):
                 self.registered_event_handlers_for_tokens[subcls]["setup"] = on_setup
         # Add handlers for board events
-        for event in window.MiniWorldWindow.input_events:
+        for event in app.App.input_events:
             handler = getattr(self.__class__, event, None)
             if handler and callable(handler):
                 self.registered_event_handlers[event] = handler

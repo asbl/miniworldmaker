@@ -3,10 +3,10 @@ import math
 from typing import Union
 
 import pygame
+from miniworldmaker.app import app
 from miniworldmaker.boards import board_position
 from miniworldmaker.physics import physics as ph
 from miniworldmaker.tokens import costume
-from miniworldmaker.windows import miniworldwindow
 
 
 class Meta(type):
@@ -31,11 +31,12 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     token_count = 0
     class_image = None
     class_id = 0
+    subclasses = None
 
     def __init__(self, position=None):
         pygame.sprite.DirtySprite.__init__(self)
         self.setup_completed = False
-        self.board = miniworldwindow.MiniWorldWindow.board
+        self.board = app.App.board
         self.costume = None
         # private
         self._size = (0, 0)  # Tuple with size
@@ -56,7 +57,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.costume.is_upscaled = True
         self.init = 1
         self.speed = 0
-        self.board = miniworldwindow.MiniWorldWindow.board
+        self.board = app.App.board
         self._orientation = 0
         self.board_connector = None
         self.board.add_to_board(self, self.position)
@@ -90,8 +91,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     @classmethod
     def all_subclasses(cls):
         def rec_all_subs(cls) -> set:
-            return set(cls.__subclasses__()).union(
-                [s for c in cls.__subclasses__() for s in rec_all_subs(c)])
+            if cls.subclasses is None:
+                return set(cls.__subclasses__()).union(
+                    [s for c in cls.__subclasses__() for s in rec_all_subs(c)])
+            else:
+                return cls.subclasses
         return rec_all_subs(cls)
 
     @property
@@ -149,6 +153,9 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self._dirty = value
         if hasattr(self, "board") and self.board:
             self.board.dirty = 1
+
+    def set_dirty(self):
+        self.dirty = 1
 
     @property
     def rect(self) -> pygame.Rect:
@@ -307,8 +314,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             The new direction as integer
 
         """
-        direction = direction = self._value_to_direction(direction)
-        self.direction = direction
+        self.direction = self._value_to_direction(direction)
         return self.direction
 
     @direction.setter
@@ -316,17 +322,18 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.last_direction = self.direction
         direction = self._value_to_direction(value)
         self._direction = direction
-        self.dirty = 1
-        if self.costume:
-            self.costume.call_action("rotate")
-        if self.board:
-            self.board.window.send_event_to_containers("token_changed_direction", self)
+        if self.last_direction != self._direction:
+            self.dirty = 1
+            if self.costume:
+                self.costume.call_action("rotate")
+            if self.board:
+                self.board.window.send_event_to_containers("token_changed_direction", self)
 
     def delta_x(self, distance):
-        return round(math.sin(math.radians(self.direction)) * distance)
+        return math.sin(math.radians(self.direction)) * distance
 
     def delta_y(self, distance):
-        return - round(math.cos(math.radians(self.direction)) * distance)
+        return - math.cos(math.radians(self.direction)) * distance
 
     def point_towards_position(self, destination) -> int:
         """
@@ -400,9 +407,10 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         if type(value) == tuple:
             value = board_position.BoardPosition(value[0], value[1])
         self._position = value
-        self.dirty = 1
-        if self.board:
-            self.board.window.send_event_to_containers("token_moved", self)
+        if self.last_position != self.position:
+            self.dirty = 1
+            if self.board:
+                self.board.window.send_event_to_containers("token_moved", self)
 
     @property
     def x(self):
@@ -555,8 +563,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         if self.physics:
             self.physics.remove()
             self.physics = None
-        miniworldwindow.MiniWorldWindow.board.update_event_handling()
-        # miniworldwindow.MiniWorldWindow.board.update_collision_handling()
+        for event_handler in app.App.board.registered_event_handlers_for_tokens[self.__class__].keys():
+            app.App.board.tokens_with_eventhandler[event_handler].remove(self)
         self.kill()
         del (self)
 
@@ -626,4 +634,5 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def sensing_colors(self, distance, colors):
         colors = self.board_connector.sensing_colors(distance, colors)
         return colors
+
 
