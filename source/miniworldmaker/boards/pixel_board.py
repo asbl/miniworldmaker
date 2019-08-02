@@ -64,18 +64,17 @@ class PixelBoard(bd.Board):
             If singleitem = False, the method returns the first token.
 
         """
-        tokens = []
         token_list = self.tokens.copy()
         if exclude in token_list:
             token_list.remove(exclude)
         if token_type is not None:
             token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
-        for token in token_list:
-            if token.rect.colliderect(rect):
-                tokens.append(token)
-                if singleitem:
+        if not singleitem:
+            return [token for token in token_list if token.rect.colliderect(rect)]
+        else:
+            for token in token_list:
+                if token.rect.colliderect(rect):
                     return token
-        return tokens
 
     def _get_rect_from_parameter(self, parameter):
         if type(parameter) == tuple:

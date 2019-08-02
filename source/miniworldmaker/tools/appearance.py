@@ -47,7 +47,6 @@ class Appearance:
                                        ("rotate", self.image_action_rotate, "is_rotatable", False),
                                        ]
         self.fill_color = (0, 0, 255, 255)  #: background_color if actor has no background image
-
         self.color = (255, 255, 255, 255)  #: color for overlays
         self.font_size = 0  #: font_size if token-text != ""
         self.text_position = (0, 0)  #: Position of text relative to the top-left pixel of token
@@ -258,6 +257,7 @@ class Appearance:
                 if getattr(self, action[2]):
                     if self.parent.size != (0, 0):
                         image = action[1](image, parent=self.parent)
+                        print(action[0])
                 self.parent.dirty = 1
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
@@ -296,7 +296,7 @@ class Appearance:
             return False
 
     def update(self):
-        if self.parent.board:
+        if self.parent.board and self.is_animated:
             if self.parent.board.frame % self.animation_speed == 0:
                 self.next_image()
 

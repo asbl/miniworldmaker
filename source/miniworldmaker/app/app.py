@@ -79,8 +79,8 @@ class App:
         self.full_screen = full_screen
         self._recalculate_dimensions()
         self.board._register_collision_handlers()
-        self.board.register_event_handlers()
-        self.setup_images()
+        self.board._register_event_handlers()
+        self._setup_images()
         self.display_update()
         if log is True:
             logging.basicConfig(level=logging.DEBUG)
@@ -95,7 +95,7 @@ class App:
             pass
         pygame.quit()
 
-    def setup_images(self):
+    def _setup_images(self):
         from pathlib import Path
         from miniworldmaker.tools import appearance
         jpgs = list(Path("./").rglob("*.[jJ][pP][gG]"))

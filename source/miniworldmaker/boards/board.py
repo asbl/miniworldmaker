@@ -116,7 +116,6 @@ class Board(container.Container, metaclass = MetaBoard):
         board._tile_size = data[2]
         board._tile_margin = data[3]
         data = db.select_all_rows("SELECT token_id, column, row, token_class FROM token")
-
         if data:
             for tokens in data:
                 token_class_name = tokens[3]
@@ -492,8 +491,6 @@ class Board(container.Container, metaclass = MetaBoard):
         self.background_changed = 1
         self._repaint_all = True
         [token.set_dirty() for token in self.tokens]
-        ##for token in self.tokens:
-        ##    token.dirty = 1
         return self.background
 
     def update(self):
@@ -507,11 +504,7 @@ class Board(container.Container, metaclass = MetaBoard):
                 self.collision_handling()
             # run animations
             [token.costume.update() for token in self.tokens]
-            ##for token in self.tokens:
-            ##    token.costume.update()
-            [ob.tick() for obj in self.timed_objects]
-            ##for obj in self.timed_objects:
-            ##    obj.tick()
+            [obj.tick() for obj in self.timed_objects]
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
                 physics_tokens = [token for token in self.tokens if token.physics and token.physics.started]
@@ -520,14 +513,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self.clock.tick(self.fps)
 
     def handle_event(self, event, data=None):
-        # calls all registered event handlers of tokens
-        ##tokens = self.tokens_with_eventhandler[event]
         [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
-        ##for token in tokens:
-        ##    return self.registered_event_handlers_for_tokens[token.__class__][event](token, data)
-        ##tokens = self.tokens_with_eventhandler["get_event"]
-        ##for token in tokens:
-        ##    return self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data)
         [self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data) for token in self.tokens_with_eventhandler["get_event"]]
         # Call events of board
         if event in self.registered_event_handlers.keys():
@@ -792,7 +778,7 @@ class Board(container.Container, metaclass = MetaBoard):
                 elif sensed_target == "not_on_board":
                     self.registered_collision_handlers_for_tokens[subcls].append("on_board")
 
-    def register_event_handlers(self):
+    def _register_event_handlers(self):
         """
         Add an event handler for every registered submethod
         Returns:
