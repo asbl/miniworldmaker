@@ -1,8 +1,20 @@
+import inspect
+from collections import defaultdict
+
 import pygame
 from miniworldmaker.boards import board_position
 
 
-class Appearance:
+class MetaAppearance(type):
+    def __call__(cls, *args, **kwargs):
+        try:
+            instance = super().__call__(*args, **kwargs)
+        except TypeError:
+            raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+        instance.after_init()
+        return instance
+
+class Appearance(metaclass = MetaAppearance):
     """ Base class of token costumes and board backgrounds
 
     Die Klasse enthält alle Methoden und Attribute um Bilder der Objekte anzuzeigen, zu animieren, Text auf den Bildern zu rendern  oder Overlays anzuzeigen.
@@ -35,13 +47,14 @@ class Appearance:
         self._text = ""
         self._coloring = None  # Color for colorize operation
         self.draw_shapes = []
-        # "Action name", image_action_method, "Attribute", default value)
-        self.image_preprocess_pipeline = [("orientation", self.image_action_set_orientation, "orientation", None), ]
-        self.image_actions_pipeline = [("texture", self.image_action_texture, "is_textured", False),
-                                       ("write_text", self.image_action_write_text, "text", False),
+        # "Action name", image_action_method, "Attribute", enabled)
+        self.image_preprocess_pipeline = []
+        self.image_actions_pipeline = [("orientation", self.image_action_set_orientation, "orientation", False),
+                                       ("texture", self.image_action_texture, "is_textured", False),
+                                       ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
                                        ("scale", self.image_action_scale, "is_scaled", False),
                                        ("upscale", self.image_action_upscale, "is_upscaled", False),
-                                       ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
+                                       ("write_text", self.image_action_write_text, "text", False),
                                        ("flip", self.image_action_flip, "is_flipped", False),
                                        ("coloring", self.image_action_coloring, "coloring", False),
                                        ("rotate", self.image_action_rotate, "is_rotatable", False),
@@ -52,9 +65,18 @@ class Appearance:
         self.text_position = (0, 0)  #: Position of text relative to the top-left pixel of token
         self.font_path = None  #: Path to font-file
         self.dirty = 1
+        self.reload_actions = defaultdict()
         self.surface_loaded = False
         self.last_image = None
         self.preprocessed = dict()
+        self.cached_images = defaultdict()
+
+    def after_init(self):
+        self.reload_all()
+
+    def reload_all(self):
+        for img_action in self.image_actions_pipeline:
+            self.reload_actions[img_action[0]] = True
 
     @property
     def is_textured(self):
@@ -65,7 +87,7 @@ class Appearance:
     @is_textured.setter
     def is_textured(self, value):
         self._is_textured = value
-        self.dirty = 1
+        self.call_action("texture")
 
     @property
     def is_upscaled(self):
@@ -76,7 +98,7 @@ class Appearance:
     @is_upscaled.setter
     def is_upscaled(self, value):
         self._is_upscaled = value
-        self.dirty = 1
+        self.call_action("upscale")
 
     @property
     def is_rotatable(self):
@@ -100,8 +122,7 @@ class Appearance:
         self._orientation = value
         if self.orientation != self.parent._orientation:
             self.parent.orientation = self._orientation
-        self.preprocessed[self._image_index] = False
-        self.dirty = 1
+        self.call_action("orientation")
 
     @property
     def is_flipped(self):
@@ -113,7 +134,7 @@ class Appearance:
     @is_flipped.setter
     def is_flipped(self, value):
         self._is_flipped = value
-        self.dirty = 1
+        self.call_action("flip")
 
     @property
     def is_scaled(self):
@@ -123,7 +144,7 @@ class Appearance:
     @is_scaled.setter
     def is_scaled(self, value):
         self._is_scaled = value
-        self.dirty = 1
+        self.call_action("scale")
 
     @property
     def coloring(self):
@@ -132,6 +153,7 @@ class Appearance:
     @coloring.setter
     def coloring(self, value):
         self._coloring = value
+        self.call_action("coloring")
         self.dirty = 1
 
     @property
@@ -150,12 +172,14 @@ class Appearance:
         """
         if value == "":
             self._text = ""
-            self.surface_loaded = False
+            #self.surface_loaded = False
             self.dirty = 1
         else:
             self._text = value
-            self.surface_loaded = False
+            #self.surface_loaded = False
             self.dirty = 1
+        self.reload_all()
+        self.call_action("write_text")
 
     def fill(self, color):
         try:
@@ -168,11 +192,11 @@ class Appearance:
 
     def draw_shape_append(self, shape, arguments):
         self.draw_shapes.append((shape, arguments))
-        self.dirty = 1
+        self.call_action("draw_shapes")
 
     def draw_shape_set(self, shape, arguments):
         self.draw_shapes = [(shape, arguments)]
-        self.dirty = 1
+        self.call_action("draw_shapes")
 
     def add_image(self, path: str) -> int:
         """
@@ -190,6 +214,7 @@ class Appearance:
         self.image_paths.append(path)
         self._image = self.image
         self.dirty = 1
+        self.reload_all()
         return len(self.images_list) - 1
 
     @staticmethod
@@ -203,7 +228,6 @@ class Appearance:
         Returns: The image loaded
 
         """
-
         try:
             import os
             canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
@@ -245,24 +269,37 @@ class Appearance:
                 image = self.images_list[self._image_index]  # if there is a image list load image by index
                 # Preprocess pipeline
                 if not self._image_index in self.preprocessed.keys() or not self.preprocessed[self._image_index]:
-                    for action in self.image_preprocess_pipeline:
-                        if getattr(self, action[2]):
-                            image = action[1](image, parent=self.parent)
+                    for img_action in self.image_preprocess_pipeline:
+                        if getattr(self, img_action[2]):
+                            image = img_action[1](image, parent=self.parent)
                     self.images_list[self._image_index] = image
                     self.preprocessed[self._image_index] = True
             else:  # no image files - Render raw surface
                 image = self.load_surface()
             # image action pipeline
-            for action in self.image_actions_pipeline:
-                if getattr(self, action[2]):
-                    if self.parent.size != (0, 0):
-                        image = action[1](image, parent=self.parent)
-                        print(action[0])
-                self.parent.dirty = 1
+            #print(self.reload_actions)
+            #print("---")
+            for img_action in self.image_actions_pipeline:
+                if self.reload_actions[img_action[0]] is False \
+                        and img_action[0] in self.cached_images.keys() \
+                        and self.cached_images[img_action[0]]:
+                    if getattr(self, img_action[2]):
+                        if self.parent.size != (0, 0):
+                            image = self.cached_images[img_action[0]]
+                            #print("fom cache", image, self._image_index, img_action[0], self.parent)
+                else:
+                    if getattr(self, img_action[2]):
+                        if self.parent.size != (0, 0):
+                            image = img_action[1](image, parent=self.parent)
+                            self.cached_images[img_action[0]] = image
+                            #print("created ", image, self._image_index, img_action[0], self.parent)
+                    self.parent.dirty = 1
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
             self._image = image
             self.dirty = 0
+            for key in self.reload_actions.keys():
+                self.reload_actions[key] = False
         return self._image
 
     def load_surface(self) -> pygame.Surface:
@@ -285,12 +322,14 @@ class Appearance:
                 self._image_index = 0
             self.dirty = 1
             self.parent.dirty = 1
+            self.reload_all()
 
     def set_image(self, value):
         if 0 <= value < len(self.images_list)-1:
             self.image_index = value
             self.dirty = 1
             self.parent.dirty = 1
+            self.reload_all()
             return True
         else:
             return False
@@ -349,7 +388,23 @@ class Appearance:
         self.dirty = 1
 
     def call_action(self, action):
-        self.call_image_actions[action] = True
+        reload = False
+        for img_action in self.image_actions_pipeline:
+            if img_action[0] == action:
+                reload = True
+            if reload:
+                self.reload_actions[img_action[0]] = True
+        self.dirty = 1
+        self.parent.dirty = 1
+        return self.image
+
+    def call_actions(self, actions):
+        reload = False
+        for img_action in self.image_actions_pipeline:
+            if img_action[0] in actions:
+                reload = True
+            if reload:
+                self.reload_actions[img_action[0]] = True
         self.dirty = 1
         self.parent.dirty = 1
         return self.image

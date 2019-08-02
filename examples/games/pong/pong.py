@@ -4,7 +4,7 @@ from miniworldmaker import *
 class PongBoard(PixelBoard):
 
     def on_setup(self):
-        self.background.fill_color = (0, 0, 0)
+        self.background.fill_color = (100, 0, 0)
         self.player1 = Paddle((10, 130), width=10, height=80, thickness=0)
         self.player2 = Paddle((780, 280), width=10, height=80, thickness=0)
         self.ball = Ball((395, 295))
@@ -14,9 +14,9 @@ class PongBoard(PixelBoard):
         self.right = Border((795, 600), (795, 0), thickness=10)
         self.bottom = Border((800, 595), (0, 595), 5)
         self.points_left = NumberToken((100, 100), 0, 100)
-        self.points_left.size = (400, 400)
+        self.points_left.size = (200, 200)
         self.points_right = NumberToken((600, 100), 0, 100)
-        self.points_right.size = (400, 400)
+        self.points_right.size = (200, 200)
 
     def on_key_pressed(self, keys):
         if "W" in keys:
@@ -32,8 +32,13 @@ class PongBoard(PixelBoard):
 class Border(Line):
 
     def setup_physics(self):
+        pass
+        self.physics.shape_type = "line"
+        self.physics.gravity = False
+        self.physics.can_move = False
         self.physics.mass = 1
         self.physics.elasticity = 1
+        self._start_physics()
 
 
 class Paddle(Rectangle):

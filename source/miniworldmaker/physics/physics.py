@@ -148,10 +148,13 @@ class PhysicsProperty:
                                       )
             elif self.shape_type.lower() == "line":
                 try:
+                    start_x, start_y = self.token.start_position[0] + self.token.local_start_position[0], self.token.start_position[1] + self.token.local_start_position[1]
+                    end_x, end_y = self.token.end_position[0] + self.token.local_end_position[0], self.token.end_position[
+                        1] + self.token.local_end_position[1]
                     shape = pymunk.Segment(self.body,
-                                           pymunk.pygame_util.from_pygame(self.token.start_position,
+                                           pymunk.pygame_util.from_pygame((start_x, start_y),
                                                                           self.token.board.image),
-                                           pymunk.pygame_util.from_pygame(self.token.end_position,
+                                           pymunk.pygame_util.from_pygame((end_x, end_y),
                                                                           self.token.board.image),
                                            self.token.thickness,
                                            )
@@ -172,6 +175,8 @@ class PhysicsProperty:
             self.shape.collision_type = self.token.__class__.class_id
             self.dirty = 0
             self.model_setup_complete = True
+            if self.token.__class__.__name__ == "Border":
+                print(self.token, self.body.size, self.body.position, self.token.position, self.token.center, self.token.board.image)
 
     def reload_physics(self):
         self.dirty = 1
@@ -191,8 +196,7 @@ class PhysicsProperty:
 
         """
         if not self.body.body_type == pymunk_engine.Body.STATIC:
-            self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
-                                                                self.token.board.image)
+            self.body.position = pymunk.pygame_util.from_pygame(self.token.center,self.token.board.image)
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.body.angle = math.radians(self.token.direction_at_unit_circle - 90)
 
@@ -212,12 +216,13 @@ class PhysicsProperty:
         Returns:
 
         """
-        self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
-        self.token.direction_at_unit_circle = math.degrees(self.body.angle) + 90
-        if PhysicsProperty.debug:
-            options = pymunk.pygame_util.DrawOptions(self.token.board.image)
-            options.collision_point_color = (255, 20, 30, 40)
-            PhysicsProperty.space.debug_draw(options)
+        if not self.body.body_type == pymunk_engine.Body.STATIC:
+            self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
+            self.token.direction_at_unit_circle = math.degrees(self.body.angle) + 90
+            if PhysicsProperty.debug:
+                options = pymunk.pygame_util.DrawOptions(self.token.board.image)
+                options.collision_point_color = (255, 20, 30, 40)
+                PhysicsProperty.space.debug_draw(options)
 
     def remove(self):
         if self.body:

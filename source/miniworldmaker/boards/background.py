@@ -23,8 +23,11 @@ class Background(appearance.Appearance):
         self.image_actions_pipeline = [("scale_to_tile", self.image_action_scale_to_tile,
                                         "is_scaled_to_tile")] + self.image_actions_pipeline
         self.image_actions_pipeline.append(("grid_overlay", self.image_action_show_grid, "grid_overlay"))
-        self.is_scaled = True,
-        self.alpha = False
+        self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
+
+    def after_init(self):
+        super().after_init()
+        self.is_scaled = True
 
     def next_image(self):
         """
@@ -85,7 +88,7 @@ class Background(appearance.Appearance):
     @is_scaled_to_tile.setter
     def is_scaled_to_tile(self, value):
         self._is_scaled_to_tile = value
-        self.dirty = 1
+        self.call_action("scale_to_tile")
 
     def image_action_show_grid(self, image: pygame.Surface, parent) -> pygame.Surface:
         i = 0

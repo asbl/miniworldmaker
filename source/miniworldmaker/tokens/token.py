@@ -114,10 +114,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.costume._is_flipped = value
         if self.is_flipped is True:
             self.costume.enabled_image_actions["flip"] = True
-            self.costume.call_action("flip")
         else:
             self.costume.enabled_image_actions["flip"] = False
-            self.costume.call_action("flip")
 
     def __str__(self):
         if self.board:
@@ -375,7 +373,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self._size = value
             self.dirty = 1
             if hasattr(self, "costume"):
-                self.costume.call_action("scale")
+                self.costume.call_actions(["scale", "upscale"])
             if hasattr(self, "physics") and self.physics.started:
                 self.physics.reload_physics()
 
@@ -622,11 +620,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def sensing_on_board(self=None, distance=0) -> bool:
         return self.board_connector.sensing_on_board(distance=distance)
 
-    def sensing_tokens(self, distance: int = 0, token_type=None, exact=False):
-        return self.board_connector.sensing_tokens(distance, token_type, exact)
+    def sensing_tokens(self, distance: int = 0, token_type=None):
+        return self.board_connector.sensing_tokens(distance, token_type)
 
-    def sensing_token(self, distance: int = 0, token_type=None, exact=False):
-        return self.board_connector.sensing_token(distance, token_type, exact)
+    def sensing_token(self, distance: int = 0, token_type=None):
+        return self.board_connector.sensing_token(distance, token_type)
 
     def sensing_borders(self, distance: int = 0):
         return self.board_connector.sensing_borders(distance)

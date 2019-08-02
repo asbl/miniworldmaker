@@ -532,7 +532,7 @@ class Board(container.Container, metaclass = MetaBoard):
         for token in self.tokens:
             for coll_class in self.registered_collision_handlers_for_tokens[token.__class__]:
                 if coll_class not in ["borders", "on_board", "not_on_board"]:
-                    collision_tokens = token.sensing_tokens(token_type=coll_class, exact=True)
+                    collision_tokens = token.sensing_tokens(token_type=coll_class)
                     if collision_tokens:
                         for colliding_target in collision_tokens:
                             method = getattr(token, 'on_sensing_' + str(coll_class.__name__).lower())

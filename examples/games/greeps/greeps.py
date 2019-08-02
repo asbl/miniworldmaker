@@ -183,7 +183,7 @@ class Greep(Actor):
 
     def deliver_to_ship(self):
         print("deliver")
-        if self.sensing_token(token=Ship, distance=0) and self.carrys_tomato:
+        if self.sensing_token(token_type=Ship, distance=0) and self.carrys_tomato:
             self.carrys_tomato = False
             self.switch_costume(0)
             print("delivered")
@@ -192,13 +192,13 @@ class Greep(Actor):
             board.counter[len(board.counter) - 1].add(1)
 
     def charge(self, greep, tomato):
-        greep = self.sensing_token(token=Greep, distance=0)
-        tomato = self.sensing_token(token=Tomatoes, distance=0)
+        greep = self.sensing_token(token_type=Greep, distance=0)
+        tomato = self.sensing_token(token_type=Tomatoes, distance=0)
         print("charge", self, greep, tomato, greep.carrys_tomato)
         if greep and tomato:
             if not greep.carrys_tomato:
                 greep.carrys_tomato = True
-                tomato.get_tomato()
+                tomato.take_tomato()
                 greep.switch_costume(index=1)
 
     def turn_home(self):
@@ -224,7 +224,7 @@ class Marker(Token):
         elif self.time % 30 == 0 and self.time > 0:
             self.intensity /= 2
             self.colorize()
-            if self.intensity < 60:
+            if self.intensity < 100:
                 self.remove()
 
     def colorize(self):
@@ -235,7 +235,7 @@ class Marker(Token):
         elif self.color == "blue":
             self.costume.color = (0, 0, 255, self.intensity)
         self.costume.coloring = True
-        self.costume.call_action("coloring")
+
 
 earth = Earth()
 earth.show()

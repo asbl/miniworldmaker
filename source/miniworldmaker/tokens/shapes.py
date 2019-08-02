@@ -156,13 +156,12 @@ class Ellipse(Shape):
             print("ERROR: thickness of {0} is greater than ellipse-radius".format(thickness))
             self.remove()
 
-
     @property
     def draw_shape(self):
         return pygame.draw.ellipse, [self.color,
-                                    pygame.Rect(0, 0,
-                                    int(self.width), int(self.height)),
-                                    self.thickness]
+                                     pygame.Rect(0, 0,
+                                                 int(self.width), int(self.height)),
+                                     self.thickness]
 
     @property
     def width(self):
@@ -220,23 +219,25 @@ class Line(Shape):
                  color: tuple = (255, 255, 255, 255), ):
         try:
             start = start_position[0], start_position[1]
-            end = end_position[0] , end_position[1]
-            if type(start_position) == int :
-                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", start_position, ", type:", type(start_position))
+            end = end_position[0], end_position[1]
+            if type(start_position) == int:
+                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value",
+                                start_position, ", type:", type(start_position))
             if type(end_position) == int:
-                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position, ", type:", type(end_position))
+                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position,
+                                ", type:", type(end_position))
             box = self.bounding_box([start, end])
             self.thickness = thickness
             box_topleft = (box[0], box[1])
-            box_width = abs(box[0] - box[2])+self.thickness
-            box_height = abs(box[1] - box[3])+self.thickness
+            box_width = abs(box[0] - box[2]) + self.thickness
+            box_height = abs(box[1] - box[3]) + self.thickness
             # mod_start
-            x = start_position[0] - box_topleft[0]+self.thickness / 2
-            y = start_position[1] - box_topleft[1] + self.thickness
+            x = start_position[0] - box_topleft[0] + self.thickness / 2
+            y = start_position[1] - box_topleft[1] + self.thickness / 2
             mod_start = (x, y)
             # mod end
-            x = end_position[0] - box_topleft[0]+self.thickness  / 2
-            y = end_position[1] - box_topleft[1]+self.thickness
+            x = end_position[0] - box_topleft[0] + self.thickness / 2
+            y = end_position[1] - box_topleft[1] + self.thickness / 2
             mod_end = (x, y)
             self.start_position = start_position
             self.end_position = end_position
@@ -244,11 +245,12 @@ class Line(Shape):
             self.local_end_position = mod_end
             super().__init__((box[0], box[1]), color)
             self.size = (box_width, box_height)
-            #self.costume.load_surface()
-            self.costume.draw_shape_append(pygame.draw.line, [(255,255,255,255),
+            self.costume.draw_shape_append(pygame.draw.line, [(255, 255, 255, 255),
                                                               mod_start,
                                                               mod_end,
                                                               self.thickness])
+            self.costume.load_surface()
+
         except TypeError as e:
             raise e
 
@@ -354,4 +356,3 @@ class Polygon(Shape):
                                      self.mod_pointlist,
                                      self.thickness,
                                      ]
-

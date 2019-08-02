@@ -70,22 +70,15 @@ class PixelBoardConnector(board_connector.BoardConnector):
     def filter_actor_list(a_list, actor_type):
         return [actor for actor in a_list if type(actor) == actor_type]
 
-    def sensing_tokens(self, distance: int = 1, token_type=None, exact=False) -> list:
+    def sensing_tokens(self, distance: int = 1, token_type=None) -> list:
         destination_rect = self.get_destination_rect(distance=distance)
         tokens = self.board.get_tokens_at_rect(destination_rect, singleitem=False, exclude=self, token_type=token_type)
-        token_list = []
-        for token in tokens:
-            if exact and token:
-                if pygame.sprite.collide_mask(self.token, token):
-                    token_list.append(token)
-            elif not exact and token:
-                token_list.append(token)
-        return token_list
+        return [token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
 
-    def sensing_token(self, distance: int = 1, token_type=None, exact=False) -> Union[token.Token, None]:
+    def sensing_token(self, distance: int = 1, token_type=None) -> Union[token.Token, None]:
         destination_rect = self.get_destination_rect(distance)
         token = self.board.get_tokens_at_rect(destination_rect, singleitem=True, exclude=self, token_type=token_type)
-        if exact and token:
+        if token:
             if pygame.sprite.collide_mask(self.token, token):
                 return token
             else:
