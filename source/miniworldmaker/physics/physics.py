@@ -166,7 +166,7 @@ class PhysicsProperty:
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
                                                                 self.token.board.image)
             self.body.size = (self.token.width, self.token.height)
-            self.body.angle = math.radians(self.token.direction_at_unit_circle + 90)
+            self.body.angle = math.radians(self.token.direction_at_unit_circle - 90)
             if self.shape_type.lower() != "line":
                 PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.shape.friction = self.friction
@@ -258,6 +258,6 @@ class PhysicsProperty:
 
     def impulse_in_direction(self, power):
         impulse = pymunk.Vec2d(1, 0)
-        impulse.rotate_degrees(- self.token.direction_at_unit_circle - 90 )
+        impulse.rotate_degrees( self.token.direction_at_unit_circle - 90 )
         impulse = power * impulse.normalized()
         self.body.apply_impulse_at_local_point(impulse)

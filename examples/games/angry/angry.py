@@ -10,23 +10,29 @@ class MyBoard(PixelBoard):
         self.arrow = Arrow(position=(160, 250))
         self.arrow.direction = -10
         self.plattform = Plattform(position=(600, 250))
+        # row 1
         Box(position=(610, 210))
         Box(position=(655, 210))
         Box(position=(700, 210))
         Box(position=(745, 210))
         Box(position=(790, 210))
-
+        # row 2
         Box(position=(630, 170))
         Box(position=(675, 170))
         Box(position=(720, 170))
         Box(position=(765, 170))
-
+        # row 3
         Box(position=(640, 130))
         Box(position=(685, 130))
         Box(position=(730, 130))
-
+        # row 4
         Box(position=(700, 90))
-
+        self.counter = NumberToken((20,20))
+        self.counter.size = (100,100)
+        self.shoots = NumberToken((120,260), color=(200, 40, 40))
+        self.shoots.costume.font_size = 60
+        self.shoots.size = (260,200)
+        self.shoots.set_number(0)
 
 class Arrow(Actor):
 
@@ -65,7 +71,7 @@ class Plattform(Token):
     def setup_physics(self):
         self.physics.gravity = False
         self.physics.can_move = False
-        self.physics.friction = 0.5
+        self.physics.friction = 2
 
 
 class Box(Actor):
@@ -76,6 +82,11 @@ class Box(Actor):
 
     def setup_physics(self):
         self.physics.friction = 0.1
+        self.mass = 1
+
+    def on_sensing_not_on_board(self):
+        self.board.counter.inc()
+        self.remove()
 
 
 class Bird(Actor):
@@ -84,16 +95,20 @@ class Bird(Actor):
         self.add_image("images/fly.png")
         self.orientation = 180
         self.flip_x()
-        self.size = (80, 80)
-        self.physics.velocity_x = 600
-        self.physics.velocity_y = - self.board.arrow.direction * 50
+        self.size = (40, 40)
+        self.direction = self.board.arrow.direction
+        print(self.board.arrow.direction)
+        print(self.direction)
+        self.physics.impulse_in_direction(5000)
+        self.board.shoots.inc()
 
     def act(self):
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():
             self.remove()
 
     def setup_physics(self):
-        self.physics.mass = 20
+        self.physics.mass = 6
+        self.friction = 1
         self.physics.size = 0.7, 0.7
         self.gravity = True
         self.physics.shape_type = "circle"

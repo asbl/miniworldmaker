@@ -61,7 +61,7 @@ class Appearance(metaclass = MetaAppearance):
                                        ]
         self.fill_color = (0, 0, 255, 255)  #: background_color if actor has no background image
         self.color = (255, 255, 255, 255)  #: color for overlays
-        self.font_size = 0  #: font_size if token-text != ""
+        self._font_size = 0  #: font_size if token-text != ""
         self.text_position = (0, 0)  #: Position of text relative to the top-left pixel of token
         self.font_path = None  #: Path to font-file
         self.dirty = 1
@@ -77,6 +77,16 @@ class Appearance(metaclass = MetaAppearance):
     def reload_all(self):
         for img_action in self.image_actions_pipeline:
             self.reload_actions[img_action[0]] = True
+
+    @property
+    def font_size(self):
+        return self._font_size
+
+    @font_size.setter
+    def font_size(self, value):
+        self._font_size = value
+        self.call_action("write_text")
+
 
     @property
     def is_textured(self):
@@ -382,6 +392,7 @@ class Appearance(metaclass = MetaAppearance):
             position = board_position.BoardPosition(position[0], position[1])
         if position.is_on_board():
             return self._image.get_at(position.to_pixel())
+
 
     def changed_all(self):
         self.call_image_actions = {key: True for key in self.call_image_actions}

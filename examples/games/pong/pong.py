@@ -32,13 +32,8 @@ class PongBoard(PixelBoard):
 class Border(Line):
 
     def setup_physics(self):
-        pass
-        self.physics.shape_type = "line"
-        self.physics.gravity = False
-        self.physics.can_move = False
         self.physics.mass = 1
         self.physics.elasticity = 1
-        self._start_physics()
 
 
 class Paddle(Rectangle):
