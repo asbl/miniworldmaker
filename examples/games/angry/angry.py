@@ -2,7 +2,6 @@ from miniworldmaker import *
 
 
 class MyBoard(PixelBoard):
-
     birds = 0
 
     def on_setup(self):
@@ -27,17 +26,24 @@ class MyBoard(PixelBoard):
         Box(position=(730, 130))
         # row 4
         Box(position=(700, 90))
-        self.counter = NumberToken((20,20))
-        self.counter.size = (100,100)
-        self.shoots = NumberToken((120,260), color=(200, 40, 40))
+        self.counter = NumberToken((20, 20))
+        self.counter.size = (100, 100)
+        self.shoots = NumberToken((120, 260), color=(200, 40, 40))
         self.shoots.costume.font_size = 60
-        self.shoots.size = (260,200)
-        self.shoots.set_number(0)
+        self.shoots.size = (260, 200)
+        self.is_running = True
+        print("on setup")
+
+    def act(self):
+        if self.shoots.get_number() >= 10 and self.is_running:
+            self.is_running = False
+            print("set self.is_running to false")
+
 
 class Arrow(Actor):
 
     def on_setup(self):
-        self.size = (30,30)
+        self.size = (30, 30)
         self.costume.add_image("images/tank_arrowFull.png")
         self.costume.is_scaled = True
         self.speed = 0
@@ -50,15 +56,18 @@ class Arrow(Actor):
             self.direction += 1
 
     def on_key_down(self, keys):
-        if "space" in keys:
-            self.speed += 1
-            self.shoot = 1
-            if self.shoot == 1:
-                self.shoot = -1
-                print("Bäm")
-                bird = Bird(position=self.position)
-                self.speed = 0
-                print(bird)
+        if self.board.is_running:
+            if "space" in keys:
+                self.speed += 1
+                self.shoot = 1
+                if self.shoot == 1:
+                    self.shoot = -1
+                    print("Bäm")
+                    bird = Bird(position=self.position)
+                    self.speed = 0
+        else:
+            if "space" in keys:
+                self.board.reset()
 
 
 class Plattform(Token):
@@ -96,9 +105,7 @@ class Bird(Actor):
         self.orientation = 180
         self.flip_x()
         self.size = (40, 40)
-        self.direction = self.board.arrow.direction
-        print(self.board.arrow.direction)
-        print(self.direction)
+        self.direction = self.board.arrow.direction + 180
         self.physics.impulse_in_direction(5000)
         self.board.shoots.inc()
 
@@ -113,6 +120,7 @@ class Bird(Actor):
         self.gravity = True
         self.physics.shape_type = "circle"
         self.physics.stable = False
+
 
 board = MyBoard(1024, 700)
 board.show()

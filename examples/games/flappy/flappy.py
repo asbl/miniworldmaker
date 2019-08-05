@@ -30,9 +30,6 @@ class Bird(Token):
     def setup_physics(self):
         pass
 
-    def act(self):
-        pass
-
     def on_sensing_borders(self, borders):
         if "bottom" in borders or "top" in borders:
             self.board.is_running = False
@@ -69,7 +66,6 @@ class Pipe(Token):
         if "left" in borders:
             self.move_to(position=BoardPosition(self.position.x + random.randint(750, 800), self.y))
             self.passed = False
-
 
 
 board = MyBoard(800, 600)

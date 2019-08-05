@@ -327,7 +327,6 @@ class Board(container.Container, metaclass = MetaBoard):
         """
         self.tokens.add(token)
         token.position = position
-        token.costume.changed_all()
         token.dirty = 1
         if token.init != 1:
             raise UnboundLocalError("super().__init__() was not called")
@@ -436,8 +435,9 @@ class Board(container.Container, metaclass = MetaBoard):
         Returns:
             The newly created and reseted board
         """
+        [token.remove() for token in self.tokens]
         board = self.__class__(self.width, self.height)
-        board.is_running = False
+        del self
         board.window.send_event_to_containers("reset", board)
         board.show()
         return board
@@ -451,6 +451,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self._window.repaint_areas.extend(repaint_rects)
         if self._repaint_all:
             self._window.repaint_areas.append(self.rect)
+            print(self.rect)
             self._repaint_all = False
 
     def show(self, fullscreen=False):

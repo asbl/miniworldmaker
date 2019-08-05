@@ -240,7 +240,8 @@ class Appearance(metaclass = MetaAppearance):
         """
         try:
             import os
-            canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+            canonicalized_path = os.path.join(os.path.curdir, path)
+            #canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
             if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
                 _image = Appearance._images_dict[canonicalized_path]
@@ -392,11 +393,6 @@ class Appearance(metaclass = MetaAppearance):
             position = board_position.BoardPosition(position[0], position[1])
         if position.is_on_board():
             return self._image.get_at(position.to_pixel())
-
-
-    def changed_all(self):
-        self.call_image_actions = {key: True for key in self.call_image_actions}
-        self.dirty = 1
 
     def call_action(self, action):
         reload = False
