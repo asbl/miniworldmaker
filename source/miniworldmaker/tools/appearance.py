@@ -10,11 +10,15 @@ class MetaAppearance(type):
         try:
             instance = super().__call__(*args, **kwargs)
         except TypeError:
-            raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+            raise TypeError(
+                "Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,
+                                                                                                     inspect.signature(
+                                                                                                         cls.__init__)))
         instance.after_init()
         return instance
 
-class Appearance(metaclass = MetaAppearance):
+
+class Appearance(metaclass=MetaAppearance):
     """ Base class of token costumes and board backgrounds
 
     Die Klasse enthält alle Methoden und Attribute um Bilder der Objekte anzuzeigen, zu animieren, Text auf den Bildern zu rendern  oder Overlays anzuzeigen.
@@ -87,7 +91,6 @@ class Appearance(metaclass = MetaAppearance):
         self._font_size = value
         self.call_action("write_text")
 
-
     @property
     def is_textured(self):
         """bool: If True, the image is tiled over the background.
@@ -158,6 +161,10 @@ class Appearance(metaclass = MetaAppearance):
 
     @property
     def coloring(self):
+        """
+        Defines a colored layer. Coloring is True or false. The color is defined by the attribute appearance.color
+
+        """
         return self._coloring
 
     @coloring.setter
@@ -169,24 +176,19 @@ class Appearance(metaclass = MetaAppearance):
     @property
     def text(self):
         """
-        Returns the current text
+        If text!= "" a Text is rendered at the token-position.
         """
         return self._text
 
     @text.setter
     def text(self, value):
-        """
-        Sets the current text
-        Args:
-            value: A new text as string
-        """
         if value == "":
             self._text = ""
-            #self.surface_loaded = False
+            # self.surface_loaded = False
             self.dirty = 1
         else:
             self._text = value
-            #self.surface_loaded = False
+            # self.surface_loaded = False
             self.dirty = 1
         self.reload_all()
         self.call_action("write_text")
@@ -241,7 +243,7 @@ class Appearance(metaclass = MetaAppearance):
         try:
             import os
             canonicalized_path = os.path.join(os.path.curdir, path)
-            #canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+            # canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
             if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
                 _image = Appearance._images_dict[canonicalized_path]
@@ -288,8 +290,8 @@ class Appearance(metaclass = MetaAppearance):
             else:  # no image files - Render raw surface
                 image = self.load_surface()
             # image action pipeline
-            #print(self.reload_actions)
-            #print("---")
+            # print(self.reload_actions)
+            # print("---")
             for img_action in self.image_actions_pipeline:
                 if self.reload_actions[img_action[0]] is False \
                         and img_action[0] in self.cached_images.keys() \
@@ -297,13 +299,13 @@ class Appearance(metaclass = MetaAppearance):
                     if getattr(self, img_action[2]):
                         if self.parent.size != (0, 0):
                             image = self.cached_images[img_action[0]]
-                            #print("fom cache", image, self._image_index, img_action[0], self.parent)
+                            # print("fom cache", image, self._image_index, img_action[0], self.parent)
                 else:
                     if getattr(self, img_action[2]):
                         if self.parent.size != (0, 0):
                             image = img_action[1](image, parent=self.parent)
                             self.cached_images[img_action[0]] = image
-                            #print("created ", image, self._image_index, img_action[0], self.parent)
+                            # print("created ", image, self._image_index, img_action[0], self.parent)
                     self.parent.dirty = 1
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
@@ -336,7 +338,7 @@ class Appearance(metaclass = MetaAppearance):
             self.reload_all()
 
     def set_image(self, value):
-        if 0 <= value < len(self.images_list)-1:
+        if 0 <= value < len(self.images_list) - 1:
             self.image_index = value
             self.dirty = 1
             self.parent.dirty = 1
@@ -478,12 +480,12 @@ class Appearance(metaclass = MetaAppearance):
         """
         image = image.copy()
         # zero out RGB values
-        image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT) # Fill black
+        image.fill((0, 0, 0, 255), None, pygame.BLEND_RGBA_MULT)  # Fill black
         # add in new RGB values
-        new_color = self.color [0:3] + (0,)
-        image.fill(new_color, None, pygame.BLEND_RGBA_ADD) # Add color
-        new_color = (255, 255,255) + (self.color[3],)
-        image.fill(new_color, None, pygame.BLEND_RGBA_MULT) # Multiply transparency
+        new_color = self.color[0:3] + (0,)
+        image.fill(new_color, None, pygame.BLEND_RGBA_ADD)  # Add color
+        new_color = (255, 255, 255) + (self.color[3],)
+        image.fill(new_color, None, pygame.BLEND_RGBA_MULT)  # Multiply transparency
         return image
 
     @staticmethod

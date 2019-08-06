@@ -80,6 +80,10 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @property
     def orientation(self):
+        """
+        The orientation "corrects" a wrongly orientation of a token image.
+        If orientation is != 0, the token is rotated by orientation degrees, before any other operation.
+        """
         return self._orientation
 
     @orientation.setter
@@ -90,6 +94,9 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @classmethod
     def all_subclasses(cls):
+        """
+        Gets all subclasses from Token-Class
+        """
         def rec_all_subs(cls) -> set:
             if cls.subclasses is None:
                 return set(cls.__subclasses__()).union(
@@ -240,12 +247,32 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         return (self._direction + 180) % 360 - 180
 
+    @direction.setter
+    def direction(self, value):
+        self.last_direction = self.direction
+        direction = self._value_to_direction(value)
+        self._direction = direction
+        if self.last_direction != self._direction:
+            self.dirty = 1
+            if self.costume:
+                self.costume.call_action("rotate")
+            if self.board:
+                self.board.window.send_event_to_containers("token_changed_direction", self)
+
     @property
     def direction_at_unit_circle(self):
+        """
+        Gets the direction as value in unit circle (0° right, 90° top, 180° left...
+        """
         return Token.dir_to_unit_circle(self._direction)
 
     @direction_at_unit_circle.setter
     def direction_at_unit_circle(self, value):
+        """
+        Sets the direction from unit circle
+        Args:
+            value: An angle in the unit circle, e.g. 0°: right, 90° top, ...
+        """
         self.direction = Token.unit_circle_to_dir(value)
 
     @staticmethod
@@ -314,18 +341,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         self.direction = self._value_to_direction(direction)
         return self.direction
-
-    @direction.setter
-    def direction(self, value):
-        self.last_direction = self.direction
-        direction = self._value_to_direction(value)
-        self._direction = direction
-        if self.last_direction != self._direction:
-            self.dirty = 1
-            if self.costume:
-                self.costume.call_action("rotate")
-            if self.board:
-                self.board.window.send_event_to_containers("token_changed_direction", self)
 
     def delta_x(self, distance):
         return math.sin(math.radians(self.direction)) * distance

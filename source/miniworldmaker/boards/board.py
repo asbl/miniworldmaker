@@ -425,8 +425,7 @@ class Board(container.Container, metaclass = MetaBoard):
             rect = pygame.Rect(rect[0], rect[1], 1, 1)
         tokens = self.get_tokens_at_rect(rect)
         if token is not None:
-            tokens = Board.filter_actor_list(tokens, token)
-        [token.remove() for token in tokens]
+            [token.remove() for token in Board.filter_actor_list(tokens, token)]
 
     def reset(self):
         """Resets the board
