@@ -33,7 +33,7 @@ class Background(appearance.Appearance):
         """
         Switches to the next image of the appearance.
         """
-        super().next_sprite()
+        super().next_image()
         self.parent.window.repaint_areas.append(self.image.get_rect())
         self.parent.window.window_surface.blit(self.image, (0, 0))
 

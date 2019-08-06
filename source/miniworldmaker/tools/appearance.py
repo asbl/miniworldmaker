@@ -416,6 +416,14 @@ class Appearance(metaclass = MetaAppearance):
         self.parent.dirty = 1
         return self.image
 
+    def call_all_actions(self):
+        reload = False
+        for img_action in self.image_actions_pipeline:
+            self.reload_actions[img_action[0]] = True
+        self.dirty = 1
+        self.parent.dirty = 1
+        return self.image
+
     def image_action_texture(self, image, parent):
         background = pygame.Surface(parent.size)
         background.fill((255, 255, 255))

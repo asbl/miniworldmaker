@@ -227,7 +227,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             index = index
         self.costume = self.costumes[index]
         self.costume.dirty = 1
-        self.costume.changed_all()
+        self.costume.call_all_actions()
         self.dirty = 1
         return self.costume
 
