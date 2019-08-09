@@ -4,6 +4,9 @@ import pygame
 
 
 class Container:
+    """
+    Base class for containers
+    """
     clog = logging.getLogger("Container")
 
     def __init__(self):
@@ -42,7 +45,6 @@ class Container:
             self.container_top_left_y = 0
             self.docking_position = dock
         elif dock == "right":
-
             self.container_top_left_x = self._window.window_width
             self.container_top_left_y = 0
             self.docking_position = dock
@@ -71,8 +73,6 @@ class Container:
         pass
 
     def handle_event(self, event, data):
-        if "mouse_left" in event:
-            print("handle event", self)
         self.get_event(event, data)
 
     def get_event(self, event, data):

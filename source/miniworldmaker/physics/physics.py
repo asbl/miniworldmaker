@@ -68,6 +68,7 @@ class PhysicsProperty:
         you have to use this method.
 
         WARNING: This method should be called AFTER all changes of attributes but BEFORE you add an impulse to the object
+        If you implement a setup_physics()-Method in an token, you don't have to call this method.
 
         Examples:
             >>> # These attributes are changed BEFORE start_physics()
@@ -175,8 +176,6 @@ class PhysicsProperty:
             self.shape.collision_type = self.token.__class__.class_id
             self.dirty = 0
             self.model_setup_complete = True
-            if self.token.__class__.__name__ == "Border":
-                print(self.token, self.body.size, self.body.position, self.token.position, self.token.center, self.token.board.image)
 
     def reload_physics(self):
         self.dirty = 1
@@ -225,6 +224,9 @@ class PhysicsProperty:
                 PhysicsProperty.space.debug_draw(options)
 
     def remove(self):
+        """
+        Removes an object from physics-space
+        """
         if self.body:
             PhysicsProperty.space.remove(self.body)
         if self.shape:
@@ -257,6 +259,12 @@ class PhysicsProperty:
         self._stable = value
 
     def impulse_in_direction(self, power):
+        """
+        Adds an impulse in token-direction
+
+        Args:
+            power: The power-value of the impulse.
+        """
         impulse = pymunk.Vec2d(1, 0)
         impulse.rotate_degrees( self.token.direction_at_unit_circle - 270 )
         impulse = power * impulse.normalized()

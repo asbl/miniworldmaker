@@ -44,7 +44,7 @@ class Arrow(Actor):
             self.turn_left((self.spinning/800)*20)
             self.spinning = self.spinning - 1
             if self.spinning == 0:
-                if self.sensing_tokens(token=Chip):
+                if self.sensing_tokens(token_type=Chip):
                     easygui.msgbox("Du hast gewonnen", "Spinning Wheel")
                     self.board.chip.remove()
                     self.board.placed = False

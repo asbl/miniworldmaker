@@ -1,4 +1,5 @@
 from miniworldmaker.windows import miniworldwindow
+
 class Timed():
     def __init__(self):
         self.board = miniworldwindow.MiniWorldWindow.board

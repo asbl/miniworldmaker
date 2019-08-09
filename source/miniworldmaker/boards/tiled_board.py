@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import Union
 
-import pygame
 from miniworldmaker.boards import board_position
+from miniworldmaker.boards import board_rect
 from miniworldmaker.boards.board import Board
 from miniworldmaker.tokens import tiled_connector
 
@@ -24,7 +24,6 @@ class TiledBoard(Board):
         self.static_tokens_dict = defaultdict(list)
         super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin)
         self.speed = 30
-
 
     def add_to_board(self, token, position):
         """
@@ -64,11 +63,20 @@ class TiledBoard(Board):
         cells.append([x_pos + 1, y_pos - 1])
         return cells
 
-    def on_board(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> bool:
+    def on_board(self, value: Union[tuple, board_position.BoardPosition, board_rect.BoardRect]) -> bool:
+        """
+        Checks if position is on board
+
+        Args:
+            value: A Board Position or a board rect
+
+        Returns:
+
+        """
         pos = self._get_position_from_parameter(value)
         return pos.is_on_board()
 
-    def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
+    def borders(self, value: Union[tuple, board_position.BoardPosition, board_rect.BoardRect]) -> list:
         """
 
         Args:
@@ -85,7 +93,7 @@ class TiledBoard(Board):
             pos = board_position.BoardPosition(parameter[0], parameter[1])
         elif type(parameter) == board_position.BoardPosition:
             pos = parameter
-        elif type(parameter) == pygame.Rect:
+        elif type(parameter) == board_rect.BoardRect:
             pos = board_position.BoardPosition.from_rect(parameter)
         else:
             raise TypeError("Parameter must be tuple, BoardPosition or Rect")

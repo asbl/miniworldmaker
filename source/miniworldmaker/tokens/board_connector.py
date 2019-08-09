@@ -1,5 +1,6 @@
 import math
 
+
 class BoardConnector():
 
     def __init__(self, token, board):
@@ -8,6 +9,8 @@ class BoardConnector():
         self.board = board
 
     def remove_from_board(self):
+        """Removes a token from board
+        """
         self.board.tokens.remove(self.token)
         self.token.board = None
 

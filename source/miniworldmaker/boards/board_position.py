@@ -71,6 +71,16 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
 
     @classmethod
     def from_rect(cls, rect: board_rect.BoardRect):
+        """
+        Gets a board position from rect.
+        The BoardPosition is the center-position of the rectangle
+
+        Args:
+            rect: The rectangle
+
+        Returns:
+
+        """
         return BoardPosition.from_pixel(rect.center)
 
     def near(self, other, distance):

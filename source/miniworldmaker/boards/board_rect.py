@@ -16,6 +16,12 @@ class BoardRect(pygame.Rect):
             return False
 
     def borders(self):
+        """
+        Gets all borders the rect ist touching.
+
+        Returns: A list of borders as strings: "left", "bottom", "right", or "top"
+
+        """
         borders = []
         if self.topleft[0] <= 0:
             borders.append("left")

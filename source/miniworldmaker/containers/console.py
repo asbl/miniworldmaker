@@ -5,6 +5,11 @@ from miniworldmaker.containers import container
 
 
 class Console(container.Container):
+    """
+    A console.
+
+    You can write text into the console
+    """
 
     def __init__(self, lines=5):
         super().__init__()

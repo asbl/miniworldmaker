@@ -6,6 +6,9 @@ from miniworldmaker.containers import toolbar_widgets
 class Toolbar(container.Container):
 
     def __init__(self):
+        """
+        Base class for toolbars.
+        """
         super().__init__()
         self.widgets = []
         self.timed_widgets = []

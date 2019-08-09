@@ -115,7 +115,7 @@ class Bird(Actor):
 
     def setup_physics(self):
         self.physics.mass = 6
-        self.friction = 1
+        self.physics.friction = 1
         self.physics.size = 0.7, 0.7
         self.gravity = True
         self.physics.shape_type = "circle"

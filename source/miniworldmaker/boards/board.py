@@ -66,7 +66,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self._animated = False
         self._grid = []
         self._orientation = 0
-        self._repaint_all = False
+        self._repaint_all = 1
         if type(columns) != int or type(rows) != int:
             raise TypeError("ERROR: columns and rows should be int values but types are",
                             str(type(columns)), "and", str(type(rows)))
@@ -76,7 +76,6 @@ class Board(container.Container, metaclass = MetaBoard):
             self._grid.append([])
             for column in range(self.columns):
                 self._grid[row].append(0)
-
         self.background = background.Background(self)
         self.backgrounds = [self.background]
         self._image = pygame.Surface((1, 1))
@@ -157,7 +156,7 @@ class Board(container.Container, metaclass = MetaBoard):
             The width of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)
 
         """
-        if self.dirty:
+        if self._repaint_all:
             self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
         return self._container_width
 
@@ -170,7 +169,7 @@ class Board(container.Container, metaclass = MetaBoard):
             The height of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)
 
         """
-        if self.dirty:
+        if self._repaint_all:
             self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
         return self._container_height
 
@@ -221,7 +220,6 @@ class Board(container.Container, metaclass = MetaBoard):
     @rows.setter
     def rows(self, value):
         self._rows = value
-        self.dirty = 1
         self.window.dirty = 1
         self._repaint_all = 1
 
@@ -250,6 +248,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self._tile_size = value
         self.window.dirty = 1
         self._repaint_all = 1
+
 
     @property
     def tile_margin(self) -> int:
@@ -338,6 +337,17 @@ class Board(container.Container, metaclass = MetaBoard):
 
     def blit_surface_to_window_surface(self):
         self._window.window_surface.blit(self.surface, self.rect)
+
+    def fill(self, color):
+        """
+        deprecated
+        Args:
+            color:
+
+        Returns:
+
+        """
+        self.background.fill(color)
 
     def get_colors_at_position(self, position: Union[tuple, board_position.BoardPosition]):
         if type(position) == tuple:
@@ -443,14 +453,14 @@ class Board(container.Container, metaclass = MetaBoard):
 
     def repaint(self):
         if self._repaint_all:
-            self.surface = pygame.Surface((self.image.get_width(), self.image.get_height()))
+            self.background.call_all_actions()
+            self.surface = pygame.Surface((self.container_width, self.container_height))
             self.surface.blit(self.image, self.surface.get_rect())
         self.tokens.clear(self.surface, self.image)
         repaint_rects = self.tokens.draw(self.surface)
         self._window.repaint_areas.extend(repaint_rects)
         if self._repaint_all:
             self._window.repaint_areas.append(self.rect)
-            print(self.rect)
             self._repaint_all = False
 
     def show(self, fullscreen=False):
@@ -464,7 +474,6 @@ class Board(container.Container, metaclass = MetaBoard):
 
         """
         self.background.is_scaled = True
-        self.background.size = self.container_width, self.container_height
         image = self.image
         self.window.show(image, full_screen=fullscreen)
 
@@ -489,7 +498,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self.background.dirty = 1
         self.background.changed_all()
         self.background_changed = 1
-        self._repaint_all = True
+        self._repaint_all = 1
         [token.set_dirty() for token in self.tokens]
         return self.background
 
@@ -827,14 +836,3 @@ class Board(container.Container, metaclass = MetaBoard):
                 if act and callable(act):
                     self.registered_event_handlers["act"] = act
         self.update_event_handling()
-
-    def fill(self, color):
-        """
-        deprecated
-        Args:
-            color:
-
-        Returns:
-
-        """
-        self.background.fill(color)

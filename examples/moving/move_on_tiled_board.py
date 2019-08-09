@@ -7,6 +7,8 @@ class MyBoard(TiledBoard):
         self.tile_size = 60
         self.player = Player(position=(1, 1))
         self.add_image(path="images/soccer_green.jpg")
+        self.background.is_scaled = True
+        print(self.is_running)
 
 
 class Player(Actor):
@@ -19,6 +21,8 @@ class Player(Actor):
     def act(self):
         if self.sensing_on_board(1):
             self.move()
+            print("move")
+        print("act")
 
     def get_event(self, event, data):
         if event == "key_down":
@@ -32,5 +36,5 @@ class Player(Actor):
                 self.direction = "right"
 
 
-board = MyBoard(4, 2)
+board = MyBoard(6, 4)
 board.show()

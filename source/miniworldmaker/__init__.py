@@ -1,7 +1,6 @@
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.board_position import BoardPosition
 from miniworldmaker.boards.board_rect import BoardRect
-from miniworldmaker.boards.board_rect import BoardRect
 from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.boards.processing_board import ProcessingBoard
 from miniworldmaker.boards.tiled_board import TiledBoard
@@ -55,6 +54,7 @@ __all__ = ['Token',
            'InspectActorToolbar',
            'ColorToolbar',
            'BoardPosition',
+           'BoardRect',
            'CounterLabel',
            'TimeLabel',
            'FPSLabel',

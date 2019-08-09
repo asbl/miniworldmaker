@@ -290,8 +290,8 @@ class Appearance(metaclass=MetaAppearance):
             else:  # no image files - Render raw surface
                 image = self.load_surface()
             # image action pipeline
-            # print(self.reload_actions)
-            # print("---")
+            #print(self.parent, self.reload_actions)
+            #print("---")
             for img_action in self.image_actions_pipeline:
                 if self.reload_actions[img_action[0]] is False \
                         and img_action[0] in self.cached_images.keys() \
@@ -299,13 +299,13 @@ class Appearance(metaclass=MetaAppearance):
                     if getattr(self, img_action[2]):
                         if self.parent.size != (0, 0):
                             image = self.cached_images[img_action[0]]
-                            # print("fom cache", image, self._image_index, img_action[0], self.parent)
+                            #print("fom cache", image, self._image_index, img_action[0], self.parent)
                 else:
                     if getattr(self, img_action[2]):
                         if self.parent.size != (0, 0):
                             image = img_action[1](image, parent=self.parent)
                             self.cached_images[img_action[0]] = image
-                            # print("created ", image, self._image_index, img_action[0], self.parent)
+                            #print("created ", image, self._image_index, img_action[0], self.parent)
                     self.parent.dirty = 1
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
@@ -419,7 +419,6 @@ class Appearance(metaclass=MetaAppearance):
         return self.image
 
     def call_all_actions(self):
-        reload = False
         for img_action in self.image_actions_pipeline:
             self.reload_actions[img_action[0]] = True
         self.dirty = 1

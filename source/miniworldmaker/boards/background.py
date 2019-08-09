@@ -69,7 +69,6 @@ class Background(appearance.Appearance):
             self._grid_overlay = False
             self.call_action("grid_overlay")
             self.dirty = 1
-        print("overlay set to", self.color)
 
     @property
     def is_scaled_to_tile(self) -> bool:

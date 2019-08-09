@@ -5,6 +5,13 @@ from miniworldmaker.tools import appearance as appear
 
 
 class Costume(appear.Appearance):
+    """ A costume contains one or multiple images
+
+    Every token has a costume which defines the "look" of the token.
+    You can switch the images in a costume to animate the token.
+
+    A costume is created if you add an image to an actor with token.add_image(path_to_image)
+    """
 
     def __init__(self, token):
         super().__init__()

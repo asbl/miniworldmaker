@@ -7,6 +7,9 @@ from miniworldmaker.tokens import token
 
 
 class TiledBoardConnector(board_connector.BoardConnector):
+    """
+    The TiledBoardConnector connects a token to a tiled_board
+    """
 
     def __init__(self, token, board):
         super().__init__(token, board)
@@ -19,15 +22,18 @@ class TiledBoardConnector(board_connector.BoardConnector):
             token.size = (self.board.tile_size, self.board.tile_size)
         self.token.fps = token.board.default_token_speed
 
-    def on_board(self, distance):
-        target = self.get_destination(self.token.position, self.token.direction, distance)
-
     def get_destination(self, start, direction, distance) -> board_position.BoardPosition:
         x = start[0] + round(math.sin(math.radians(direction)) * distance)
         y = start[1] - round(math.cos(math.radians(direction)) * distance)
         return board_position.BoardPosition(x, y)
 
     def get_token_rect(self):
+        """
+        Gets a token rect
+
+        Returns: The rect sourrounding the token. Width and Height of token_rect are width and height of a tile.
+
+        """
         _rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)
         x = self.token.position[0] * (self.board.tile_size + self.board.tile_margin)
         y = self.token.position[1] * (self.board.tile_size + self.board.tile_margin)
@@ -35,15 +41,43 @@ class TiledBoardConnector(board_connector.BoardConnector):
         return _rect
 
     def sensing_on_board(self, distance=0) -> bool:
+        """
+        Checks if token is on board
+
+        Args:
+            distance: If distance > 0, it will be checked, if the token is on the board if moved two steps forward
+
+        Returns: True if token is on board.
+
+        """
         target = self.get_destination(self.token.position, self.token.direction, distance)
         on_board = target.is_on_board()
         return on_board
 
     def sensing_borders(self, distance = 0):
+        """
+        Checks if token is touching borders
+
+        Args:
+            distance: If distance > 0, it will be checked, if the token is touching borders, if moved two steps forward
+
+        Returns: A listed of touched borders, e.g. ["left", "top"]
+
+        """
         target = self.get_destination(self.token.position, self.token.direction, distance)
         return target.borders()
 
-    def sensing_tokens(self, distance: int = 1, token_type=None, exact=False) -> list:
+    def sensing_tokens(self, distance: int = 0, token_type=None) -> list:
+        """
+        Senses tokens at current position
+
+        Args:
+            distance: If distance > 0, it will be checked, if the token is touching other tokens, if moved two steps forward
+            token_type: Filters by token_type. token_type is a Class of token.
+
+        Returns: A list of tokens at token position
+
+        """
         target = self.get_destination(self.token.position, self.token.direction, distance)
         self._update_token_positions()
         token_list = []
@@ -59,7 +93,17 @@ class TiledBoardConnector(board_connector.BoardConnector):
             token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
         return token_list
 
-    def sensing_token(self, distance: int = 1, token_type=None, exact=False) -> list:
+    def sensing_token(self, distance: int = 1, token_type=None) -> list:
+        """
+        Senses tokens at current position. The method is faster than sensing_tokens.
+
+        Args:
+            distance: If distance > 0, it will be checked, if the token is touching other tokens, if moved two steps forward
+            token_type: Filters by token_type. token_type is a Class of token.
+
+        Returns: The first token at current position or None.
+
+        """
         target = self.get_destination(self.token.position, self.token.direction, distance)
         self._update_token_positions()
         token_list = []
@@ -77,6 +121,9 @@ class TiledBoardConnector(board_connector.BoardConnector):
             return token_list[0]
 
     def remove_from_board(self) -> None:
+        """
+        Removes a token from board
+        """
         if self.token in self.board.dynamic_tokens:
             self.board.dynamic_tokens.remove(self.token)
         if self.token in self.board.static_tokens_dict[self.token.position.to_tuple()]:
