@@ -98,9 +98,9 @@ class App:
     def _setup_images(self):
         from pathlib import Path
         from miniworldmaker.tools import appearance
-        jpgs = list(Path("./").rglob("*.[jJ][pP][gG]"))
-        jpegs = list(Path("./").rglob("*.[jJ][pP][eE][gG]"))
-        pngs = list(Path("./").rglob("*.[pP][nN][gG]"))
+        jpgs = list(Path("./images/").rglob("*.[jJ][pP][gG]"))
+        jpegs = list(Path("./images/w wwsdsdwasd").rglob("*.[jJ][pP][eE][gG]"))
+        pngs = list(Path("./images/").rglob("*.[pP][nN][gG]"))
         images = jpgs + jpegs + pngs
         for img_path in images:
             _image = appearance.Appearance.load_image(img_path)
