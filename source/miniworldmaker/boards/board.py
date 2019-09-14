@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import os
 from collections import defaultdict
@@ -440,15 +441,17 @@ class Board(container.Container, metaclass = MetaBoard):
     def reset(self):
         """Resets the board
         Creates a new board with init-function - recreates all tokens and actors on the board.
-
-        Returns:
-            The newly created and reseted board
         """
-        [token.remove() for token in self.tokens]
-        board = self.__class__(self.width, self.height)
+        self.window.send_event_to_containers("reset", self)
+
+
+    def _reset(self, event, data):
+        for token in self.tokens:
+            token.remove()
+        self.window.board = self.__class__(self.width, self.height)
+        self.window.board.show()
+        board = self.window.board
         del self
-        board.window.send_event_to_containers("reset", board)
-        board.show()
         return board
 
     def repaint(self):
@@ -512,7 +515,7 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._act_all()
                 self.collision_handling()
             # run animations
-            [token.costume.update() for token in self.tokens]
+            asyncio.run(self._update_all_costumes())
             [obj.tick() for obj in self.timed_objects]
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
@@ -520,6 +523,10 @@ class Board(container.Container, metaclass = MetaBoard):
                 physics.PhysicsProperty.simulation(physics_tokens)
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
+
+    async def _update_all_costumes(self):
+        update_methods = [token.costume.update() for token in self.tokens]
+        await asyncio.gather(*update_methods)
 
     def handle_event(self, event, data=None):
         [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
@@ -738,8 +745,6 @@ class Board(container.Container, metaclass = MetaBoard):
                 sensed_target = method[len(separate_prefix):]
             sensed_class = dict_with_all_token_subclasses.get(sensed_target.capitalize(), None)
             handler = physics.PhysicsProperty.space.add_collision_handler(token.__class__.class_id, sensed_class.class_id)
-            #handler2 = physics.PhysicsProperty.space.add_default_collision_handler()
-            #handler2.begin = self.default_collision_handling
             handler.data["method"] = getattr(token, method)
             if method.startswith(begin_prefix):
                 handler.data["type"] = "begin"
@@ -835,4 +840,5 @@ class Board(container.Container, metaclass = MetaBoard):
                 act = getattr(self, "act", None)
                 if act and callable(act):
                     self.registered_event_handlers["act"] = act
+        self.registered_event_handlers["reset"] = getattr(self, "_reset", None)
         self.update_event_handling()

@@ -121,6 +121,5 @@ class Bird(Actor):
         self.physics.shape_type = "circle"
         self.physics.stable = False
 
-
 board = MyBoard(1024, 700)
 board.show()

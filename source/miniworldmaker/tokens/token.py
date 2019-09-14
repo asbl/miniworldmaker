@@ -571,11 +571,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def remove(self):
         """Removes this actor from board
         """
-        if hasattr(self,  "board") and self.board:
-            self.board_connector.remove_from_board()
         if self.physics:
             self.physics.remove()
             self.physics = None
+        if hasattr(self,  "board") and self.board:
+            self.board_connector.remove_from_board()
         for event_handler in app.App.board.registered_event_handlers_for_tokens[self.__class__].keys():
             app.App.board.tokens_with_eventhandler[event_handler].remove(self)
         self.kill()

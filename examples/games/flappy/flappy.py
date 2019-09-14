@@ -18,6 +18,9 @@ class MyBoard(PixelBoard):
         self.score.size = (80, 80)
         self.is_running = False
 
+    def act(self):
+        pass
+
 
 class Bird(Token):
 
@@ -28,13 +31,14 @@ class Bird(Token):
         self.flip_x()
 
     def setup_physics(self):
-        pass
+        self.physics.size = (0.8, 0.8)
+        self.physics.shape_type = "circle"
 
     def on_sensing_borders(self, borders):
         if "bottom" in borders or "top" in borders:
             self.board.is_running = False
 
-    def on_sensing_pipe(self, other):
+    def on_sensing_collision_with_pipe(self, other, info):
         self.board.is_running = False
         self.board.reset()
 
@@ -52,6 +56,9 @@ class Pipe(Token):
         self.size = (80, 300)
         self.passed = False
         self.speed = 5
+
+    def setup_physics(self):
+        self.physics.gravity = False
 
     def top(self):
         self.costume.orientation = -180

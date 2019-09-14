@@ -324,6 +324,9 @@ class Appearance(metaclass=MetaAppearance):
             self.raw_image = image
         return self.raw_image
 
+    def reload_image(self):
+        return self.image
+
     def next_image(self):
         """
         Switches to the next image of the appearance.
@@ -347,10 +350,12 @@ class Appearance(metaclass=MetaAppearance):
         else:
             return False
 
-    def update(self):
+    async def update(self):
         if self.parent.board and self.is_animated:
             if self.parent.board.frame % self.animation_speed == 0:
                 self.next_image()
+        else:
+            self.reload_image()
 
     @property
     def is_animated(self):
