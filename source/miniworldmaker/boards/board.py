@@ -515,7 +515,12 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._act_all()
                 self.collision_handling()
             # run animations
-            asyncio.run(self._update_all_costumes())
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(self._update_all_costumes())
+            finally:
+                loop.close()
             [obj.tick() for obj in self.timed_objects]
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
@@ -525,8 +530,8 @@ class Board(container.Container, metaclass = MetaBoard):
         self.clock.tick(self.fps)
 
     async def _update_all_costumes(self):
-        update_methods = [token.costume.update() for token in self.tokens]
-        await asyncio.gather(*update_methods)
+        tasks = [asyncio.create_task(token.costume.update()) for token in self.tokens]
+        await asyncio.gather(*tasks)
 
     def handle_event(self, event, data=None):
         [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
