@@ -57,6 +57,7 @@ class PhysicsProperty:
         self.shape_type = "rect"
         self.body = None
         self.shape = None
+        self.correct_angle = 0
         self.dirty = 1
         self.started = False
         self.model_setup_complete = False
@@ -163,11 +164,14 @@ class PhysicsProperty:
                     raise AttributeError("ERROR: token.board is not set.")
             # Adds object to space
             self.shape = shape
+
+
             PhysicsProperty.space.add(self.body, self.shape)
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,
                                                                 self.token.board.image)
             self.body.size = (self.token.width, self.token.height)
-            self.body.angle = math.radians(self.token.direction_at_unit_circle - 90 )
+            #self.body.angle = math.radians(
+            #        self.token.direction_at_unit_circle - self.token.costume.orientation )
             if self.shape_type.lower() != "line":
                 PhysicsProperty.space.reindex_shapes_for_body(self.body)
             self.shape.friction = self.friction
@@ -198,8 +202,8 @@ class PhysicsProperty:
         if not self.body.body_type == pymunk_engine.Body.STATIC:
             self.body.position = pymunk.pygame_util.from_pygame(self.token.center,self.token.board.image)
             PhysicsProperty.space.reindex_shapes_for_body(self.body)
-            self.body.angle = math.radians(self.token.direction_at_unit_circle + self.token.costume.orientation)
-
+            self.body.angle = math.radians(
+                    self.token.direction_at_unit_circle + self.token.costume.orientation + self.correct_angle )
 
     @staticmethod
     def simulation(physics_tokens):
@@ -218,11 +222,12 @@ class PhysicsProperty:
         """
         if not self.body.body_type == pymunk_engine.Body.STATIC:
             self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
-            self.token.direction_at_unit_circle = math.degrees(self.body.angle) - self.token.costume.orientation
+            self.token.direction_at_unit_circle = math.degrees(self.body.angle) - self.token.costume.orientation - self.correct_angle
             if PhysicsProperty.debug:
                 options = pymunk.pygame_util.DrawOptions(self.token.board.image)
                 options.collision_point_color = (255, 20, 30, 40)
                 PhysicsProperty.space.debug_draw(options)
+
 
     def remove(self):
         """

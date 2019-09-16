@@ -297,6 +297,7 @@ class Rectangle(Shape):
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
             self.costume.draw_shape_set(*self.draw_shape)
+            self.physics.correct_angle = 90
 
         except TypeError as e:
             self.remove()

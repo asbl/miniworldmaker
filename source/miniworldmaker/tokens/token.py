@@ -1,3 +1,4 @@
+import asyncio
 import inspect
 import math
 from typing import Union
@@ -51,17 +52,21 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.is_static = False
         # costume
         self.costume = costume.Costume(self)
-        self._image = pygame.Surface((1, 1))
-        self._rect = self._image.get_rect()
+        self._rect = self.image.get_rect()
         self.costumes = [self.costume]
         self.costume.is_upscaled = True
         self.init = 1
         self.speed = 0
         self.board = app.App.board
         self._orientation = 0
+        self._initial_direction = 0
         self.board_connector = None
         self.board.add_to_board(self, self.position)
         self._dirty = 1
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.costume.reload_image())
+
+
 
     @classmethod
     def from_center(cls, center_position):
@@ -143,11 +148,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             The image of the token
 
         """
-        if not self.dirty:
-            return self._image
-        else:
-            self._image = self.costume.image
-            return self.costume.image
+        return self.costume.image
 
     @property
     def dirty(self):

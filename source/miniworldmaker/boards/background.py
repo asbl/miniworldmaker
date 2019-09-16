@@ -105,3 +105,11 @@ class Background(appearance.Appearance):
         with_margin = pygame.Surface((parent.tile_size + parent.tile_margin, parent.tile_size + parent.tile_margin))
         with_margin.blit(image, (parent.tile_margin, parent.tile_margin))
         return with_margin
+
+    async def update(self):
+        if self.is_animated:
+            if self.parent.board.frame % self.animation_speed == 0:
+                await self.next_image()
+                await self.reload_image()
+        else:
+            await self.reload_image()

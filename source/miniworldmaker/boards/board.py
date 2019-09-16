@@ -26,6 +26,8 @@ class MetaBoard(type):
             instance.on_setup()
         if hasattr(instance, "setup"):
             instance.setup()
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(instance._update_all_costumes(loop))
         return instance
 
 class Board(container.Container, metaclass = MetaBoard):
@@ -79,6 +81,8 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._grid[row].append(0)
         self.background = background.Background(self)
         self.backgrounds = [self.background]
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self._update_background(loop))
         self._image = pygame.Surface((1, 1))
         self.surface = pygame.Surface((1, 1))
         # protected
@@ -515,12 +519,8 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._act_all()
                 self.collision_handling()
             # run animations
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                loop.run_until_complete(self._update_all_costumes())
-            finally:
-                loop.close()
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(self._update_all_costumes(loop))
             [obj.tick() for obj in self.timed_objects]
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
@@ -529,8 +529,12 @@ class Board(container.Container, metaclass = MetaBoard):
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
 
-    async def _update_all_costumes(self):
+    async def _update_all_costumes(self, loop):
         tasks = [asyncio.create_task(token.costume.update()) for token in self.tokens]
+        await asyncio.gather(*tasks)
+
+    async def _update_background(self, loop):
+        tasks = [asyncio.create_task(self.background.update())]
         await asyncio.gather(*tasks)
 
     def handle_event(self, event, data=None):
