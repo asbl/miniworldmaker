@@ -119,15 +119,15 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             True, if token is flipped
 
         """
-        return self.costume.is_flipped
+        return self._is_flipped
 
     @is_flipped.setter
     def is_flipped(self, value):
         self.costume._is_flipped = value
         if self.is_flipped is True:
-            self.costume.enabled_image_actions["flip"] = True
+            self.costume.is_flipped = True
         else:
-            self.costume.enabled_image_actions["flip"] = False
+            self.costume.is_flipped = False
 
     def __str__(self):
         if self.board:

@@ -74,7 +74,6 @@ class Appearance(metaclass=MetaAppearance):
         self.surface_loaded = False
         self.last_image = None
         self.cached_images = defaultdict()
-        self.reload_image()
 
     @staticmethod
     def load_image(path):
@@ -90,7 +89,8 @@ class Appearance(metaclass=MetaAppearance):
         try:
             import os
             canonicalized_path = os.path.join(os.path.curdir, path)
-            # canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+            canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+            print(canonicalized_path)
             if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
                 _image = Appearance._images_dict[canonicalized_path]
@@ -105,10 +105,10 @@ class Appearance(metaclass=MetaAppearance):
             raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
 
     def after_init(self):
-        self.reload_all()
+        self._reload_all()
         self._update()
 
-    def reload_all(self):
+    def _reload_all(self):
         for img_action in self.image_actions_pipeline:
             self.reload_actions[img_action[0]] = True
 
@@ -220,7 +220,7 @@ class Appearance(metaclass=MetaAppearance):
             self._text = value
             # self.surface_loaded = False
             self.dirty = 1
-        self.reload_all()
+        self._reload_all()
         self.call_action("write_text")
 
     def fill(self, color):
@@ -256,7 +256,7 @@ class Appearance(metaclass=MetaAppearance):
         self.image_paths.append(path)
         self._image = self.image
         self.dirty = 1
-        self.reload_all()
+        self._reload_all()
         self._update()
         return len(self.images_list) - 1
 
@@ -331,14 +331,14 @@ class Appearance(metaclass=MetaAppearance):
                 self._image_index = 0
             self.dirty = 1
             self.parent.dirty = 1
-            self.reload_all()
+            self._reload_all()
 
     def set_image(self, value):
         if 0 <= value < len(self.images_list) - 1:
             self.image_index = value
             self.dirty = 1
             self.parent.dirty = 1
-            self.reload_all()
+            self._reload_all()
             self._update()
             return True
         else:

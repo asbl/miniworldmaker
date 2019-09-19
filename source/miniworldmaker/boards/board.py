@@ -82,7 +82,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self.background = background.Background(self)
         self.backgrounds = [self.background]
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(self._update_background(loop))
+        loop.run_until_complete(self._update_background())
         self._image = pygame.Surface((1, 1))
         self.surface = pygame.Surface((1, 1))
         # protected
@@ -517,11 +517,11 @@ class Board(container.Container, metaclass = MetaBoard):
             # Acting for all actors
             if self.frame % self.speed == 0:
                 self._act_all()
-                self.collision_handling()
+                self._collision_handling()
             # run animations
             loop = asyncio.get_event_loop()
             loop.run_until_complete(self._update_all_costumes(loop))
-            [obj.tick() for obj in self.timed_objects]
+            loop.run_until_complete(self._tick_timed_objects(loop))
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
                 physics_tokens = [token for token in self.tokens if token.physics and token.physics.started]
@@ -530,15 +530,30 @@ class Board(container.Container, metaclass = MetaBoard):
         self.clock.tick(self.fps)
 
     async def _update_all_costumes(self, loop):
-        tasks = [asyncio.create_task(token.costume.update()) for token in self.tokens]
+        loop = asyncio.get_event_loop()
+        tasks = [loop.create_task(token.costume.update()) for token in self.tokens]
         await asyncio.gather(*tasks)
 
-    async def _update_background(self, loop):
-        tasks = [asyncio.create_task(self.background.update())]
+    async def _update_background(self):
+        loop = asyncio.get_event_loop()
+        tasks = [loop.create_task(self.background.update())]
+        await asyncio.gather(*tasks)
+
+    async def _tick_timed_objects(self, loop):
+        tasks = [loop.create_task(obj.tick()) for obj in self.timed_objects]
         await asyncio.gather(*tasks)
 
     def handle_event(self, event, data=None):
+        """
+        Event handling
+
+        Args:
+            event (str): The event which was thrown, e.g. "key_up", "act", "reset", ...
+            data: The data of the event (e.g. ["S","s"], (155,3), ...
+        """
+        # Call specific event handlers ("on_mouse_left", "on_mouse_right", ... for tokens
         [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
+        # call generic "get_event(event, data) event handler
         [self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data) for token in self.tokens_with_eventhandler["get_event"]]
         # Call events of board
         if event in self.registered_event_handlers.keys():
@@ -552,7 +567,7 @@ class Board(container.Container, metaclass = MetaBoard):
                     raise TypeError("Wrong number of arguments for ", str(self.registered_event_handlers[event]), " with Arguments ", data)
         self.get_event(event, data)
 
-    def collision_handling(self):
+    def _collision_handling(self):
         # Collisions with other tokens
         for token in self.tokens:
             for coll_class in self.registered_collision_handlers_for_tokens[token.__class__]:
@@ -685,7 +700,7 @@ class Board(container.Container, metaclass = MetaBoard):
     def get_board_position_from_pixel(self, pixel):
         return board_position.BoardPosition.from_pixel(pixel)
 
-    def update_event_handling(self):
+    def _update_event_handling(self):
         self.tokens_with_eventhandler.clear()
         for token in self.tokens:
             for event_handler in self.registered_event_handlers_for_tokens[token.__class__].keys():
@@ -850,4 +865,4 @@ class Board(container.Container, metaclass = MetaBoard):
                 if act and callable(act):
                     self.registered_event_handlers["act"] = act
         self.registered_event_handlers["reset"] = getattr(self, "_reset", None)
-        self.update_event_handling()
+        self._update_event_handling()

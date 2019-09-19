@@ -78,10 +78,11 @@ class App:
     def show(self, image, full_screen: bool = False, log=False):
         self.full_screen = full_screen
         self._recalculate_dimensions()
+        self._setup_images()
         self.board._register_collision_handlers()
         self.board._register_event_handlers()
-        self._setup_images()
         self.display_update()
+        pygame.display.update([image.get_rect()])
         if log is True:
             logging.basicConfig(level=logging.DEBUG)
         else:
@@ -89,7 +90,7 @@ class App:
         self.window.window_surface.blit(image, self.board.rect)
         App.log.info(
             "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
-        pygame.display.update([image.get_rect()])
+        # Start the main-loop
         while not App.quit:
             self.update()
             pass
@@ -106,7 +107,7 @@ class App:
             _image = appearance.Appearance.load_image(img_path)
 
     def update(self):
-        self.process_pygame_events()
+        self._process_pygame_events()
         if self.dirty:
             self.display_update()
             self.dirty = False
@@ -222,7 +223,7 @@ class App:
                 return container
         return None
 
-    def process_pygame_events(self):
+    def _process_pygame_events(self):
         if pygame.key.get_pressed().count(1) != 0:
             keys_pressed = pygame.key.get_pressed()
             key_codes = keys.key_codes_to_keys(keys_pressed)

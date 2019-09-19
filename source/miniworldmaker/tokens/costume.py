@@ -1,3 +1,4 @@
+import asyncio
 import math
 
 import pygame
@@ -54,7 +55,10 @@ class Costume(appear.Appearance):
     async def update(self):
             if self.parent.board and self.is_animated:
                 if self.parent.board.frame % self.animation_speed == 0:
-                    self.next_image()
-                    await self.reload_image()
+                    print("next image")
+                    loop = asyncio.get_event_loop()
+                    loop.create_task(self.next_image())  # see def update in costume
+                    loop.create_task(self.reload_image())  # see def update in costume
             else:
-                await self.reload_image()
+                loop = asyncio.get_event_loop()
+                loop.create_task(self.reload_image())  # see def update in costume
