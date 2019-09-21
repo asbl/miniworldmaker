@@ -7,7 +7,8 @@ Boards
    :parts: 1
 ```
 
-### Board
+Board
+-----
 
 ```eval_rst
 .. autoclass:: miniworldmaker.boards.board.Board
@@ -28,9 +29,11 @@ Boards
    :members:
 ```
 
-### BoardPosition
+### Processing Board
 
 ```eval_rst
-.. autoclass:: miniworldmaker.boards.board_position.BoardPosition
+.. autoclass:: miniworldmaker.boards.processing_board.ProcessingBoard
    :members:
 ```
+
+

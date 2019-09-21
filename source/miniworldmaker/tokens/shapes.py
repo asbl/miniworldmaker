@@ -3,6 +3,9 @@ from miniworldmaker.tokens import token as tk
 
 
 class Shape(tk.Token):
+    """
+    Base class for Shapes
+    """
 
     def __init__(self, position: tuple = None, color: tuple = (255, 255, 255, 255)):
         super().__init__(position)
@@ -26,10 +29,10 @@ class Point(Shape):
         color: The color as 4-tuple (r, g, b, alpha)
 
     Examples:
-        Example Creation of a point
+        Creates a red point at position (200,100):
 
         >>> Point((200, 100), 1, color=(255,0,0,255))
-        Creates a red point at position (200,100)
+
     """
 
     def __init__(self, position=None, thickness: int = 1, color: tuple = (255, 255, 255, 255)):

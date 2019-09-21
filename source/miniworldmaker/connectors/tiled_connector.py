@@ -1,8 +1,8 @@
 import math
 
 import pygame
-from miniworldmaker.boards import board_position
-from miniworldmaker.tokens import board_connector
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.connectors import board_connector
 from miniworldmaker.tokens import token
 
 
@@ -67,7 +67,7 @@ class TiledBoardConnector(board_connector.BoardConnector):
         target = self.get_destination(self.token.position, self.token.direction, distance)
         return target.borders()
 
-    def sensing_tokens(self, distance: int = 0, token_type=None) -> list:
+    def sensing_tokens(self, token_type=None, distance: int = 0) -> list:
         """
         Senses tokens at current position
 
@@ -93,7 +93,7 @@ class TiledBoardConnector(board_connector.BoardConnector):
             token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
         return token_list
 
-    def sensing_token(self, distance: int = 1, token_type=None) -> list:
+    def sensing_token(self, token_type=None, distance: int = 1) -> list:
         """
         Senses tokens at current position. The method is faster than sensing_tokens.
 

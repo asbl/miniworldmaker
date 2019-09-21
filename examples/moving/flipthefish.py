@@ -15,7 +15,6 @@ class Fish(Actor):
         self.add_image(path="images/fish.png")
         self.costume.orientation = - 90
         self.direction = "right"
-        print(self.__class__.__bases__)
 
     def act(self):
         self.move()
@@ -23,12 +22,6 @@ class Fish(Actor):
     def on_sensing_not_on_board(self):
         self.move_back()
         self.flip_x()
-
-    #def on_sensing_borders(self, borders):
-    #    self.move_back()
-    #    self.flip_x()
-
-
 
 board = MyBoard()
 board.show()

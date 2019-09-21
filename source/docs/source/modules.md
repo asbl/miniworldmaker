@@ -6,8 +6,8 @@ API
    :glob:
    
    modules/boards.md
+   modules/board_position.md
    modules/tokens.md
    modules/appearances.md
-   modules/processing.md
    modules/physics.md
 ```

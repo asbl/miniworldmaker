@@ -1,13 +1,13 @@
 from collections import defaultdict
 from typing import Union
 
-from miniworldmaker.boards import board_position
-from miniworldmaker.boards import board_rect
-from miniworldmaker.boards.board import Board
-from miniworldmaker.tokens import tiled_connector
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_rect
+from miniworldmaker.boards import board
+from miniworldmaker.connectors import tiled_connector
 
 
-class TiledBoard(Board):
+class TiledBoard(board.Board):
 
     def __init__(self, columns: int = 20, rows: int = 16, tile_size=42, tile_margin=0):
         """Initializes the TiledBoard
@@ -23,7 +23,6 @@ class TiledBoard(Board):
         self.dynamic_tokens = []  # List with all dynamic actors
         self.static_tokens_dict = defaultdict(list)
         super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin)
-        self.speed = 30
 
     def add_to_board(self, token, position):
         """

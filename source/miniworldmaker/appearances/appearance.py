@@ -3,7 +3,7 @@ import inspect
 from collections import defaultdict
 
 import pygame
-from miniworldmaker.boards import board_position
+from miniworldmaker.board_positions import board_position
 
 
 class MetaAppearance(type):
@@ -90,7 +90,6 @@ class Appearance(metaclass=MetaAppearance):
             import os
             canonicalized_path = os.path.join(os.path.curdir, path)
             canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
-            print(canonicalized_path)
             if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
                 _image = Appearance._images_dict[canonicalized_path]
@@ -123,7 +122,18 @@ class Appearance(metaclass=MetaAppearance):
 
     @property
     def is_textured(self):
-        """bool: If True, the image is tiled over the background.
+        """
+        bool: If True, the image is tiled over the background.
+
+        Examples:
+            Defines a textured board
+
+            >>> class MyBoard(TiledBoard):
+            >>>    def on_setup(self):
+            >>>         self.add_image(path="images/stone.png")
+            >>>         self.background.is_textured = True
+            >>>         self.background.is_scaled_to_tile = True
+            >>>         self.player = Player(position=(3, 4))
         """
         return self._is_textured
 
@@ -291,7 +301,7 @@ class Appearance(metaclass=MetaAppearance):
             self.raw_image = image
         return self.raw_image
 
-    async def reload_image(self):
+    def reload_image(self):
         if self.dirty == 1:
             if self.images_list and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]  # if there is a image list load image by index
@@ -346,7 +356,8 @@ class Appearance(metaclass=MetaAppearance):
 
     def _update(self):
         loop = asyncio.get_event_loop()
-        loop.create_task(self.update()) # see def update in costume
+        task = loop.create_task(self.update())
+        loop.run_until_complete(task)
 
     async def update(self):
         pass

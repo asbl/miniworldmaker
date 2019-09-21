@@ -3,8 +3,7 @@ from miniworldmaker import *
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(columns=20, rows=8, tile_size=42, tile_margin=0)
+    def on_setup(self):
         self.rounds = 1
         self.counter = NumberToken(position=(4, 3), number=self.rounds)
         self.counter.size = (160, 160)
@@ -13,6 +12,7 @@ class MyBoard(TiledBoard):
         self.background.is_scaled_to_tile = True
         self.background.is_textured = True
         self.background.grid_overlay = True
+        self.speed = 30
 
 
 class Player(Actor):
@@ -31,5 +31,5 @@ class Player(Actor):
         self.move()
 
 
-board = MyBoard()
+board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
 board.show()

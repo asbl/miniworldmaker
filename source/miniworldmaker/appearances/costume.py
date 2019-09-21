@@ -1,8 +1,7 @@
-import asyncio
 import math
 
 import pygame
-from miniworldmaker.tools import appearance as appear
+from miniworldmaker.appearances import appearance as appear
 
 
 class Costume(appear.Appearance):
@@ -53,12 +52,11 @@ class Costume(appear.Appearance):
         return image
 
     async def update(self):
-            if self.parent.board and self.is_animated:
-                if self.parent.board.frame % self.animation_speed == 0:
-                    print("next image")
-                    loop = asyncio.get_event_loop()
-                    loop.create_task(self.next_image())  # see def update in costume
-                    loop.create_task(self.reload_image())  # see def update in costume
+        if self.parent.board and self.is_animated:
+            if self.parent.board.frame % self.animation_speed == 0:
+                self.next_image()
+                self.reload_image()
             else:
-                loop = asyncio.get_event_loop()
-                loop.create_task(self.reload_image())  # see def update in costume
+                self.reload_image()
+        else:
+            self.reload_image()

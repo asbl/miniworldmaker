@@ -1,9 +1,7 @@
 Project Status
 ==============
 
-Framework is now used in classroom. 
-
-The API won't change much in next time
+Framework is now used in classroom. The API won't change much in next time.
 
 ### Roadmap
 
@@ -15,10 +13,12 @@ Next Weeks/Months: Bugfixing
   
   * More robustness
   
-  * Bett error handling
+  * Better error handling
   
   
 ### Changelog
+
+  * 31.09.2019 : Small updates and bugfixes
 
   * 31.07.2019 : Upgrade to v.1.0. Includes many changes
 

@@ -3,11 +3,10 @@ from miniworldmaker import *
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(columns=20, rows=8, tile_size=42)
+    def on_setup(self):
         self.add_image(path="images/soccer_green.jpg")
         self.player = Player(position=(3, 4))
-        self.speed = 10
+        self.speed = 30
         stone = self.add_background(("images/stone.png"))
         stone.is_textured = True
         stone.is_scaled_to_tile = True
@@ -39,5 +38,5 @@ class Player(Actor):
             self.move()
 
 
-board = MyBoard()
+board = MyBoard(columns=20, rows=8, tile_size=42)
 board.show()

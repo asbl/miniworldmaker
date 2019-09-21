@@ -2,9 +2,9 @@ import math
 from typing import Union
 
 import pygame
-from miniworldmaker.boards import board_position
-from miniworldmaker.boards import board_rect
-from miniworldmaker.tokens import board_connector
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_rect
+from miniworldmaker.connectors import board_connector
 from miniworldmaker.tokens import token
 
 
@@ -21,7 +21,7 @@ class PixelBoardConnector(board_connector.BoardConnector):
         target_rect = self.get_destination_rect(distance)
         return target_rect.is_on_board()
 
-    def sensing_borders(self, distance: int = 0, ) -> list:
+    def sensing_borders(self, distance: int = 0 ) -> list:
         for i in range(distance + 1):
             target_rect = self.get_destination_rect(distance)
             borders = target_rect.borders()
@@ -30,7 +30,7 @@ class PixelBoardConnector(board_connector.BoardConnector):
         else:
             return []
 
-    def sensing_colors(self, distance=0, colors: Union[tuple, list] = ()) -> list:
+    def sensing_colors(self, colors: Union[tuple, list] = (), distance=0) -> list:
         if type(colors) == tuple:
             colors = [colors]
         line = self.get_line_in_direction(self.token.center, self.token.direction, distance)
@@ -70,12 +70,12 @@ class PixelBoardConnector(board_connector.BoardConnector):
     def filter_actor_list(a_list, actor_type):
         return [actor for actor in a_list if type(actor) == actor_type]
 
-    def sensing_tokens(self, distance: int = 1, token_type=None) -> list:
+    def sensing_tokens(self, token_type=None, distance: int = 1) -> list:
         destination_rect = self.get_destination_rect(distance=distance)
         tokens = self.board.get_tokens_at_rect(destination_rect, singleitem=False, exclude=self, token_type=token_type)
         return [token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
 
-    def sensing_token(self, distance: int = 1, token_type=None) -> Union[token.Token, None]:
+    def sensing_token(self, token_type=None, distance: int = 1) -> Union[token.Token, None]:
         destination_rect = self.get_destination_rect(distance)
         token = self.board.get_tokens_at_rect(destination_rect, singleitem=True, exclude=self, token_type=token_type)
         if token:

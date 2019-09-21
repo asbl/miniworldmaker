@@ -8,28 +8,28 @@ The Appearance class contains all the logic common to both, e.g. scaling and rot
 All actions performed on the images can be found in the class ImageRenderer
 
 ```eval_rst
-.. inheritance-diagram:: miniworldmaker.boards.background.Background miniworldmaker.tokens.costume.Costume
-   :top-classes: miniworldmaker.tools.appearance.Appearance
+.. inheritance-diagram:: miniworldmaker.appearances.background.Background miniworldmaker.appearances.costume.Costume
+   :top-classes: miniworldmaker.appearances.appearance.Appearance
    :parts: 1
 ```
 
 ### Appearance
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tools.appearance.Appearance
+.. autoclass:: miniworldmaker.appearances.appearance.Appearance
    :members:
 ```
 
 ### Background
 
 ```eval_rst
-.. autoclass:: miniworldmaker.boards.background.Background
+.. autoclass:: miniworldmaker.appearances.background.Background
    :members:
 ```
 
 ### Costume
 
 ```eval_rst
-.. autoclass:: miniworldmaker.tokens.costume.Costume
+.. autoclass:: miniworldmaker.appearances.costume.Costume
    :members:
 ```

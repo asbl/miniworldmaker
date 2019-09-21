@@ -2,7 +2,7 @@ import collections
 
 import pygame
 from miniworldmaker.app import app
-from miniworldmaker.boards import board_rect
+from miniworldmaker.board_positions import board_rect
 
 
 class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
@@ -106,14 +106,17 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         else:
             return False
 
-    def to_tuple(self):
+    def to_pixel(self) -> tuple:
         """
-        Converts board_position into a tuple (x, y)
+        Converts board_position to pixel-coordinates.
+          * If the board is a PixelBoard, these are the same values.
+          * If the board is a TiledBoard, the top-left corner of a tile is returned.
 
-        Returns: The boar
+        Returns: The Top-Left Pixel of current board-position
 
         """
-        return self.x, self.y
+        rect = self.to_rect()
+        return rect.topleft
 
     def to_rect(self, rect: pygame.Rect = None) -> board_rect.BoardRect:
         """
@@ -137,6 +140,15 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
         pixel_y = self.y * board.tile_size + self.y * board.tile_margin + board.tile_margin
         new_rect.topleft = (pixel_x, pixel_y)
         return new_rect
+
+    def to_tuple(self):
+        """
+        Converts board_position into a tuple (x, y)
+
+        Returns: The boar
+
+        """
+        return self.x, self.y
 
     def up(self, value: int):
         """
@@ -198,17 +210,6 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
 
         """
         return BoardPosition(self.x + x, self.y + y)
-
-    def to_pixel(self) -> tuple:
-        """
-        Converts board_position to pixel-coordinates.
-          * If the board is a PixelBoard, these are the same values.
-          * If the board is a TiledBoard, the top-left corner of a tile is returned.
-        Returns:
-
-        """
-        rect = self.to_rect()
-        return rect.topleft
 
     def is_on_board(self):
         """

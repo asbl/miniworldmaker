@@ -1,7 +1,7 @@
 from typing import Union
 
 import pygame
-from miniworldmaker.tools import appearance
+from miniworldmaker.appearances import appearance
 
 
 class Background(appearance.Appearance):
@@ -78,9 +78,14 @@ class Background(appearance.Appearance):
         and want the texture to fill one tile at a time.
 
         Examples:
-            >>> a_tiled_board.background.is_textured = True
-            >>> a_tiled_board.is_scaled_to_tile = True
-            The image is scaled to tile size and then the background is wallpapered with the image.
+            Defines a textured board
+
+            >>> class MyBoard(TiledBoard):
+            >>>    def on_setup(self):
+            >>>         self.add_image(path="images/stone.png")
+            >>>         self.background.is_textured = True
+            >>>         self.background.is_scaled_to_tile = True
+            >>>         self.player = Player(position=(3, 4))
         """
         return self._is_scaled_to_tile
 
@@ -109,7 +114,7 @@ class Background(appearance.Appearance):
     async def update(self):
         if self.is_animated:
             if self.parent.board.frame % self.animation_speed == 0:
-                await self.next_image()
-                await self.reload_image()
+                self.next_image()
+                self.reload_image()
         else:
-            await self.reload_image()
+            self.reload_image()

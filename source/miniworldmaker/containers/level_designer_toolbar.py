@@ -1,6 +1,6 @@
 import os
 
-from miniworldmaker.boards import board_position
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
 
@@ -56,7 +56,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                                 self.selected_token_type((j, i))
                     else:
                         try:
-                            import miniworldmaker.boards.board_position as bp
+                            import miniworldmaker.board_positions.board_position as bp
                             self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
                         except TypeError:
                             print("Can't create tokens with more than one parameter position yet")
@@ -76,7 +76,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                         rect = board_position.BoardPosition(data[0], data[1]).to_rect()
                         token = self.board.get_tokens_at_rect(rect, singleitem=True)
                         if token.__class__ != self.selected_token_type:
-                            import miniworldmaker.boards.board_position as bp
+                            import miniworldmaker.board_positions.board_position as bp
                             token = self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
         if "mouse_right" in event:
             if self.board.is_in_container(data[0], data[1]):

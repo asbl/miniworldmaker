@@ -87,4 +87,4 @@ Klasse MyBoard(ProcessingBoard):
 ```
 [![](../_images/replit.png)](https://repl.it/@a_siebel/circles2)
 
-![](..../_bilder/movingcircles.gif)
+![](../_images/movingcircles.gif)

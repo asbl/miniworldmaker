@@ -1,10 +1,10 @@
 from typing import Union
 
 import pygame
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_rect
 from miniworldmaker.boards import board as bd
-from miniworldmaker.boards import board_position
-from miniworldmaker.boards import board_rect
-from miniworldmaker.tokens import pixel_connector
+from miniworldmaker.connectors import pixel_connector
 from miniworldmaker.tokens import token as tk
 
 

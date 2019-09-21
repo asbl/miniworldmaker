@@ -1,6 +1,6 @@
 import pygame
 from miniworldmaker.app import app as app
-from miniworldmaker.boards import board_position
+from miniworldmaker.board_positions import board_position
 
 
 class BoardRect(pygame.Rect):

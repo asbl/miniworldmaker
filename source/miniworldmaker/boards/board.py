@@ -1,14 +1,13 @@
 import asyncio
-import inspect
 import os
 from collections import defaultdict
 from typing import Union
 
 import pygame
 from miniworldmaker.app import app
-from miniworldmaker.boards import background
-from miniworldmaker.boards import board_position
-from miniworldmaker.boards import board_rect
+from miniworldmaker.appearances import background
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_rect
 from miniworldmaker.containers import container
 from miniworldmaker.physics import physics
 from miniworldmaker.physics import physics as physicsengine
@@ -18,10 +17,7 @@ from miniworldmaker.tools import db_manager
 
 class MetaBoard(type):
     def __call__(cls, *args, **kwargs):
-        try:
-            instance = super().__call__(*args, **kwargs)
-        except TypeError:
-            raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+        instance = super().__call__(*args, **kwargs)
         if hasattr(instance, "on_setup"):
             instance.on_setup()
         if hasattr(instance, "setup"):
@@ -31,8 +27,36 @@ class MetaBoard(type):
         return instance
 
 class Board(container.Container, metaclass = MetaBoard):
-    """Base Class for Boards
+    """Base Class for Boards.
 
+    You can create a custom board by inherit one of Boars subclasses.
+
+    Examples:
+
+        A pixel-board in follow_the_mouse.py:
+
+        >>>  class MyBoard(PixelBoard):
+        >>>
+        >>>  def on_setup(self):
+        >>>    self.add_image(path="images/stone.jpg")
+        >>>    Robot(position=(50, 50))
+        >>>
+        >>>
+        >>>  board = MyBoard(800, 600)
+        A tiled-board in basicframework1.py:
+
+        >>> class MyBoard(TiledBoard):
+        >>>
+        >>>   def on_setup(self):
+        >>>     self.add_image(path="images/soccer_green.jpg")
+        >>>     self.player = Player(position=(3, 4))
+        >>>     self.speed = 10
+        >>>     stone = self.add_background(("images/stone.png"))
+        >>>     stone.is_textured = True
+        >>>     stone.is_scaled_to_tile = True
+        >>>
+        >>>
+        >>>  board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
     Args:
         columns: columns of new board (default: 40)
         rows: rows of new board (default:40)
@@ -57,8 +81,7 @@ class Board(container.Container, metaclass = MetaBoard):
         # public
         self.registered_events = {"all"}
         self.is_running = True
-        if not hasattr(self, "default_token_speed"):
-            self.default_token_speed = 3  #: default speed for tokens
+
         self.sound_effects = {}
         self.physics_property = physicsengine.PhysicsProperty
         # private
@@ -100,6 +123,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self.dirty = 1
         self.timed_objects = []
         self._repaint_all = 1
+        self._executed_events = set()
 
     @classmethod
     def from_db(cls, file):
@@ -308,6 +332,7 @@ class Board(container.Container, metaclass = MetaBoard):
 
         Examples:
             >>> class MyBoard(Board):
+            >>>
             >>>     def __init__(self):
             >>>         super().__init__(columns=400, rows=200)
             >>>         self.add_image(path="images/stone.jpg")
@@ -334,8 +359,6 @@ class Board(container.Container, metaclass = MetaBoard):
         token.dirty = 1
         if token.init != 1:
             raise UnboundLocalError("super().__init__() was not called")
-        if token.speed == 0:
-            token.speed = self.default_token_speed
         self._register_physics_collision_handler(token)
         for event_handler in self.registered_event_handlers_for_tokens[token.__class__].keys():
             self.tokens_with_eventhandler[event_handler].append(token)
@@ -445,6 +468,14 @@ class Board(container.Container, metaclass = MetaBoard):
     def reset(self):
         """Resets the board
         Creates a new board with init-function - recreates all tokens and actors on the board.
+
+        Examples:
+
+            Restarts flappy the bird game after collision with pipe:
+
+            >>> def on_sensing_collision_with_pipe(self, other, info):
+            >>>    self.board.is_running = False
+            >>>    self.board.reset()
         """
         self.window.send_event_to_containers("reset", self)
 
@@ -528,6 +559,7 @@ class Board(container.Container, metaclass = MetaBoard):
                 physics.PhysicsProperty.simulation(physics_tokens)
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
+        self._executed_events.clear()
 
     async def _update_all_costumes(self, loop):
         loop = asyncio.get_event_loop()
@@ -535,9 +567,7 @@ class Board(container.Container, metaclass = MetaBoard):
         await asyncio.gather(*tasks)
 
     async def _update_background(self):
-        loop = asyncio.get_event_loop()
-        tasks = [loop.create_task(self.background.update())]
-        await asyncio.gather(*tasks)
+        self.background.update()
 
     async def _tick_timed_objects(self, loop):
         tasks = [loop.create_task(obj.tick()) for obj in self.timed_objects]
@@ -552,20 +582,22 @@ class Board(container.Container, metaclass = MetaBoard):
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
         # Call specific event handlers ("on_mouse_left", "on_mouse_right", ... for tokens
-        [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
-        # call generic "get_event(event, data) event handler
-        [self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data) for token in self.tokens_with_eventhandler["get_event"]]
-        # Call events of board
-        if event in self.registered_event_handlers.keys():
-            # calls registered event handlers of board
-            if data is None:
-                self.registered_event_handlers[event]()
-            else:
-                try:
-                    self.registered_event_handlers[event](self, data)
-                except TypeError:
-                    raise TypeError("Wrong number of arguments for ", str(self.registered_event_handlers[event]), " with Arguments ", data)
-        self.get_event(event, data)
+        if event not in self._executed_events: # events shouldn't be called more than once per tick
+            self._executed_events.add(event)
+            [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
+            # call generic "get_event(event, data) event handler
+            [self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data) for token in self.tokens_with_eventhandler["get_event"]]
+            # Call events of board
+            if event in self.registered_event_handlers.keys():
+                # calls registered event handlers of board
+                if data is None:
+                    self.registered_event_handlers[event]()
+                else:
+                    try:
+                        self.registered_event_handlers[event](self, data)
+                    except TypeError:
+                        raise TypeError("Wrong number of arguments for ", str(self.registered_event_handlers[event]), " with Arguments ", data)
+            self.get_event(event, data)
 
     def _collision_handling(self):
         # Collisions with other tokens
@@ -866,3 +898,5 @@ class Board(container.Container, metaclass = MetaBoard):
                     self.registered_event_handlers["act"] = act
         self.registered_event_handlers["reset"] = getattr(self, "_reset", None)
         self._update_event_handling()
+
+
