@@ -22,6 +22,8 @@ print("Press 'F8'  to add Color-Toolbar")
 
 
 class App:
+    """The class app contains the game itself. It is called the first time you call board.show().
+    """
     log = logging.getLogger("miniworldmaker")
     board = None
     window = None
@@ -66,7 +68,7 @@ class App:
         except:
             pass
 
-    def display_update(self):
+    def _display_update(self):
         self._recalculate_dimensions()
         if self.full_screen:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height),
@@ -81,7 +83,7 @@ class App:
         self._setup_images()
         self.board._register_collision_handlers()
         self.board._register_event_handlers()
-        self.display_update()
+        self._display_update()
         pygame.display.update([image.get_rect()])
         if log is True:
             logging.basicConfig(level=logging.DEBUG)
@@ -92,7 +94,7 @@ class App:
             "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
         # Start the main-loop
         while not App.quit:
-            self.update()
+            self._update()
             pass
         pygame.quit()
 
@@ -106,10 +108,10 @@ class App:
         for img_path in images:
             _image = appearance.Appearance.load_image(img_path)
 
-    def update(self):
+    def _update(self):
         self._process_pygame_events()
         if self.dirty:
-            self.display_update()
+            self._display_update()
             self.dirty = False
         if not App.quit:
             self.repaint_areas = []
@@ -131,7 +133,7 @@ class App:
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []
 
-    def update_containers(self):
+    def _update_containers(self):
         top_left = 0
         for ct in self._containers_right:
             ct.container_top_left_x = top_left
@@ -154,7 +156,7 @@ class App:
         if size is None:
             size = container.default_size
         container._add_to_window(self, dock, size)
-        self.display_update()
+        self._display_update()
         self.dirty = 1
         for ct in self._containers:
             ct.dirty = 1
@@ -169,15 +171,15 @@ class App:
             self._containers_right.remove(container)
         if container in self._containers_bottom:
             self._containers_bottom.remove(container)
-        self.display_update()
+        self._display_update()
         self.dirty = 1
         for ct in self._containers:
             ct.dirty = 1
         if self.board:
             for token in self.board._tokens:
                 token.dirty = 1
-        self.update_containers()
-        self.update()
+        self._update_containers()
+        self._update()
 
     def reset(self):
         """
@@ -188,7 +190,7 @@ class App:
             self.remove_container(container)
 
     def _recalculate_dimensions(self):
-        self.update_containers()
+        self._update_containers()
         containers_width = 0
         for container in self._containers:
             if container.window_docking_position == "top_left":

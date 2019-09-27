@@ -2,6 +2,7 @@ import asyncio
 import inspect
 from collections import defaultdict
 
+import nest_asyncio
 import pygame
 from miniworldmaker.board_positions import board_position
 
@@ -110,6 +111,8 @@ class Appearance(metaclass=MetaAppearance):
     def _reload_all(self):
         for img_action in self.image_actions_pipeline:
             self.reload_actions[img_action[0]] = True
+        self._update()
+
 
     @property
     def font_size(self):
@@ -230,8 +233,8 @@ class Appearance(metaclass=MetaAppearance):
             self._text = value
             # self.surface_loaded = False
             self.dirty = 1
-        self._reload_all()
         self.call_action("write_text")
+        self._reload_all()
 
     def fill(self, color):
         try:
@@ -308,7 +311,8 @@ class Appearance(metaclass=MetaAppearance):
             else:  # no image files - Render raw surface
                 image = self.load_surface()
             for img_action in self.image_actions_pipeline:
-                # If an image action is to be executed again, load the last cached image from the pipeline and execute
+                # If an image action is to be executed again,
+                # load the last cached image from the pipeline and execute
                 # all subsequent image actions.
                 if self.reload_actions[img_action[0]] is False \
                         and img_action[0] in self.cached_images.keys() \
@@ -357,7 +361,9 @@ class Appearance(metaclass=MetaAppearance):
     def _update(self):
         loop = asyncio.get_event_loop()
         task = loop.create_task(self.update())
+        nest_asyncio.apply()
         loop.run_until_complete(task)
+        return 1
 
     async def update(self):
         pass

@@ -1,6 +1,5 @@
 from miniworldmaker.tokens import text_token
 
-
 class NumberToken(text_token.TextToken):
     """
     A number token shows a Number.
@@ -17,11 +16,17 @@ class NumberToken(text_token.TextToken):
     Examples:
         >>> self.score = NumberToken(position = (0, 0), number=0)
         Sets a new NumberToken to display the score.
+
+        >>> number = self.score.get_number()
+        Gets the number stored in the NumberToken
+
+        >>> self.score.set_number(3)
+        Sets the number stored in the NumberToken
     """
 
     def __init__(self, position, number = 0, font_size= 80, color=(255, 255, 255, 255)):
         super().__init__(position, str(number), font_size, color)
-        self.number = number
+        self.set_number(number)
 
     def inc(self):
         """
@@ -36,16 +41,23 @@ class NumberToken(text_token.TextToken):
 
         Args:
             number: The number which should be displayed
+
+        Examples:
+            >>> self.number_token.set_number(3)
+            Sets the number stored in the NumberToken
         """
         self.number = number
         self.set_text(str(self.number))
 
     def get_number(self) -> int:
         """
-        Returns the current number
 
-        Returns: The current number
+        Returns:
+            The current number
 
+        Examples:
+            >>> number = self.number_token.get_number()
+            Gets the number stored in the NumberToken
         """
         self.costume.call_action("text changed")
         return int(self.costume.text)

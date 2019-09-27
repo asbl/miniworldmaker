@@ -15,6 +15,18 @@ class PhysicsProperty:
     For an object to be physically simulated,
     the method start_physics() must first be called.
 
+    Examples:
+        >>> class Player(miniworldmaker.Token):
+        >>>
+        >>> def on_setup(self):
+        >>>    pass # setup Object
+        >>>
+        >>> def setup_physics(self):
+        >>>     self.physics.size = (0.8, 0.8)
+        >>>     self.physics.shape_type = "circle"
+
+        Creates a Physics Player. By creating the method setup_physics, the object will be run by physics engine.
+
     Attributes:
         friction (int): Friction is the force resisting the relative motion of solid surfaces,
             fluid layers, and material elements sliding against each other.
@@ -25,8 +37,6 @@ class PhysicsProperty:
         can_move: Defines if the object can move
         gravity: Defines if the object affected by gravity
         shape_type: line, circle or rect
-
-
     """
 
     space = None

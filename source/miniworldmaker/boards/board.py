@@ -567,7 +567,7 @@ class Board(container.Container, metaclass = MetaBoard):
         await asyncio.gather(*tasks)
 
     async def _update_background(self):
-        self.background.update()
+        await self.background.update()
 
     async def _tick_timed_objects(self, loop):
         tasks = [loop.create_task(obj.tick()) for obj in self.timed_objects]
