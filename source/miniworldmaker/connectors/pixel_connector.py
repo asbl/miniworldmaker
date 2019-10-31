@@ -47,7 +47,8 @@ class PixelBoardConnector(board_connector.BoardConnector):
         return rect
 
     def get_token_rect(self) -> board_rect.BoardRect:
-        _rect = board_rect.BoardRect(0, 0, self.token.width, self.token.height)
+        _rect = self.token.image.get_rect()
+        _rect.topleft = self.token.position
         _rect.center = self.token.x + self.token.width / 2, self.token.y + self.token.height / 2
         return _rect
 

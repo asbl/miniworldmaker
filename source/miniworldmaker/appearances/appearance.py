@@ -111,8 +111,6 @@ class Appearance(metaclass=MetaAppearance):
     def _reload_all(self):
         for img_action in self.image_actions_pipeline:
             self.reload_actions[img_action[0]] = True
-        self._update()
-
 
     @property
     def font_size(self):
@@ -305,6 +303,7 @@ class Appearance(metaclass=MetaAppearance):
         return self.raw_image
 
     def reload_image(self):
+        """ Performs all actions in image pipeline"""
         if self.dirty == 1:
             if self.images_list and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]  # if there is a image list load image by index
@@ -365,7 +364,7 @@ class Appearance(metaclass=MetaAppearance):
         loop.run_until_complete(task)
         return 1
 
-    async def update(self):
+    def update(self):
         pass
 
     @property

@@ -22,8 +22,7 @@ class MetaBoard(type):
             instance.on_setup()
         if hasattr(instance, "setup"):
             instance.setup()
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(instance._update_all_costumes(loop))
+        instance._update_all_costumes()
         return instance
 
 class Board(container.Container, metaclass = MetaBoard):
@@ -104,8 +103,7 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._grid[row].append(0)
         self.background = background.Background(self)
         self.backgrounds = [self.background]
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(self._update_background())
+        self._update_background()
         self._image = pygame.Surface((1, 1))
         self.surface = pygame.Surface((1, 1))
         # protected
@@ -550,9 +548,8 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._act_all()
                 self._collision_handling()
             # run animations
-            loop = asyncio.get_event_loop()
-            loop.run_until_complete(self._update_all_costumes(loop))
-            loop.run_until_complete(self._tick_timed_objects(loop))
+            self._update_all_costumes()
+            self._tick_timed_objects()
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:
                 physics_tokens = [token for token in self.tokens if token.physics and token.physics.started]
@@ -561,17 +558,15 @@ class Board(container.Container, metaclass = MetaBoard):
         self.clock.tick(self.fps)
         self._executed_events.clear()
 
-    async def _update_all_costumes(self, loop):
+    def _update_all_costumes(self):
         loop = asyncio.get_event_loop()
-        tasks = [loop.create_task(token.costume.update()) for token in self.tokens]
-        await asyncio.gather(*tasks)
+        [token.costume._update() for token in self.tokens]
 
-    async def _update_background(self):
-        await self.background.update()
+    def _update_background(self):
+        self.background.update()
 
-    async def _tick_timed_objects(self, loop):
-        tasks = [loop.create_task(obj.tick()) for obj in self.timed_objects]
-        await asyncio.gather(*tasks)
+    def _tick_timed_objects(self):
+        [obj.tick() for obj in self.timed_objects]
 
     def handle_event(self, event, data=None):
         """

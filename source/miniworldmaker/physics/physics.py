@@ -233,11 +233,12 @@ class PhysicsProperty:
         if not self.body.body_type == pymunk_engine.Body.STATIC:
             self.token.center_x, self.token.center_y = pymunk.pygame_util.to_pygame(self.body.position, self.token.board.image)
             self.token.direction_at_unit_circle = math.degrees(self.body.angle) - self.token.costume.orientation - self.correct_angle
+            self.velocity_x = self.body.velocity[0]
+            self.velocity_y = self.body.velocity[1]
             if PhysicsProperty.debug:
                 options = pymunk.pygame_util.DrawOptions(self.token.board.image)
                 options.collision_point_color = (255, 20, 30, 40)
                 PhysicsProperty.space.debug_draw(options)
-
 
     def remove(self):
         """

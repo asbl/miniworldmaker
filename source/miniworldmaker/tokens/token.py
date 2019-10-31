@@ -1,4 +1,3 @@
-import inspect
 import math
 from typing import Union
 
@@ -14,7 +13,8 @@ class Meta(type):
         try:
             instance = super().__call__(*args, **kwargs)
         except TypeError:
-            raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
+            raise
+            #raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
         if hasattr(instance, "set_physics_default_values"):
             instance.set_physics_default_values()
         if hasattr(instance, "setup_physics"):

@@ -52,9 +52,10 @@ class Costume(appear.Appearance):
         return image
 
     async def update(self):
+        print("update")
         if self.parent.board and self.is_animated:
             if self.parent.board.frame % self.animation_speed == 0:
-                self.next_image()
+                await self.next_image()
                 self.reload_image()
             else:
                 self.reload_image()
