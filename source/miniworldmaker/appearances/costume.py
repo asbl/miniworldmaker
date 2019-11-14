@@ -51,8 +51,7 @@ class Costume(appear.Appearance):
         pygame.draw.line(image, (255, 0, 0, 100), start_pos, end_pos, 3)
         return image
 
-    async def update(self):
-        print("update")
+    async def _update(self):
         if self.parent.board and self.is_animated:
             if self.parent.board.frame % self.animation_speed == 0:
                 await self.next_image()

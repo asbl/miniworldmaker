@@ -55,7 +55,6 @@ class TextToken(token.Token):
         elif self.auto_font_size:
             if len(self.costume.text) != 0:
                 self.costume.font_size = int(min(self.size[0] / len(self.get_text()), self.size[1]))
-                print("new font size:",int(min(self.size[0] / len(self.get_text()), self.size[1])) )
             else:
                 self.costume.font_size = int(min(self.size[0], self.size[1]))
 

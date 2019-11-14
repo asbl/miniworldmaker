@@ -1,4 +1,3 @@
-import asyncio
 import os
 from collections import defaultdict
 from typing import Union
@@ -360,6 +359,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self._register_physics_collision_handler(token)
         for event_handler in self.registered_event_handlers_for_tokens[token.__class__].keys():
             self.tokens_with_eventhandler[event_handler].append(token)
+        # Board Connectors are added in subclasses
 
     def blit_surface_to_window_surface(self):
         self._window.window_surface.blit(self.surface, self.rect)
@@ -559,8 +559,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self._executed_events.clear()
 
     def _update_all_costumes(self):
-        loop = asyncio.get_event_loop()
-        [token.costume._update() for token in self.tokens]
+        [token.costume.update() for token in self.tokens]
 
     def _update_background(self):
         self.background.update()

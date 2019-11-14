@@ -111,7 +111,7 @@ class Background(appearance.Appearance):
         with_margin.blit(image, (parent.tile_margin, parent.tile_margin))
         return with_margin
 
-    async def update(self):
+    async def _update(self):
         if self.is_animated:
             if self.parent.board.frame % self.animation_speed == 0:
                 self.next_image()

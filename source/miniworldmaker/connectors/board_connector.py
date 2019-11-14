@@ -25,7 +25,7 @@ class BoardConnector():
             The new direction
 
         """
-        pos = self.token.rect.center
+        pos = self.token.center
         x = (destination[0] - pos[0])
         y = (destination[1] - pos[1])
         if x != 0:
@@ -35,7 +35,7 @@ class BoardConnector():
                 self.token.direction =  (math.degrees(math.atan(m)) - 90 )
             else:
                 # destination is right
-                self.token.direction = math.degrees(math.atan(m) + 90)
+                self.token.direction = (math.degrees(math.atan(m)) + 90)
             return self.token.direction
         else:
             m = 0

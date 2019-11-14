@@ -33,21 +33,26 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     class_id = 0
     subclasses = None
 
-    def __init__(self, position=None):
+    def __init__(self, position=None, relation=""):
         pygame.sprite.DirtySprite.__init__(self)
         self.setup_completed = False
         self.board = app.App.board
         self.costume = None
         # private
         self._size = (0, 0)  # Tuple with size
-        self._position: board_position.BoardPosition = position
-        Token.token_count += 1
-        self.speed = 1
+        if position is not None:
+            self._position: board_position.BoardPosition = position # Set in add_to_board
+        else:
+            self._position = (0, 0)
         self._direction = 0
-        # public
-        self.physics = ph.PhysicsProperty()
         self.last_position = (0, 0)
         self.last_direction = 90
+        self.init = 1 # Was init called ?
+        self.board_connector = None
+        Token.token_count += 1
+        self.speed = 1
+        # public
+        self.physics = ph.PhysicsProperty()
         self.token_id = Token.token_count + 1
         self.is_static = False
         # costume
@@ -55,14 +60,18 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self._rect = self.image.get_rect()
         self.costumes = [self.costume]
         self.costume.is_upscaled = True
-        self.init = 1
         self.board = app.App.board
         self._orientation = 0
         self._initial_direction = 0
-        self.board_connector = None
-        self.board.add_to_board(self, self.position)
         self._dirty = 1
         self.costume.reload_image()
+        self.board.add_to_board(self, self.position)
+        if relation=="topleft":
+            self.topleft = position
+            print(self.position)
+        if relation == "center":
+            self.center = position
+
 
     @classmethod
     def from_center(cls, center_position):
@@ -454,12 +463,16 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     @size.setter
     def size(self, value: tuple):
         if value!= self._size:
+            self._old_size = self._size
             self._size = value
+            new_position = (self._position[0] + (self._size[0] - self._old_size[0]) / 2, self._position[1] + (self._size[1] - self._old_size[1]) /2)
+            self.position = new_position
             self.dirty = 1
             if hasattr(self, "costume"):
                 self.costume.call_actions(["scale", "upscale"])
             if hasattr(self, "physics") and self.physics.started:
                 self.physics.reload_physics()
+
 
     @property
     def width(self):
@@ -522,6 +535,28 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def center_x(self):
         """x-value of token center-position"""
         return self.rect.centerx
+
+    @property
+    def topleft_x(self):
+        """x-value of token topleft-position"""
+        return self.rect.topleft[0]
+
+    @property
+    def topleft_y(self):
+        """x-value of token topleft-position"""
+        return self.rect.topleft[1]
+
+    @property
+    def topleft(self) -> board_position.BoardPosition:
+        return board_position.BoardPosition(self.rect.topleft[0], self.rect.topleft[1])
+
+    @topleft.setter
+    def topleft(self, value):
+        print(value)
+        self.last_position = self.position
+        rect = pygame.Rect.copy(self.rect)
+        rect.topleft = value[0], value[1]
+        self.position = rect.topleft[0]+self.width /2, rect.topleft[1]+self.height/2
 
     @property
     def center_y(self):
@@ -634,7 +669,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         direction = self._value_to_direction(direction)
         self.direction = direction
-        self.costume.is_rotatable = False
         self.move()
         return self
 

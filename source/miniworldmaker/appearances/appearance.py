@@ -106,7 +106,7 @@ class Appearance(metaclass=MetaAppearance):
 
     def after_init(self):
         self._reload_all()
-        self._update()
+        self.update()
 
     def _reload_all(self):
         for img_action in self.image_actions_pipeline:
@@ -268,7 +268,7 @@ class Appearance(metaclass=MetaAppearance):
         self._image = self.image
         self.dirty = 1
         self._reload_all()
-        self._update()
+        self.update()
         return len(self.images_list) - 1
 
     def blit(self, path, position: tuple, size: tuple = (0, 0)):
@@ -352,19 +352,19 @@ class Appearance(metaclass=MetaAppearance):
             self.dirty = 1
             self.parent.dirty = 1
             self._reload_all()
-            self._update()
+            self.update()
             return True
         else:
             return False
 
-    def _update(self):
+    def update(self):
         loop = asyncio.get_event_loop()
-        task = loop.create_task(self.update())
+        task = loop.create_task(self._update())
         nest_asyncio.apply()
         loop.run_until_complete(task)
         return 1
 
-    def update(self):
+    async def _update(self):
         pass
 
     @property
@@ -420,7 +420,7 @@ class Appearance(metaclass=MetaAppearance):
                 self.reload_actions[img_action[0]] = True # reload all actions after image action
         self.dirty = 1
         self.parent.dirty = 1
-        self._update()
+        self.update()
 
     def call_actions(self, actions):
         reload = False
@@ -431,7 +431,7 @@ class Appearance(metaclass=MetaAppearance):
                 self.reload_actions[img_action[0]] = True
         self.dirty = 1
         self.parent.dirty = 1
-        self._update()
+        self.update()
         return self.image
 
     def call_all_actions(self):
@@ -439,7 +439,7 @@ class Appearance(metaclass=MetaAppearance):
             self.reload_actions[img_action[0]] = True
         self.dirty = 1
         self.parent.dirty = 1
-        self._update()
+        self.update()
         return self.image
 
     def image_action_draw_shapes(self, image: pygame.Surface, parent) -> pygame.Surface:
