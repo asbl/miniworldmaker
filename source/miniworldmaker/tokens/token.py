@@ -261,7 +261,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         new_costume = costume.Costume(self)
         new_costume.add_image(path)
-        new_costume.orientation = self.costume.orientation
         self.costumes.append(new_costume)
         return new_costume
 
