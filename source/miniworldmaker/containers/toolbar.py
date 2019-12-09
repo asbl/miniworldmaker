@@ -101,4 +101,4 @@ class Toolbar(container.Container):
 
     def update(self):
         for widget in self.timed_widgets:
-            widget._update()
+            widget.update()

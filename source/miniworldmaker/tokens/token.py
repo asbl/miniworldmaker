@@ -33,7 +33,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     class_id = 0
     subclasses = None
 
-    def __init__(self, position=None, relation=""):
+    def __init__(self, position=None):
         pygame.sprite.DirtySprite.__init__(self)
         self.setup_completed = False
         self.board = app.App.board
@@ -66,12 +66,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self._dirty = 1
         self.costume.reload_image()
         self.board.add_to_board(self, self.position)
-        if relation=="topleft":
-            self.topleft = position
-            print(self.position)
-        if relation == "center":
-            self.center = position
-
 
     @classmethod
     def from_center(cls, center_position):
@@ -551,7 +545,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @topleft.setter
     def topleft(self, value):
-        print(value)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.topleft = value[0], value[1]
@@ -586,7 +579,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         rect = pygame.Rect.copy(self.rect)
         rect.centerx = value[0]
         rect.centery = value[1]
-        self.position = rect.topleft
+        self.position = rect.center
 
     def move(self, distance: int = 0):
         """Moves actor *distance* steps.

@@ -14,9 +14,13 @@ class Shape(tk.Token):
         self.costume.is_upscaled = False
 
     @staticmethod
-    def bounding_box(points):
+    def bounding_box(points) -> pygame.Rect:
         x_coordinates, y_coordinates = zip(*points)
-        return [min(x_coordinates), min(y_coordinates), max(x_coordinates), max(y_coordinates)]
+        x = min(x_coordinates)
+        y = min(y_coordinates)
+        width = max(x_coordinates) - x
+        height = max(y_coordinates) - y
+        return pygame.Rect(x, y, width, height)
 
 
 class Point(Shape):
@@ -229,24 +233,23 @@ class Line(Shape):
             if type(end_position) == int:
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position,
                                 ", type:", type(end_position))
-            box = self.bounding_box([start, end])
+            box = Shape.bounding_box([start, end])
             self.thickness = thickness
-            box_topleft = (box[0], box[1])
             box_width = abs(box[0] - box[2]) + self.thickness
             box_height = abs(box[1] - box[3]) + self.thickness
             # mod_start
-            x = start_position[0] - box_topleft[0] + self.thickness / 2
-            y = start_position[1] - box_topleft[1] + self.thickness / 2
+            x = start_position[0] - box.topleft[0] + self.thickness / 2 - box_width / 2
+            y = start_position[1] - box.topleft[1] + self.thickness / 2
             mod_start = (x, y)
             # mod end
-            x = end_position[0] - box_topleft[0] + self.thickness / 2
-            y = end_position[1] - box_topleft[1] + self.thickness / 2
+            x = end_position[0] - box.topleft[0] + self.thickness / 2 - box_width / 2
+            y = end_position[1] - box.topleft[1] + self.thickness / 2 
             mod_end = (x, y)
             self.start_position = start_position
             self.end_position = end_position
             self.local_start_position = mod_start
             self.local_end_position = mod_end
-            super().__init__((box[0], box[1]), color)
+            super().__init__(box.topleft, color)
             self.size = (box_width, box_height)
             self.costume.draw_shape_append(pygame.draw.line, [(255, 255, 255, 255),
                                                               mod_start,

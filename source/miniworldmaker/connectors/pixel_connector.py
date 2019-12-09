@@ -44,6 +44,7 @@ class PixelBoardConnector(board_connector.BoardConnector):
         destination_rect = self.get_destination(self.token.position, self.token.direction, distance)
         destination_rect = board_position.BoardPosition(destination_rect[0], destination_rect[1])
         rect = destination_rect.to_rect(self.token.rect)
+        rect.center= self.token.position
         return rect
 
     def get_token_rect(self) -> board_rect.BoardRect:
