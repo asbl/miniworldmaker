@@ -13,6 +13,7 @@ class MyBoard(TiledBoard):
         self.add_image(path="images/water.png")
         self.speed = 30
 
+
 class Explosion(Token):
     def on_setup(self):
         self.add_image("images/explosion.png")
@@ -24,6 +25,7 @@ class Robot(Actor):
 
     def act(self):
         self.move()
+        print(self.position, self.rect)
         other = self.sensing_token(distance = 0, token_type=Robot)
         if other:
             explosion = Explosion(position=self.position)

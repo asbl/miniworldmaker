@@ -455,16 +455,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @size.setter
     def size(self, value: tuple):
-        if value!= self._size:
-            self._old_size = self._size
+        if self.board_connector:
+            self.board_connector.set_size(value)
+        else:
             self._size = value
-            new_position = (self._position[0] + (self._size[0] - self._old_size[0]) / 2, self._position[1] + (self._size[1] - self._old_size[1]) /2)
-            self.position = new_position
-            self.dirty = 1
-            if hasattr(self, "costume"):
-                self.costume.call_actions(["scale", "upscale"])
-            if hasattr(self, "physics") and self.physics.started:
-                self.physics.reload_physics()
+
 
 
     @property

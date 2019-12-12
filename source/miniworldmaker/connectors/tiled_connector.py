@@ -35,6 +35,7 @@ class TiledBoardConnector(board_connector.BoardConnector):
 
         """
         _rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)
+        print(self.token.position)
         x = self.token.position[0] * (self.board.tile_size + self.board.tile_margin)
         y = self.token.position[1] * (self.board.tile_size + self.board.tile_margin)
         _rect.topleft = (x, y)
@@ -143,3 +144,13 @@ class TiledBoardConnector(board_connector.BoardConnector):
         for token in self.board.dynamic_tokens:
             x, y = token.position[0], token.position[1]
             self.board.dynamic_tokens_dict[(x, y)].append(token)
+
+    def set_size(self, value):
+        if value!= self._size:
+            self._old_size = self._size
+            self._size = value
+            self.dirty = 1
+            if hasattr(self, "costume"):
+                self.costume.call_actions(["scale", "upscale"])
+            if hasattr(self, "physics") and self.physics.started:
+                self.physics.reload_physics()

@@ -100,3 +100,16 @@ class PixelBoardConnector(board_connector.BoardConnector):
         incidence = self.token.direction - angle
         self.token.turn_left(180 - incidence)
         return self.token
+
+    def set_size(self, value):
+        if value!= self._size:
+            self._old_size = self._size
+            self._size = value
+            new_position = (self.token._position[0] + (self._size[0] - self._old_size[0]) / 2,
+                            self.token._position[1] + (self._size[1] - self._old_size[1]) /2)
+            self.position = new_position
+            self.dirty = 1
+            if hasattr(self, "costume"):
+                self.costume.call_actions(["scale", "upscale"])
+            if hasattr(self, "physics") and self.physics.started:
+                self.physics.reload_physics()
