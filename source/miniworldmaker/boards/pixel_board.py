@@ -22,8 +22,10 @@ class PixelBoard(bd.Board):
         Returns:
 
         """
-        super().add_to_board(token, position)
         token.board_connector = pixel_connector.PixelBoardConnector(token, self)
+        token.topleft = position[0], position[1]
+        super().add_to_board(token, position)
+
 
     def remove_from_board(self, token: tk.Token):
         """

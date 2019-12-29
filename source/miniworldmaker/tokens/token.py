@@ -459,8 +459,9 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self.board_connector.set_size(value)
         else:
             self._size = value
-
-
+        if self.physics:
+            self.physics.reload_physics()
+        self.costume.call_action("scale")
 
     @property
     def width(self):
@@ -541,9 +542,9 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     @topleft.setter
     def topleft(self, value):
         self.last_position = self.position
-        rect = pygame.Rect.copy(self.rect)
-        rect.topleft = value[0], value[1]
-        self.position = rect.topleft[0]+self.width /2, rect.topleft[1]+self.height/2
+        shift = self.width / 2 , self.height / 2
+        self.position = value[0] + shift[0], value[1] + shift[1]
+        print(self, self.position, self.size, shift, value)
 
     @property
     def center_y(self):

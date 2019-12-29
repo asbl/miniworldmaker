@@ -102,12 +102,12 @@ class PixelBoardConnector(board_connector.BoardConnector):
         return self.token
 
     def set_size(self, value):
-        if value!= self._size:
-            self._old_size = self._size
-            self._size = value
-            new_position = (self.token._position[0] + (self._size[0] - self._old_size[0]) / 2,
-                            self.token._position[1] + (self._size[1] - self._old_size[1]) /2)
-            self.position = new_position
+        if value!= self.token._size:
+            self._old_size = self.token._size
+            shift = (value[0] - self._old_size[0]) / 2,  (value[1] - self._old_size[1]) /2
+            new_position = self.token._position[0] + shift[0], self.token._position[1] + shift[1]
+            self.token.position = new_position
+            self.token._size = value
             self.dirty = 1
             if hasattr(self, "costume"):
                 self.costume.call_actions(["scale", "upscale"])

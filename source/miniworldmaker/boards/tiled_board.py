@@ -35,6 +35,7 @@ class TiledBoard(board.Board):
         Returns:
 
         """
+        token.position = position
         super().add_to_board(token, position)
         token.board_connector = tiled_connector.TiledBoardConnector(token, self)
 

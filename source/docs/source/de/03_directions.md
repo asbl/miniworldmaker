@@ -3,7 +3,7 @@ Richtungen
 
 ### Winkel
 
-Ein Actor kann sich in verschiedene Richtungen bewegen. Zunächst musst du dazu wissen, wie in Miniworldmaker Winkel interpretiert werden.
+Ein Token kann sich in verschiedene Richtungen bewegen. Zunächst musst du dazu wissen, wie in Miniworldmaker Winkel interpretiert werden.
 Winkel sind unabhängig von der Ausrichtung der Spielfigur:
 
 ![movement](/_images/movement.jpg)

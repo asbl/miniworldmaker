@@ -238,17 +238,18 @@ class Line(Shape):
             box_width = abs(box[0] - box[2]) + self.thickness
             box_height = abs(box[1] - box[3]) + self.thickness
             # mod_start
-            x = start_position[0] - box.topleft[0] + self.thickness / 2 - box_width / 2
+            x = start_position[0] - box.topleft[0] + self.thickness / 2
             y = start_position[1] - box.topleft[1] + self.thickness / 2
             mod_start = (x, y)
             # mod end
-            x = end_position[0] - box.topleft[0] + self.thickness / 2 - box_width / 2
+            x = end_position[0] - box.topleft[0] + self.thickness / 2
             y = end_position[1] - box.topleft[1] + self.thickness / 2 
             mod_end = (x, y)
             self.start_position = start_position
             self.end_position = end_position
             self.local_start_position = mod_start
             self.local_end_position = mod_end
+            print(box, mod_start, mod_end, start_position, end_position)
             super().__init__(box.topleft, color)
             self.size = (box_width, box_height)
             self.costume.draw_shape_append(pygame.draw.line, [(255, 255, 255, 255),
@@ -300,8 +301,10 @@ class Rectangle(Shape):
                 x = point[0] - box[0]
                 y = point[1] - box[1]
                 self.mod_pointlist.append((x, y))
+            print("box", box, self.mod_pointlist, point_list)
             super().__init__((box[0], box[1]), color)
-            self.size = (abs(box[0] - box[2]), abs(box[1] - box[3]))
+            self.size = (abs(box[2]+self.thickness), abs(box[3]+self.thickness))
+            print("size", self.size)
             self.costume.draw_shape_set(*self.draw_shape)
             self.physics.correct_angle = 90
 

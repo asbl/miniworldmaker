@@ -192,15 +192,17 @@ class PhysicsProperty:
             self.model_setup_complete = True
 
     def reload_physics(self):
-        self.dirty = 1
-        # Remove shape and body from space
-        for shape in list(self.body.shapes):
-            PhysicsProperty.space.remove(shape)
-        PhysicsProperty.space.remove(self.body)
-        # Set new properties and reset to space
-        self.setup_physics_model()
-        self.dirty = 0
-        self.token.board._register_physics_collision_handler(self.token)
+        if self.started:
+            self.dirty = 1
+            # Remove shape and body from space
+            if self.body:
+                for shape in list(self.body.shapes):
+                    PhysicsProperty.space.remove(shape)
+                PhysicsProperty.space.remove(self.body)
+            # Set new properties and reset to space
+            self.setup_physics_model()
+            self.dirty = 0
+            self.token.board._register_physics_collision_handler(self.token)
 
     def simulation_preprocess_token(self):
         """

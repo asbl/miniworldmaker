@@ -1,36 +1,40 @@
-Akteure
+Tokens
 =======
 
-### Eine neue Actor-Klasse erstellen
+### Eine neue Token-Klasse erstellen
 
-Als nächtes wird ein Akteur auf dem Board platziert.
+Als nächtes wird ein Token, d.h. eine Spielfigur auf dem Board platziert.
 
-Dies geht folgendermaßen
-
+Dies geht so:
 
 ```
-class Player(Actor):
+class Player(Token):
 
     def setup(self):
         self.add_image(path="images/char_blue.png")
 ```
 
-  * Die Zeile 1 erstellt eine neue Klasse als Kindklasse der Klasse Actor.
+  * In Zeile 1 wird eine neue Klasse als Kindklasse der Klasse Token definiert.
   
   * In Zeile 3 wird  die setup()-Methode definiert, 
-  die beim Erstellen eines neuen Player-Objektes aufgerufen wird.
+  welche beim Erstellen eines neuen Player-Objektes aufgerufen wird.
   
   * In Zeile 4 wird dann zu dem Player-Objekt ein Bild hinzugefügt.
 
-### Den Akteur zum Spielfeld hinzufügen
+### Das Token zum Spielfeld hinzufügen
 
 
   Bis jetzt haben wir nur eine Schablone erstellt, um Player-Objekte zu erzeugen.
+  
   Jetzt sollen konkrete Objekte erzeugt und zum Spielfeld hinzugefügt werden.
-    Ergänze dazu die setup() - Methode der Spielfeld-Klasse:
+    Ergänze dazu die setup() - Methode der Board-Klasse, die du zuvor erstellt hast:
 
 ```
-  player1 = Player(position = (3, 3))
+class MyBoard(TiledBoard):
+
+    def setup(self):
+        ...
+        player1 = Player(position = (3, 3))
 ```
 
 

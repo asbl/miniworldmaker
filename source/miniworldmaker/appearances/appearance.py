@@ -23,7 +23,7 @@ class MetaAppearance(type):
 class Appearance(metaclass=MetaAppearance):
     """ Base class of token costumes and board backgrounds
 
-    Die Klasse enthält alle Methoden und Attribute um Bilder der Objekte anzuzeigen, zu animieren, Text auf den Bildern zu rendern  oder Overlays anzuzeigen.
+    The class contains all methods and attributes to display and animate images of the objects, render text on the images or display overlays.
 
     """
 
@@ -145,7 +145,16 @@ class Appearance(metaclass=MetaAppearance):
 
     @property
     def is_upscaled(self):
-        """bool: If True, the image will be upscaled remaining aspect-ratio.
+        """
+        bool: If True, the image will be upscaled remaining aspect-ratio.
+
+        Examples:
+
+            >>> class Player(miniworldmaker.Token):
+            >>>    def on_setup(self):
+            >>>         self.add_image("background_image.jpg")
+            >>>         self.costume.is_upscaled = True
+
         """
         return self._is_upscaled
 
@@ -156,7 +165,16 @@ class Appearance(metaclass=MetaAppearance):
 
     @property
     def is_rotatable(self):
-        """bool: If True, the image will be rotated by parent direction"""
+        """bool: If True, the image will be rotated by parent direction
+
+        Examples:
+
+            >>> class Player(miniworldmaker.Token):
+            >>>    def on_setup(self):
+            >>>         self.add_image("background_image.jpg")
+            >>>         self.costume.is_rotatable = True
+
+        """
         return self._is_rotatable
 
     @is_rotatable.setter
@@ -168,7 +186,13 @@ class Appearance(metaclass=MetaAppearance):
     def orientation(self):
         """bool: If True, the image will be rotated by parent orientation before it is rotated.
 
-        This should be used, if image is not pointing to right direction"""
+        Examples:
+
+            >>> class Player(miniworldmaker.Token):
+            >>>    def on_setup(self):
+            >>>         self.add_image("background_image.jpg")
+            >>>         self.costume.orientation = -90
+        """
         return self._orientation
 
     @orientation.setter
@@ -217,7 +241,12 @@ class Appearance(metaclass=MetaAppearance):
     @property
     def text(self):
         """
-        If text!= "" a Text is rendered at the token-position.
+        Examples:
+
+            >>> explosion = Explosion(position=other.position.up(40).left(40))
+            >>> explosion.costume.is_animated = True
+            >>> explosion.costume.text_position = (100, 100)
+            >>> explosion.costume.text = "100"
         """
         return self._text
 
@@ -371,6 +400,18 @@ class Appearance(metaclass=MetaAppearance):
     def is_animated(self):
         """bool: If True, the image will be animated.
         Depends on appearance.animation_speed
+
+        Examples:
+
+            >>> class Robot(Actor):
+            >>>
+            >>> def __init__(self, position):
+            >>>     super().__init__(position)
+            >>>     self.add_image("images/robot_blue1.png")
+            >>>     self.add_image("images/robot_blue2.png")
+            >>>     self.size = (99, 99)
+            >>>     self.costume.animation_speed = 30
+            >>>     self.costume.is_animated = True
         """
         return self._is_animated
 
@@ -414,7 +455,7 @@ class Appearance(metaclass=MetaAppearance):
     def call_action(self, action):
         reload = False
         for img_action in self.image_actions_pipeline:
-            if img_action[0] == action:
+            if img_action[0] == action or action == "all":
                 reload = True # reload image action
             if reload:
                 self.reload_actions[img_action[0]] = True # reload all actions after image action

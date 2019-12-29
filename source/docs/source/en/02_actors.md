@@ -1,35 +1,40 @@
-Akteure
+Tokens
 =======
 
-#### Eine neue Actor-Klasse erstellen
+### Create a new Token class
 
-Als nächstes wird ein Akteur auf dem Board platziert.
+Next, an token is placed on the board.
 
-Dies ist folgendermaßen
-
+This is done as follows
 
 ```
-Klasse Spieler (Schauspieler):
+class Player(Token):
 
     def setup(self):
         self.add_image(path="images/char_blue.png")
 ```
 
-  * The Zeile 1 erstellt eine neue Klasse als Kindklasse des Klassenschauspielers.
+  * Line 1 creates a new class as a child class of the class Token.
   
-  * In Zeile 3 wird die setup()-Methode definiert, 
-  the created a new player objects aufgerufen wird.
+  * Line 3 defines the setup() method, 
+  which is called when a new Player object is created.
   
-  * In Zeile 4 wird dann das Player-Objekt ein Bild hinzugefügt.
+  * A picture is then added to the Player object in line 4.
 
-#### Den Akteur zum Spielfeld hinzufügen
+### Add the token to the playing field
 
 
-  Bis jetzt haben wir nur ein Schablone erstellt, um Player-Objekte zu erzeugen.
-  Jetzt werden konkrete Objekte erzeugt und das Spielfeld hinzugefügt.
-    Ergänze to the setup() - Methode the Spielfeld-Klasse:
+  So far we have only created one template to create player objects.
+  
+  Now we want to create concrete objects and add them to the board.
+    Add the setup() method of the playing field class:
 
 ```
-  Spieler1 = Spieler (Position = (3, 3, 3))
+class MyBoard(TiledBoard):
 
-Übersetzt mit www.DeepL.com/Translator
+    def setup(self):
+        ...
+        player1 = Player(position = (3, 3))
+```
+
+Translated with www.DeepL.com/Translator (free version)

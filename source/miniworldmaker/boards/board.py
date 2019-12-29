@@ -352,7 +352,6 @@ class Board(container.Container, metaclass = MetaBoard):
             position: The position on the board where the actor should be added.
         """
         self.tokens.add(token)
-        token.position = position
         token.dirty = 1
         if token.init != 1:
             raise UnboundLocalError("super().__init__() was not called")
