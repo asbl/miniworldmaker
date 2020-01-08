@@ -72,19 +72,29 @@ class PixelBoardConnector(board_connector.BoardConnector):
         return [actor for actor in a_list if type(actor) == actor_type]
 
     def sensing_tokens(self, token_type=None, distance: int = 1) -> list:
-        destination_rect = self.get_destination_rect(distance=distance)
-        tokens = self.board.get_tokens_at_rect(destination_rect, singleitem=False, exclude=self, token_type=token_type)
-        return [token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
+            destination_rect = self.get_destination_rect(distance=distance)
+            tokens = self.board.get_tokens_at_rect(destination_rect, singleitem=False, exclude=self, token_type=token_type)
+            if self.token.collision_type == "circle":
+                tokenlist = [token for token in tokens if pygame.sprite.collide_circle(self.token, token)]
+            elif self.token.collision_type == "rect":
+                tokenlist = [token for token in tokens if pygame.sprite.collide_rect(self.token, token)]
+            else:
+                tokenlist = [token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
+            for token in tokenlist:
+                #distance =  math.sqrt((token.x - self.token.x) ** 2 + (token.y - self.token.y) ** 2
+                if self.token.collision_type == "line":
+                    pos = token.position
+            return tokenlist
 
     def sensing_token(self, token_type=None, distance: int = 1) -> Union[token.Token, None]:
-        destination_rect = self.get_destination_rect(distance)
-        token = self.board.get_tokens_at_rect(destination_rect, singleitem=True, exclude=self, token_type=token_type)
-        if token:
-            if pygame.sprite.collide_mask(self.token, token):
-                return token
-            else:
-                return None
-        return None
+            destination_rect = self.get_destination_rect(distance)
+            token = self.board.get_tokens_at_rect(destination_rect, singleitem=True, exclude=self, token_type=token_type)
+            if token:
+                if pygame.sprite.collide_mask(self.token, token):
+                    return token
+                else:
+                    return None
+            return None
 
     def bounce_from_token(self, other):
         """experimental: Bounces actor from another token

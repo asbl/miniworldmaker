@@ -9,9 +9,11 @@ class MyBoard(ProcessingBoard):
         self.point = 1
         self.start_pos = None
         self.end_pos = None
-        Line((30, 30), (80, 80), 1)
+        Line((0, 0), (80, 80), 1)
         Circle((200, 200), 100, 0)
-        Ellipse((500, 100), 50, 50, color=(255, 0, 0, 255), thickness=2)
+        r = Rectangle((70, 70), width=80, height=80, thickness=2)
+        print(r.width, r.height, r.rect)
+        #Ellipse((500, 100), 50, 50, color=(255, 0, 0, 255), thickness=2)
 
     def on_mouse_left(self, mouse_position):
         if self.point == 1:

@@ -14,8 +14,9 @@ class MyBoard(PixelBoard):
         self.pipe3 = Pipe(position=(780, self.height - 280))
         self.pipe4 = Pipe(position=(760, -100))
         self.pipe4.top()
-        self.score = NumberToken(position=(0, 0))
+        self.score = NumberToken(position=(10, 10))
         self.score.size = (40, 40)
+        print(self.score, self.score.topleft)
         #self.score.set_number(0)
         self.is_running = False
 
@@ -66,7 +67,6 @@ class Pipe(Token):
         self.costume.orientation = -180
 
     def act(self):
-        print(self.topleft)
         self.move_in_direction("left")
         if self.position.x < 75 and self.passed is False:
             self.passed = True

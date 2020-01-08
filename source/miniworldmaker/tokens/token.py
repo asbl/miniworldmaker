@@ -28,6 +28,24 @@ class Meta(type):
 
 
 class Token(pygame.sprite.DirtySprite, metaclass = Meta):
+    """
+    Token is the basic class for all kinds of players,
+    pieces and obstacles on the playing field
+
+      * Acting: Create a method act(self). The method is called every frame
+      * Setup: Create a method on_setup(self). The method is called when a new token is created (after __init__())
+      * Physics: Create a method setup_physics(self). When this method is added, the object will be handled as
+        physics-object.
+      * Collsision-detection: Create a method on_sensing_<class_name>(self, other).
+        The method is called everytime the token is colliding with a token of <class_name>.
+        (Note: Write <class_name> in lower_case)
+
+        Args:
+            position (tuple): Position on the board where the token should be created.
+
+        Attributes:
+            collision_type (str): Defines the type of collision. Can be either "rect", "circle" or "mask"
+        """
     token_count = 0
     class_image = None
     class_id = 0
@@ -56,9 +74,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.token_id = Token.token_count + 1
         self.is_static = False
         # costume
+        self.costume_count = 0
         self.costume = costume.Costume(self)
         self._rect = self.image.get_rect()
         self.costumes = [self.costume]
+        self.collision_type = "mask"
         self.costume.is_upscaled = True
         self.board = app.App.board
         self._orientation = 0
@@ -276,6 +296,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         else:
             index = index
         self.costume = self.costumes[index]
+        self.costume.reset()
         self.costume.dirty = 1
         self.costume.call_all_actions()
         self.dirty = 1
@@ -544,7 +565,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.last_position = self.position
         shift = self.width / 2 , self.height / 2
         self.position = value[0] + shift[0], value[1] + shift[1]
-        print(self, self.position, self.size, shift, value)
 
     @property
     def center_y(self):

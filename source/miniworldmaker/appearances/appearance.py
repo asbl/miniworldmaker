@@ -30,6 +30,7 @@ class Appearance(metaclass=MetaAppearance):
     _images_dict = {}  # dict with key: image_path, value: loaded image
 
     def __init__(self):
+        self.initialized = False
         self.dirty = 0
         self.blit_images = []  # Images which are blitted on the background
         self.parent = None
@@ -57,6 +58,7 @@ class Appearance(metaclass=MetaAppearance):
         self.image_actions_pipeline = [
             ("orientation", self.image_action_set_orientation, "orientation", False),
             ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
+            ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
             ("texture", self.image_action_texture, "is_textured", False),
             ("scale", self.image_action_scale, "is_scaled", False),
             ("upscale", self.image_action_upscale, "is_upscaled", False),
@@ -75,6 +77,7 @@ class Appearance(metaclass=MetaAppearance):
         self.surface_loaded = False
         self.last_image = None
         self.cached_images = defaultdict()
+        self.animation_length = 0
 
     @staticmethod
     def load_image(path):
@@ -106,7 +109,8 @@ class Appearance(metaclass=MetaAppearance):
 
     def after_init(self):
         self._reload_all()
-        self.update()
+        # self.update()
+        self.initialized = True
 
     def _reload_all(self):
         for img_action in self.image_actions_pipeline:
@@ -280,13 +284,19 @@ class Appearance(metaclass=MetaAppearance):
         self.draw_shapes = [(shape, arguments)]
         self.call_action("draw_shapes")
 
+    def remove_last_image(self):
+        del self.images_list[-1]
+        self.set_image(-1)
+        self._reload_all()
+
+
     def add_image(self, path: str) -> int:
         """
         Adds an image to the appearance
 
         Args:
             path: The path to the image relative to actual directory
-            crop: tuple: x,y,width, height
+            animation: True if image should be removed after first animation
 
         Returns: The index of the added image.
 
@@ -297,7 +307,7 @@ class Appearance(metaclass=MetaAppearance):
         self._image = self.image
         self.dirty = 1
         self._reload_all()
-        self.update()
+        # self.update()
         return len(self.images_list) - 1
 
     def blit(self, path, position: tuple, size: tuple = (0, 0)):
@@ -375,13 +385,15 @@ class Appearance(metaclass=MetaAppearance):
             self.parent.dirty = 1
             self._reload_all()
 
-    def set_image(self, value):
+    def set_image(self, value : int) -> bool:
+        if value == -1:
+            value = len(self.images_list) - 1
         if 0 <= value < len(self.images_list) - 1:
             self.image_index = value
             self.dirty = 1
             self.parent.dirty = 1
             self._reload_all()
-            self.update()
+            #self.update()
             return True
         else:
             return False
@@ -461,7 +473,7 @@ class Appearance(metaclass=MetaAppearance):
                 self.reload_actions[img_action[0]] = True # reload all actions after image action
         self.dirty = 1
         self.parent.dirty = 1
-        self.update()
+        #self.update()
 
     def call_actions(self, actions):
         reload = False
@@ -472,7 +484,6 @@ class Appearance(metaclass=MetaAppearance):
                 self.reload_actions[img_action[0]] = True
         self.dirty = 1
         self.parent.dirty = 1
-        self.update()
         return self.image
 
     def call_all_actions(self):
@@ -480,7 +491,7 @@ class Appearance(metaclass=MetaAppearance):
             self.reload_actions[img_action[0]] = True
         self.dirty = 1
         self.parent.dirty = 1
-        self.update()
+        #self.update()
         return self.image
 
     def image_action_draw_shapes(self, image: pygame.Surface, parent) -> pygame.Surface:
@@ -570,3 +581,8 @@ class Appearance(metaclass=MetaAppearance):
         image.blit(label, self.text_position)
         return image
 
+    def animate(self, images):
+        for image in images:
+            self.add_image(image)
+            self.animation_length += 1
+            self.set_image(len(self.images_list) - self.animation_length - 1)

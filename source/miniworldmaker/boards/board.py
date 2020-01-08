@@ -548,6 +548,7 @@ class Board(container.Container, metaclass = MetaBoard):
                 self._collision_handling()
             # run animations
             self._update_all_costumes()
+            self._update_background()
             self._tick_timed_objects()
             # If there are physic objects, run a physics simulation step
             if physicsengine.PhysicsProperty.count > 0:

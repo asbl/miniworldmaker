@@ -25,6 +25,10 @@ class Background(appearance.Appearance):
         self.image_actions_pipeline.append(("grid_overlay", self.image_action_show_grid, "grid_overlay"))
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
 
+    def add_image(self, path):
+        super().add_image(path)
+        self.update()
+
     def after_init(self):
         super().after_init()
         self.is_scaled = True

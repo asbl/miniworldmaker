@@ -16,9 +16,13 @@ class Costume(appear.Appearance):
     def __init__(self, token):
         super().__init__()
         self.parent = token  #: the parent of a costume is the associated token.
+        self.costume_id = self.parent.costume_count
+        self.parent.costume_count += 1
         self._is_upscaled = True
         self._info_overlay = False
         self._is_rotatable = True
+        self.return_to_costume = -1
+
         self.image_actions_pipeline.append(("info_overlay", self.image_action_info_overlay, "info_overlay"))
 
     @property
@@ -51,12 +55,28 @@ class Costume(appear.Appearance):
         pygame.draw.line(image, (255, 0, 0, 100), start_pos, end_pos, 3)
         return image
 
+    def update(self):
+        super().update()
+        if self.return_to_costume >= 0:
+           if self.costume_id != self.return_to_costume:
+                    self.parent.switch_costume(self.return_to_costume)
+
     async def _update(self):
         if self.parent.board and self.is_animated:
-            if self.parent.board.frame % self.animation_speed == 0:
+            if self.parent.board.frame != 0 and self.parent.board.frame % self.animation_speed == 0:
                 await self.next_image()
                 self.reload_image()
+                if self.animation_length > 0:
+                    self.animation_length -= 1
+                    self.remove_last_image()
             else:
                 self.reload_image()
         else:
             self.reload_image()
+
+    def reset(self):
+        self._image_index = 0
+
+    def __str__(self):
+        return "Costume for with ID [" + str(self.costume_id) + "] for parent:[" + str(self.parent) + "]"
+

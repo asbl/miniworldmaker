@@ -40,7 +40,6 @@ class Robot(Actor):
         print("scratch style again (unit circle to dir)", Token.unit_circle_to_dir(Token.dir_to_unit_circle(self.direction)))
 
     def on_sensing_wall(self, wall):
-        print(wall)
         self.move_back()
 
     def on_mouse_left(self, mouse_pos):

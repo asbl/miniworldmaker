@@ -18,21 +18,26 @@ class Robot(Actor):
         self.costume.orientation = - 90
         self.costume.animation_speed = 30
         self.costume.is_animated = True
-        costume2 = self.add_costume("images/robot_blue2.png")
-        costume2.orientation = -90
+        self.animation1 = ["images/robot_blue2.png", "images/robo_green.png", "images/robo_green.png"]
         self.size = (99, 99)
         self.direction = "right"
         self.i = 0
+        self.costume.animate(self.animation1)
 
     def act(self):
-        j = 20
+        j = 150
         self.i = self.i + 1
         if self.i > j:
             self.i = 0
         if self.i == j:
-            print("switch costume", self.costume.orientation)
-            self.switch_costume()
+            self.costume.animate(self.animation1)
+            pass
+        if self.sensing_on_board():
+            self.move()
 
+    def on_sensing_not_on_board(self):
+        self.flip_x()
+        self.move()
 
 
 board = MyBoard()

@@ -12,8 +12,7 @@ class MyBoard(PixelBoard):
 
 class Robot(Actor):
 
-    def __init__(self, position):
-        super().__init__(position)
+    def setup(self):
         self.add_image("images/robot_blue1.png")
         self.add_image("images/robot_blue2.png")
         self.size = (99, 99)

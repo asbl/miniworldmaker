@@ -10,11 +10,11 @@ class MyBoard(mwm.PixelBoard):
         self.arrow.direction = -10
         self.plattform = Plattform(position=(600, 260))
         # row 1
-        Box(position=(610, 210))
-        Box(position=(655, 210))
-        Box(position=(700, 210))
-        Box(position=(745, 210))
-        Box(position=(790, 210))
+        Box(position=(610, 220))
+        Box(position=(655, 220))
+        Box(position=(700, 220))
+        Box(position=(745, 220))
+        Box(position=(790, 220))
         # row 2
         Box(position=(630, 170))
         Box(position=(675, 170))
