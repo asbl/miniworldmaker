@@ -46,6 +46,7 @@ class Appearance(metaclass=MetaAppearance):
         self.animation_speed = 100  #: The animation speed for animations
         self._is_animated = False
         self._is_flipped = False
+        self.current_animation = None
         self._is_textured = False
         self._is_upscaled = False
         self._is_scaled = False
@@ -344,7 +345,9 @@ class Appearance(metaclass=MetaAppearance):
     def reload_image(self):
         """ Performs all actions in image pipeline"""
         if self.dirty == 1:
-            if self.images_list and self.images_list[self._image_index]:
+            if self.current_animation:
+                self._image_index = len(self.images_list)-1
+            if self.images_list and self._image_index < len(self.images_list) and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]  # if there is a image list load image by index
             else:  # no image files - Render raw surface
                 image = self.load_surface()
@@ -582,7 +585,8 @@ class Appearance(metaclass=MetaAppearance):
         return image
 
     def animate(self, images):
-        for image in images:
+        for image in reversed(images):
             self.add_image(image)
             self.animation_length += 1
-            self.set_image(len(self.images_list) - self.animation_length - 1)
+            self.current_animation = images
+            self.set_image(-1)
