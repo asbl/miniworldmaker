@@ -35,7 +35,6 @@ class TiledBoardConnector(board_connector.BoardConnector):
 
         """
         _rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)
-        print(self.token.position)
         x = self.token.position[0] * (self.board.tile_size + self.board.tile_margin)
         y = self.token.position[1] * (self.board.tile_size + self.board.tile_margin)
         _rect.topleft = (x, y)
