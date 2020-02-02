@@ -16,9 +16,8 @@ class MyBoard(TiledBoard):
         self.speed = 1
         self.add_image("images/greenfield.jpg")
 
-    def get_event(self, event, data):
-        if event == "button":
-            if data == "Spin":
+    def on_message(self, message):
+        if message == "Spin":
                 if self.placed:
                     self.arrow.spin()
                 else:
@@ -27,7 +26,6 @@ class MyBoard(TiledBoard):
     def on_mouse_left(self, mouse_pos):
         if not self.placed:
             position = self.get_board_position_from_pixel(mouse_pos)
-            print(position)
             if not position == (1, 1):
                 self.chip = Chip(position)
                 if self.chip:
@@ -63,4 +61,4 @@ class Chip(Token):
         self.add_image("images/chip.png")
 
 my_grid = MyBoard(3, 3)
-my_grid.show()
+my_grid.run()

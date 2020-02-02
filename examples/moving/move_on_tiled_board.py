@@ -8,6 +8,7 @@ class MyBoard(TiledBoard):
         self.player = Player(position=(1, 1))
         self.add_image(path="images/soccer_green.jpg")
         self.background.is_scaled = True
+        self.speed = 10
         print(self.is_running)
 
 
@@ -21,19 +22,18 @@ class Player(Actor):
     def act(self):
         if self.sensing_on_board(1):
             self.move()
-            print("move")
-        print("act")
 
-    def get_event(self, event, data):
-        if event == "key_down":
-            if "W" in data:
-                self.direction = "up"
-            elif "S" in data:
-                self.direction = "down"
-            elif "A" in data:
-                self.direction = "left"
-            elif "D" in data:
-                self.direction = "right"
+    def on_key_down_w(self):
+        self.direction = "up"
+
+    def on_key_down_s(self):
+        self.direction = "down"
+
+    def on_key_down_a(self):
+        self.direction = "left"
+
+    def on_key_down_d(self):
+        self.direction = "right"
 
 
 board = MyBoard(6, 4)

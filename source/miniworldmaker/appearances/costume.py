@@ -22,7 +22,6 @@ class Costume(appear.Appearance):
         self._info_overlay = False
         self._is_rotatable = True
         self.return_to_costume = -1
-
         self.image_actions_pipeline.append(("info_overlay", self.image_action_info_overlay, "info_overlay"))
 
     @property
@@ -63,14 +62,16 @@ class Costume(appear.Appearance):
 
     async def _update(self):
         if self.parent.board and self.is_animated:
-            if self.parent.board.frame != 0 and self.parent.board.frame % self.animation_speed == 0:
-                await self.next_image()
+            if self._end_animation or (
+                    self.parent.board.frame != 0 and self.parent.board.frame % self.animation_speed == 0):
                 if self.animation_length > 0:
                     self.animation_length -= 1
-                    if self.animation_length == 0:
-                        self.current_animation = None
+                    await self.next_image()
                     self.remove_last_image()
-                    self.reload_image()
+                    if self.animation_length == 0:
+                        self.current_animation_images = None
+                        self.parent.current_animation = None
+                        self.current_animation = None
             else:
                 self.reload_image()
         else:
@@ -78,7 +79,7 @@ class Costume(appear.Appearance):
 
     def reset(self):
         self._image_index = 0
+        self.end_animation()
 
     def __str__(self):
         return "Costume for with ID [" + str(self.costume_id) + "] for parent:[" + str(self.parent) + "]"
-

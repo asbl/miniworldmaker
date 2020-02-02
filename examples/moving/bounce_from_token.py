@@ -21,11 +21,11 @@ class SmallBall(Token):
 
     def on_sensing_obstacle(self, other):
         self.move_back()
-        self.board_connector.bounce_from_token(other)
+        self.bounce_from_token(other)
 
     def on_sensing_borders(self, border):
+        print(border)
         self.move_back()
-        print("on_sensing_border")
         self.bounce_from_border(border)
 
     def act(self):
@@ -39,4 +39,4 @@ class Obstacle(Actor):
         self.size = (80, 80)
 
 board = MyBoard()
-board.show()
+board.run()

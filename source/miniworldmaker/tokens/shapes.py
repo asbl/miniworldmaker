@@ -150,18 +150,15 @@ class Ellipse(Shape):
     """
 
     def __init__(self, position=None, width=20, height=20, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
-        try:
-            rect = pygame.Rect(0, 0, width, height)
-            rect.center = (position[0], position[1])
-            super().__init__(rect.topleft, color)
-            self.size = (width, height)
-            self._thickness = thickness
-            self._width = width
-            self._height = height
-            self.thickness = thickness
-        except ValueError:
-            print("ERROR: thickness of {0} is greater than ellipse-radius".format(thickness))
-            self.remove()
+        rect = pygame.Rect(0, 0, width, height)
+        rect.center = (position[0], position[1])
+        self._width = width
+        self._height = height
+        super().__init__(rect.topleft, color)
+        self.size = (width, height)
+        self._thickness = thickness
+
+        self.thickness = thickness
 
     @property
     def draw_shape(self):
@@ -240,21 +237,20 @@ class Line(Shape):
             # mod_start
             x = start_position[0] - box.topleft[0] + self.thickness / 2
             y = start_position[1] - box.topleft[1] + self.thickness / 2
-            mod_start = (x, y)
+            self.mod_start = (x, y)
             # mod end
             x = end_position[0] - box.topleft[0] + self.thickness / 2
-            y = end_position[1] - box.topleft[1] + self.thickness / 2 
-            mod_end = (x, y)
+            y = end_position[1] - box.topleft[1] + self.thickness / 2
+            self.mod_end = (x, y)
             self.start_position = start_position
             self.end_position = end_position
-            self.local_start_position = mod_start
-            self.local_end_position = mod_end
-            print(box, mod_start, mod_end, start_position, end_position)
+            self.local_start_position = self.mod_start
+            self.local_end_position = self.mod_end
             super().__init__(box.topleft, color)
             self.size = (box_width, box_height)
-            self.costume.draw_shape_append(pygame.draw.line, [(255, 255, 255, 255),
-                                                              mod_start,
-                                                              mod_end,
+            self.costume.draw_shape_append(pygame.draw.line, [self.color,
+                                                              self.mod_start,
+                                                              self.mod_end,
                                                               self.thickness])
             self.costume.load_surface()
 

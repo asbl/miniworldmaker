@@ -20,7 +20,7 @@ class TextToken(token.Token):
 
     """
     def __init__(self, position = None, text = "", font_size = 80, color = (255, 255, 255, 255)):
-        super().__init__(position)
+        super().__init__(position, None)
         self.costume.fill_color=(0, 0, 0, 0)
         self.costume.font_size = font_size
         self.costume.color = color
@@ -28,6 +28,7 @@ class TextToken(token.Token):
         self.costume.text = text
         self._auto_size = True
         self._auto_font_size = False
+        self.is_static = True
         self.set_text(text)
 
     def set_text(self, text):

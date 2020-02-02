@@ -23,4 +23,4 @@ class Robot(Actor):
 
 
 board = MyBoard(800, 600)
-board.show()
+board.run()

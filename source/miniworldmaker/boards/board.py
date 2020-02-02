@@ -1,8 +1,11 @@
+import inspect
 import os
 from collections import defaultdict
+from inspect import signature
 from typing import Union
 
 import pygame
+from deprecated import deprecated
 from miniworldmaker.app import app
 from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position
@@ -24,7 +27,8 @@ class MetaBoard(type):
         instance._update_all_costumes()
         return instance
 
-class Board(container.Container, metaclass = MetaBoard):
+
+class Board(container.Container, metaclass=MetaBoard):
     """Base Class for Boards.
 
     You can create a custom board by inherit one of Boars subclasses.
@@ -63,15 +67,19 @@ class Board(container.Container, metaclass = MetaBoard):
 
     registered_event_handlers_for_tokens = defaultdict(defaultdict)
     registered_collision_handlers_for_tokens = defaultdict(list)
-    token_class_ids = defaultdict()
+    token_class_ids = defaultdict()  # class_name -> id
+    token_classes = defaultdict()  # class_name -> class
     token_class_id_counter = 0
     subclasses = None
+    begin_prefix = "on_touching_"
+    separate_prefix = "on_separation_from_"
 
     def __init__(self,
                  columns: int = 40,
                  rows: int = 40,
                  tile_size=1,
                  tile_margin=0,
+                 background_image=None
                  ):
 
         super().__init__()
@@ -79,7 +87,6 @@ class Board(container.Container, metaclass = MetaBoard):
         # public
         self.registered_events = {"all"}
         self.is_running = True
-
         self.sound_effects = {}
         self.physics_property = physicsengine.PhysicsProperty
         # private
@@ -92,7 +99,10 @@ class Board(container.Container, metaclass = MetaBoard):
         self._orientation = 0
         self._repaint_all = 1
         if type(columns) != int or type(rows) != int:
-            raise TypeError("ERROR: columns and rows should be int values but types are",
+            if type(columns) == tuple and type(columns[0]) == int and type(columns[0]) == int:
+                columns, rows = columns[0], columns[1]
+            else:
+                raise TypeError("ERROR: columns and rows should be int values but types are",
                             str(type(columns)), "and", str(type(rows)))
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
         self._grid = []
@@ -117,6 +127,8 @@ class Board(container.Container, metaclass = MetaBoard):
         self.registered_event_handlers = dict()
         self.tokens_with_eventhandler = defaultdict(list)
         self.tokens_with_collisionhandler = defaultdict(list)
+        if background_image != None:
+            self.add_image(background_image)
         self.dirty = 1
         self.timed_objects = []
         self._repaint_all = 1
@@ -161,17 +173,20 @@ class Board(container.Container, metaclass = MetaBoard):
                     [s for c in base_cls.__subclasses__() for s in rec_all_subs(c)])
             else:
                 return cls.subclasses
+
         return rec_all_subs(cls)
 
     def __str__(self):
-        return "{0} with {1} columns and {2} rows"\
+        return "{0} with {1} columns and {2} rows" \
             .format(self.__class__.__name__, self.columns, self.rows)
 
     def _act_all(self):
-        [token.act() for token in self.tokens_with_eventhandler["act"]]
-        if "act" in self.registered_event_handlers:
-            if hasattr(self, "act"):
-                self.act()
+        for token in self.tokens:
+            if token.board:  # is on board
+                self._handle_act_event(token)
+        method = self._get_method(self, "act")
+        if method:
+            method()
 
     @property
     def container_width(self) -> int:
@@ -261,7 +276,7 @@ class Board(container.Container, metaclass = MetaBoard):
         self._columns = value
         self.window.dirty = 1
         self._repaint_all = 1
-        
+
     @property
     def tile_size(self) -> int:
         """
@@ -274,7 +289,6 @@ class Board(container.Container, metaclass = MetaBoard):
         self._tile_size = value
         self.window.dirty = 1
         self._repaint_all = 1
-
 
     @property
     def tile_margin(self) -> int:
@@ -359,6 +373,11 @@ class Board(container.Container, metaclass = MetaBoard):
         for event_handler in self.registered_event_handlers_for_tokens[token.__class__].keys():
             self.tokens_with_eventhandler[event_handler].append(token)
         # Board Connectors are added in subclasses
+        self._add_board_connector(token, position)
+
+    def _add_board_connector(self, token, position):
+        raise Exception(
+            "You can't use class Board - You must use a specific class e.g. PixelBoard, TiledBoard or PhysicsBoard")
 
     def blit_surface_to_window_surface(self):
         self._window.window_surface.blit(self.surface, self.rect)
@@ -415,12 +434,12 @@ class Board(container.Container, metaclass = MetaBoard):
             >>> tokens = board.get_tokens_by_pixel(position)
 
         """
-        #token = []
+        # token = []
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
-        #for actor in self.tokens:
+        # for actor in self.tokens:
         #    if actor.rect.collidepoint(pixel):
         #        token.append(actor)
-        #return token
+        # return token
 
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
         tkn.Token, list]:
@@ -462,6 +481,11 @@ class Board(container.Container, metaclass = MetaBoard):
         if token is not None:
             [token.remove() for token in Board.filter_actor_list(tokens, token)]
 
+    def switch_board(self, Board, size: tuple = None):
+        if size is None:
+            size = self.size
+        self.window.send_event_to_containers("switch_board", [self, Board, size])
+
     def reset(self):
         """Resets the board
         Creates a new board with init-function - recreates all tokens and actors on the board.
@@ -476,15 +500,9 @@ class Board(container.Container, metaclass = MetaBoard):
         """
         self.window.send_event_to_containers("reset", self)
 
-
+    @deprecated(version='1.0.44', reason="Use _handle_reset_event instead")
     def _reset(self, event, data):
-        for token in self.tokens:
-            token.remove()
-        self.window.board = self.__class__(self.width, self.height)
-        self.window.board.show()
-        board = self.window.board
-        del self
-        return board
+        self._handle_reset_event(event, data)
 
     def repaint(self):
         if self._repaint_all:
@@ -498,7 +516,7 @@ class Board(container.Container, metaclass = MetaBoard):
             self._window.repaint_areas.append(self.rect)
             self._repaint_all = False
 
-    def show(self, fullscreen=False):
+    def run(self, fullscreen=False):
         """
         The method show() should always called at the end of your program.
         It starts the mainloop.
@@ -510,7 +528,20 @@ class Board(container.Container, metaclass = MetaBoard):
         """
         self.background.is_scaled = True
         image = self.image
-        self.window.show(image, full_screen=fullscreen)
+        self.window.run(image, full_screen=fullscreen)
+
+    @deprecated(version='1.0.44', reason="You should use board.run()")
+    def show(self, fullscreen=False):
+        """
+        The method show() should always called at the end of your program.
+        It starts the mainloop.
+
+        Examples:
+            >>> my_board = Board() # or a subclass of Board
+            >>> my_board.show()
+
+        """
+        self.run(fullscreen)
 
     def switch_background(self, index=-1) -> background.Background:
         """Switches the background
@@ -545,7 +576,7 @@ class Board(container.Container, metaclass = MetaBoard):
             # Acting for all actors
             if self.frame % self.speed == 0:
                 self._act_all()
-                self._collision_handling()
+                self._handle_all_collisions()
             # run animations
             self._update_all_costumes()
             self._update_background()
@@ -576,12 +607,28 @@ class Board(container.Container, metaclass = MetaBoard):
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
         # Call specific event handlers ("on_mouse_left", "on_mouse_right", ... for tokens
-        if event not in self._executed_events: # events shouldn't be called more than once per tick
+        if event not in self._executed_events:  # events shouldn't be called more than once per tick
             self._executed_events.add(event)
-            [self.registered_event_handlers_for_tokens[token.__class__][event](token, data) for token in self.tokens_with_eventhandler[event]]
-            # call generic "get_event(event, data) event handler
-            [self.registered_event_handlers_for_tokens[token.__class__]["get_event"](token, event, data) for token in self.tokens_with_eventhandler["get_event"]]
-            # Call events of board
+            from miniworldmaker.tokens import token
+            token_classes = token.Token.all_subclasses()
+            token_classes.add(token.Token)
+            all_objects = list(self.tokens.sprites())
+            all_objects.append(self)
+            for a_object in all_objects:
+                # if event in ["setup"]:
+                #    self._handle_setup_event(a_object, event, data)
+                if event in ["reset"]:
+                    self._handle_reset_event()
+                if event in ["switch_board"]:
+                    self._handle_switch_board_event(*data)
+                if event in ["key_down", "key_pressed", "key_down", "key_up"]:
+                    self._handle_key_event(a_object, event, data)
+                if event in ["mouse_left", "mouse_right", "mouse_motion"]:
+                    self._handle_mouse_event(a_object, event, data)
+                if event in ["message"]:
+                    self._handle_message_event(a_object, event, data)
+                if event in ["button_pressed"]:
+                    self._handle_button_event(a_object, event, data)
             if event in self.registered_event_handlers.keys():
                 # calls registered event handlers of board
                 if data is None:
@@ -590,41 +637,179 @@ class Board(container.Container, metaclass = MetaBoard):
                     try:
                         self.registered_event_handlers[event](self, data)
                     except TypeError:
-                        raise TypeError("Wrong number of arguments for ", str(self.registered_event_handlers[event]), " with Arguments ", data)
+                        raise TypeError("Wrong number of arguments for ", str(self.registered_event_handlers[event]),
+                                        " with Arguments ", data)
             self.get_event(event, data)
 
-    def _collision_handling(self):
-        # Collisions with other tokens
+    def _get_method(self, a_object, name):
+        """
+        If a (token-)object has method this returns the method by a given name
+        """
+        if hasattr(a_object, name):
+            if callable(getattr(a_object, name)):
+                _method = getattr(a_object, name)
+                _bound_method = _method.__get__(a_object, a_object.__class__)
+                return _bound_method
+            else:
+                return None
+        else:
+            return None
+
+    def _call_method(self, receiver, method, args):
+        sig = signature(method)
+        # Don't call method if tokens are already removed:
+        if issubclass(receiver.__class__, tkn.Token):
+            if not receiver.board:
+                return
+        if args == None:
+            method()
+        elif len(sig.parameters) == len(args):
+            method(*args)
+        else:
+            info = inspect.getframeinfo(inspect.currentframe())
+            raise Exception(
+                "Wrong number of arguments for " + str(method) + " in , got " + str(
+                    len(args)) + " but should be " + str(
+                    len(sig.parameters)) +
+                "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
+            )
+
+    def _handle_key_event(self, receiver, event, data):
+        # any key down?
+        method = self._get_method(receiver, "on_" + str(event))
+        if method:
+            self._call_method(receiver, method, [data])
+        # specific key down?
+        for key in data:
+            if key == key.lower():
+                method = self._get_method(receiver, "on_" + event + "_" + key)
+                if method:
+                    self._call_method(receiver, method, None)
+
+    def _handle_mouse_event(self, receiver, event, data):
+        # any key down?
+        method_name = "on_" + event
+        method = self._get_method(receiver, method_name)
+        if method:
+            sig = signature(method)
+            if len(sig.parameters) == 1:
+                method(data)
+        tokens = self.get_tokens_by_pixel(data)
+        for token in tokens:
+            method = self._get_method(token, method_name)
+            if method:
+                self._call_method(token, method, [data])
+
+    # def _handle_setup_event(self, receiver, event, data):
+    #    method_name = "on_" + event
+    #    method = self._get_method(receiver, method_name)
+    #    if method:
+    #        sig = signature(method)
+    #        if len(sig.parameters) == 1:
+    #            method(data)
+
+    def _handle_reset_event(self):
+        self.window.event_queue.clear()
         for token in self.tokens:
-            for coll_class in self.registered_collision_handlers_for_tokens[token.__class__]:
-                if coll_class not in ["borders", "on_board", "not_on_board"]:
-                    collision_tokens = token.sensing_tokens(token_type=coll_class)
-                    if collision_tokens:
-                        for colliding_target in collision_tokens:
-                            method = getattr(token, 'on_sensing_' + str(coll_class.__name__).lower())
-                            if callable(method):
-                                method(colliding_target)
-                elif coll_class == "borders":
-                    borders = token.sensing_borders()
-                    if borders:
-                        method = getattr(token, 'on_sensing_borders'.lower())
-                        if callable(method):
-                            try:
-                                method(borders)
-                            except TypeError:
-                                raise TypeError ("Wrong number of arguments for on_sensing_borders(self, borders) in Token. Should be 1 Argument")
-                elif coll_class == "not_on_board":
-                    on_board = token.sensing_on_board()
-                    if not on_board:
-                        method = getattr(token, 'on_sensing_not_on_board'.lower())
-                        if callable(method):
-                            method()
-                elif coll_class == "on_board":
-                    on_board = token.sensing_on_board()
-                    if on_board:
-                        method = getattr(token, 'on_sensing_on_board'.lower())
-                        if callable(method):
-                            method()
+            token.remove()
+        self.window.board = self.__class__(self.width, self.height)
+        self.window.board.run()
+        board = self.window.board
+        board.event_queue.clear()
+        del self
+        return board
+
+    def _handle_switch_board_event(self, old_board, Board, size: tuple):
+        self.window.event_queue.clear()
+        for token in self.tokens:
+            token.remove()
+        self.window.board = Board(size[0], size[1])
+        board = self.window.board
+        board.run()
+        board.event_queue.clear()
+        del self
+        return board
+
+    def _handle_act_event(self, receiver):
+        # any key down?
+        method = self._get_method(receiver, "act")
+        if method:
+            sig = signature(method)
+            if len(sig.parameters) == 0:
+                method()
+            else:
+                raise Exception("Wrong number of arguments for act-Method (should be: 0)")
+
+    def _handle_button_event(self, receiver, event, data):
+        # any key down?
+        method = self._get_method(receiver, "on_button_pressed")
+        if method:
+            sig = signature(method)
+            if len(sig.parameters) == 1:
+                method(data)
+
+    def _handle_message_event(self, receiver, event, data):
+        # any key down?
+        method = self._get_method(receiver, "on_message")
+        if method:
+            sig = signature(method)
+            if len(sig.parameters) == 1:
+                method(data)
+
+    def _handle_all_collisions(self):
+        for token in self.tokens:
+            self._handle_collision_with_tokens(token)
+            self._handle_collision_with_borders(token)
+            self._handle_on_board(token)
+
+    def _handle_collision_with_tokens(self, token):
+        members = dir(token)
+        found_tokens = []
+        for token_type in [member[11:] for member in members if member.startswith("on_sensing_")]:
+            tokens_for_token_type = token.sensing_tokens(token_type=token_type.capitalize())
+            for found_token in tokens_for_token_type:
+                if found_token not in found_tokens:
+                    found_tokens.append(found_token)
+        if found_tokens:
+            for other_token in found_tokens:
+                parents = inspect.getmro(other_token.__class__)
+                other_and_parents = list(parents)
+                if other_and_parents:
+                    for other_class in other_and_parents:
+                        method_name = ('on_sensing_' + str(other_class.__name__)).lower()
+                        method = self._get_method(token, method_name)
+                        if method:
+                            self._call_method(token, method, [other_token])
+
+    def _handle_collision_with_borders(self, token):
+        border_methods_dict = {"on_sensing_left_border": self._get_method(token, "on_sensing_left_border"),
+                               "on_sensing_right_border": self._get_method(token, "on_sensing_right_border"),
+                               "on_sensing_bottom_border": self._get_method(token, "on_sensing_bottom_border"),
+                               "on_sensing_top_border": self._get_method(token, "on_sensing_top_border"),
+                               }
+        on_sensing_borders = self._get_method(token, "on_sensing_borders")
+        if on_sensing_borders or [method for method in border_methods_dict.values() if method is not None]:
+            sensed_borders = token.sensing_borders()
+            if sensed_borders:
+                if on_sensing_borders:
+                    self._call_method(token, on_sensing_borders, [sensed_borders])
+                for key in border_methods_dict.keys():
+                    if border_methods_dict[key]:
+                        for border in sensed_borders:
+                            if border in key:
+                                self._call_method(token, border_methods_dict[key], None)
+
+    def _handle_on_board(self, a_object):
+        on_board_handler = self._get_method(a_object, 'on_sensing_on_board'.lower())
+        not_on_board_handler = self._get_method(a_object, 'on_sensing_not_on_board'.lower())
+        if on_board_handler or not_on_board_handler:
+            is_on_board = a_object.sensing_on_board()
+            if is_on_board:
+                if on_board_handler:
+                    on_board_handler()
+            else:
+                if not_on_board_handler:
+                    not_on_board_handler()
 
     def save_to_db(self, file):
         """
@@ -772,47 +957,68 @@ class Board(container.Container, metaclass = MetaBoard):
         except pygame.error:
             raise FileExistsError("File '{0}' does not exist. Check your path to the sound.".format(path))
 
-    def _register_physics_collision_handler(self, token):
-        from miniworldmaker.tokens import token as tkn
+    @staticmethod
+    def _get_token_class_by_name(name):
+        return Board.token_classes.get(name, None)
+
+    @staticmethod
+    def _update_token_subclasses():
+        """
+        Returns a dict with class_name->class
+        updat
+        Returns:
+
+        """
         token_subclasses = tkn.Token.all_subclasses()
-        dict_with_all_token_subclasses = dict()
         for cls in token_subclasses:
-            dict_with_all_token_subclasses[cls.__name__] = cls
+            Board.token_classes[cls.__name__] = cls
             if cls not in Board.token_class_ids:
                 cls.class_id = Board.token_class_id_counter
                 Board.token_class_ids[cls] = Board.token_class_id_counter
                 Board.token_class_id_counter += 1
-        begin_prefix = "on_sensing_collision_with_"
-        separate_prefix = "on_sensing_separation_with_"
+        return Board.token_classes
+
+    def _register_physics_collision_handler(self, token):
+        Board._update_token_subclasses()
         method_list = [func for func in dir(token.__class__) if
                        callable(getattr(token.__class__, func)) and (
-                                   func.startswith(begin_prefix) or func.startswith(separate_prefix))]
-        for method in method_list:
-            sensed_target = ""
-            if method.startswith(begin_prefix):
-                sensed_target = method[len(begin_prefix):]
-            elif method.startswith(separate_prefix):
-                sensed_target = method[len(separate_prefix):]
-            sensed_class = dict_with_all_token_subclasses.get(sensed_target.capitalize(), None)
-            handler = physics.PhysicsProperty.space.add_collision_handler(token.__class__.class_id, sensed_class.class_id)
-            handler.data["method"] = getattr(token, method)
-            if method.startswith(begin_prefix):
-                handler.data["type"] = "begin"
-                handler.begin = self._collision_handling_with_physics
-            elif method.startswith(separate_prefix):
-                handler.data["type"] = "separate"
-                handler.separate = self._collision_handling_with_physics
+                               func.startswith(Board.begin_prefix) or func.startswith(Board.separate_prefix))]
+        for method_name in method_list:
+            if method_name.startswith(Board.begin_prefix):
+                other_class_name = method_name[len(Board.begin_prefix):].capitalize()
+            elif method_name.startswith(Board.separate_prefix):
+                other_class_name = method_name[len(Board.separate_prefix):].capitalize()
+            other_class = Board._get_token_class_by_name(other_class_name)
+            if other_class is not None:
+                child_classes = other_class.all_subclasses()
+                for child_class in child_classes:
+                    self.add_physics_collision_handler(token, child_class, method_name)
+                self.add_physics_collision_handler(token, other_class, method_name)
 
-    def _collision_handling_with_physics(self, arbiter, space, data):
+    def add_physics_collision_handler(self, token, other_class, method):
+        handler = physics.PhysicsProperty.space.add_collision_handler(token.__class__.class_id,
+                                                                      other_class.class_id)
+        handler.data["method"] = getattr(token, method)
+        if method.startswith(Board.begin_prefix):
+            handler.data["type"] = "begin"
+            handler.begin = self._physics_collision_handler
+        elif method.startswith(Board.separate_prefix):
+            handler.data["type"] = "separate"
+            handler.separate = self._physics_collision_handler
+
+    def _physics_collision_handler(self, arbiter, space, data):
         rvalue = None
         collision = dict()
         other_class = str(arbiter.shapes[1].token.__class__.__name__).lower()
+        rvalue = self.pass_physics_collision_to_tokens(arbiter, space, data)
         if data["type"] == "begin":
-            method = getattr(arbiter.shapes[0].token, "on_sensing_collision_with_"+other_class)
+            method = "on_touching_" + other_class
+            method = self._get_method(arbiter.shapes[0].token, method)
             if method and callable(method):
                 rvalue = method(arbiter.shapes[1].token, collision)
         if data["type"] == "separate":
-            method = getattr(arbiter.shapes[0].token, "on_sensing_separation_with_"+other_class)
+            method = "on_separation_from_" + other_class
+            method = self._get_method(arbiter.shapes[0].token, method)
             if method and callable(method):
                 rvalue = method(arbiter.shapes[1].token, collision)
         if rvalue is None:
@@ -820,77 +1026,37 @@ class Board(container.Container, metaclass = MetaBoard):
         else:
             return rvalue
 
-    def _register_collision_handlers(self):
-        from miniworldmaker.tokens import token
-        token_subclasses = token.Token.all_subclasses()
-        dict_with_all_token_subclasses = dict()
-        for cls in token_subclasses:
-            dict_with_all_token_subclasses[cls.__name__] = cls
-        for subcls in token_subclasses: # Search subclasses for method names
-            method_list = [func for func in dir(subcls) if
-                           callable(getattr(subcls, func)) and func.startswith("on_sensing_")]
-            for method in method_list:
-                sensed_target = method[len("on_sensing_"):]
-                sensed_class = dict_with_all_token_subclasses.get(sensed_target.capitalize(), None)
-                if sensed_class:
-                    self.registered_collision_handlers_for_tokens[subcls].append(sensed_class)
-                # Add on_sensing_border handler
-                elif sensed_target == "borders":
-                    self.registered_collision_handlers_for_tokens[subcls].append("borders")
-                elif sensed_target == "not_on_board":
-                    self.registered_collision_handlers_for_tokens[subcls].append("not_on_board")
-                elif sensed_target == "not_on_board":
-                    self.registered_collision_handlers_for_tokens[subcls].append("on_board")
+    def pass_physics_collision_to_tokens(self, arbiter, space, data):
+        collision = ()
+        token = arbiter.shapes[0].token
+        method_list = [func for func in dir(token.__class__) if
+                       callable(getattr(token.__class__, func)) and (
+                               func.startswith(Board.begin_prefix) or func.startswith(Board.separate_prefix))]
+        for method_name in method_list:
+            if method_name.startswith(Board.begin_prefix):
+                registered_class_name = method_name[len(Board.begin_prefix):].capitalize()
+            elif method_name.startswith(Board.separate_prefix):
+                registered_class_name = method_name[len(Board.separate_prefix):].capitalize()
+            registered_class = Board._get_token_class_by_name(registered_class_name)
+            if registered_class is not None:
+                child_classes_of_registered = registered_class.all_subclasses().union()
+                if child_classes_of_registered is not None:
+                    registered_classes = child_classes_of_registered.union({registered_class})
+                else:
+                    registered_classes = child_classes_of_registered = {registered_class}
+                other = arbiter.shapes[1].token
+                other_class = arbiter.shapes[1].token.__class__
+                other_class_name = other_class.__name__.lower()
+                if other_class in registered_classes:
+                    if data["type"] == "begin":
+                        method_name = str(Board.begin_prefix + registered_class_name).lower()
+                    if data["type"] == "separate":
+                        method_name = str(Board.separate_prefix + registered_class_name).lower()
+                    method = self._get_method(token, method_name)
+                    if method:
+                        self._call_method(token, method, [other, collision])
 
-    def _register_event_handlers(self):
-        """
-        Add an event handler for every registered submethod
-        Returns:
-
-        """
-        # Add handlers for token events
-        from miniworldmaker.tokens import token
-        token_subclasses = token.Token.all_subclasses()
-        for subcls in token_subclasses:
-            # Adds the on_key_up, on_mouse... events, if the corresponding method exists
-            for event in app.App.input_events:
-                # Adds Event handler, e.g. method on_key_up for event "key_up"
-                handler = getattr(subcls, event, None)
-                if handler and callable(handler):
-                    self.registered_event_handlers_for_tokens[subcls][event] = handler
-                # Adds Event handler on_key_up for event "key up"
-                handler = getattr(subcls, "on_" + event, None)
-                if callable(handler):
-                    self.registered_event_handlers_for_tokens[subcls][event] = handler
-            # Adds Event handler get_event for all event, if get_event is callable
-            get_event = getattr(subcls, "get_event", None)
-            if get_event and callable(get_event):
-                self.registered_event_handlers_for_tokens[subcls]["get_event"] = get_event
-            # Adds Act-handler
-            act = getattr(subcls, "act", None)
-            if act and callable(act):
-                self.registered_event_handlers_for_tokens[subcls]["act"] = act
-            # Add Setup Handler
-            setup = getattr(subcls, "setup", None)
-            if callable(setup):
-                self.registered_event_handlers_for_tokens[subcls]["setup"] = setup
-            on_setup = getattr(subcls, "on_setup", None)
-            if callable(on_setup):
-                self.registered_event_handlers_for_tokens[subcls]["setup"] = on_setup
-        # Add handlers for board events
-        for event in app.App.input_events:
-            handler = getattr(self.__class__, event, None)
-            if handler and callable(handler):
-                self.registered_event_handlers[event] = handler
-            # Adds Event handler on_key_up for event "key up"
-            handler = getattr(self.__class__, "on_" + event, None)
-            if callable(handler):
-                self.registered_event_handlers[event] = handler
-                # Adds Act-handler
-                act = getattr(self, "act", None)
-                if act and callable(act):
-                    self.registered_event_handlers["act"] = act
-        self.registered_event_handlers["reset"] = getattr(self, "_reset", None)
-        self._update_event_handling()
-
-
+    def add_event_handler_for_class(self, subcls, event, handler):
+        handler = getattr(subcls, "on_" + event, None)
+        if callable(handler):
+            self.registered_event_handlers_for_tokens[subcls][event] = handler

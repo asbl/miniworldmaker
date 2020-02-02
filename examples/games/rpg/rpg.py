@@ -27,9 +27,9 @@ class MyBoard(TiledBoard):
         self.toolbar = self._window.add_container(Toolbar(), "right")
         self.console = self._window.add_container(Console(), "bottom")
 
-    def get_event(self, event, data):
-        if event == "button" and data == "Fackel":
-            fireplace =  self.player.sensing_token(Fireplace)
+    def on_message(self, data):
+        if data == "Fackel":
+            fireplace = self.player.sensing_token(Fireplace)
             if fireplace:
                 self.console.newline("Du zündest die Feuerstelle an.")
                 self.fireplace.burn()
@@ -42,19 +42,24 @@ class Player(Actor):
         self.costume.is_rotatable = False
         self.inventory = []
 
-    def on_key_down(self, keys):
-        if "W" in keys:
-            self.point_in_direction("up")
-        elif "S" in keys:
-            self.point_in_direction("down")
-        elif "A" in keys:
-            self.point_in_direction("left")
-        elif "D" in keys:
-            self.point_in_direction("right")
+    def on_key_down_w(self):
+        self.point_in_direction("up")
         self.move()
 
+    def on_key_down_s(self):
+        self.point_in_direction("down")
+        self.move()
+
+    def on_key_down_a(self):
+        self.point_in_direction("left")
+        self.move()
+
+    def on_key_down_d(self):
+        self.point_in_direction("right")
+        self.move()
 
     def on_sensing_torch(self, torch):
+        print("Sensing torch")
         message = "Du findest eine Fackel. Möchtest du sie aufheben?"
         choices = ["Ja", "Nein"]
         reply = easygui.buttonbox(message, "RPG", choices)
@@ -128,4 +133,4 @@ class Door(Token):
 
 
 my_grid = MyBoard()
-my_grid.show()
+my_grid.run()

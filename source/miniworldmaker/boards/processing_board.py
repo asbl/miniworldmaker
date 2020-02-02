@@ -10,9 +10,6 @@ class ProcessingBoard(pb.PixelBoard):
         height: The height of the board in pixels (default: 300)
     """
 
-    def __init__(self, width=400, height=300):
-        super().__init__(columns=width, rows=height)
-
 
 
 

@@ -94,7 +94,6 @@ class PhysicsProperty:
         """
         self.started = True
         PhysicsProperty.count += 1
-        #self.setup_physics_model()
 
     def setup_physics_model(self):
         if self.dirty and self.token.position:  # if token is on board

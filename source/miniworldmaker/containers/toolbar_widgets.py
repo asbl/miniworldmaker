@@ -87,13 +87,15 @@ class ToolbarButton(ToolbarWidget):
     def __init__(self, text, img_path=None):
         super().__init__()
         self.set_text(text)
-        self.event = "button"
+        self.event = "button_pressed"
         if img_path != None:
             self.set_image(img_path)
         self.data = text
 
     def get_event(self, event, data):
+        print("send message", self.event, self._text)
         self.parent.window.send_event_to_containers(self.event, self._text)
+        self.parent.window.send_event_to_containers("message", self._text)
 
 
 class ToolbarLabel(ToolbarWidget):

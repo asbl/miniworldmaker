@@ -24,30 +24,30 @@ class Player(mwm.Actor):
         self.size = (30, 30)
         self.costume.orientation = - 90
 
-    def on_key_pressed(self, keys):
-        if "W" in keys:
-            self.turn_left(10)
-        elif "S" in keys:
-            self.turn_right(10)
+    def on_key_pressed_w(self):
+        self.turn_left(10)
 
-    def on_key_down(self, keys):
-        if "SPACE" in keys:
+    def on_key_pressed_s(self):
+        self.turn_right(10)
+
+    def on_key_down_space(self):
             self.shoot()
 
     def act(self):
         self.move()
         borders = self.sensing_borders()
-        if borders:
-            self.bounce_from_border(borders)
-        if self.sensing_token(token_type=Asteroid):
+
+    def on_sensing_asteroid(self, asteroid):
             explosion = Explosion(position=self.position.up(40).left(40))
             explosion.costume.is_animated = True
             self.board.play_sound("sounds/explosion.wav")
             self.remove()
 
+    def on_sensing_borders(self, borders):
+        self.bounce_from_border(borders)
+
     def shoot(self):
         laser = Laser.from_center(self.position)
-        print("laser created at:", self.position, self.center, laser.position)
         laser.direction = self.direction
 
 
@@ -65,7 +65,6 @@ class Laser(mwm.Actor):
         self.move()
 
     def on_sensing_asteroid(self, other):
-        print("laser hitting board",  self.board)
         print(self, other)
         other.remove()
         explosion = Explosion(position=other.position.up(40).left(40))
@@ -91,27 +90,24 @@ class Asteroid(mwm.Actor):
 
 
 class Explosion(mwm.Actor):
-    def __init__(self, position):
-        super().__init__(position)
-        self.size = (128, 128)
-        self.add_image("images/explosion00.png")
-        self.add_image("images/explosion01.png")
-        self.add_image("images/explosion02.png")
-        self.add_image("images/explosion03.png")
-        self.add_image("images/explosion04.png")
-        self.add_image("images/explosion05.png")
-        self.add_image("images/explosion06.png")
-        self.add_image("images/explosion07.png")
-        self.add_image("images/explosion08.png")
-        self.costume.animation_speed = 3
-        self.counter = 0
 
-    def act(self):
-        self.counter += 1
-        if self.counter == 8:
-            self.remove()
+    def on_setup(self):
+        self.size = (128, 128)
+        animation = ["images/explosion00.png",
+                     "images/explosion01.png",
+                     "images/explosion02.png",
+                     "images/explosion03.png",
+                     "images/explosion04.png",
+                     "images/explosion05.png",
+                     "images/explosion06.png",
+                     "images/explosion07.png",
+                     "images/explosion08.png"
+                     ]
+        self.costume.animation_speed = 10
+        self.costume.animate("explosion", animation)
+        mwm.ActionTimer(24, self.remove, None)
 
 
 random.seed()
 my_board = MyBoard(400, 300)
-my_board.show()
+my_board.run()

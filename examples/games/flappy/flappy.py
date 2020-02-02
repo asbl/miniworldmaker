@@ -1,9 +1,9 @@
 import random
 
-from miniworldmaker import *
+import miniworldmaker as mwm
 
 
-class MyBoard(PixelBoard):
+class MyBoard(mwm.PixelBoard):
 
     def on_setup(self):
         self.background.add_image("images/background.png")
@@ -14,17 +14,15 @@ class MyBoard(PixelBoard):
         self.pipe3 = Pipe(position=(780, self.height - 280))
         self.pipe4 = Pipe(position=(760, -100))
         self.pipe4.top()
-        self.score = NumberToken(position=(10, 10))
+        self.score = mwm.NumberToken(position=(10, 10))
         self.score.size = (40, 40)
-        print(self.score, self.score.topleft)
-        #self.score.set_number(0)
         self.is_running = False
 
     def act(self):
         pass
 
 
-class Bird(Token):
+class Bird(mwm.Token):
 
     def on_setup(self):
         self.add_image("images/fly.png")
@@ -40,18 +38,17 @@ class Bird(Token):
         if "bottom" in borders or "top" in borders:
             self.board.is_running = False
 
-    def on_sensing_collision_with_pipe(self, other, info):
+    def on_touching_pipe(self, other, info):
         self.board.is_running = False
         self.board.reset()
 
-    def on_key_pressed(self, keys):
-        if "SPACE" in keys:
-            self.physics.velocity_y = 200
-            if self.board.is_running is False:
-                self.board.is_running = True
+    def on_key_pressed_space(self):
+        self.physics.velocity_y = 200
+        if self.board.is_running is False:
+            self.board.is_running = True
 
 
-class Pipe(Token):
+class Pipe(mwm.Token):
 
     def on_setup(self):
         self.add_image("images/pipe1.png")
@@ -72,11 +69,11 @@ class Pipe(Token):
             self.passed = True
             self.board.score.inc()
 
-    def on_sensing_borders(self, borders):
-        if "left" in borders:
-            self.move_to(position=BoardPosition(self.position.x + random.randint(750, 800), self.y))
-            self.passed = False
+    def on_sensing_left_border(self):
+        self.move_to(position=mwm.BoardPosition(self.position.x + random.randint(750, 800), self.y))
+        self.passed = False
 
 
 board = MyBoard(800, 600)
 board.show()
+

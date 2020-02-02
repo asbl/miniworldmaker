@@ -32,7 +32,8 @@ class Player(mwm.Token):
 
 def main():
     board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
-    board.show()
+    board.run()
+
 
 if __name__ == '__main__':
     main()

@@ -7,6 +7,7 @@ class MyBoard(TiledBoard):
         super().__init__(tile_size=50, columns=10, rows=1, tile_margin=1)
         player1 = Fish((0, 0))
         self.add_image("images/water.png")
+        self.speed = 20
 
 
 class Fish(Actor):
@@ -22,6 +23,7 @@ class Fish(Actor):
     def on_sensing_not_on_board(self):
         self.move_back()
         self.flip_x()
+        print("flip")
 
 board = MyBoard()
-board.show()
+board.run()

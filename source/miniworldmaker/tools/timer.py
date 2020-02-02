@@ -1,4 +1,8 @@
+import inspect
+from inspect import signature
+
 from miniworldmaker.app import app
+
 
 class Timed():
     def __init__(self):
@@ -11,6 +15,22 @@ class Timed():
     def unregister(self):
         self.board.timed_objects.remove(self)
         del(self)
+
+    def _call_method(self):
+        sig = signature(self.method)
+        if type(self.parameters) == list:
+            if len(sig.parameters) == len(self.parameters):
+                self.method(*self.parameters)
+            else:
+                info = inspect.getframeinfo(inspect.currentframe())
+                raise Exception(
+                    "Wrong number of arguments for " + str(self.method) + " in , got " + str(
+                        len(self.parameters)) + " but should be " + str(
+                        len(sig.parameters)) +
+                    "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
+                )
+        else:
+            self.method(self.parameters)
 
 class Timer(Timed):
     def __init__(self, time):
@@ -50,7 +70,7 @@ class ActionTimer(ZeroTimer):
         self.parameters = parameters
 
     def act(self):
-        self.method(self.parameters)
+        self._call_method()
 
 
 class LoopActionTimer(Timer):
@@ -61,5 +81,4 @@ class LoopActionTimer(Timer):
         self.parameters = parameters
 
     def act(self):
-        self.method(self.parameters)
-
+        self._call_method()

@@ -14,7 +14,7 @@ class MyBoard(ProcessingBoard):
             x = distance * i
             y = i * distance
             self.fill_color = (random.randint(0, 255), random.randint(0, 255), 255, 5 * i)
-            Ellipse((x, y), i * 10, i * 10, color = self.fill_color, thickness=0)
+            Ellipse(position=(x, y), width=i * 10, height=i * 10, thickness=0, color=self.fill_color, )
             j = 0
             while j < self.width/10:
                 j += 1
@@ -27,5 +27,4 @@ class MyBoard(ProcessingBoard):
 
 
 my_board = MyBoard(400, 400)
-my_board.show()
-
+my_board.run()

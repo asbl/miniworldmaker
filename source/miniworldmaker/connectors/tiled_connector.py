@@ -67,6 +67,7 @@ class TiledBoardConnector(board_connector.BoardConnector):
         target = self.get_destination(self.token.position, self.token.direction, distance)
         return target.borders()
 
+
     def sensing_tokens(self, token_type=None, distance: int = 0) -> list:
         """
         Senses tokens at current position
@@ -78,6 +79,9 @@ class TiledBoardConnector(board_connector.BoardConnector):
         Returns: A list of tokens at token position
 
         """
+        if type(token_type) == str:
+            token_type = token.Token.find_subclass(token_type)
+
         target = self.get_destination(self.token.position, self.token.direction, distance)
         self._update_token_positions()
         token_list = []
@@ -145,11 +149,9 @@ class TiledBoardConnector(board_connector.BoardConnector):
             self.board.dynamic_tokens_dict[(x, y)].append(token)
 
     def set_size(self, value):
-        if value!= self._size:
-            self._old_size = self._size
-            self._size = value
+        if value != self.token._size:
+            self.token._old_size = self.token._size
+            self.token._size = value
             self.dirty = 1
             if hasattr(self, "costume"):
-                self.costume.call_actions(["scale", "upscale"])
-            if hasattr(self, "physics") and self.physics.started:
-                self.physics.reload_physics()
+                self.costume.reload_all()

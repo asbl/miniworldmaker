@@ -9,7 +9,7 @@ from miniworldmaker.connectors import tiled_connector
 
 class TiledBoard(board.Board):
 
-    def __init__(self, columns: int = 20, rows: int = 16, tile_size=42, tile_margin=0):
+    def __init__(self, columns: int = 20, rows: int = 16, tile_size=42, tile_margin=0, background_image=None):
         """Initializes the TiledBoard
 
         Args:
@@ -22,21 +22,11 @@ class TiledBoard(board.Board):
         self.dynamic_tokens_dict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens = []  # List with all dynamic actors
         self.static_tokens_dict = defaultdict(list)
-        super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin)
+        super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin,
+                         background_image=background_image)
 
-    def add_to_board(self, token, position):
-        """
-        Adds token to board.
-        This method is called with token.__init__
-        Args:
-            token:
-            position:
-
-        Returns:
-
-        """
+    def _add_board_connector(self, token, position):
         token.position = position
-        super().add_to_board(token, position)
         token.board_connector = tiled_connector.TiledBoardConnector(token, self)
 
     @staticmethod

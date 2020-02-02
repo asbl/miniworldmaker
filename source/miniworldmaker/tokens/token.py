@@ -3,6 +3,7 @@ from typing import Union
 
 import pygame
 from miniworldmaker.app import app
+from miniworldmaker.appearances import appearances
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.physics import physics as ph
@@ -23,7 +24,11 @@ class Meta(type):
         if hasattr(instance, "on_setup"):
             instance.on_setup()
         if hasattr(instance, "setup"):
+            print("setup", instance)
             instance.setup()
+        if hasattr(instance, "is_static") and instance.is_static is True:
+            instance._stop_physics()
+        instance.costume._reload_all()
         return instance
 
 
@@ -51,7 +56,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     class_id = 0
     subclasses = None
 
-    def __init__(self, position=None):
+    def __init__(self, position=None, image=None):
         pygame.sprite.DirtySprite.__init__(self)
         self.setup_completed = False
         self.board = app.App.board
@@ -77,7 +82,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.costume_count = 0
         self.costume = costume.Costume(self)
         self._rect = self.image.get_rect()
-        self.costumes = [self.costume]
+        self.costumes = appearances.Costumes(self.costume)
         self.collision_type = "mask"
         self.costume.is_upscaled = True
         self.board = app.App.board
@@ -86,6 +91,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self._dirty = 1
         self.costume.reload_image()
         self.board.add_to_board(self, self.position)
+        if image is not None:
+            self.add_image(image)
 
     @classmethod
     def from_center(cls, center_position):
@@ -132,6 +139,12 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         if self.costume.orientation != self._orientation:
             self.costume.orientation = self._orientation
 
+    @staticmethod
+    def find_subclass(name):
+        subclasses = Token.all_subclasses()
+        for subclass in subclasses:
+            if subclass.__name__ == name:
+                return subclass
     @classmethod
     def all_subclasses(cls):
         """
@@ -170,6 +183,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self.costume.is_flipped = True
         else:
             self.costume.is_flipped = False
+
 
     def __str__(self):
         if self.board:
@@ -275,7 +289,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         new_costume = costume.Costume(self)
         new_costume.add_image(path)
-        self.costumes.append(new_costume)
+        self.costumes.add(new_costume)
         return new_costume
 
     def switch_costume(self, index=-1) -> costume.Costume:
@@ -287,19 +301,18 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         Returns: The new costume
 
         """
+        self.costume.end_animation()
+
         if index == -1:
-            index = self.costumes.index(self.costume)
-            if index < len(self.costumes) - 1:
+            index = self.costumes.get_position_of(self.costume)
+            if index < self.costumes.len() - 1:
                 index += 1
             else:
                 index = 0
         else:
             index = index
-        self.costume = self.costumes[index]
-        self.costume.reset()
+        self.costume = self.costumes.get_at_position(index)
         self.costume.dirty = 1
-        self.costume.call_all_actions()
-        self.dirty = 1
         return self.costume
 
     @property
@@ -482,7 +495,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self._size = value
         if self.physics:
             self.physics.reload_physics()
-        self.costume.call_action("scale")
+        self.costume._reload_all()
 
     @property
     def width(self):
@@ -728,6 +741,15 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.physics.setup_physics_model()
         self.physics.start_physics()
 
+    def _stop_physics(self):
+        """
+        Starts the physics engine.
+
+        """
+        self.physics.remove()
+        self.physics = None
+
+
     def flip_x(self) -> int:
         """Flips the actor by 180° degrees
 
@@ -846,3 +868,36 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         colors = self.board_connector.sensing_colors(colors, distance)
         return colors
+
+    " @decorator"
+
+    def register(self, method):
+        bound_method = method.__get__(self, self.__class__)
+        setattr(self, method.__name__, bound_method)
+        return bound_method
+
+    def bounce_from_token(self, other):
+        if hasattr(self.board_connector, "bounce_from_token"):
+            self.board_connector.bounce_from_token(other)
+        else:
+            Exception("Board" + self.board.__class__ + "has no method bounce_from_token")
+
+    def animate(self, text, images):
+        self.current_animation = text
+        self.costume.animate(text, images)
+
+    def check_for_deprecated_methods(cls):
+        members = dir(cls)
+        if "get_event" in members:
+            print("Deprecated method 'get_event' found in " + str(
+                cls) + ", use specific methods (on_key_down, on_key_pressed...) instead")
+        if "key_down" in members:
+            print("Deprecated method 'key_down' found in " + str(cls) + ", use 'on_key_down' instead")
+        if "key_pressed" in members:
+            print("Deprecated method 'get_event' found in " + str(cls) + ", use 'on_key_pressed' instead")
+        if [member for member in members if member.startswith("on_sensing_collision_with")]:
+            print("Deprecated method 'on_sensing_collision_with_[token_class]' found in " + str(
+                cls) + ", use 'on_touching_[token_class]' instead")
+        if [member for member in members if member.startswith("on_sensing_separation_with")]:
+            print("Deprecated method 'on_sensing_separation_with_[token_class]' found in " + str(
+                cls) + ", use 'on_separation_with_[token_class]' instead")

@@ -10,22 +10,9 @@ from miniworldmaker.tokens import token as tk
 
 class PixelBoard(bd.Board):
 
-    def add_to_board(self, token, position):
-        """
-        Adds a token to the board.
-        The method is called with __init__ method of the token
-
-        Args:
-            token: The token to add to board.
-            position: The position where the token should be added.
-
-        Returns:
-
-        """
+    def _add_board_connector(self, token, position):
         token.board_connector = pixel_connector.PixelBoardConnector(token, self)
         token.topleft = position[0], position[1]
-        super().add_to_board(token, position)
-
 
     def remove_from_board(self, token: tk.Token):
         """
@@ -66,17 +53,34 @@ class PixelBoard(bd.Board):
             If singleitem = False, the method returns the first token.
 
         """
-        token_list = self.tokens.copy()
-        if exclude in token_list:
-            token_list.remove(exclude)
+        filtered_tokens = self.tokens.copy()
+        if exclude in filtered_tokens:
+            filtered_tokens.remove(exclude)
+        # Filter tokens by token_type
         if token_type is not None:
-            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
+            if isinstance(token_type, tk.Token):  # is_token_type a object?
+                filtered_tokens = [token_type]
+            else:
+                if type(token_type) == str:  # is token_type a string
+                    token_type = tk.Token.find_subclass(token_type)
+                if token_type:
+                    for token in filtered_tokens:
+                        filtered_tokens = [token for token in filtered_tokens if
+                                           (issubclass(token.__class__, token_type) or token.__class__ == token_type)]
+        # Get tokens at rect
         if not singleitem:
-            return [token for token in token_list if token.rect.colliderect(rect)]
+            return [token for token in filtered_tokens if token.rect.colliderect(rect)]
         else:
-            for token in token_list:
+            for token in filtered_tokens:
                 if token.rect.colliderect(rect):
                     return token
+        # Collision handling
+        if not singleitem:
+            return [token for token in filtered_tokens if token.rect.colliderect(rect)]
+        else:
+            for a_token in filtered_tokens:
+                if a_token.rect.colliderect(rect):
+                    return a_token
 
     def _get_rect_from_parameter(self, parameter):
         if type(parameter) == tuple:

@@ -9,11 +9,9 @@ class MyGrid(PixelBoard):
         self.rocket = Rocket(position=(100, 200))
         self.add_image("images/galaxy.jpg")
 
-
-    def get_event(self, event, data):
-        if event == "button":
-            if data == "Start Rocket":
-                self.rocket.started = True
+    def on_button_pressed(self, data):
+        if data == "Start Rocket":
+            self.rocket.started = True
 
 
 class Rocket(Actor):
@@ -33,7 +31,6 @@ class Rocket(Actor):
         self.remove()
 
 
-
 class MyToolbar(Toolbar):
 
     def __init__(self):
@@ -43,4 +40,4 @@ class MyToolbar(Toolbar):
 
 
 my_grid = MyGrid()
-my_grid.show()
+my_grid.run()

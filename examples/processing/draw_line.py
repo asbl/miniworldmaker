@@ -9,9 +9,9 @@ class MyBoard(ProcessingBoard):
         self.point = 1
         self.start_pos = None
         self.end_pos = None
-        Line((0, 0), (80, 80), 1)
-        Circle((200, 200), 100, 0)
-        r = Rectangle((70, 70), width=80, height=80, thickness=2)
+        Line((0, 0), (80, 80), 1, color=(100, 100, 255))
+        Circle((200, 200), 100, 0, color=(255, 255, 0))
+        r = Rectangle((70, 70), width=80, height=80, thickness=2, color=(255, 0, 0))
         print(r.width, r.height, r.rect)
         #Ellipse((500, 100), 50, 50, color=(255, 0, 0, 255), thickness=2)
 

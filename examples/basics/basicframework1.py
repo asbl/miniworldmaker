@@ -19,17 +19,16 @@ class Player(miniworldmaker.Actor):
         self.add_image(path="images/char_blue.png")
         self.costume.orientation = - 90
 
-    def get_event(self, event, data):
-        if event == "key_down":
-            if "A" in data:
-                self.turn_left()
-            if "D" in data:
-                self.turn_right()
-            if "W" in data:
-                if self.sensing_on_board(distance=1):
-                    self.move()
-            if "X" in data:
-                self.board.switch_background()
+    def on_key_down(self, data):
+        if "A" in data:
+            self.turn_left()
+        if "D" in data:
+            self.turn_right()
+        if "W" in data:
+            if self.sensing_on_board(distance=1):
+                self.move()
+        if "X" in data:
+            self.board.switch_background()
         if not self.sensing_on_board(distance=0):
             self.move(-1)
 
@@ -40,7 +39,7 @@ class Player(miniworldmaker.Actor):
 
 def main():
     board = MyBoard(columns=20, rows=8, tile_size=42)
-    board.show()
+    board.run()
 
 
 if __name__ == '__main__':

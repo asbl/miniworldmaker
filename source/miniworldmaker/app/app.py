@@ -6,6 +6,7 @@ from collections import deque
 import miniworldmaker.containers.actionbar as a_bar
 import pkg_resources
 import pygame
+from deprecated import deprecated
 from miniworldmaker.containers import color_toolbar
 from miniworldmaker.containers import container as container_file
 from miniworldmaker.containers import event_console
@@ -28,14 +29,7 @@ class App:
     board = None
     window = None
     quit = False
-    input_events = ["act",
-                      "setup",
-                      "mouse_left",
-                      "mouse_right",
-                      "mouse_motion",
-                      "key_pressed",
-                      "key_down",
-                      "key_up"]
+
 
     def __init__(self, title):
         self.title = title
@@ -77,12 +71,31 @@ class App:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
         self.window_surface.set_alpha(None)
 
+    @deprecated(version='1.0.44', reason="You should use App.run()")
     def show(self, image, full_screen: bool = False, log=False):
+        """
+        deprecated
+        """
+        self.run(image, full_screen, log)
+
+    def run(self, image, full_screen: bool = False, log=False):
+        """
+        runs the main_loop
+
+        Lines after this statement are not reachable
+
+        Args:
+            self:
+            image:
+            full_screen:
+            log:
+
+        Returns:
+
+        """
         self.full_screen = full_screen
         self._recalculate_dimensions()
         self._setup_images()
-        self.board._register_collision_handlers()
-        self.board._register_event_handlers()
         self._display_update()
         pygame.display.update([image.get_rect()])
         if log is True:
@@ -92,11 +105,14 @@ class App:
         self.window.window_surface.blit(image, self.board.rect)
         App.log.info(
             "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
+        import miniworldmaker.tokens.token as tkn
+        for token_class in tkn.Token.all_subclasses():
+            tkn.Token.check_for_deprecated_methods(token_class)
         # Start the main-loop
         while not App.quit:
             self._update()
-            pass
-        pygame.quit()
+        pygame.display.quit()
+        sys.exit()
 
     def _setup_images(self):
         from pathlib import Path
@@ -132,6 +148,7 @@ class App:
                     ct.blit_surface_to_window_surface()
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []
+
 
     def _update_containers(self):
         top_left = 0
@@ -232,6 +249,7 @@ class App:
             if "STRG" in key_codes and "Q" in key_codes:
                 self._call_quit_event()
             self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
+            self.key_pressed(keys.key_codes_to_keys(keys_pressed))
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -345,8 +363,10 @@ class App:
 
     def _call_quit_event(self):
         App.quit = True
-        pygame.quit()
-        sys.exit(0)
 
+    def key_pressed(self, key):
+        def wrapper_accepting_arguments(key):
+            print("My arguments are: {0}, {1}".format(key))
+            function(key)
 
-
+        return wrapper_accepting_arguments

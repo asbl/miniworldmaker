@@ -46,15 +46,20 @@ class Appearance(metaclass=MetaAppearance):
         self.animation_speed = 100  #: The animation speed for animations
         self._is_animated = False
         self._is_flipped = False
+        self._current_animation_images = None
         self.current_animation = None
         self._is_textured = False
         self._is_upscaled = False
         self._is_scaled = False
+        self._is_scaled_to_width = False
+        self._is_scaled_to_height = False
         self._is_rotatable = False
+        self._flip_vertical = False
         self._orientation = False
         self._text = ""
         self._coloring = None  # Color for colorize operation
         self.draw_shapes = []
+        self._end_animation = False
         # "Action name", image_action_method, "Attribute", enabled)
         self.image_actions_pipeline = [
             ("orientation", self.image_action_set_orientation, "orientation", False),
@@ -62,11 +67,14 @@ class Appearance(metaclass=MetaAppearance):
             ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
             ("texture", self.image_action_texture, "is_textured", False),
             ("scale", self.image_action_scale, "is_scaled", False),
+            ("scale_to_width", self.image_action_scale_to_width, "is_scaled_to_width", False),
+            ("scale_to_height", self.image_action_scale_to_height, "is_scaled_to_height", False),
             ("upscale", self.image_action_upscale, "is_upscaled", False),
             ("write_text", self.image_action_write_text, "text", False),
             ("flip", self.image_action_flip, "is_flipped", False),
             ("coloring", self.image_action_coloring, "coloring", False),
             ("rotate", self.image_action_rotate, "is_rotatable", False),
+            ("flip_vertical", self.image_action_flip_vertical, "flip_vertical", False),
         ]
         self.fill_color = (0, 0, 255, 255)  #: background_color if actor has no background image
         self.color = (255, 255, 255, 255)  #: color for overlays
@@ -116,6 +124,7 @@ class Appearance(metaclass=MetaAppearance):
     def _reload_all(self):
         for img_action in self.image_actions_pipeline:
             self.reload_actions[img_action[0]] = True
+        self.dirty = 1
 
     @property
     def font_size(self):
@@ -125,6 +134,9 @@ class Appearance(metaclass=MetaAppearance):
     def font_size(self, value):
         self._font_size = value
         self.call_action("write_text")
+
+    def set_animation_speed(self, value):
+        self.animation_speed = value
 
     @property
     def is_textured(self):
@@ -188,6 +200,30 @@ class Appearance(metaclass=MetaAppearance):
         self.dirty = 1
 
     @property
+    def flip_vertical(self):
+        """bool: If True, the image will be flipped l/r (e.g. for fighters in a street-fighter like game.
+
+        Examples:
+
+            >>> class Player(miniworldmaker.Token):
+            >>>    def on_setup(self):
+            >>>         self.add_image("background_image.jpg")
+            >>>         self.costume.flip_vertical = True
+
+        """
+        return self._flip_vertical
+
+    def set_parent_attributes(self, attribute):
+        pass
+
+    @flip_vertical.setter
+    def flip_vertical(self, value):
+        self._flip_vertical = value
+        if self._flip_vertical is True:
+            self.is_rotatable = False
+        self.dirty = 1
+
+    @property
     def orientation(self):
         """bool: If True, the image will be rotated by parent orientation before it is rotated.
 
@@ -228,6 +264,26 @@ class Appearance(metaclass=MetaAppearance):
     def is_scaled(self, value):
         self._is_scaled = value
         self.call_action("scale")
+
+    @property
+    def is_scaled_to_width(self):
+        return self._is_scaled_to_width
+
+    @is_scaled_to_width.setter
+    def is_scaled_to_width(self, value):
+        self.is_scaled = False
+        self._is_scaled_to_width = value
+        self.call_action("scale_to_width")
+
+    @property
+    def is_scaled_to_height(self):
+        return self._is_scaled_to_height
+
+    @is_scaled_to_height.setter
+    def is_scaled_to_height(self, value):
+        self.is_scaled = False
+        self._is_scaled_to_height = value
+        self.call_action("scale_to_height")
 
     @property
     def coloring(self):
@@ -345,8 +401,8 @@ class Appearance(metaclass=MetaAppearance):
     def reload_image(self):
         """ Performs all actions in image pipeline"""
         if self.dirty == 1:
-            if self.current_animation:
-                self._image_index = len(self.images_list)-1
+            if self._current_animation_images:
+                self._image_index = len(self.images_list) - 1
             if self.images_list and self._image_index < len(self.images_list) and self.images_list[self._image_index]:
                 image = self.images_list[self._image_index]  # if there is a image list load image by index
             else:  # no image files - Render raw surface
@@ -367,6 +423,7 @@ class Appearance(metaclass=MetaAppearance):
                             image = img_action[1](image, parent=self.parent) # perform image action
                             self.cached_images[img_action[0]] = image
                     self.parent.dirty = 1
+
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
             self._image = image
@@ -388,15 +445,23 @@ class Appearance(metaclass=MetaAppearance):
             self.parent.dirty = 1
             self._reload_all()
 
+    async def first_image(self):
+        """
+        Switches to the first image of the appearance.
+        """
+        self._image_index = 0
+        self.dirty = 1
+        self.parent.dirty = 1
+        self._reload_all()
+
     def set_image(self, value : int) -> bool:
         if value == -1:
             value = len(self.images_list) - 1
-        if 0 <= value < len(self.images_list) - 1:
+        if 0 <= value < len(self.images_list):
             self.image_index = value
             self.dirty = 1
             self.parent.dirty = 1
             self._reload_all()
-            #self.update()
             return True
         else:
             return False
@@ -530,9 +595,29 @@ class Appearance(metaclass=MetaAppearance):
         image = pygame.transform.scale(image, parent.size)
         return image
 
+    def image_action_scale_to_height(self, image: pygame.Surface, parent, ) -> pygame.Surface:
+        scale_factor = parent.size[1] / image.get_height()
+        new_width = int(image.get_width() * scale_factor)
+        new_height = int(image.get_height() * scale_factor)
+        image = pygame.transform.scale(image, (new_width, new_height))
+        return image
+
+    def image_action_scale_to_width(self, image: pygame.Surface, parent, ) -> pygame.Surface:
+        scale_factor = parent.size[0] / image.get_width()
+        new_width = int(image.get_width() * scale_factor)
+        new_height = int(image.get_height() * scale_factor)
+        image = pygame.transform.scale(image, (new_width, new_height))
+        return image
+
     def image_action_rotate(self, image: pygame.Surface, parent) -> pygame.Surface:
         if self.parent.direction != 0:
             return pygame.transform.rotate(image, - (self.parent.direction))
+        else:
+            return image
+
+    def image_action_flip_vertical(self, image: pygame.Surface, parent) -> pygame.Surface:
+        if self.parent.direction < 0:
+            return pygame.transform.flip(image, True, False)
         else:
             return image
 
@@ -572,21 +657,38 @@ class Appearance(metaclass=MetaAppearance):
         return cropped_surface
 
     def image_action_write_text(self, image: pygame.Surface, parent) -> pygame.Surface:
+        font_size = 0
+        if self.font_size == 0:
+            font_size = parent.size[1]
+        else:
+            font_size = self.font_size
         if self.font_path is None:
-            if self.font_size == 0:
-                font_size = parent.size[1]
-            else:
-                font_size = self.font_size
             my_font = pygame.font.SysFont("monospace", font_size)
         else:
-            my_font = pygame.font.Font(self.font_path)
+            my_font = pygame.font.Font(self.font_path, font_size)
         label = my_font.render(self.text, 1, self.color)
         image.blit(label, self.text_position)
         return image
 
-    def animate(self, images):
+    def set_font(self, font, font_size):
+        self.font_path = font
+        self.font_size = font_size
+
+    def animate(self, text, images):
+        self.end_animation()
+        self._current_animation_images = []
+        self.current_animation = text
         for image in reversed(images):
-            self.add_image(image)
+            image_index = self.add_image(image)
             self.animation_length += 1
-            self.current_animation = images
+            self._current_animation_images.append(self.images_list[image_index])
             self.set_image(-1)
+            self.dirty = 1
+        self.add_image(images[0])  # workdaround as dummy
+        self.animation_length += 1
+
+    def end_animation(self):
+        self._end_animation = True
+        while (self.animation_length > 0):
+            self.update()
+        self._end_animation = False
