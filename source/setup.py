@@ -11,7 +11,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') \
 
 setup(name='miniworldmaker',
       version='1.1.1',
-      description='Create 12D Miniworlds and Games',
+      description='Create 2D Miniworlds and Games',
       long_description=long_description,
       long_description_content_type='text/markdown',
       keywords=['games', 'education', 'mini-worlds'],  # arbitrary keywords
