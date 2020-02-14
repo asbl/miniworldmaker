@@ -61,7 +61,7 @@ class ActionBar(container.Container):
                     self.surface.blit(widget.surface, (actual_position, 5))
                     actual_position += widget.width + 5  # 5 is padding between elements
                 self.dirty = 0
-                self._window.repaint_areas.append(self.rect)
+                self.app.repaint_areas.append(self.rect)
 
     def _widgets_total_width(self):
         width = 0

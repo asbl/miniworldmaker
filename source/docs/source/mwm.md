@@ -18,12 +18,10 @@ Features
   
   * Load and Save to SQLite Databases
   
-  * EXPERIMENTAL: Integrated Physics-Engine based on Pymunk
+  * Integrated Physics-Engine based on Pymunk
 
   * Open Source
   
   * Miniworldmaker is a 2D Engine based on **Python 3** and **pygame**.
-  
-  * Processing Mode
 
   * More Infos: [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.it-teaching.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) | [Status](./status.md)

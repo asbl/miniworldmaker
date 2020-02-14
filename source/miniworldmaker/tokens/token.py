@@ -28,7 +28,8 @@ class Meta(type):
             instance.setup()
         if hasattr(instance, "is_static") and instance.is_static is True:
             instance._stop_physics()
-        instance.costume._reload_all()
+        if instance.costume:
+            instance.costume._reload_all()
         return instance
 
 
@@ -37,19 +38,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     Token is the basic class for all kinds of players,
     pieces and obstacles on the playing field
 
-      * Acting: Create a method act(self). The method is called every frame
-      * Setup: Create a method on_setup(self). The method is called when a new token is created (after __init__())
-      * Physics: Create a method setup_physics(self). When this method is added, the object will be handled as
-        physics-object.
-      * Collsision-detection: Create a method on_sensing_<class_name>(self, other).
-        The method is called everytime the token is colliding with a token of <class_name>.
-        (Note: Write <class_name> in lower_case)
+    Args:
+        position (tuple): Position on the board where the token should be created.
 
-        Args:
-            position (tuple): Position on the board where the token should be created.
-
-        Attributes:
-            collision_type (str): Defines the type of collision. Can be either "rect", "circle" or "mask"
+    Attributes:
+        collision_type: Defines the type of collision. Can be either "rect", "circle" or "mask"
         """
     token_count = 0
     class_image = None
@@ -80,16 +73,12 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.is_static = False
         # costume
         self.costume_count = 0
-        self.costume = costume.Costume(self)
-        self._rect = self.image.get_rect()
         self.costumes = appearances.Costumes(self.costume)
         self.collision_type = "mask"
-        self.costume.is_upscaled = True
         self.board = app.App.board
         self._orientation = 0
         self._initial_direction = 0
         self._dirty = 1
-        self.costume.reload_image()
         self.board.add_to_board(self, self.position)
         if image is not None:
             self.add_image(image)
@@ -204,7 +193,10 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             The image of the token
 
         """
-        return self.costume.image
+        if self.costume:
+            return self.costume.image
+        else:
+            return None
 
     @property
     def dirty(self):
@@ -270,12 +262,14 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
 
         """
+        if self.costume is None:
+            self.add_costume(path)
         image = self.costume.add_image(path)
         if not self.__class__.class_image:
             self.__class__.class_image = path
         return image
 
-    def add_costume(self, path: str) -> costume.Costume:
+    def add_costume(self, source: Union[str, tuple]) -> costume.Costume:
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
@@ -288,7 +282,14 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
         """
         new_costume = costume.Costume(self)
-        new_costume.add_image(path)
+        if type(source) == str:
+            new_costume.add_image(source)
+            if not self.__class__.class_image:
+                self.__class__.class_image = source
+        elif type(source) == tuple:
+            new_costume.fill_color = source
+        if self.costume is None:
+            self.costume = new_costume
         self.costumes.add(new_costume)
         return new_costume
 
@@ -319,24 +320,29 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def direction(self) -> int:
         """ Sets direction the token is oriented
 
-            0°:  East, x degrees clock-wise otherwise
-            You can also set the direction by String ("forward", "up", "down", ...
+        You can use a integer or a string to describe the direction
 
-            .. image:: ../_images/movement.jpg
+        Options
+            * 0, "up" - Look up
+            * 90, "right", - Look right
+            * -90, "left", - Look left
+            * -180, 180, "down" - Look down
+
+        .. image:: ../_images/direction.png
 
         Examples:
 
-            Moving in rpg-basic-example.py:
+            Move in a direction with WASD-Keys
 
             >>> def on_key_down(self, keys):
             >>>    if "W" in keys:
-            >>>      self.point_in_direction("up")
+            >>>      self.direction = "up"
             >>>    elif "S" in keys:
-            >>>      self.point_in_direction("down")
+            >>>      self.direction = "down"
             >>>    elif "A" in keys:
-            >>>      self.point_in_direction("left")
+            >>>      self.direction = "left"
             >>>    elif "D" in keys:
-            >>>      self.point_in_direction("right")
+            >>>      self.direction = "right"
             >>>    self.move()
 
 
@@ -401,6 +407,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def turn_left(self, degrees: int = 90) -> int:
         """Turns actor by *degrees* degrees left
 
+        .. image:: ../_images/turn_left.png
+
+        Options:
+          * You can set the value token.is_rotatable = False if you don't want the token to be rotated.
+
         Args:
             degrees: degrees in left direction
 
@@ -414,6 +425,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def turn_right(self, degrees: int = 90):
         """Turns token by *degrees* degrees right
 
+        .. image:: ../_images/turn_right.png
+
+        Options:
+          * You can set the value token.is_rotatable = False if you don't want the token to be rotated.
+
         Args:
             degrees: degrees in left direction
 
@@ -425,15 +441,35 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         return self.direction
 
     def point_in_direction(self, direction) -> int:
-        """
-        Token points in given direction
+        """Token points in given direction.
+
+        You can use a integer or a string to describe the direction
 
         Args:
-            direction: Direction the actor should point to
+            The direction as integer or string (see options)
 
-        Returns:
-            The new direction as integer
+        Options
+            * 0, "up" - Look up
+            * 90, "right", - Look right
+            * -90, "left", - Look left
+            * -180, 180, "down" - Look down
 
+        .. image:: ../_images/direction.png
+
+        Examples:
+
+            Move in a direction with WASD-Keys
+
+            >>> def on_key_down(self, keys):
+            >>>    if "W" in keys:
+            >>>      self.direction = "up"
+            >>>    elif "S" in keys:
+            >>>      self.direction = "down"
+            >>>    elif "A" in keys:
+            >>>      self.direction = "left"
+            >>>    elif "D" in keys:
+            >>>      self.direction = "right"
+            >>>    self.move()
         """
         self.direction = self._value_to_direction(direction)
         return self.direction
@@ -495,7 +531,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self._size = value
         if self.physics:
             self.physics.reload_physics()
-        self.costume._reload_all()
+        if self.costume:
+            self.costume._reload_all()
 
     @property
     def width(self):
@@ -557,7 +594,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     @property
     def center_x(self):
         """x-value of token center-position"""
-        return self.rect.centerx
+        if self.costume:
+            return self.rect.centerx
 
     @property
     def topleft_x(self):
@@ -582,7 +620,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     @property
     def center_y(self):
         """y-value of token center-position"""
-        return self.rect.centery
+        if self.costume:
+            return self.rect.centery
 
     @property
     def center(self) -> board_position.BoardPosition:
@@ -611,16 +650,20 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.position = rect.center
 
     def move(self, distance: int = 0):
-        """Moves actor *distance* steps.
+        """Moves actor *distance* steps in current direction
+
+        .. image:: ../_images/move.png
 
         Args:
             distance: Number of steps to move.
-            If distance = 0, the actor speed will be used.
+              If distance = 0, the actor speed will be used.
 
         Returns:
-            The actor
+            The moved token
 
         Examples:
+
+            if sensing_on_board, move forward:
 
             >>> class Robot(Token):
             >>>    def act(self):
@@ -635,12 +678,16 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     def move_back(self):
         """
-        Moves the actor to the last position (before the last movement")
-        The last position will always be safed, when a move is executed, so move_back can undo every move.
+        "Undo" the last move. Moves the actor to the last position and resets direction.
+
+        .. image:: ../_images/move_back.png
+
+        Returns:
+            The moved token
 
         Examples:
 
-            move_back as blocking-mechanism (in rpg-basic-template.py):
+            move_back when field is blocked:
 
             >>>  def on_sensing_wall(self, wall):
             >>>    self.move_back()
@@ -648,6 +695,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         self.position = self.last_position
         self.direction = self.last_direction
+        return self
 
     def _value_to_direction(self, value) -> int:
         """
@@ -676,10 +724,18 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         value = value % 360
         return value
 
-    def move_in_direction(self, direction: Union[int, str]):
+    def move_in_direction(self, direction: Union[int, str], distance = 1):
         """Moves token *distance* steps into a *direction*.
 
-        .. image:: ../_images/movement.jpg
+        .. image:: ../_images/move_in_direction.png
+
+        Options
+            * 0, "up" - Look up
+            * 90, "right", - Look right
+            * -90, "left", - Look left
+            * -180, 180, "down" - Look down
+
+        .. image:: ../_images/direction.png
 
         Args:
             direction: Direction as angle
@@ -694,13 +750,24 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         return self
 
     def move_to(self, position: board_position.BoardPosition):
-        """Moves token *distance* steps to a specific board_position
+        """Moves token *distance* to a specific board_posiition
 
         Args:
-            position: The position to which the actor should move
+            position: The position to which the actor should move. The position can be a 2-tuple (x, y)
+            which will be converted to a board_position
+
+        .. image:: ../_images/move_to.png
 
         Returns:
             The token itself
+
+        Examples:
+
+        move to (3, 2) on mouse_click
+
+        >>> def on_clicked_left(self, position):
+        >>>   self.move_to((3,2))
+
 
         """
         self.position = position
@@ -727,8 +794,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self.physics = None
         if hasattr(self,  "board") and self.board:
             self.board_connector.remove_from_board()
-        for event_handler in app.App.board.registered_event_handlers_for_tokens[self.__class__].keys():
-            app.App.board.tokens_with_eventhandler[event_handler].remove(self)
         self.kill()
         del (self)
 
@@ -753,9 +818,11 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def flip_x(self) -> int:
         """Flips the actor by 180° degrees
 
+        .. image:: ../_images/flip_x.png
+
         Examples:
 
-            flip a token in Example flipthefish.py
+            flip a token.
 
             >>>  def on_sensing_not_on_board(self):
             >>>    self.move_back()
@@ -802,36 +869,47 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     def sensing_on_board(self, distance: int = 0) -> bool:
         """
-        Senses if token is on board
+        Is the token on board if it is moving distance steps forward?
+
+        .. image:: ../_images/sensing_on_board.png
 
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: True if token is on board
+        Returns:
+            True if token is on board
 
         """
         return self.board_connector.sensing_on_board(distance=distance)
 
     def sensing_tokens(self, token_type=None, distance: int = 0):
-        """
-        Senses if tokens are on tokens position
+        """Senses if tokens are on tokens position.
+        Returns a list of tokens.
+
+        .. image:: ../_images/sensing_tokens.png
+
         Args:
             token_type: filter by token type. Enter a class_name of tokens to look for here
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: All tokens found by Sensor
+        Returns:
+            All tokens found by Sensor
 
         """
         return self.board_connector.sensing_tokens(token_type, distance)
 
     def sensing_token(self, token_type=None, distance: int = 0):
-        """
-        Senses if tokens are on tokens position.
+        """Senses if tokens are on tokens position.
+        Returns the first found token.
+
+        .. image:: ../_images/sensing_token.png
+
         Args:
             token_type: filter by token type. Enter a class_name of tokens to look for here
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: First token found by Sensor
+        Returns:
+            First token found by Sensor
 
         Examples:
             Sensing a fireplace in rpg-basic-template.py:
@@ -847,13 +925,61 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def sensing_borders(self, distance: int = 0):
         """
         Senses borders
+
+        .. image:: ../_images/sensing_borders.png
+
+        Args:
+            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+
+        Returns:
+            True if border was found.
+
+        """
+        return self.board_connector.sensing_borders(distance)
+
+    def sensing_left_border(self, distance: int = 0):
+        """
+        Senses borders
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
         Returns: True if border was found.
 
         """
-        return self.board_connector.sensing_borders(distance)
+        return "left" in self.board_connector.sensing_borders(distance)
+
+    def sensing_right_border(self, distance: int = 0):
+        """
+        Senses borders
+        Args:
+            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+
+        Returns: True if border was found.
+
+        """
+        return "right" in self.board_connector.sensing_borders(distance)
+
+    def sensing_top_border(self, distance: int = 0):
+        """
+        Senses borders
+        Args:
+            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+
+        Returns: True if border was found.
+
+        """
+        return "top" in self.board_connector.sensing_borders(distance)
+
+    def sensing_bottom_border(self, distance: int = 0):
+        """
+        Senses borders
+        Args:
+            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+
+        Returns: True if border was found.
+
+        """
+        return "bottom" in self.board_connector.sensing_borders(distance)
 
     def sensing_colors(self, colors, distance):
         """
@@ -863,17 +989,28 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             colors:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: All tokens found by Sensor
+        Returns: All colors found by Sensor
 
         """
         colors = self.board_connector.sensing_colors(colors, distance)
         return colors
 
-    " @decorator"
+    def sensing_point(self, boardPosition):
+        """
+        Is the token colliding with a specific (global) point?
 
+        Returns: True if point is below token
+        """
+        return self.rect.collidepoint(boardPosition)
+
+    " @decorator"
     def register(self, method):
         bound_method = method.__get__(self, self.__class__)
         setattr(self, method.__name__, bound_method)
+        if method.__name__ == "setup":
+            self.setup()
+        if method.__name__ == "on_setup":
+            self.on_setup()
         return bound_method
 
     def bounce_from_token(self, other):
@@ -901,3 +1038,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         if [member for member in members if member.startswith("on_sensing_separation_with")]:
             print("Deprecated method 'on_sensing_separation_with_[token_class]' found in " + str(
                 cls) + ", use 'on_separation_with_[token_class]' instead")
+
+    def send_message(self, message):
+        self.board.window.send_event_to_containers("message", message)

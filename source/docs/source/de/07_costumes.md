@@ -1,60 +1,60 @@
-Kostüme und Hintergrund
-========================
+Kostüme 
+========
 
 ### Kostüme
 
-Jedes Token und jeder Akteur hat ein oder mehrere Kostüme.
+Jedes Token verfügt über ein oder mehrere Bilder. 
 
-Ein Kostüm besteht aus einem oder mehreren Bildern und Anweisungen, wie diese Bilder dargestellt werden sollen.
+Indem du das Bild wechselst kannst du z.B. Animationen erschaffen.
 
-![UML Diagramm](../_images/costume_uml.png)
+![UML Diagramm](../_images/costumes.png)
 
-#### Bilder zu einem Kostüm hinzufügen: 
+ > Für Scratch-Umsteiger: Kostüme funktionieren im Miniworldmaker etwas anders als in Scratch.
+ > Während in Scratch jedes Kostüm aus genau einem Bild besteht kann ein Kostüm im Miniworldmaker aus mehreren Bildern bestehen.
+ > 
+ > Auf diese Art kannst du unterschiedliche Posen in einem Kostüm darstellen und unterschiedliche Animationen in unterschiedliche Kostüme auftrennen. 
 
-Ein neues Bild zu einem Kostüm hinzufügen:
+### Das erste Kostüm
+
+Mit der Funktion
 ```
-self.add_image("image.jpg")
-```
-
-Auf die gleiche Art kannst du auch mehrere Bilder zu einem Kostüm hinzufügen:
-
-```
-self.add_image("image1.jpg")
-self.add_image("image2.jpg")
+self.add_costume("images/image.jpg")
 ```
 
-### Darstellung von Bildern
+kannst du ein neues Kostüm hinzufügen. 
 
-Folgende Anweisungen ändern die Darstellung von Kostümen:
-
-#### Info Overlay
-
-Zeigt ein Info-Overlay mit Rahmen und Richtung über dem Token
+Wenn noch kein Kostüm hinzufefügt wird, wird dies auch automatisch dein erstes Kostüm.
 
 
-#### is_rotatable
+### Weitere Bilder hinzufügen
+ 
+ Mit der Anweisung **costume.add_image** kannst du weitere Bilder zu einem Kostüm hinzufügen. 
+ 
+ ```
+self.costume.add_image("images/image_2.jpg")
+```
 
-Gibt an, ob das Bild mit der Richtung des Actors mitgedreht wird.
+### Ein Kostüm animieren.
 
+Wenn du mehrere Bilder zu einem Kostüm hinzufügen willst, geht dies mit der Option:
 
-#### is_upscaled
+### Animationen
 
-Gibt an, ob das Bild auf die Größe des Tokens hochskaliert werden soll.
-Diese Aktion behält das Größenverhältnis zwischen Länge und Breite bei.
+2D-Animationen kannst du dir vorstellen wie ein Daumenkino. Dadurch, dass schnell hintereinander das 
+Bild eines Akteurs/Token geändert wird, macht es den Anschein, als würde sich der Akteur bewegen.
 
-#### is_scaled
+Dazu musst du zunächst mehrere Bilder zu einem Kostüm hinzufügen (siehe oben).
 
-Gibt an, ob das Bild auf die Größe des Tokens hochskaliert werden soll.
-Diese Aktion verändert gegebenenfalls das Größenverhältnis zwischen Länge Breite.
+Anschließend kannst du das Kostüm folgendermaßen animieren:
 
-#### is_textured
+```
+self.costume.is_animated = True
+self.costume.animation_speed = 10
+```
 
-Neben scale und upscale gibt es für Hintergründe auch die Option, den Hintergrund mit einemm Bild zu "tapezieren"
+### Weitere Kostüme hinzufügen.
 
-
-### Mehrere Kostüme anlegen
-
-Du kannst folgendermaßen mehrere Kostüme anlegen:
+Mit folgender Anweisung fügst du weitere Kostüme hinzu:
 
 ```
 my_costume = self.add_costume("image.png")
@@ -78,13 +78,11 @@ self.switch_costume()
 Die Anweisung springt zum nächsten Kostüm. Du kannst als Parameter auch eine Zahl angeben, um zu einem bestimmten Kostüm zu springen.
 
 
+### Darstellung von Bildern
 
-### Der Hintergrund
+Es gibt diverse Möglichkeiten das Aussehen deines Bildes anzupassen, z.B. ob dieses rotierbar ist, automatisch skaliert werden soll usw.
 
-Das Spielfeld hat einen Hintergrund. Viele Aktionen funktionieren ähnlich wie bei dem Kostüm, allerdings gibt es noch folgende Aktionen, die nur für den Hintergrund Sinn machen:
+--> Hier findest du mehr Infomrationen: [Costumes](../key_concepts/costumes.md)
 
 
-#### Grid Overlay anzeigen
-
-Zeigt für alle Zellen Ränder an.
 

@@ -73,11 +73,11 @@ class Toolbar(container.Container):
                         widget.width = self._container_width - self.margin_left - self.margin_right
                         widget.repaint()
                         rect = pygame.Rect(self.rect.left, actual_height, widget.width, widget.height)
-                        self._window.repaint_areas.append(rect)
+                        self.window.repaint_areas.append(rect)
                     self.surface.blit(widget.surface, (5, actual_height))
                     actual_height += widget.height + self.row_margin
         if self.repaint_all:
-            self._window.repaint_areas.append(self.rect)
+            self.window.repaint_areas.append(self.rect)
             self.repaint_all = False
         self.dirty = 1 # Always dirty so that timed widgets can run
 

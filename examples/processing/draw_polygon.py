@@ -3,19 +3,19 @@ from miniworldmaker import *
 
 class MyBoard(ProcessingBoard):
 
-    def __init__(self):
-        super().__init__()
+    def on_setup(self):
+        self.add_background((255,0,255,0))
         self.pointlist = []
 
-    def get_event(self, event, data):
-        if event == "mouse_left":
-            self.pointlist.append(self.get_mouse_position())
-        if event == "mouse_right":
-            Polygon(pointlist=self.pointlist, color=(255, 255, 0, 255))
-            self.pointlist = []
+    def on_mouse_left(self, pos):
+        self.pointlist.append(self.get_mouse_position())
+
+    def on_mouse_right(self, pos):
+        Polygon(pointlist=self.pointlist, color=(255, 255, 0, 255))
+        self.pointlist = []
 
 
 
-my_board = MyBoard()
-my_board.show()
+my_board = MyBoard(800, 600)
+my_board.run()
 

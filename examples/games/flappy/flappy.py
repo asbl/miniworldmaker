@@ -6,7 +6,7 @@ import miniworldmaker as mwm
 class MyBoard(mwm.PixelBoard):
 
     def on_setup(self):
-        self.background.add_image("images/background.png")
+        self.add_image(path = "images/background.png")
         Bird((75, 200))
         self.pipe1 = Pipe(position=(260, self.height - 280))
         self.pipe2 = Pipe(position=(520, 0))
@@ -75,5 +75,5 @@ class Pipe(mwm.Token):
 
 
 board = MyBoard(800, 600)
-board.show()
+board.run()
 

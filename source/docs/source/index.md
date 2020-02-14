@@ -6,9 +6,12 @@ designed for pupils to create 2D mini worlds and games.
 
   * [What is the miniworldmaker?](mwm.md)
   
-  * [Tutorials](tutorials.md)
 
-  * [API](modules.md)
+  * [Tutorial English](tutorial_english.md)
+
+  * [Tutorial Deutsch](tutorial_german.md)
+
+  * [API](api.md)
 
   * [Examples](examples.md)
 

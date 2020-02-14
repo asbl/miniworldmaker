@@ -1,8 +1,19 @@
 Installation
 ============
 
-Installiere das Framework mit:
+1. Installiere zuerst Python. 
+    Python kannst du z.B. unter [Python](www.python.org) herunterladen.
 
-```
-pip install miniworldmaker
-```
+2. Installiere das Framework mit:
+
+   ```
+   pip install miniworldmaker
+   ```
+  
+3. Installiere eine geeignete Entwicklungsumgebung, z.B.:
+
+   * [Thonny](thonny)
+
+   * [PyCharm](Pycharm)
+   
+...jetzt kannst du loslegen.    

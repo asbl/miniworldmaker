@@ -1,4 +1,4 @@
-Bewegungen
+Bewegung
 ==========
 
 ### Die Move-Funktion
@@ -13,18 +13,22 @@ Move hat folgende Signatur:
 
 Dies bedeutet:
   
-  * Standardmäßig bewegt sich ein Akteur um **self.speed** Schritte in die Richtung in die er gerade schaut.
+  * Standardmäßig bewegt sich ein Akteur um **player.speed** Schritte in die Richtung in die er gerade schaut.
   
   * Du kannst die Distanz die er sich bewegt aber auch manuell festlegen, indem du für den Paramter distance einen Integer-Wert einsetzt.
   
   * Die Funktion gibt als Rückgabewert die Position auf dem Spielfeld zurück, an der sich der Akteur nach dem Zug befindet.
   
-### Methoden und Attribute
+--> Mehr Infos über Bewegungen: [Movement](../key_concepts/movement.md)
+  
+### Die Richtung ändern
 
-Bewegt ein Akteur.
+Die Richtung ändern kannst du mit folgenden Befehlen:
 
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.token.Token
-   :members: move
-   :noindex:
-```
+  * **player.turn_left(degrees) - Dreht das Token um *degrees* Grad nach links.
+  
+  * **player.turn_right(degrees) - Dreht das Token um *degrees* Grad nach rechts.
+  
+  * **player.point_in_direction(direction) - Dreht das Token in die Richtung *direction*.
+  
+--> Mehr Infos über Richtungen: [Directions](../key_concepts/directions.md)

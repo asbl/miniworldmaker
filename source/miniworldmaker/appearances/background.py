@@ -27,7 +27,7 @@ class Background(appearance.Appearance):
 
     def add_image(self, path):
         super().add_image(path)
-        self.update()
+        self.parent.window._display_update()
 
     def after_init(self):
         super().after_init()

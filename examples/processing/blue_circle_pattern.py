@@ -6,7 +6,7 @@ from miniworldmaker import *
 class MyBoard(ProcessingBoard):
 
     def on_setup(self):
-        self.background.fill((255, 255, 255, 255))
+        self.add_background((255, 255, 255, 255))
         i, j = 0, 0
         distance = 30
         while i < self.width/10:

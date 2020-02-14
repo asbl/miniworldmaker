@@ -6,9 +6,11 @@ class MyBoard(TiledBoard):
 
     def __init__(self):
         super().__init__(columns=30, rows=20, tile_size=20, tile_margin=0)
+        self.add_background((255,255,255,0))
         for i in range(self.rows):
             for j in range(self.columns):
                 Grass((j, i))
+                print("add grass")
         Wall((0, 4))
         Wall((1, 4))
         Wall((2, 4))
@@ -26,6 +28,7 @@ class MyBoard(TiledBoard):
         self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = self._window.add_container(Toolbar(), "right")
         self.console = self._window.add_container(Console(), "bottom")
+        print("setup finished")
 
     def on_message(self, data):
         if data == "Fackel":

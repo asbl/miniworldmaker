@@ -6,7 +6,7 @@ from miniworldmaker import *
 class MyBoard(ProcessingBoard):
 
     def on_setup(self):
-        self.fill((255, 255, 255, 255))
+        self.add_background((255, 255, 255, 255))
         self.lst = []
         for i in range(50):
             self.lst.append(Circle((random.randint(0, 800),

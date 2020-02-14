@@ -48,9 +48,12 @@ class PixelBoardConnector(board_connector.BoardConnector):
         return rect
 
     def get_token_rect(self) -> board_rect.BoardRect:
-        _rect = self.token.image.get_rect()
-        _rect.center = self.token.x, self.token.y
-        return _rect
+        if self.token.costume:
+            _rect = self.token.image.get_rect()
+            _rect.center = self.token.x, self.token.y
+            return _rect
+        else:
+            return None
 
     def get_line_in_direction(self, start, direction, distance):
         return [self.get_destination(start, direction, i) for i in range(distance)]

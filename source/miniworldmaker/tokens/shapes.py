@@ -1,5 +1,6 @@
 import pygame
 from miniworldmaker.tokens import token as tk
+from miniworldmaker.appearances import costume
 
 
 class Shape(tk.Token):
@@ -9,7 +10,8 @@ class Shape(tk.Token):
 
     def __init__(self, position: tuple = None, color: tuple = (255, 255, 255, 255)):
         super().__init__(position)
-        self.costume.fill_color = (100, 100, 0, 0)
+        self.add_costume((100,0,0,0))
+        self.costumes.add(self.costume)
         self.color = color
         self.costume.is_upscaled = False
 
@@ -222,25 +224,30 @@ class Line(Shape):
                  thickness: int = 1,
                  color: tuple = (255, 255, 255, 255), ):
         try:
-            start = start_position[0], start_position[1]
-            end = end_position[0], end_position[1]
             if type(start_position) == int:
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value",
                                 start_position, ", type:", type(start_position))
             if type(end_position) == int:
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position,
                                 ", type:", type(end_position))
-            box = Shape.bounding_box([start, end])
+            width = abs(start_position[0]-end_position[0])+ 2 * thickness
+            height = abs(start_position[1] - end_position[1]) + 2 * thickness
+            box = pygame.Rect(min(start_position[0], end_position[0]) - thickness,
+                              min(start_position[1], end_position[1]) - thickness,
+                              width,
+                              height)
+            print(box, width, height)
             self.thickness = thickness
-            box_width = abs(box[0] - box[2]) + self.thickness
-            box_height = abs(box[1] - box[3]) + self.thickness
+            box_width = width
+            box_height = height
+            print(box, box_width, box_height)
             # mod_start
-            x = start_position[0] - box.topleft[0] + self.thickness / 2
-            y = start_position[1] - box.topleft[1] + self.thickness / 2
+            x = start_position[0] - box.topleft[0]
+            y = start_position[1] - box.topleft[1]
             self.mod_start = (x, y)
             # mod end
-            x = end_position[0] - box.topleft[0] + self.thickness / 2
-            y = end_position[1] - box.topleft[1] + self.thickness / 2
+            x = end_position[0] - box.topleft[0]
+            y = end_position[1] - box.topleft[1]
             self.mod_end = (x, y)
             self.start_position = start_position
             self.end_position = end_position

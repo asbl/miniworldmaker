@@ -1,5 +1,5 @@
 import pygame
-from miniworldmaker.app import app as app
+from miniworldmaker.app import app
 from miniworldmaker.board_positions import board_position
 
 

@@ -5,7 +5,7 @@ class MyBoard(mwm.PixelBoard):
     birds = 0
 
     def on_setup(self):
-        self.background.add_image("images/backgroundColorGrass.png")
+        self.add_background("images/backgroundColorGrass.png")
         self.arrow = Arrow(position=(160, 250))
         self.arrow.direction = -10
         self.plattform = Plattform(position=(600, 260))
@@ -42,7 +42,7 @@ class Arrow(mwm.Actor):
 
     def on_setup(self):
         self.size = (30, 30)
-        self.costume.add_image("images/tank_arrowFull.png")
+        self.add_costume("images/tank_arrowFull.png")
         self.costume.is_scaled = True
         self.speed = 0
         self.shoot = 0

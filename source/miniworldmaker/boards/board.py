@@ -20,11 +20,10 @@ from miniworldmaker.tools import db_manager
 class MetaBoard(type):
     def __call__(cls, *args, **kwargs):
         instance = super().__call__(*args, **kwargs)
-        if hasattr(instance, "on_setup"):
-            instance.on_setup()
-        if hasattr(instance, "setup"):
-            instance.setup()
-        instance._update_all_costumes()
+        #if hasattr(instance, "on_setup"):
+        #    instance.on_setup()
+        #if hasattr(instance, "setup"):
+        #    instance.setup()
         return instance
 
 
@@ -65,7 +64,6 @@ class Board(container.Container, metaclass=MetaBoard):
 
     """
 
-    registered_event_handlers_for_tokens = defaultdict(defaultdict)
     registered_collision_handlers_for_tokens = defaultdict(list)
     token_class_ids = defaultdict()  # class_name -> id
     token_classes = defaultdict()  # class_name -> class
@@ -89,7 +87,8 @@ class Board(container.Container, metaclass=MetaBoard):
         self.is_running = True
         self.sound_effects = {}
         self.physics_property = physicsengine.PhysicsProperty
-        # private
+        # protected
+        self._is_setup = False
         if not hasattr(self, "_fps"):
             self._fps = 60  # property speed
         self._tokens = pygame.sprite.LayeredDirty()
@@ -110,29 +109,29 @@ class Board(container.Container, metaclass=MetaBoard):
             self._grid.append([])
             for column in range(self.columns):
                 self._grid[row].append(0)
-        self.background = background.Background(self)
-        self.backgrounds = [self.background]
+        self.background = None
+        self.backgrounds = []
         self._update_background()
         self._image = pygame.Surface((1, 1))
         self.surface = pygame.Surface((1, 1))
-        # protected
         self.frame = 0
-        self.speed = 1
+        self.speed = 1 # All tokens are acting on n'th frame with n = self.speed
         self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
-        self._window = app.App("MiniWorldMaker")
-        self._window.add_container(self, "top_left")
+        self._app = app.App("MiniWorldMaker")
+        self._app.add_container(self, "top_left")
         app.App.board = self
         self.registered_event_handlers = dict()
         self.tokens_with_eventhandler = defaultdict(list)
         self.tokens_with_collisionhandler = defaultdict(list)
-        if background_image != None:
-            self.add_image(background_image)
+        if background_image is not None:
+            self.add_background(background_image)
         self.dirty = 1
         self.timed_objects = []
         self._repaint_all = 1
         self._executed_events = set()
+        self.window.send_event_to_containers("setup", self)
 
     @classmethod
     def from_db(cls, file):
@@ -314,23 +313,8 @@ class Board(container.Container, metaclass=MetaBoard):
     def class_name(self) -> str:
         return self.__class__.__name__
 
-    def add_background(self, path: str) -> background.Background:
-        """
-        Adds a new background to the board
 
-        Args:
-            path: The path to the first image of the background
-
-        Returns:
-
-        """
-        new_background = background.Background(self)
-        new_background.add_image(path)
-        new_background.orientation = self.background.orientation
-        self.backgrounds.append(new_background)
-        return new_background
-
-    def add_image(self, path: str) -> int:
+    def add_image(self, path: str) -> background.Background:
         """
         Adds image to current background.
         If no background is created yet, a new background will be created with this image.
@@ -350,11 +334,39 @@ class Board(container.Container, metaclass=MetaBoard):
             Creates Board with file stone.jpg in folder images as background
 
         """
-        try:
+        if self.background is None:
+            self.add_background(path)
+            image = self.background.image
+            self.window._display_update()
+            self.window.window_surface.blit(image, self.rect)
+        else:
             image = self.background.add_image(path)
-        except FileExistsError:
-            raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
+
         return image
+
+    def add_background(self, source: Union[str, tuple]) -> background.Background:
+        """
+        Adds a new background to the board
+
+        Args:
+            source: The path to the first image of the background or a color
+
+        Returns:
+
+        """
+        new_background = background.Background(self)
+        if type(source) == str:
+            new_background.add_image(source)
+        elif type(source) == tuple:
+            new_background.fill(source)
+        if self.background is None:
+            self.background = new_background
+            print("display update")
+            self._update_all_costumes()
+            self._update_background()
+            new_background.orientation = self.background.orientation
+        self.backgrounds.append(new_background)
+        return new_background
 
     def add_to_board(self, token, position: board_position.BoardPosition):
         """
@@ -370,8 +382,6 @@ class Board(container.Container, metaclass=MetaBoard):
         if token.init != 1:
             raise UnboundLocalError("super().__init__() was not called")
         self._register_physics_collision_handler(token)
-        for event_handler in self.registered_event_handlers_for_tokens[token.__class__].keys():
-            self.tokens_with_eventhandler[event_handler].append(token)
         # Board Connectors are added in subclasses
         self._add_board_connector(token, position)
 
@@ -380,18 +390,7 @@ class Board(container.Container, metaclass=MetaBoard):
             "You can't use class Board - You must use a specific class e.g. PixelBoard, TiledBoard or PhysicsBoard")
 
     def blit_surface_to_window_surface(self):
-        self._window.window_surface.blit(self.surface, self.rect)
-
-    def fill(self, color):
-        """
-        deprecated
-        Args:
-            color:
-
-        Returns:
-
-        """
-        self.background.fill(color)
+        self.window.window_surface.blit(self.surface, self.rect)
 
     def get_colors_at_position(self, position: Union[tuple, board_position.BoardPosition]):
         if type(position) == tuple:
@@ -462,7 +461,8 @@ class Board(container.Container, metaclass=MetaBoard):
         """
         The current displayed image
         """
-        self._image = self.background.image
+        if self.background:
+            self._image = self.background.image
         return self._image
 
     def remove_tokens_from_rect(self, rect: Union[tuple, pygame.Rect], token=None, exclude=None):
@@ -505,16 +505,31 @@ class Board(container.Container, metaclass=MetaBoard):
         self._handle_reset_event(event, data)
 
     def repaint(self):
-        if self._repaint_all:
-            self.background.call_all_actions()
-            self.surface = pygame.Surface((self.container_width, self.container_height))
-            self.surface.blit(self.image, self.surface.get_rect())
-        self.tokens.clear(self.surface, self.image)
-        repaint_rects = self.tokens.draw(self.surface)
-        self._window.repaint_areas.extend(repaint_rects)
-        if self._repaint_all:
-            self._window.repaint_areas.append(self.rect)
-            self._repaint_all = False
+        if self.background:
+            if self._repaint_all:
+                    self.background.call_all_actions()
+                    self.surface = pygame.Surface((self.container_width, self.container_height))
+                    self.surface.blit(self.image, self.surface.get_rect())
+            self.tokens.clear(self.surface, self.image)
+            repaint_rects = self.tokens.draw(self.surface)
+            self.window.repaint_areas.extend(repaint_rects)
+            if self._repaint_all:
+                self.window.repaint_areas.append(self.rect)
+                self._repaint_all = False
+
+    def reset(self):
+        """Resets the board
+        Creates a new board with init-function - recreates all tokens and actors on the board.
+
+        Examples:
+
+            Restarts flappy the bird game after collision with pipe:
+
+            >>> def on_sensing_collision_with_pipe(self, other, info):
+            >>>    self.board.is_running = False
+            >>>    self.board.reset()
+        """
+        self.window.send_event_to_containers("reset", self)
 
     def run(self, fullscreen=False):
         """
@@ -526,9 +541,12 @@ class Board(container.Container, metaclass=MetaBoard):
             >>> my_board.show()
 
         """
-        self.background.is_scaled = True
-        image = self.image
-        self.window.run(image, full_screen=fullscreen)
+        if not self._is_setup:
+            if hasattr(self, "setup") and callable(getattr(self, "setup")):
+                self.window.send_event_to_containers("setup", self)
+            if hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
+                self.window.send_event_to_containers("setup", self)
+        self.window.run(self.image, full_screen=fullscreen)
 
     @deprecated(version='1.0.44', reason="You should use board.run()")
     def show(self, fullscreen=False):
@@ -593,7 +611,8 @@ class Board(container.Container, metaclass=MetaBoard):
         [token.costume.update() for token in self.tokens]
 
     def _update_background(self):
-        self.background.update()
+        if self.background:
+            self.background.update()
 
     def _tick_timed_objects(self):
         [obj.tick() for obj in self.timed_objects]
@@ -607,6 +626,7 @@ class Board(container.Container, metaclass=MetaBoard):
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
         # Call specific event handlers ("on_mouse_left", "on_mouse_right", ... for tokens
+        print(event)
         if event not in self._executed_events:  # events shouldn't be called more than once per tick
             self._executed_events.add(event)
             from miniworldmaker.tokens import token
@@ -615,16 +635,18 @@ class Board(container.Container, metaclass=MetaBoard):
             all_objects = list(self.tokens.sprites())
             all_objects.append(self)
             for a_object in all_objects:
-                # if event in ["setup"]:
-                #    self._handle_setup_event(a_object, event, data)
                 if event in ["reset"]:
                     self._handle_reset_event()
+                if event in ["setup"]:
+                    self._handle_setup_event()
                 if event in ["switch_board"]:
                     self._handle_switch_board_event(*data)
                 if event in ["key_down", "key_pressed", "key_down", "key_up"]:
                     self._handle_key_event(a_object, event, data)
                 if event in ["mouse_left", "mouse_right", "mouse_motion"]:
                     self._handle_mouse_event(a_object, event, data)
+                if event in ["clicked_left", "clicked_right"]:
+                    self._handle_mouse_token_event(event, data)
                 if event in ["message"]:
                     self._handle_message_event(a_object, event, data)
                 if event in ["button_pressed"]:
@@ -670,8 +692,8 @@ class Board(container.Container, metaclass=MetaBoard):
             raise Exception(
                 "Wrong number of arguments for " + str(method) + " in , got " + str(
                     len(args)) + " but should be " + str(
-                    len(sig.parameters)) +
-                "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
+                    len(sig.parameters)) + "; "
+                "File:" + str(info.filename), "; Method: " + str(method)
             )
 
     def _handle_key_event(self, receiver, event, data):
@@ -694,19 +716,32 @@ class Board(container.Container, metaclass=MetaBoard):
             sig = signature(method)
             if len(sig.parameters) == 1:
                 method(data)
-        tokens = self.get_tokens_by_pixel(data)
+
+    def _handle_mouse_token_event(self, event, data):
+        # any key down?
+        token = data[0]
+        position = data[1]
+        method_name = "on_" + event
+        method = self._get_method(token, method_name)
+        if method:
+            sig = signature(method)
+            if len(sig.parameters) == 1:
+                method(data)
+        tokens = self.get_tokens_by_pixel(position)
         for token in tokens:
             method = self._get_method(token, method_name)
             if method:
-                self._call_method(token, method, [data])
+                self._call_method(token, method, [position])
 
-    # def _handle_setup_event(self, receiver, event, data):
-    #    method_name = "on_" + event
-    #    method = self._get_method(receiver, method_name)
-    #    if method:
-    #        sig = signature(method)
-    #        if len(sig.parameters) == 1:
-    #            method(data)
+    def _handle_setup_event(self):
+        if not self._is_setup:
+            if hasattr(self, "setup") and callable(getattr(self, "setup")):
+                self.setup()
+                self._is_setup = True
+            if hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
+                self.on_setup()
+                self._is_setup = True
+        return self
 
     def _handle_reset_event(self):
         self.window.event_queue.clear()
@@ -1060,3 +1095,12 @@ class Board(container.Container, metaclass=MetaBoard):
         handler = getattr(subcls, "on_" + event, None)
         if callable(handler):
             self.registered_event_handlers_for_tokens[subcls][event] = handler
+
+    " @decorator"
+    def register(self, method):
+        bound_method = method.__get__(self, self.__class__)
+        setattr(self, method.__name__, bound_method)
+        return bound_method
+
+    def send_message(self, message):
+        self.window.send_event_to_containers("message", message)

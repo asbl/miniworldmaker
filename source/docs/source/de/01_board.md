@@ -8,39 +8,44 @@ Los geht es!
 Wir erschaffen die erste Welt. Dies geht mit folgendem Code:
 
 ```
-from miniworldmaker import *
+import miniworldmaker
 
+board = miniworldmaker.TiledBoard()
+board.columns = 20
+board.rows = 8
+board.tile_size = 42
+board.add_image(path="images/soccer_green.jpg")
+board.speed = 30
 
-class MyBoard(TiledBoard):
-
-    def setup(self):
-        self.columns = 20
-        self.rows = 8
-        self.tile_size = 42
-        self.add_image(path="images/soccer_green.jpg")
-
-board = MyBoard()
-board.show()
+board.run()
 ```
 
-Zunächst wird eine eigene *Klasse* MyBoard erstellt. Diese ist eine Kindklasse von TiledBoard
-und erlaubt es dir, alle möglichen Spiele zu bauen, die auf Tiles basieren.
+Zunächst wird eine eigene *Klasse* **MyBoard** erstellt. Diese ist eine Kindklasse von TiledBoard (*Gekacheltes Spielfeld*)
+und erlaubt es dir, alle möglichen Spiele zu bauen, die auf Tiles(*Kacheln*) basieren.
 
   * Zeile 1: Mit der **import** Anweisung wird die Bibliothek miniworldmaker importiert.
-  * Zeile 4: Das eigene Spielfeld wird als Kindklasse der Klasse Tiledboard erstellt.
-  * Zeile 6: Die setup() - Methode wird bei Erstellen eines neuen Objektes aufgerufen (d.h. hier in Zeile 7).
-  * Zeile 7-9: Die Größe des Spielfeldes wird initialisiert.
-  * Zeile 7: Deinem Board wird ein Hintergrund hinzugefügt. Achte darauf, dass die Datei an dem angegebenen Pfad liegt.
+  
+  * Zeile 3: Das eigene Spielfeld wird als Kindklasse der Klasse Tiledboard definiert.
+    
+  * Zeile 5-6: Die on_setup() - Methode beim Objekt board *registriert*. Diese Methode wird aufgerufe, sobald das Board erstellt wird. Innerhalb der Methode werden einige Eigenschaften des Spielfeldes definiert: 
+  
+    * Anzahl Zeilen und Spalten (Zeile 7-8)
+    
+    * Größe einer einzelnen Kachel (Zeile 9)
+    
+    * Der Bildschirmhintergrund (Zeile 10) 
 
-Diese beiden Zeilen:
+### Starten der Mainloop
+
+Dies ist immer der letzte Befehl in deinem Programm:
+
 ```
-board = MyBoard()
-board.show()
+board.run()
 ```
 
-Sind so ähnlich immer die letzten beiden Zeilen deines Programms: 
-Hier wird mit dem Befehl MyBoard() ein konkretes Spielfeld erzeugt und anschießend wird mit
-board.show() das Board angewiesen, sich zu zeigen.
+Die Mainloop wird gestartet, d.h. jetzt wird immer wieder der Bildschirm neu gezeichnet, auf Ereignisse reagiert, ...
+
+### Ergebnis:
 
 Je nach Hintergrundbild sieht das Ergebnis bei dir so aus:
 
@@ -57,11 +62,9 @@ Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen la
         self.background.grid_overlay = True
 ```
 
-So sieht es dann aus:
 
-![tiles](../_images/grid.jpg)
 
-### PixelBoards und TiledBoards
+### Verschiedene Boards
 
 Es gibt verschiedene Unterklassen der Klasse Board:
 
@@ -70,10 +73,4 @@ Es gibt verschiedene Unterklassen der Klasse Board:
   * Ein TiledBoard ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.
   
 Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse **Boards** sind.
-
-```eval_rst
-.. inheritance-diagram:: miniworldmaker.boards.pixel_board.PixelBoard miniworldmaker.boards.tiled_board.TiledBoard
-   :top-classes: miniworldmaker.tokens.boards.Board
-   :parts: 1
-```
 

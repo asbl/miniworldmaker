@@ -19,9 +19,11 @@ class TextToken(token.Token):
         Creates a new text_token
 
     """
-    def __init__(self, position = None, text = "", font_size = 80, color = (255, 255, 255, 255)):
+
+    def __init__(self, position=None, text="", font_size=80, color=(255, 255, 255, 255)):
         super().__init__(position, None)
-        self.costume.fill_color=(0, 0, 0, 0)
+        self.add_costume((0,0,0,0))
+        self.costume.fill_color = (0, 0, 0, 0)
         self.costume.font_size = font_size
         self.costume.color = color
         self.costume.is_scaled = True

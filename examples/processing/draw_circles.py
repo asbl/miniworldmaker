@@ -5,7 +5,7 @@ class MyBoard(ProcessingBoard):
 
     def on_setup(self):
         self.color = (255, 255, 255, 50)
-        self.fill((0,0,0,255))
+        self.add_background((0,0,0,255))
 
     def act(self):
         Ellipse(self.get_mouse_position(), 80, 80, 1, self.color)
@@ -17,6 +17,6 @@ class MyBoard(ProcessingBoard):
         self.color = (255, 255, 255, 50)
 
 
-my_board = MyBoard()
-my_board.show()
+my_board = MyBoard(800, 600)
+my_board.run()
 

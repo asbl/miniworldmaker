@@ -64,7 +64,6 @@ class Appearance(metaclass=MetaAppearance):
         self.image_actions_pipeline = [
             ("orientation", self.image_action_set_orientation, "orientation", False),
             ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
-            ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
             ("texture", self.image_action_texture, "is_textured", False),
             ("scale", self.image_action_scale, "is_scaled", False),
             ("scale_to_width", self.image_action_scale_to_width, "is_scaled_to_width", False),
@@ -87,6 +86,7 @@ class Appearance(metaclass=MetaAppearance):
         self.last_image = None
         self.cached_images = defaultdict()
         self.animation_length = 0
+
 
     @staticmethod
     def load_image(path):
@@ -325,6 +325,7 @@ class Appearance(metaclass=MetaAppearance):
         self._reload_all()
 
     def fill(self, color):
+        print("fill")
         try:
             self.fill_color = color
             self.surface_loaded = False
@@ -346,7 +347,6 @@ class Appearance(metaclass=MetaAppearance):
         self.set_image(-1)
         self._reload_all()
 
-
     def add_image(self, path: str) -> int:
         """
         Adds an image to the appearance
@@ -361,7 +361,6 @@ class Appearance(metaclass=MetaAppearance):
         _image = Appearance.load_image(path)
         self.images_list.append(_image)
         self.image_paths.append(path)
-        self._image = self.image
         self.dirty = 1
         self._reload_all()
         # self.update()

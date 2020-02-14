@@ -110,6 +110,7 @@ class App:
             tkn.Token.check_for_deprecated_methods(token_class)
         # Start the main-loop
         while not App.quit:
+            print("update")
             self._update()
         pygame.display.quit()
         sys.exit()
@@ -137,6 +138,7 @@ class App:
             # Event handling
             while self.event_queue:
                 element = self.event_queue.pop()
+                print(element)
                 for ct in self._containers:
                     ct.handle_event(element[0], element[1])
             self.event_queue.clear()
@@ -146,6 +148,8 @@ class App:
                     ct.update()
                     ct.repaint()
                     ct.blit_surface_to_window_surface()
+            self.board._update_all_costumes()
+            self.board._update_background()
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []
 
@@ -256,19 +260,7 @@ class App:
                 self._call_quit_event()
             # Event: Mouse-Button Down
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                container_set = set()
-                clicked_container = self.get_container_by_pixel(pos[0], pos[1])
-                container_set.add(clicked_container)  # add container which was clicked
-                for container in container_set:
-                    if event.button == 1:
-                        self.send_event_to_containers("mouse_left", (pos[0], pos[1]))
-                    if event.button == 3:
-                        self.send_event_to_containers("mouse_right", (pos[0], pos[1]))
-                    if event.button == 4:
-                        self.send_event_to_containers("wheel_up", (pos[0], pos[1]))
-                    if event.button == 5:
-                        self.send_event_to_containers("wheel_down", (pos[0], pos[1]))
+                self.send_mouse_down(event)
             elif event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
                 self.send_event_to_containers("mouse_motion", (pos[0], pos[1]))
@@ -345,6 +337,25 @@ class App:
                 else:
                     self.send_event_to_containers("key_down", keys_pressed)
         return False
+
+    def send_mouse_down(self, event):
+        pos = pygame.mouse.get_pos()
+        #container_set = set()
+        #clicked_container = self.get_container_by_pixel(pos[0], pos[1])
+        #container_set.add(clicked_container)  # add container which was clicked
+        #for container in container_set:
+        if event.button == 1:
+            self.send_event_to_containers("mouse_left", (pos[0], pos[1]))
+        if event.button == 3:
+            self.send_event_to_containers("mouse_right", (pos[0], pos[1]))
+        if event.button == 4:
+            self.send_event_to_containers("wheel_up", (pos[0], pos[1]))
+        if event.button == 5:
+            self.send_event_to_containers("wheel_down", (pos[0], pos[1]))
+        for token in self.board.tokens:
+            if hasattr(token, "on_clicked_left"):
+                if token.sensing_point(pos):
+                    self.send_event_to_containers("clicked_left", (token, (pos[0], pos[1])))
 
     def send_event_to_containers(self, event, data):
         events = []

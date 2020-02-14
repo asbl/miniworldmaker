@@ -4,7 +4,7 @@ from miniworldmaker import *
 class PongBoard(PixelBoard):
 
     def on_setup(self):
-        self.background.fill_color = (100, 0, 0)
+        self.add_background((100, 0, 0, 255))
         self.player1 = Paddle((10, 130), width=10, height=80, thickness=0)
         self.player2 = Paddle((780, 280), width=10, height=80, thickness=0)
         self.ball = Ball((395, 295))
@@ -67,7 +67,7 @@ class Ball(Circle):
         self.physics.gravity = False
         self.physics.stable = False
 
-    def on_sensing_collision_with_line(self, line, collision):
+    def on_touching_line(self, line, collision):
         if line == self.board.left:
             self.board.points_right.inc()
         if line == self.board.right:

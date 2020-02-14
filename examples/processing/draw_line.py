@@ -5,7 +5,7 @@ class MyBoard(ProcessingBoard):
 
     def __init__(self):
         super().__init__(800, 600)
-        self.background.fill_color = (0, 0, 0, 255)
+        self.add_background((0, 0, 0, 255))
         self.point = 1
         self.start_pos = None
         self.end_pos = None
