@@ -15,9 +15,8 @@ class Robot(Actor):
     def setup(self):
         self.add_image("images/1.png")
         self.add_image("images/2.png")
-
         self.size = (99, 99)
-        self.costume.animation_speed = 5
+        self.costume.animation_speed = 50
         self.costume.is_animated = True
         self.costume.orientation = - 90
         self.direction = "right"

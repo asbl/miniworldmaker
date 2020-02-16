@@ -2,7 +2,7 @@ Installation
 ============
 
 1. Installiere zuerst Python. 
-    Python kannst du z.B. unter [Python](www.python.org) herunterladen.
+    Python kannst du z.B. unter [Python](https://www.python.org) herunterladen.
 
 2. Installiere das Framework mit:
 
@@ -12,8 +12,8 @@ Installation
   
 3. Installiere eine geeignete Entwicklungsumgebung, z.B.:
 
-   * [Thonny](thonny)
+   * [Thonny](https://https://thonny.org/)
 
-   * [PyCharm](Pycharm)
+   * [PyCharm](https://www.jetbrains.com/de-de/pycharm/)
    
 ...jetzt kannst du loslegen.    

@@ -21,12 +21,3 @@ This means
   
   * The function returns the position on the playing field where the player is after the move.
  
- ### Methoden und Attribute
-
-Moves an token
-
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.token.Token
-   :members: move
-   :noindex:
-```

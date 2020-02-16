@@ -24,7 +24,6 @@ class Meta(type):
         if hasattr(instance, "on_setup"):
             instance.on_setup()
         if hasattr(instance, "setup"):
-            print("setup", instance)
             instance.setup()
         if hasattr(instance, "is_static") and instance.is_static is True:
             instance._stop_physics()
@@ -269,7 +268,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             self.__class__.class_image = path
         return image
 
-    def add_costume(self, source: Union[str, tuple]) -> costume.Costume:
+    def add_costume(self, source: Union[str, tuple] = (255, 255,255,0)) -> costume.Costume:
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)

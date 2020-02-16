@@ -5,12 +5,11 @@ import miniworldmaker as mwm
 
 class MyBoard(mwm.PixelBoard):
 
-    def __init__(self, screen_x, screen_y):
-        super().__init__(columns=screen_x, rows=screen_y)
+    def on_setup(self):
         asteroids = list()
         for i in range(5):
-            asteroid = Asteroid(position=(random.randint(30, screen_x - 30),
-                                          random.randint(0 + 30, screen_y - 30))),
+            asteroid = Asteroid(position=(random.randint(30, self.width - 30),
+                                          random.randint(0 + 30, self.height - 30))),
             asteroids.append(asteroid)
         Player(position=(40, 40))
         self.add_image("images/galaxy.jpg")
@@ -31,17 +30,17 @@ class Player(mwm.Actor):
         self.turn_right(10)
 
     def on_key_down_space(self):
-            self.shoot()
+        self.shoot()
 
     def act(self):
         self.move()
         borders = self.sensing_borders()
 
     def on_sensing_asteroid(self, asteroid):
-            explosion = Explosion(position=self.position.up(40).left(40))
-            explosion.costume.is_animated = True
-            self.board.play_sound("sounds/explosion.wav")
-            self.remove()
+        explosion = Explosion(position=self.position.up(40).left(40))
+        explosion.costume.is_animated = True
+        self.board.play_sound("sounds/explosion.wav")
+        self.remove()
 
     def on_sensing_borders(self, borders):
         self.bounce_from_border(borders)
@@ -65,7 +64,6 @@ class Laser(mwm.Actor):
         self.move()
 
     def on_sensing_asteroid(self, other):
-        print(self, other)
         other.remove()
         explosion = Explosion(position=other.position.up(40).left(40))
         explosion.costume.is_animated = True
@@ -93,18 +91,19 @@ class Explosion(mwm.Actor):
 
     def on_setup(self):
         self.size = (128, 128)
-        animation = ["images/explosion00.png",
-                     "images/explosion01.png",
-                     "images/explosion02.png",
-                     "images/explosion03.png",
-                     "images/explosion04.png",
-                     "images/explosion05.png",
-                     "images/explosion06.png",
-                     "images/explosion07.png",
-                     "images/explosion08.png"
-                     ]
+        self.add_costume()
+        self.costume.add_images(["images/explosion00.png",
+                                "images/explosion01.png",
+                                "images/explosion02.png",
+                                "images/explosion03.png",
+                                "images/explosion04.png",
+                                "images/explosion05.png",
+                                "images/explosion06.png",
+                                "images/explosion07.png",
+                                "images/explosion08.png"]
+                                )
         self.costume.animation_speed = 10
-        self.costume.animate("explosion", animation)
+        self.costume.is_animated = True
         mwm.ActionTimer(24, self.remove, None)
 
 

@@ -32,7 +32,7 @@ Board
 ### Processing Board
 
 ```eval_rst
-.. autoclass:: miniworldmaker.boards.processing_board.ProcessingBoard
+.. autoclass:: miniworldmaker.boards.physics_board.PhysicsBoard
    :members:
 ```
 

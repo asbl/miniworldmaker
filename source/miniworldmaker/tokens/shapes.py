@@ -236,11 +236,9 @@ class Line(Shape):
                               min(start_position[1], end_position[1]) - thickness,
                               width,
                               height)
-            print(box, width, height)
             self.thickness = thickness
             box_width = width
             box_height = height
-            print(box, box_width, box_height)
             # mod_start
             x = start_position[0] - box.topleft[0]
             y = start_position[1] - box.topleft[1]
@@ -304,10 +302,8 @@ class Rectangle(Shape):
                 x = point[0] - box[0]
                 y = point[1] - box[1]
                 self.mod_pointlist.append((x, y))
-            print("box", box, self.mod_pointlist, point_list)
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[2]+self.thickness), abs(box[3]+self.thickness))
-            print("size", self.size)
             self.costume.draw_shape_set(*self.draw_shape)
             self.physics.correct_angle = 90
 

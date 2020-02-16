@@ -30,7 +30,10 @@ class Timed():
                     "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
                 )
         else:
-            self.method(self.parameters)
+            if self.parameters is None:
+                self.method()
+            else:
+                self.method(self.parameters)
 
 class Timer(Timed):
     def __init__(self, time):

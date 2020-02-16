@@ -4,8 +4,10 @@ from miniworldmaker import *
 
 class MyBoard(TiledBoard):
 
-    def __init__(self):
-        super().__init__(columns=30, rows=20, tile_size=20, tile_margin=0)
+    def on_setup(self):
+        self.columns = 30
+        self.rows = 20
+        self.tile_size = 20
         self.add_background((255,255,255,0))
         for i in range(self.rows):
             for j in range(self.columns):

@@ -2,3 +2,4 @@ pygame
 pymunk
 asyncio
 nest_asyncio
+deprecated

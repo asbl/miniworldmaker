@@ -325,7 +325,6 @@ class Appearance(metaclass=MetaAppearance):
         self._reload_all()
 
     def fill(self, color):
-        print("fill")
         try:
             self.fill_color = color
             self.surface_loaded = False
@@ -365,6 +364,10 @@ class Appearance(metaclass=MetaAppearance):
         self._reload_all()
         # self.update()
         return len(self.images_list) - 1
+
+    def add_images(self, list_of_paths: list):
+        for path in list_of_paths:
+            self.add_image(path)
 
     def blit(self, path, position: tuple, size: tuple = (0, 0)):
         """

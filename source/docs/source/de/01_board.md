@@ -74,3 +74,4 @@ Es gibt verschiedene Unterklassen der Klasse Board:
   
 Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse **Boards** sind.
 
+> Mehr Informationen. Siehe [Tokens](../key_concepts/boards.md)

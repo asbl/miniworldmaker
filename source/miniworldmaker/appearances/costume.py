@@ -64,9 +64,9 @@ class Costume(appear.Appearance):
         if self.parent.board and self.is_animated:
             if self._end_animation or (
                     self.parent.board.frame != 0 and self.parent.board.frame % self.animation_speed == 0):
+                await self.next_image()
                 if self.animation_length > 0:
                     self.animation_length -= 1
-                    await self.next_image()
                     self.remove_last_image()
                     if self.animation_length == 0:
                         self.current_animation_images = None

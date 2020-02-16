@@ -28,7 +28,4 @@ Impressum and Contact
 --------------------------
 
   * [Impressum](impressum.md)
-  
-  * Twitter: @a_siebel
-  
-  * Mail: a.siebel@cws-usingen.de
+ 

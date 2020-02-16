@@ -21,7 +21,6 @@ miniworldmaker/boards/__init__.py
 miniworldmaker/boards/board.py
 miniworldmaker/boards/physics_board.py
 miniworldmaker/boards/pixel_board.py
-miniworldmaker/boards/processing_board.py
 miniworldmaker/boards/tiled_board.py
 miniworldmaker/connectors/__init__.py
 miniworldmaker/connectors/board_connector.py

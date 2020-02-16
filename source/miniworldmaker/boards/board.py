@@ -361,7 +361,6 @@ class Board(container.Container, metaclass=MetaBoard):
             new_background.fill(source)
         if self.background is None:
             self.background = new_background
-            print("display update")
             self._update_all_costumes()
             self._update_background()
             new_background.orientation = self.background.orientation
@@ -626,7 +625,6 @@ class Board(container.Container, metaclass=MetaBoard):
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
         # Call specific event handlers ("on_mouse_left", "on_mouse_right", ... for tokens
-        print(event)
         if event not in self._executed_events:  # events shouldn't be called more than once per tick
             self._executed_events.add(event)
             from miniworldmaker.tokens import token

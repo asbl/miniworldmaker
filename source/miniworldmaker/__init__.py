@@ -3,7 +3,6 @@ from miniworldmaker.board_positions.board_rect import BoardRect
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.physics_board import PhysicsBoard
 from miniworldmaker.boards.pixel_board import PixelBoard
-from miniworldmaker.boards.processing_board import ProcessingBoard
 from miniworldmaker.boards.tiled_board import TiledBoard
 from miniworldmaker.connectors.board_connector import BoardConnector
 from miniworldmaker.connectors.physics_connector import PhysicsBoardConnector

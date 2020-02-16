@@ -65,8 +65,9 @@ class App:
     def _display_update(self):
         self._recalculate_dimensions()
         if self.full_screen:
-            self.window_surface = pygame.display.set_mode((self.window_width, self.window_height),
-                                                          pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+            #self.window_surface = pygame.display.set_mode((self.window_width, self.window_height),
+            #                                              pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF)
+            self.window_surface = pygame.display.set_mode((self.window_width, self.window_height, ), pygame.FULLSCREEN)
         else:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
         self.window_surface.set_alpha(None)
@@ -110,7 +111,6 @@ class App:
             tkn.Token.check_for_deprecated_methods(token_class)
         # Start the main-loop
         while not App.quit:
-            print("update")
             self._update()
         pygame.display.quit()
         sys.exit()
@@ -138,7 +138,6 @@ class App:
             # Event handling
             while self.event_queue:
                 element = self.event_queue.pop()
-                print(element)
                 for ct in self._containers:
                     ct.handle_event(element[0], element[1])
             self.event_queue.clear()
@@ -192,7 +191,7 @@ class App:
             self._containers_right.remove(container)
         if container in self._containers_bottom:
             self._containers_bottom.remove(container)
-        self._display_update()
+        #self._display_update()
         self.dirty = 1
         for ct in self._containers:
             ct.dirty = 1
