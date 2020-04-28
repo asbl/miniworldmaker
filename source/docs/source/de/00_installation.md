@@ -12,7 +12,7 @@ Installation
   
 3. Installiere eine geeignete Entwicklungsumgebung, z.B.:
 
-   * [Thonny](https://https://thonny.org/)
+   * [Thonny](https://thonny.org/)
 
    * [PyCharm](https://www.jetbrains.com/de-de/pycharm/)
    
