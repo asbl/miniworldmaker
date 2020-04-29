@@ -74,27 +74,37 @@ class PixelBoardConnector(board_connector.BoardConnector):
     def filter_actor_list(a_list, actor_type):
         return [actor for actor in a_list if type(actor) == actor_type]
 
-    def sensing_tokens(self, token_type=None, distance: int = 1) -> list:
+    def sensing_tokens(self, token_type=None, distance: int = 1, collision_type="default") -> list:
             destination_rect = self.get_destination_rect(distance=distance)
             tokens = self.board.get_tokens_at_rect(destination_rect, singleitem=False, exclude=self.token,
                                                    token_type=token_type)
-            if self.token.collision_type == "circle":
+            if collision_type == "default":
+                collision_type = "mask"
+            if collision_type == "circle":
                 tokenlist = [token for token in tokens if pygame.sprite.collide_circle(self.token, token)]
-            elif self.token.collision_type == "rect":
+            elif collision_type == "rect" or collision_type == "static-rect":
                 tokenlist = [token for token in tokens if pygame.sprite.collide_rect(self.token, token)]
-            else:
+            elif collision_type == "mask":
                 tokenlist = [token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
             return tokenlist
 
     def sensing_token(self, token_type=None, distance: int = 1) -> Union[token.Token, None]:
             destination_rect = self.get_destination_rect(distance)
-            token = self.board.get_tokens_at_rect(destination_rect, singleitem=True, exclude=self.token,
+            tokens = self.board.get_tokens_at_rect(destination_rect, singleitem=True, exclude=self.token,
                                                   token_type=token_type)
-            if token:
-                if pygame.sprite.collide_mask(self.token, token):
-                    return token
-                else:
-                    return None
+            if self.token.collision_type == "default":
+                collision_type = "mask"
+            if tokens:
+                for token in tokens:
+                    if collision_type == "circle":
+                        if pygame.sprite.collide_circle(self.token, token):
+                            return token
+                    if collision_type == "rect" or collision_type == "static-rect":
+                        if pygame.sprite.collide_rect(self.token, token):
+                            return token
+                    if collision_type == "mask":
+                        if pygame.sprite.collide_mask(self.token, token):
+                            return token
             return None
 
     def bounce_from_token(self, other):

@@ -37,11 +37,22 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     Token is the basic class for all kinds of players,
     pieces and obstacles on the playing field
 
-    Args:
-        position (tuple): Position on the board where the token should be created.
-
     Attributes:
-        collision_type: Defines the type of collision. Can be either "rect", "circle" or "mask"
+        position (tuple): Position on the board where the token should be created.
+        collision_type (string):
+            The parameter collision_type specifies how collisions should be checked:
+
+                * "default": tile for TiledBoards, 'maask' for PixelBoards
+
+                * "tile": Are tokens on the same tile? (only TiledBoard)
+
+                * "rect": Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
+
+                * "static-rect": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+
+                * "circle": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+
+                * "mask": Are tokens colliding when checkig if their image masks are overlapping.
         """
     token_count = 0
     class_image = None
@@ -70,10 +81,10 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.physics = ph.PhysicsProperty()
         self.token_id = Token.token_count + 1
         self.is_static = False
+        self._collision_type = "default"
         # costume
         self.costume_count = 0
         self.costumes = appearances.Costumes(self.costume)
-        self.collision_type = "mask"
         self.board = app.App.board
         self._orientation = 0
         self._initial_direction = 0
@@ -220,11 +231,20 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             The rectangle describing the image
 
         """
-        if self.dirty == 1:
-            self._rect = self.board_connector.get_token_rect()
-            return self._rect
+        if self.collision_type != "static-rect":
+            if self.dirty == 1:
+                self._rect = self.board_connector.get_token_rect()
+                return self._rect
+            else:
+                return self._rect
         else:
             return self._rect
+
+    @rect.setter
+    def rect(self, value):
+        self._rect = value
+
+
 
     def add_image(self, path: str) -> int:
         """
@@ -289,6 +309,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             new_costume.fill_color = source
         if self.costume is None:
             self.costume = new_costume
+            if self.collision_rect == "static-rect":
+                self.rect = self.image.get_rect()
         self.costumes.add(new_costume)
         return new_costume
 
@@ -723,6 +745,16 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         value = value % 360
         return value
 
+    @property
+    def collision_rect(self):
+        return self._collision_rect
+
+    @collision_rect.setter
+    def collision_rect(self, value):
+        self._collision_rect = value
+        if value == "static-rect":
+            self.rect = self.image.get_rect()
+
     def move_in_direction(self, direction: Union[int, str], distance = 1):
         """Moves token *distance* steps into a *direction*.
 
@@ -881,7 +913,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         return self.board_connector.sensing_on_board(distance=distance)
 
-    def sensing_tokens(self, token_type=None, distance: int = 0):
+    def sensing_tokens(self, token_type=None, distance: int = 0, collision_type = "default" ):
         """Senses if tokens are on tokens position.
         Returns a list of tokens.
 
@@ -890,6 +922,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         Args:
             token_type: filter by token type. Enter a class_name of tokens to look for here
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
+            collision_type: The type of collision which should be checked:
 
         Returns:
             All tokens found by Sensor
@@ -897,7 +930,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         return self.board_connector.sensing_tokens(token_type, distance)
 
-    def sensing_token(self, token_type=None, distance: int = 0):
+    def sensing_token(self, token_type=None, distance: int = 0, collision_type = "default"):
         """Senses if tokens are on tokens position.
         Returns the first found token.
 
@@ -906,6 +939,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         Args:
             token_type: filter by token type. Enter a class_name of tokens to look for here
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
+            collision_type: The type of collision which should be checked:
 
         Returns:
             First token found by Sensor
