@@ -949,7 +949,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             First token found by Sensor
 
         Examples:
-            Sensing a fireplace in rpg-basic-template.py:
+            Sensing a fireplace in rpg.py:
 
             >>>  fireplace =  self.player.sensing_token(Fireplace)
             >>>    if fireplace:
