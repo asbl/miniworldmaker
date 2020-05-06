@@ -2,7 +2,7 @@ Boards
 ======
 
 ```eval_rst
-.. inheritance-diagram:: miniworldmaker.boards.pixel_board.PixelBoard miniworldmaker.boards.tiled_board.TiledBoard
+.. inheritance-diagram:: miniworldmaker.boards.pixel_board.PixelBoard miniworldmaker.boards.tiled_board.TiledBoard miniworldmaker.boards.physics_board.PhysicsBoard
    :top-classes: miniworldmaker.tokens.boards.Board
    :parts: 1
 ```
@@ -18,7 +18,7 @@ Board
 ### PixelBoard
 
 ```eval_rst
-.. autoclass:: miniworldmaker.boards.tiled_board.TiledBoard
+.. autoclass:: miniworldmaker.boards.pixel_board.PixelBoard
    :members:
 ```
 
@@ -29,7 +29,7 @@ Board
    :members:
 ```
 
-### Processing Board
+### PhysicsBoard
 
 ```eval_rst
 .. autoclass:: miniworldmaker.boards.physics_board.PhysicsBoard
