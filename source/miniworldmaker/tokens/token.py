@@ -61,9 +61,12 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     def __init__(self, position=None, image=None):
         pygame.sprite.DirtySprite.__init__(self)
+        self._collision_rect = None
+        self.collision_type = ""
         self.setup_completed = False
         self.board = app.App.board
         self.costume = None
+
         # private
         self._size = (0, 0)  # Tuple with size
         if position is not None:
@@ -71,6 +74,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         else:
             self._position = (0, 0)
         self._direction = 0
+
         self.last_position = (0, 0)
         self.last_direction = 90
         self.init = 1 # Was init called ?
