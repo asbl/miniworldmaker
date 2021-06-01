@@ -1,0 +1,46 @@
+Metadata-Version: 2.1
+Name: miniworldmaker
+Version: 1.2.6
+Summary: Create 2D Miniworlds and Games
+Home-page: https://github.com/asbl/miniworldmaker
+Author: Andreas Siebel
+Author-email: andreas.siebel@it-teaching.de
+License: OSI Approved :: MIT License
+Download-URL: https://github.com/asbl/miniworldmaker
+Description: MiniWorldMaker
+        ---------
+        
+        <img align="right" src="miniworldmaker/resources/logo_big.png" alt="logo"/>
+        MiniWorldMaker allows you to create 2D mini worlds and games.
+        
+        
+        
+        ### Features
+        
+          * MiniWorldMaker supports pixel-based games as well as games with 
+          tiles (e.g. Rogue-Likes)
+          
+          * Easy creation of animations
+          
+          * Music and sound effects
+          
+          * Integrated GUI elements like console for output, toolbar, ...
+            
+          * Load and Save to SQLite Databases
+          
+          * EXPERIMENTAL: Integrated Physics-Engine based on Pymunk
+          
+          * Open Source
+          
+          * Miniworldmaker is a 2D Engine based on Python 3 and pygame.
+        
+          * [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.it-teaching.de/) | [PyPi](https://pypi.org/project/miniworldmaker/)
+        
+Keywords: games,education,mini-worlds
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Education
+Description-Content-Type: text/markdown

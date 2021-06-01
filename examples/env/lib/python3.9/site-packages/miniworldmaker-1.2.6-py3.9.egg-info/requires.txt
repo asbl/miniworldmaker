@@ -1,0 +1,5 @@
+pygame>=1.9.6
+pymunk<=5.6.0,>=5.6.0
+asyncio
+nest_asyncio
+deprecated

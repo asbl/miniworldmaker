@@ -1,0 +1,22 @@
+#BlueJ class context
+comment0.target=Earth()
+comment0.text=\nCreate\ a\ new\ world.\ \n\n
+comment1.params=x\ y
+comment1.target=boolean\ isWater(int,\ int)
+comment1.text=\nReturn\ true,\ if\ the\ specified\ coordinate\ shows\ water.\n(Water\ is\ defined\ as\ a\ predominantly\ blueish\ color.)\n\n
+comment2.params=map
+comment2.target=void\ jumpToMap(int)
+comment2.text=\nJump\ to\ the\ given\ map\ number\ (1..n).\n\n
+comment3.params=mapNo
+comment3.target=void\ showMap(int)
+comment3.text=\nSet\ up\ the\ start\ scene.\n\n
+comment4.params=time
+comment4.target=void\ mapFinished(int)
+comment4.text=\nGame\ is\ over.\ Stop\ running,\ display\ score.\n\n
+comment5.params=time
+comment5.target=void\ displayScore(int)
+comment6.target=void\ displayFinalScore()
+comment7.target=void\ clearWorld()
+comment8.params=time
+comment8.target=void\ wait(int)
+numComments=9
