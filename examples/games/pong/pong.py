@@ -74,4 +74,4 @@ class Ball(Circle):
             self.board.points_left.inc()
 
 board = PongBoard(800, 600)
-board.show(fullscreen=False)
+board.run()

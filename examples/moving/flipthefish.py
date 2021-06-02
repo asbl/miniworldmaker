@@ -6,14 +6,14 @@ class MyBoard(TiledBoard):
     def __init__(self):
         super().__init__(tile_size=50, columns=10, rows=1, tile_margin=1)
         player1 = Fish((0, 0))
-        self.add_image("images/water.png")
+        self.add_background("images/water.png")
         self.speed = 20
 
 
 class Fish(Actor):
 
     def on_setup(self):
-        self.add_image(path="images/fish.png")
+        self.add_costume("images/fish.png")
         self.costume.orientation = - 90
         self.direction = "right"
 

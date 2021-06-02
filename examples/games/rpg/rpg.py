@@ -27,7 +27,7 @@ class MyBoard(TiledBoard):
         self.fireplace = Fireplace((10, 14))
         self.door = Door((6, 2))
         self.player = Player((8, 2))
-        self.play_music("rpgsounds/bensound-betterdays.mp3")
+        #self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = self._window.add_container(Toolbar(), "right")
         self.console = self._window.add_container(Console(), "bottom")
         print("setup finished")

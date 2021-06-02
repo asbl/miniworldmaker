@@ -30,4 +30,4 @@ class MyBoard(PixelBoard):
 
 
 my_board = MyBoard()
-my_board.show()
+my_board.run()

@@ -6,7 +6,7 @@ from miniworldmaker import *
 class MyBoard(PixelBoard):
     def __init__(self):
         super().__init__(160, 160)
-        self.add_image("images/soccer_green.jpg")
+        self.add_background("images/soccer_green.jpg")
         self.ball = SmallBall((10, 10))
         self.ball.direction = random.randint(0, 360)
         self.osbstacle = Obstacle((50, 50))
@@ -16,7 +16,7 @@ class SmallBall(Token):
     def __init__(self, position):
         super().__init__(position)
         self.size = (10, 10)
-        self.add_image("images/ball_tennis.png")
+        self.add_costume("images/ball_tennis.png")
         self.speed = 4
 
     def on_sensing_obstacle(self, other):

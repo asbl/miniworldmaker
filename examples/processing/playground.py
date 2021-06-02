@@ -7,7 +7,7 @@ class MyBoard(TiledBoard):
         self.columns = 20
         self.rows = 10
         self.tile_size = 5
-        self.add_image(path="images/backgroundColorGrass.png")
+        self.add_background("images/backgroundColorGrass.png")
 
 board = MyBoard()
-board.show()
+board.run()

@@ -5,7 +5,7 @@ import miniworldmaker as mwm
 class MyBoard(mwm.PixelBoard):
 
     def on_setup(self):
-        self.add_image(path = "images/background.png")
+        self.add_background("images/background.png")
         Bird((75, 200))
         self.pipe1 = Pipe(position=(260, self.height - 280))
         self.pipe2 = Pipe(position=(520, 0))
@@ -24,7 +24,7 @@ class MyBoard(mwm.PixelBoard):
 class Bird(mwm.Token):
 
     def on_setup(self):
-        self.add_image("images/fly.png")
+        self.add_costume("images/fly.png")
         self.size = (60, 60)
         self.costume.orientation = 180
         self.flip_x()
@@ -50,7 +50,7 @@ class Bird(mwm.Token):
 class Pipe(mwm.Token):
 
     def on_setup(self):
-        self.add_image("images/pipe1.png")
+        self.add_costume("images/pipe1.png")
         self.costume.is_rotatable = False
         self.size = (80, 300)
         self.passed = False

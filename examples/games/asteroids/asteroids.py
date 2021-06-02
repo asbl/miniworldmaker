@@ -12,14 +12,14 @@ class MyBoard(mwm.PixelBoard):
                                           random.randint(0 + 30, self.height - 30))),
             asteroids.append(asteroid)
         Player(position=(40, 40))
-        self.add_image("images/galaxy.jpg")
+        self.add_background("images/galaxy.jpg")
 
 
 class Player(mwm.Actor):
 
     def __init__(self, position):
         super().__init__(position)
-        self.add_image("images/ship.png")
+        self.add_costume("images/ship.png")
         self.size = (30, 30)
         self.costume.orientation = - 90
 
@@ -53,7 +53,7 @@ class Player(mwm.Actor):
 class Laser(mwm.Actor):
 
     def on_setup(self):
-        self.add_image("images/laser.png")
+        self.add_costume("images/laser.png")
         self.size = (30, 30)
         self.costume.is_upscaled = True
         self.costume.orientation = 180
@@ -76,7 +76,7 @@ class Laser(mwm.Actor):
 class Asteroid(mwm.Actor):
     def __init__(self, position):
         super().__init__(position)
-        self.add_image("images/asteroid.png")
+        self.add_costume("images/asteroid.png")
         self.size = (30, 30)
         self.direction = random.randint(0, 360)
 

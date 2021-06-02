@@ -4,7 +4,7 @@ from miniworldmaker import *
 class MyBoard(PixelBoard):
 
     def on_setup(self):
-        self.add_image(path="images/stone.jpg")
+        self.add_background("images/stone.jpg")
         robot = Robot(position=(200, 200))
         wall = Wall(position = (100,100))
 
@@ -12,13 +12,13 @@ class MyBoard(PixelBoard):
 class Wall(Actor):
 
     def on_setup(self):
-        self.add_image(path="images/wall.png")
+        self.add_costume("images/wall.png")
         self.size= (64, 64)
 
 class Robot(Actor):
 
     def on_setup(self):
-        self.add_image("images/robo_green.png")
+        self.add_costume("images/robo_green.png")
         self.costume.orientation = - 90
         self.size=(64,64)
 
@@ -46,4 +46,4 @@ class Robot(Actor):
         print(mouse_pos)
 
 board = MyBoard(800, 600)
-board.show()
+board.run()

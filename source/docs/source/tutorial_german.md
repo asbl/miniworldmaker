@@ -1,10 +1,10 @@
 Tutorial - Deutsch
 ==================
 
-```eval_rst
+```{eval-rst}
 .. toctree::
    :maxdepth: 1
-   :numbered:
+
    :glob:
    
    de/*

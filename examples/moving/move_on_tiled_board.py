@@ -6,7 +6,7 @@ class MyBoard(TiledBoard):
     def on_setup(self):
         self.tile_size = 60
         self.player = Player(position=(1, 1))
-        self.add_image(path="images/soccer_green.jpg")
+        self.add_background("images/soccer_green.jpg")
         self.background.is_scaled = True
         self.speed = 10
         print(self.is_running)
@@ -15,7 +15,7 @@ class MyBoard(TiledBoard):
 class Player(Actor):
 
     def on_setup(self):
-        self.add_image(path="images/char_blue.png")
+        self.add_costume("images/char_blue.png")
         self.costume.is_upscaled = True
         self.costume.orientation = - 90
 
@@ -37,4 +37,4 @@ class Player(Actor):
 
 
 board = MyBoard(6, 4)
-board.show()
+board.run()

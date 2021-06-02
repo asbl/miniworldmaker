@@ -1,0 +1,316 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="3. Tokens" href="02_tokens.html" /><link rel="prev" title="1. Installation" href="00_installation.html" />
+
+    <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
+        <title>2. The playing field - miniworldmaker 2021 documentation</title>
+      <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" href="../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">miniworldmaker 2021 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">miniworldmaker 2021 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../mwm.html">Miniworldmaker</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_german.html">Tutorial - Deutsch</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../de/00_installation.html">1. Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. Das Spielfeld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/02_tokens.html">3. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/04_movement.html">5. Bewegung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/05_events.html">6. Ereignisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/07_costumes.html">8. Kostüme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/08_physics.html">9. Physik</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../tutorial_english.html">Tutorial - English</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="00_installation.html">1. Installation</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2. The playing field</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_tokens.html">3. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_directions.html">4. Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_movement.html">5. Movements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_sensing.html">6. Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_events.html">7. events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_costumes.html">8. Costumes and Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_animations.html">9. Animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_gui.html">10. GUI elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_physics.html">11. physics</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label for="toctree-checkbox-3"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.html">Appearance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.background.html">Appearance.Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.costume.html">Appearance.Costume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.html">Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.physicsboard.html">Board.PhysicsBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.pixelboard.html">Board.PixelBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.tiledboard.html">Board.TiledBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board_position.html">BoardPositions, Lines and Rectangles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.html">Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.numbertoken.html">Token.NumberToken</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.shape.html">Token.Shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.texttoken.html">Token.TextToken</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">1. Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">2. Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">3. Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">4. Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">5. Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">6. Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">7. Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">8. Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">9. Tokens</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="the-playing-field">
+<h1><span class="section-number">2. </span>The playing field<a class="headerlink" href="#the-playing-field" title="Permalink to this headline">¶</a></h1>
+<p>Here we go!</p>
+<div class="section" id="a-first-world">
+<h2><span class="section-number">2.1. </span>A first world<a class="headerlink" href="#a-first-world" title="Permalink to this headline">¶</a></h2>
+<p>We create the first world. This works with the following code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">miniworldmaker</span>
+
+<span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
+<span class="n">board</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">board</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">board</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="n">board</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
+<span class="n">board</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">board</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="section" id="what-happens-here">
+<h3><span class="section-number">2.1.1. </span>What happens here?<a class="headerlink" href="#what-happens-here" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>In line 1 the miniworldmaker library is imported.</p></li>
+<li><p>In line 3 a new <strong>object</strong> of type <strong>TiledBoard</strong> is created.</p></li>
+<li><p>In line 2-6 the various attributes of the object are changed.</p></li>
+<li><p>In line 10 the game is started. With and() a mainloop is started, which draws the board again and again.</p></li>
+</ul>
+</div>
+<div class="section" id="result">
+<h3><span class="section-number">2.1.2. </span>Result<a class="headerlink" href="#result" title="Permalink to this headline">¶</a></h3>
+<p>That’s how it looks:</p>
+<p><img alt="tiles" src="../_images/grid.jpg"/></p>
+</div>
+<div class="section" id="variant-show-the-grid">
+<h3><span class="section-number">2.1.3. </span>Variant: Show the grid<a class="headerlink" href="#variant-show-the-grid" title="Permalink to this headline">¶</a></h3>
+<p>If you like, you can also have the borders of the individual tiles displayed.
+Change the method setup() in the class MyBoard:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="k">def</span> <span class="nf">setup</span><span class="p">()</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">grid_overlay</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="outlook-pixelboards-and-tiledboards">
+<h3><span class="section-number">2.1.4. </span>Outlook: PixelBoards and TiledBoards<a class="headerlink" href="#outlook-pixelboards-and-tiledboards" title="Permalink to this headline">¶</a></h3>
+<p>There are several subclasses of the class board:</p>
+<ul class="simple">
+<li><p>A PixelGrid is intended for pixel-precise representation of content.</p></li>
+<li><p>A TiledBoard is intended for boards where the actors move on square tiles.</p></li>
+</ul>
+<p>Most of the functions differ only slightly, since both boards are subclasses of the class <strong>Boards</strong>.</p>
+<p>See <a class="reference internal" href="../key_concepts/boards.html"><span class="doc std std-doc">Boards</span></a></p>
+</div>
+</div>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="02_tokens.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title"><span class="section-number">3. </span>Tokens</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="00_installation.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title"><span class="section-number">1. </span>Installation</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Andreas Siebel
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../_sources/en/01_board.md.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">2. The playing field</a><ul>
+<li><a class="reference internal" href="#a-first-world">2.1. A first world</a><ul>
+<li><a class="reference internal" href="#what-happens-here">2.1.1. What happens here?</a></li>
+<li><a class="reference internal" href="#result">2.1.2. Result</a></li>
+<li><a class="reference internal" href="#variant-show-the-grid">2.1.3. Variant: Show the grid</a></li>
+<li><a class="reference internal" href="#outlook-pixelboards-and-tiledboards">2.1.4. Outlook: PixelBoards and TiledBoards</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

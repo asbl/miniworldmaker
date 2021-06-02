@@ -5,7 +5,7 @@ class MyBoard(PixelBoard):
 
     def __init__(self):
         super().__init__(columns=280, rows=100)
-        self.add_image("images/water.png")
+        self.add_background("images/water.png")
         player1 = Robot(position=(0, 0))
         self.speed = 1
 
@@ -13,10 +13,10 @@ class MyBoard(PixelBoard):
 class Robot(Actor):
 
     def setup(self):
-        self.add_image("images/1.png")
-        self.add_image("images/2.png")
+        self.add_costume()
+        self.costume.add_images(["images/1.png", "images/2.png","images/3.png","images/4.png"])
         self.size = (99, 99)
-        self.costume.animation_speed = 50
+        self.costume.animation_speed = 120
         self.costume.is_animated = True
         self.costume.orientation = - 90
         self.direction = "right"
@@ -31,4 +31,4 @@ class Robot(Actor):
 
 
 board = MyBoard()
-board.show()
+board.run()

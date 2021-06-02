@@ -145,8 +145,6 @@ class App:
                     ct.update()
                     ct.repaint()
                     ct.blit_surface_to_window_surface()
-            self.board._update_all_costumes()
-            self.board._update_background()
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []
 

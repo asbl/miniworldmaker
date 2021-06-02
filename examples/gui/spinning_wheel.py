@@ -14,7 +14,7 @@ class MyBoard(TiledBoard):
         self.chip = None
         self.placed = False
         self.speed = 1
-        self.add_image("images/greenfield.jpg")
+        self.add_background("images/greenfield.jpg")
 
     def on_message(self, message):
         if message == "Spin":
@@ -35,7 +35,7 @@ class Arrow(Actor):
 
     def on_setup(self):
         self.spinning = 0
-        self.add_image("images/arrow.png")
+        self.add_costume("images/arrow.png")
 
     def act(self):
         if self.spinning > 0:
@@ -58,7 +58,7 @@ class Arrow(Actor):
 class Chip(Token):
 
     def on_setup(self):
-        self.add_image("images/chip.png")
+        self.add_costume("images/chip.png")
 
 my_grid = MyBoard(3, 3)
 my_grid.run()

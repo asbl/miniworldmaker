@@ -7,7 +7,7 @@ class MyGrid(PixelBoard):
         super().__init__(columns=200, rows=240)
         self.window.add_container(MyToolbar(), dock="right")
         self.rocket = Rocket(position=(100, 200))
-        self.add_image("images/galaxy.jpg")
+        self.add_background("images/galaxy.jpg")
 
     def on_button_pressed(self, data):
         if data == "Start Rocket":
@@ -18,7 +18,7 @@ class Rocket(Actor):
 
     def __init__(self, position):
         super().__init__(position)
-        self.add_image("images/ship.png")
+        self.add_costume("images/ship.png")
         self.started = False
         self.turn_left(90)
         self.direction = "up"

@@ -5,7 +5,6 @@ from inspect import signature
 from typing import Union
 
 import pygame
-from deprecated import deprecated
 from miniworldmaker.app import app
 from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position
@@ -314,36 +313,6 @@ class Board(container.Container, metaclass=MetaBoard):
         return self.__class__.__name__
 
 
-    def add_image(self, path: str) -> background.Background:
-        """
-        Adds image to current background.
-        If no background is created yet, a new background will be created with this image.
-
-        Args:
-            path: The path to the image as relative path
-
-        Returns:
-            The index of the image.
-
-        Examples:
-            >>> class MyBoard(Board):
-            >>>
-            >>>     def __init__(self):
-            >>>         super().__init__(columns=400, rows=200)
-            >>>         self.add_image(path="images/stone.jpg")
-            Creates Board with file stone.jpg in folder images as background
-
-        """
-        if self.background is None:
-            self.add_background(path)
-            image = self.background.image
-            self.window._display_update()
-            self.window.window_surface.blit(image, self.rect)
-        else:
-            image = self.background.add_image(path)
-
-        return image
-
     def add_background(self, source: Union[str, tuple]) -> background.Background:
         """
         Adds a new background to the board
@@ -499,10 +468,6 @@ class Board(container.Container, metaclass=MetaBoard):
         """
         self.window.send_event_to_containers("reset", self)
 
-    @deprecated(version='1.0.44', reason="Use _handle_reset_event instead")
-    def _reset(self, event, data):
-        self._handle_reset_event(event, data)
-
     def repaint(self):
         if self.background:
             if self._repaint_all:
@@ -515,20 +480,6 @@ class Board(container.Container, metaclass=MetaBoard):
             if self._repaint_all:
                 self.window.repaint_areas.append(self.rect)
                 self._repaint_all = False
-
-    def reset(self):
-        """Resets the board
-        Creates a new board with init-function - recreates all tokens and actors on the board.
-
-        Examples:
-
-            Restarts flappy the bird game after collision with pipe:
-
-            >>> def on_sensing_collision_with_pipe(self, other, info):
-            >>>    self.board.is_running = False
-            >>>    self.board.reset()
-        """
-        self.window.send_event_to_containers("reset", self)
 
     def run(self, fullscreen=False):
         """
@@ -546,19 +497,6 @@ class Board(container.Container, metaclass=MetaBoard):
             if hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
                 self.window.send_event_to_containers("setup", self)
         self.window.run(self.image, full_screen=fullscreen)
-
-    @deprecated(version='1.0.44', reason="You should use board.run()")
-    def show(self, fullscreen=False):
-        """
-        The method show() should always called at the end of your program.
-        It starts the mainloop.
-
-        Examples:
-            >>> my_board = Board() # or a subclass of Board
-            >>> my_board.show()
-
-        """
-        self.run(fullscreen)
 
     def switch_background(self, index=-1) -> background.Background:
         """Switches the background
@@ -579,7 +517,6 @@ class Board(container.Container, metaclass=MetaBoard):
             index = index
         self.background = self.backgrounds[index]
         self.background.dirty = 1
-        self.background.changed_all()
         self.background_changed = 1
         self._repaint_all = 1
         [token.set_dirty() for token in self.tokens]
