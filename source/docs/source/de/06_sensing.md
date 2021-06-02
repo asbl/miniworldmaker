@@ -1,34 +1,19 @@
-Aktives Aufspüren
+Kollisionen und Sensoren
 =================
 
-Zusätzlich zu den Reaktionen auf Ereignisse kann auch aktiv 
-der Status des Boards überprüft sowie die Sensoren von Tokens abgefragt werden.
-
-Dies kann z.B. innerhalb einer anderen Ereignismethode passieren, wenn z.B. überprüft werden soll, ob eine Taste gedrückt wurde, während sich zwei Tokens berühren.
-
+Zusätzlich zu den Reaktionen auf Ereignisse können Tokens auch über Sensoren den Status des Boards überprüfen und ob z.B. andere Tokens sich an gleicher Stelle befinden.
 
 Dies geht z.B. mit folgender Funktion:
 
-### Methoden 
+### Ein Objekt aufspüren
 
-  * **player.sensing_tokens(distance, token)**
-    
-    Spürt Token in Entfernung *distance* auf. Gibt eine Liste von gefundenen Tokens zurück.
-
-  * **player.sensing_tokens(distance, token)**
-    
-    Spürt Token in Entfernung *distance* auf. Gibt das erste gefundene Token zurück.
-
-
-### Beispiel
-
-In dem Beispiel wird überprüft, ob der Akteur vor einer verschlossenen Tür steht:
+Du kannst ein Token folgendermaßen aufspüren:
 
 ```
-actors_in_front = self.sensing_tokens(distance = 1, token = Door)
-        if self.board.door in actors_in_front:
-            if self.board.door.closed:
-                message = "The Door is closes"
+@player.register
+def on_sensing_token(self, token):
+    print("Damage!!!!!")
+    self.remove()
 ```
 
----> Mehr über Sensoren: [Sensoren](../key_concepts/sensors.md)
+> ➥ Mehr über Sensoren: [Key Concept: Sensors](../key_concepts/sensors.md)

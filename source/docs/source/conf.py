@@ -18,18 +18,17 @@ import deprecated
 
 sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../../miniworldmaker'))
-from recommonmark.parser import CommonMarkParser
-from recommonmark.transform import AutoStructify
+
 # -- Project information -----------------------------------------------------
 
 project = 'miniworldmaker'
-copyright = '2019, Andreas Siebel'
+copyright = '2021, Andreas Siebel'
 author = 'Andreas Siebel'
 
 # The short X.Y version
-version = ''
+version = '1.5'
 # The full version, including alpha/beta/rc tags
-release = '2019'
+release = '2021'
 
 # -- General configuration ---------------------------------------------------
 
@@ -53,6 +52,20 @@ extensions = [
     'sphinx.ext.inheritance_diagram',
     'sphinx.ext.graphviz',
     'sphinx.ext.napoleon',
+    'myst_parser',
+]
+
+myst_enable_extensions = [
+    "amsmath",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "html_admonition",
+    "html_image",
+    "replacements",
+    "smartquotes",
+    "substitution",
+    "tasklist",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,13 +74,15 @@ templates_path = ['_templates']
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
-# source_suffix = ['.rst', '.md']
-
-source_parsers = {
-    '.md': CommonMarkParser,
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
 }
 
-source_suffix = ['.rst', '.md']
+#source_parsers = {
+#    '.md': CommonMarkParser,
+#
 
 # The master toctree document.
 master_doc = 'index'
@@ -93,12 +108,11 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -208,10 +222,10 @@ napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
 
 # At the bottom of conf.py
-def setup(app):
-    app.add_config_value('recommonmark_config', {
-            'enable_eval_rst:': True,
-            'enable_auto_toc_tree' : True,
-            }, True)
-    app.add_transform(AutoStructify)
+#def setup(app):
+#    app.add_config_value('recommonmark_config', {
+#            'enable_eval_rst:': True,
+#            'enable_auto_toc_tree' : True,
+#            }, True)
+#    app.add_transform(AutoStructify)
 

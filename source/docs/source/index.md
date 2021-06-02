@@ -1,19 +1,19 @@
 MiniWorldMaker
 ==============
 
-MiniWorldMaker is a game-engine written in python and pygame 
-designed for pupils to create 2D mini worlds and games.
+*Docs v.1.5.0.1*
 
-  * [What is the miniworldmaker?](mwm.md)
-  
+MiniWorldMaker is a game-engine written in python and pygame designed for pupils to create 2D mini worlds and games.
 
-  * [Tutorial English](tutorial_english.md)
-
-  * [Tutorial Deutsch](tutorial_german.md)
-
-  * [API](api.md)
-
-  * [Examples](examples.md)
+```{toctree}
+  :maxdepth: 1
+mwm
+tutorial_german
+tutorial_english
+api
+key_concepts
+examples
+```
 
 Credits
 ---------

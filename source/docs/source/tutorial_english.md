@@ -1,9 +1,10 @@
 Tutorial - English
 ==================
 
-```eval_rst
+```{eval-rst}
 .. toctree::
    :glob:
+   :numbered:
    
    en/*
 ```

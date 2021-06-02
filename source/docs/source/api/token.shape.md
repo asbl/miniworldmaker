@@ -1,34 +1,10 @@
-Tokens
+Token.Shape
 ======
-
-Token
------
-
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.token.Token
-   :members:
-```
-
-TextToken
----------
-
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.text_token.TextToken
-   :members:
-```
-
-NumberToken
------------
-
-```eval_rst
-.. autoclass:: miniworldmaker.tokens.number_token.NumberToken
-   :members:
-```
 
 Shape
 -----------
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Shape
    :members:
 ```
@@ -36,7 +12,7 @@ Shape
 ### Point
 
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Point
    :members:
 ```
@@ -44,7 +20,7 @@ Shape
 ### Circle
 
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Circle
    :members:
 ```
@@ -52,7 +28,7 @@ Shape
 ### Ellipse
 
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Ellipse
    :members:
 ```
@@ -60,7 +36,7 @@ Shape
 ### Line
 
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Line
    :members:
 ```
@@ -68,7 +44,7 @@ Shape
 ### Rectangle
 
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Rectangle
    :members:
 ```
@@ -76,7 +52,7 @@ Shape
 ### Polygon
 
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.tokens.shapes.Polygon
    :members:
 ```

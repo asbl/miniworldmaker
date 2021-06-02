@@ -3,32 +3,34 @@ Bewegung
 
 ### Die Move-Funktion
 
-Die zentrale Funktion zum Bewegen ist die Funktion move
+Die zentrale Funktion zum Bewegen ist die Funktion **move()**
 
-Move hat folgende Signatur:
+Mit der Funktion **move()** kannst du dein Objekt um einen oder mehrere Schritte bewegen:
+
+
+#### Beispiel
 
 ```
-    def move(distance) -> BoardPosition:
+@player.register
+def act(self):
+    self.point_in_direction(90)
+    self.move()
 ```
 
-Dies bedeutet:
-  
-  * Standardmäßig bewegt sich ein Akteur um **player.speed** Schritte in die Richtung in die er gerade schaut.
-  
-  * Du kannst die Distanz die er sich bewegt aber auch manuell festlegen, indem du für den Paramter distance einen Integer-Wert einsetzt.
-  
-  * Die Funktion gibt als Rückgabewert die Position auf dem Spielfeld zurück, an der sich der Akteur nach dem Zug befindet.
-  
---> Mehr Infos über Bewegungen: [Movement](../key_concepts/movement.md)
-  
+Das Objekt **player** schaut nun immer wieder nach rechts *(90°, siehe [hier](../key_concepts/directions.md)* und bewegt sich dann einen Schritt.
+
+:::{note} 
+➥ Mehr Infos über Bewegungen: [Key Concept: Movement](../key_concepts/movement.md)
+:::  
 ### Die Richtung ändern
 
 Die Richtung ändern kannst du mit folgenden Befehlen:
 
-  * **player.turn_left(degrees) - Dreht das Token um *degrees* Grad nach links.
+  * **player.turn_left(degrees)** - Dreht das Token um **degrees** Grad nach links.
   
-  * **player.turn_right(degrees) - Dreht das Token um *degrees* Grad nach rechts.
+  * **player.turn_right(degrees)** - Dreht das Token um **degrees** Grad nach rechts.
   
-  * **player.point_in_direction(direction) - Dreht das Token in die Richtung *direction*.
-  
---> Mehr Infos über Richtungen: [Directions](../key_concepts/directions.md)
+  * **player.point_in_direction(direction)** - Dreht das Token in die Richtung **direction**.
+
+
+> ➥ Mehr Infos über Richtungen: [Key Concept:  Directions](../key_concepts/directions.md)

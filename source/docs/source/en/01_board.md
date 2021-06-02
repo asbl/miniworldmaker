@@ -3,50 +3,37 @@ The playing field
 
 Here we go!
 
-### A first world
+## A first world
 
 We create the first world. This works with the following code:
 
 ```
-from miniworldmaker import *
+import miniworldmaker
 
+board = miniworldmaker.TiledBoard()
+board.columns = 20
+board.rows = 8
+board.tile_size = 42
+board.add_image(path="images/soccer_green.jpg")
+board.speed = 30
 
-class MyBoard(TiledBoard):
-
-    def setup(self):
-        self.columns = 20
-        self.rows = 8
-        self.tile_size = 42
-        self.add_image(path="images/soccer_green.jpg")
-
-board = MyBoard()
-board.show()
+board.run()
 ```
 
-First a new *class* MyBoard is created. This is a child class of TiledBoard
-and allows you to build all sorts of games based on tiles.
+### What happens here?
 
-  * Line 1: The **import** statement imports the miniworldmaker library.
-  * Line 4: The own playing field is created as child class of the class Tiledboard.
-  * Line 6: The setup() method is called when a new object is created (i.e. here in line 7).
-  * Lines 7-9: The size of the playing field is initialized.
-  * Line 7: A background is added to your board. Make sure that the file is on the specified path.
+  * In line 1 the miniworldmaker library is imported.
+  * In line 3 a new **object** of type **TiledBoard** is created.
+  * In line 2-6 the various attributes of the object are changed.
+  * In line 10 the game is started. With and() a mainloop is started, which draws the board again and again.
 
-These two lines:
-```
-board = MyBoard()
-board.show()
-```
+### Result
 
-The last two lines of your program are always similar: 
-Here the MyBoard() command creates a concrete playing field, and then the
-board.show() instructs the board to show itself.
+That's how it looks:
 
-Depending on your background image, the result will look like this:
+![tiles](../_images/grid.jpg)
 
-![tiles](../_images/first.jpg)
-
-### Show the grid
+### Variant: Show the grid
 
 If you like, you can also have the borders of the individual tiles displayed.
 Change the method setup() in the class MyBoard:
@@ -57,11 +44,7 @@ Change the method setup() in the class MyBoard:
         self.background.grid_overlay = True
 ```
 
-That's how it looks:
-
-![tiles](../_images/grid.jpg)
-
-### PixelBoards and TiledBoards
+### Outlook: PixelBoards and TiledBoards
 
 There are several subclasses of the class board:
 
@@ -71,12 +54,4 @@ There are several subclasses of the class board:
   
 Most of the functions differ only slightly, since both boards are subclasses of the class **Boards**.
 
-```eval_rst
-... inheritance-diagram:: miniworldmaker.boards.pixel_board.PixelBoard miniworldmaker.boards.tiled_board.TiledBoard
-   :top-classes: miniworldmaker.tokens.boards.board
-   :parts: 1
-```
-
-
-
-Translated with www.DeepL.com/Translator
+See [Boards](../key_concepts/boards.md)

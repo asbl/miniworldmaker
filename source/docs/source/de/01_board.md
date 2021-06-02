@@ -3,7 +3,7 @@ Das Spielfeld
 
 Los geht es!
 
-### Eine erste Welt
+## Eine erste Welt
 
 Wir erschaffen die erste Welt. Dies geht mit folgendem Code:
 
@@ -20,30 +20,12 @@ board.speed = 30
 board.run()
 ```
 
-Zunächst wird eine eigene *Klasse* **MyBoard** erstellt. Diese ist eine Kindklasse von TiledBoard (*Gekacheltes Spielfeld*)
-und erlaubt es dir, alle möglichen Spiele zu bauen, die auf Tiles(*Kacheln*) basieren.
+### Was passiert hier?
 
-  * Zeile 1: Mit der **import** Anweisung wird die Bibliothek miniworldmaker importiert.
-  
-  * Zeile 3: Das eigene Spielfeld wird als Kindklasse der Klasse Tiledboard definiert.
-    
-  * Zeile 5-6: Die on_setup() - Methode beim Objekt board *registriert*. Diese Methode wird aufgerufe, sobald das Board erstellt wird. Innerhalb der Methode werden einige Eigenschaften des Spielfeldes definiert: 
-  
-    * Anzahl Zeilen und Spalten (Zeile 7-8)
-    
-    * Größe einer einzelnen Kachel (Zeile 9)
-    
-    * Der Bildschirmhintergrund (Zeile 10) 
-
-### Starten der Mainloop
-
-Dies ist immer der letzte Befehl in deinem Programm:
-
-```
-board.run()
-```
-
-Die Mainloop wird gestartet, d.h. jetzt wird immer wieder der Bildschirm neu gezeichnet, auf Ereignisse reagiert, ...
+  * In Zeile 1 wird die miniworldmaker-Bibliothek importiert.
+  * In Zeile 3 wird ein neues **Objekt** von Typ **TiledBoard** erstellt.
+  * In Zeile 2-6 werden die verschiedenen Attribute des Objekts verändert.
+  * In Zeile 10 wird das Spiel gestartet. Mir und() wird eine Mainloop gestartet, die das Board immer wieder neu zeichnet.
 
 ### Ergebnis:
 
@@ -51,27 +33,23 @@ Je nach Hintergrundbild sieht das Ergebnis bei dir so aus:
 
 ![tiles](../_images/first.jpg)
 
-### Das Grid anzeigen
+### Variante: Das Grid anzeigen
 
 Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen lassen.
-Ändere dazu die Methode setup() in der Klasse MyBoard ab:
 
 ```
-    def setup()
-        ...
-        self.background.grid_overlay = True
+board.background.grid_overlay = True
 ```
 
-
-
-### Verschiedene Boards
+### Ausblick: Verschiedene Boards
 
 Es gibt verschiedene Unterklassen der Klasse Board:
 
-  * Ein PixelGrid ist für Pixelgenaue Darstellung von Inhalten gedacht.
+  * Ein **PixelBoard** ist für Pixelgenaue Darstellung von Inhalten gedacht.
   
-  * Ein TiledBoard ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.
+  * Ein **TiledBoard** ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.
   
+
 Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse **Boards** sind.
 
-> Mehr Informationen. Siehe [Tokens](../key_concepts/boards.md)
+> Mehr Informationen. Siehe [Key-Concept: Boards](../key_concepts/boards.md)

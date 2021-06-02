@@ -4,7 +4,7 @@ BoardPositions, Lines and Rectangles
 BoardPosition
 -------------
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.board_positions.board_position.BoardPosition
    :members:
 ```
@@ -12,7 +12,7 @@ BoardPosition
 BoardRect
 -------------
 
-```eval_rst
+```{eval-rst}
 .. autoclass:: miniworldmaker.board_positions.board_rect.BoardRect
    :members:
 ```

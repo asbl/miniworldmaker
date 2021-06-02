@@ -5,9 +5,9 @@ Ein Token ist ein Spielstein auf deinem Spielbrett.
 
 Alle Objekte in deiner Miniworld sind Tokens, die auf dem Spielbrett bewegt werden können.
 
-### Ein Token erstellen
+## Ein Token erstellen
 
-Als nächtes wird ein Token, d.h. eine Spielfigur auf dem Board platziert.
+Nachdem du das Spielbrett erstellt hast, wird nun ein Token, *(d.h. eine Spielfigur)* auf dem Board platziert.
 
 Dies geht so:
 
@@ -32,7 +32,10 @@ board.run()
   
   * In Zeile 10 wird dem Player-Objekt ein Bild zugewiesen. 
 
+#### Ergebnis
 
 ![tiles](../_images/token.jpg)
+
+#### Ausblick
 
 --> Mehr Informationen. Siehe [Tokens](../key_concepts/tokens.md)

@@ -1,6 +1,7 @@
 ### Physics
 
-```eval_rst
+
+```{eval-rst}
 .. autoclass:: miniworldmaker.physics.physics.PhysicsProperty
    :members:
 ```

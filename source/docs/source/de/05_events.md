@@ -21,4 +21,4 @@ def on_key_down_w(self):
  Hier wird die Methode **on_key_down_w** registriert, die überprüft, ob die Taste w gedrückt wurde.
  Sobald dies registriert wird, bewegt sich das Token player um einen Schritt nach vorne.
  
- --> Mehr Infos über Richtungen: [Events](../key_concepts/events.md)
+>➥ Mehr Infos über Richtungen: [Key Concept: Events](../key_concepts/events.md)

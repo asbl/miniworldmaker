@@ -3,28 +3,35 @@ Collisions
 
 There are 3 different kind of collisions:
 
-### TileBased Collissions
+  * **Tile-Collisions**: Objects collide when they are in the same tile
+  * **Pixel-Collisions**: Collisions are compared with rectangles or by pixel
+  * **Physic-Collisions**: Collisions are handled by the physics-engine.
 
-  * on_sensing_|class|(self, other)
+### TileBased Collisions
+
+Method: **on_sensing_token(self, other_token)**
+
+The method is called when the object is sensing another token.
+The argument **other_token** can be used to do something with the other token.
+
   
+#### Example
 
-### PixelBased Collisisions
+Object bases approach:
 
-  * **on_sensing_|class|(self, other, distance, collision_type)**
-  
-    If you use a PixelBoard, the sensing_token function checks if two tokens overlap.
- 
-    The parameter collision_type specifies how collisions should be checked: 
+```
+@laser.register
+def on_sensing_token(self, other_token):
+    token.remove()
+    explosion = miniworldmaker.Token()
+    explosion.position = (self.x, self.y)
+    ...
+```
 
-    ```eval_rst
-    .. autoattribute:: miniworldmaker.tokens.token.Token.collision_type
-       :annotation:
-       :noindex:
-    ```
+### PixelBased Collisions
+
+...
 
 
 ### PhysicsBaded Collisions 
-
-  * on_toching_|class|(self, other)
-  
-  * on_separation_|class|(self, other)
+...

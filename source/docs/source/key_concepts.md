@@ -1,12 +1,10 @@
-API
-====
-
-### Full API
+Key Concepts
+=============
 
 ```{eval-rst}
 .. toctree::
    :maxdepth: 1
    :glob:
    
-   api/*
+   key_concepts/*
 ```

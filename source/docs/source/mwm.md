@@ -24,4 +24,4 @@ Features
   
   * Miniworldmaker is a 2D Engine based on **Python 3** and **pygame**.
 
-  * More Infos: [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.it-teaching.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) 
+  * More Infos: [Codeberg](https://codeberg.org/a_siebel/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) 
