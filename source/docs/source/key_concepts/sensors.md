@@ -7,48 +7,49 @@ With sensors, tokens can sense their environment.
 
 #### sensing_on_board
     
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.sensing_on_board
    :noindex:
 ```    
 
 #### sensing_token
   
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.sensing_token
    :noindex:
 ```   
 
-### sensing_tokens
+#### sensing_tokens
   
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.sensing_tokens
    :noindex:
 ```   
 
-### sensing_borders
+#### sensing_borders
 
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.sensing_borders
    :noindex:
 ```   
 
 
-### sensing specific border
+##### sensing specific border
   * **sensing_left_border(distance)**, **sensing_right_border(distance)**, 
   **sensing_top_border(distance)**, **sensing_bottom_border(distance)**
   
     Returns True if token is sensing the border (when moving distance steps forward)
     
-### sensing_colors
+#### sensing_colors
 
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.sensing_colors
    :noindex:
 ```   
 
-### sensing_point
-```eval_rst
+#### sensing_point
+
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.sensing_point
    :noindex:
 ```   

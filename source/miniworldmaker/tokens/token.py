@@ -251,46 +251,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
 
     def add_image(self, path: str) -> int:
-        """
-        Adds an image to the token.
-        Best Practice: Image should me placed in ./images subfolder of your project, because these images
-        will be loaded before running the main-loop.
-
-        Loading images is very slow, so this shouldn't be done in runtime.
-
-        Args:
-            path: Path to the images.
-
-        Returns:
-            The image index
-
-        Examples:
-
-            Create several tokens with images (in example createrobotworld.py)
-
-            >>>  class Robot(Actor):
-            >>>
-            >>>    def on_setup(self):
-            >>>      self.add_image("images/robo_green.png")
-            >>>
-            >>>
-            >>>  class Wall(Token):
-            >>>    def on_setup(self):
-            >>>      self.add_image("images/rock.png")
-            >>>
-            >>>
-            >>>  class Gold(Token):
-            >>>    def on_setup(self):
-            >>>      self.add_image("images/stone_gold.png")
-
-
-        """
-        if self.costume is None:
-            self.add_costume(path)
-        image = self.costume.add_image(path)
-        if not self.__class__.class_image:
-            self.__class__.class_image = path
-        return image
+        raise Exception("Use token.add_costume or token.costume.add_image")
 
     def add_costume(self, source: Union[str, tuple] = (255, 255,255,0)) -> costume.Costume:
         """
@@ -1059,22 +1020,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def animate(self, text, images):
         self.current_animation = text
         self.costume.animate(text, images)
-
-    def check_for_deprecated_methods(cls):
-        members = dir(cls)
-        if "get_event" in members:
-            print("Deprecated method 'get_event' found in " + str(
-                cls) + ", use specific methods (on_key_down, on_key_pressed...) instead")
-        if "key_down" in members:
-            print("Deprecated method 'key_down' found in " + str(cls) + ", use 'on_key_down' instead")
-        if "key_pressed" in members:
-            print("Deprecated method 'get_event' found in " + str(cls) + ", use 'on_key_pressed' instead")
-        if [member for member in members if member.startswith("on_sensing_collision_with")]:
-            print("Deprecated method 'on_sensing_collision_with_[token_class]' found in " + str(
-                cls) + ", use 'on_touching_[token_class]' instead")
-        if [member for member in members if member.startswith("on_sensing_separation_with")]:
-            print("Deprecated method 'on_sensing_separation_with_[token_class]' found in " + str(
-                cls) + ", use 'on_separation_with_[token_class]' instead")
 
     def send_message(self, message):
         self.board.window.send_event_to_containers("message", message)

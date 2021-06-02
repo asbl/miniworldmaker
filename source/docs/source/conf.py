@@ -134,8 +134,7 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'miniworldmakerdoc'
-html_theme_options = {"collapse_navigation": False,
-                      }
+html_theme_options = {}
 
 # -- Options for LaTeX output ------------------------------------------------
 

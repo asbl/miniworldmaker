@@ -27,7 +27,7 @@ The default direction is 0°. All tokens are looking "up"
 
 Sets direction of token:
 
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.point_in_direction
    :noindex:
 ```
@@ -36,7 +36,7 @@ Sets direction of token:
 
 Turns token left by *degrees* degrees
 
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.turn_left
    :noindex:
 ```
@@ -45,7 +45,7 @@ Turns token left by *degrees* degrees
 
 Turns token right by *degrees* degrees
 
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.turn_right
    :noindex:
 ```
@@ -54,7 +54,7 @@ Turns token right by *degrees* degrees
 
 Mirrors Actor over x-Axis
 
-```eval_rst
+```{eval-rst}
 .. automethod:: miniworldmaker.tokens.token.Token.flip_x
    :noindex:
 ```

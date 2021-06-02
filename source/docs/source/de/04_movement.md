@@ -1,14 +1,14 @@
 Bewegung
 ==========
 
-### Die Move-Funktion
+## Die Move-Funktion
 
 Die zentrale Funktion zum Bewegen ist die Funktion **move()**
 
 Mit der Funktion **move()** kannst du dein Objekt um einen oder mehrere Schritte bewegen:
 
 
-#### Beispiel
+### Beispiel
 
 ```
 @player.register
@@ -17,7 +17,8 @@ def act(self):
     self.move()
 ```
 
-Das Objekt **player** schaut nun immer wieder nach rechts *(90°, siehe [hier](../key_concepts/directions.md)* und bewegt sich dann einen Schritt.
+Das Objekt **player** schaut nun immer wieder nach rechts *(90°, siehe [hier](../key_concepts/directions.md)* und bewegt sich dann einen Schritt nach vorne.
+
 
 :::{note} 
 ➥ Mehr Infos über Bewegungen: [Key Concept: Movement](../key_concepts/movement.md)
@@ -34,3 +35,7 @@ Die Richtung ändern kannst du mit folgenden Befehlen:
 
 
 > ➥ Mehr Infos über Richtungen: [Key Concept:  Directions](../key_concepts/directions.md)
+
+### Beispiele
+
+> 
