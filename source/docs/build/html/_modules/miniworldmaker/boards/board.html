@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../de/00_installation.html">1. Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/01_board.html">2. Das Spielfeld</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/02_tokens.html">3. Tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/costumes.html">3. Costumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/directions.html">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
@@ -187,7 +187,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">pygame</span>
-<span class="kn">from</span> <span class="nn">deprecated</span> <span class="kn">import</span> <span class="n">deprecated</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.app</span> <span class="kn">import</span> <span class="n">app</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.appearances</span> <span class="kn">import</span> <span class="n">background</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.board_positions</span> <span class="kn">import</span> <span class="n">board_position</span>
@@ -496,36 +495,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
 
-<div class="viewcode-block" id="Board.add_image"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.add_image">[docs]</a>    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">background</span><span class="o">.</span><span class="n">Background</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Adds image to current background.</span>
-<span class="sd">        If no background is created yet, a new background will be created with this image.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            path: The path to the image as relative path</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The index of the image.</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; class MyBoard(Board):</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;     def __init__(self):</span>
-<span class="sd">            &gt;&gt;&gt;         super().__init__(columns=400, rows=200)</span>
-<span class="sd">            &gt;&gt;&gt;         self.add_image(path="images/stone.jpg")</span>
-<span class="sd">            Creates Board with file stone.jpg in folder images as background</span>
-
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">image</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">_display_update</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">window_surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">image</span></div>
-
 <div class="viewcode-block" id="Board.add_background"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.add_background">[docs]</a>    <span class="k">def</span> <span class="nf">add_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">background</span><span class="o">.</span><span class="n">Background</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Adds a new background to the board</span>
@@ -667,37 +636,6 @@
             <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"switch_board"</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">Board</span><span class="p">,</span> <span class="n">size</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""Resets the board</span>
-<span class="sd">        Creates a new board with init-function - recreates all tokens and actors on the board.</span>
-
-<span class="sd">        Examples:</span>
-
-<span class="sd">            Restarts flappy the bird game after collision with pipe:</span>
-
-<span class="sd">            &gt;&gt;&gt; def on_sensing_collision_with_pipe(self, other, info):</span>
-<span class="sd">            &gt;&gt;&gt;    self.board.is_running = False</span>
-<span class="sd">            &gt;&gt;&gt;    self.board.reset()</span>
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"reset"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-
-    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">'1.0.44'</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"Use _handle_reset_event instead"</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_handle_reset_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">repaint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">call_all_actions</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">container_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_height</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">get_rect</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
-            <span class="n">repaint_rects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">repaint_rects</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span> <span class="o">=</span> <span class="kc">False</span>
-
 <div class="viewcode-block" id="Board.reset"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""Resets the board</span>
 <span class="sd">        Creates a new board with init-function - recreates all tokens and actors on the board.</span>
@@ -711,6 +649,19 @@
 <span class="sd">            &gt;&gt;&gt;    self.board.reset()</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"reset"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">repaint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">call_all_actions</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">container_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">container_height</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">get_rect</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">repaint_rects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surface</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">repaint_rects</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">repaint_areas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Board.run"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fullscreen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">"""</span>
@@ -728,19 +679,6 @@
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"on_setup"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"on_setup"</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"setup"</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="n">full_screen</span><span class="o">=</span><span class="n">fullscreen</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Board.show"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.show">[docs]</a>    <span class="nd">@deprecated</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="s1">'1.0.44'</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s2">"You should use board.run()"</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fullscreen</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        The method show() should always called at the end of your program.</span>
-<span class="sd">        It starts the mainloop.</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; my_board = Board() # or a subclass of Board</span>
-<span class="sd">            &gt;&gt;&gt; my_board.show()</span>
-
-<span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">fullscreen</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Board.switch_background"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.switch_background">[docs]</a>    <span class="k">def</span> <span class="nf">switch_background</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">background</span><span class="o">.</span><span class="n">Background</span><span class="p">:</span>
         <span class="sd">"""Switches the background</span>
@@ -761,7 +699,6 @@
             <span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backgrounds</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">changed_all</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">background_changed</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">set_dirty</span><span class="p">()</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">]</span>

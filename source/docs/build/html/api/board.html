@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../de/00_installation.html">1. Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. Das Spielfeld</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/02_tokens.html">3. Tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">3. Costumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
@@ -234,29 +234,6 @@
 </dd>
 </dl>
 <p>Returns:</p>
-</dd></dl>
-<dl class="py method">
-<dt id="miniworldmaker.boards.board.Board.add_image">
-<code class="sig-name descname"><span class="pre">add_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="appearance.background.html#miniworldmaker.appearances.background.Background" title="miniworldmaker.appearances.background.Background"><span class="pre">miniworldmaker.appearances.background.Background</span></a><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.add_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.add_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds image to current background.
-If no background is created yet, a new background will be created with this image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – The path to the image as relative path</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The index of the image.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyBoard</span><span class="p">(</span><span class="n">Board</span><span class="p">):</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>        <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/stone.jpg"</span><span class="p">)</span>
-<span class="go">Creates Board with file stone.jpg in folder images as background</span>
-</pre></div>
-</div>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.add_to_board">
@@ -485,17 +462,6 @@ The file is stored as db file and can be opened with sqlite.</p>
 </dd>
 </dl>
 <p>Returns:</p>
-</dd></dl>
-<dl class="py method">
-<dt id="miniworldmaker.boards.board.Board.show">
-<code class="sig-name descname"><span class="pre">show</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullscreen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.show" title="Permalink to this definition">¶</a></dt>
-<dd><p>The method show() should always called at the end of your program.
-It starts the mainloop.</p>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_board</span> <span class="o">=</span> <span class="n">Board</span><span class="p">()</span> <span class="c1"># or a subclass of Board</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">my_board</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.switch_background">

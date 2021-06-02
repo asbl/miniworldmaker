@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="5. Bewegung" href="04_movement.html" /><link rel="prev" title="3. Tokens" href="02_tokens.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>4. Aktionen - miniworldmaker 2021 documentation</title>
+        <title>4. Aktionen / Methoden registrieren - miniworldmaker 2021 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="00_installation.html">1. Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="01_board.html">2. Das Spielfeld</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02_tokens.html">3. Tokens</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">4. Aktionen</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">3. Costumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
@@ -179,8 +179,8 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="aktionen">
-<h1><span class="section-number">4. </span>Aktionen<a class="headerlink" href="#aktionen" title="Permalink to this headline">¶</a></h1>
+        <div class="section" id="aktionen-methoden-registrieren">
+<h1><span class="section-number">4. </span>Aktionen / Methoden registrieren<a class="headerlink" href="#aktionen-methoden-registrieren" title="Permalink to this headline">¶</a></h1>
 <p>Das Spielfeld und alle Tokens können über die Methode <strong>act()</strong> gesteuert werden.
 Diese Methode wird immer wieder aufgerufen <em>(genau genommen: Alle <strong>board.speed</strong> Zeiteinheiten)</em>.</p>
 <p>Wenn du ein Token erstellst, kannst du mit dem Decorator <strong>@register</strong> eine Act-Methode zum Spielfeld oder zum Token hinzufügen:</p>
@@ -219,7 +219,7 @@ Diese Methode wird immer wieder aufgerufen <em>(genau genommen: Alle <strong>boa
 <span class="n">board</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div></div>
-<p>Interessant sind hier die Zeilen 12-14: Hier wird die Methode act zum Objekt <strong>player</strong> hinzugefügt.</p>
+<p>Interessant sind hier die Zeilen 12-14: Hier wird die Methode act zum Objekt <code class="docutils literal notranslate"><span class="pre">player</span></code> hinzugefügt. Der Decorator <code class="docutils literal notranslate"><span class="pre">@player.register</span></code> bindet die Methode an das Objekt <code class="docutils literal notranslate"><span class="pre">player</span></code></p>
 </div>
 </div>
 
@@ -277,7 +277,7 @@ Diese Methode wird immer wieder aufgerufen <em>(genau genommen: Alle <strong>boa
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">4. Aktionen</a><ul>
+<li><a class="reference internal" href="#">4. Aktionen / Methoden registrieren</a><ul>
 <li><a class="reference internal" href="#beispiel">4.1. Beispiel:</a></li>
 </ul>
 </li>

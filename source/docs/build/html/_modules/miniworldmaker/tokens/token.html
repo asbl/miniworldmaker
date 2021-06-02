@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../de/00_installation.html">1. Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/01_board.html">2. Das Spielfeld</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/02_tokens.html">3. Tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/costumes.html">3. Costumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/directions.html">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
@@ -611,7 +611,7 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="o">-</span> <span class="p">(</span><span class="n">direction</span> <span class="o">+</span> <span class="mi">90</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">-</span> <span class="mi">180</span></div>
 
-<div class="viewcode-block" id="Token.turn_left"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.turn_left">[docs]</a>    <span class="k">def</span> <span class="nf">turn_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="Token.turn_left"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.turn_left">[docs]</a>    <span class="k">def</span> <span class="nf">turn_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">"""Turns actor by *degrees* degrees left</span>
 
 <span class="sd">        .. image:: ../_images/turn_left.png</span>
@@ -629,7 +629,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">-</span> <span class="n">degrees</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span></div>
 
-<div class="viewcode-block" id="Token.turn_right"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.turn_right">[docs]</a>    <span class="k">def</span> <span class="nf">turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.turn_right"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.turn_right">[docs]</a>    <span class="k">def</span> <span class="nf">turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">):</span>
         <span class="sd">"""Turns token by *degrees* degrees right</span>
 
 <span class="sd">        .. image:: ../_images/turn_right.png</span>
@@ -647,7 +647,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">+</span> <span class="n">degrees</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span></div>
 
-<div class="viewcode-block" id="Token.point_in_direction"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.point_in_direction">[docs]</a>    <span class="k">def</span> <span class="nf">point_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="Token.point_in_direction"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.point_in_direction">[docs]</a>    <span class="k">def</span> <span class="nf">point_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">"""Token points in given direction.</span>
 
 <span class="sd">        You can use a integer or a string to describe the direction</span>
@@ -856,7 +856,7 @@
         <span class="n">rect</span><span class="o">.</span><span class="n">centery</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">center</span>
 
-<div class="viewcode-block" id="Token.move"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.move"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="sd">"""Moves actor *distance* steps in current direction</span>
 
 <span class="sd">        .. image:: ../_images/move.png</span>
@@ -883,7 +883,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="o">.</span><span class="n">from_tuple</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Token.move_back"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.move_back">[docs]</a>    <span class="k">def</span> <span class="nf">move_back</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.move_back"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move_back">[docs]</a>    <span class="k">def</span> <span class="nf">move_back</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        "Undo" the last move. Moves the actor to the last position and resets direction.</span>
 
@@ -941,7 +941,7 @@
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">"static-rect"</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Token.move_in_direction"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.move_in_direction">[docs]</a>    <span class="k">def</span> <span class="nf">move_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">distance</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.move_in_direction"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move_in_direction">[docs]</a>    <span class="k">def</span> <span class="nf">move_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">distance</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
         <span class="sd">"""Moves token *distance* steps into a *direction*.</span>
 
 <span class="sd">        .. image:: ../_images/move_in_direction.png</span>
@@ -966,7 +966,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Token.move_to"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.move_to"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">):</span>
         <span class="sd">"""Moves token *distance* to a specific board_posiition</span>
 
 <span class="sd">        Args:</span>
@@ -1032,7 +1032,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">physics</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="Token.flip_x"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.flip_x">[docs]</a>    <span class="k">def</span> <span class="nf">flip_x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="Token.flip_x"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.flip_x">[docs]</a>    <span class="k">def</span> <span class="nf">flip_x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">"""Flips the actor by 180° degrees</span>
 
 <span class="sd">        .. image:: ../_images/flip_x.png</span>
@@ -1084,7 +1084,7 @@
             <span class="k">pass</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Token.sensing_on_board"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_on_board">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<div class="viewcode-block" id="Token.sensing_on_board"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_on_board">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Is the token on board if it is moving distance steps forward?</span>
 
@@ -1099,7 +1099,7 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_connector</span><span class="o">.</span><span class="n">sensing_on_board</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Token.sensing_tokens"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">collision_type</span> <span class="o">=</span> <span class="s2">"default"</span> <span class="p">):</span>
+<div class="viewcode-block" id="Token.sensing_tokens"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">collision_type</span> <span class="o">=</span> <span class="s2">"default"</span> <span class="p">):</span>
         <span class="sd">"""Senses if tokens are on tokens position.</span>
 <span class="sd">        Returns a list of tokens.</span>
 
@@ -1116,7 +1116,7 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_connector</span><span class="o">.</span><span class="n">sensing_tokens</span><span class="p">(</span><span class="n">token_type</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Token.sensing_token"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_token">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">collision_type</span> <span class="o">=</span> <span class="s2">"default"</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.sensing_token"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_token">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">collision_type</span> <span class="o">=</span> <span class="s2">"default"</span><span class="p">):</span>
         <span class="sd">"""Senses if tokens are on tokens position.</span>
 <span class="sd">        Returns the first found token.</span>
 
@@ -1141,7 +1141,7 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_connector</span><span class="o">.</span><span class="n">sensing_token</span><span class="p">(</span><span class="n">token_type</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Token.sensing_borders"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_borders">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.sensing_borders"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_borders">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Senses borders</span>
 
@@ -1200,7 +1200,7 @@
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="s2">"bottom"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_connector</span><span class="o">.</span><span class="n">sensing_borders</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Token.sensing_colors"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_colors">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.sensing_colors"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_colors">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Senses colors in board-background at token-position</span>
 
@@ -1214,7 +1214,7 @@
         <span class="n">colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_connector</span><span class="o">.</span><span class="n">sensing_colors</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">colors</span></div>
 
-<div class="viewcode-block" id="Token.sensing_point"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_point">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boardPosition</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.sensing_point"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_point">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boardPosition</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Is the token colliding with a specific (global) point?</span>
 

@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="00_installation.html">1. Installation</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2. Das Spielfeld</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02_tokens.html">3. Tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">3. Costumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
@@ -185,25 +185,35 @@
 <div class="section" id="eine-erste-welt">
 <h2><span class="section-number">2.1. </span>Eine erste Welt<a class="headerlink" href="#eine-erste-welt" title="Permalink to this headline">¶</a></h2>
 <p>Wir erschaffen die erste Welt. Dies geht mit folgendem Code:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">miniworldmaker</span>
-
-<span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
-<span class="n">board</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="mi">20</span>
+<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="hll"><span class="kn">import</span> <span class="nn">miniworldmaker</span>
+</span>
+<span class="hll"><span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
+</span><span class="hll"><span class="n">board</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
+</span><span class="n">board</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">board</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="n">board</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">=</span> <span class="mi">42</span>
-<span class="n">board</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
 <span class="n">board</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span>
 
-<span class="n">board</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</pre></div>
-</div>
+<span class="hll"><span class="n">board</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></pre></div>
+</td></tr></table></div></div>
 <div class="section" id="was-passiert-hier">
 <h3><span class="section-number">2.1.1. </span>Was passiert hier?<a class="headerlink" href="#was-passiert-hier" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>In Zeile 1 wird die miniworldmaker-Bibliothek importiert.</p></li>
-<li><p>In Zeile 3 wird ein neues <strong>Objekt</strong> von Typ <strong>TiledBoard</strong> erstellt.</p></li>
-<li><p>In Zeile 2-6 werden die verschiedenen Attribute des Objekts verändert.</p></li>
-<li><p>In Zeile 10 wird das Spiel gestartet. Mir und() wird eine Mainloop gestartet, die das Board immer wieder neu zeichnet.</p></li>
+<li><p>In Zeile 3 wird ein neues <code class="docutils literal notranslate"><span class="pre">Objekt</span></code> von Typ <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> erstellt.</p></li>
+<li><p>In Zeile 4 erhält das neue erstellte Board-Objekt einen <code class="docutils literal notranslate"><span class="pre">Background</span></code>.</p></li>
+<li><p>In Zeile 5-8 werden die verschiedenen Attribute des Objekts verändert.</p></li>
+<li><p>In Zeile 10 wird das Spiel gestartet. Mir <code class="docutils literal notranslate"><span class="pre">board.run()</span></code> wird eine Mainloop gestartet, die das Board immer wieder neu zeichnet.</p></li>
 </ul>
 </div>
 <div class="section" id="ergebnis">
@@ -222,12 +232,21 @@
 <h3><span class="section-number">2.1.4. </span>Ausblick: Verschiedene Boards<a class="headerlink" href="#ausblick-verschiedene-boards" title="Permalink to this headline">¶</a></h3>
 <p>Es gibt verschiedene Unterklassen der Klasse Board:</p>
 <ul class="simple">
-<li><p>Ein <strong>PixelBoard</strong> ist für Pixelgenaue Darstellung von Inhalten gedacht.</p></li>
-<li><p>Ein <strong>TiledBoard</strong> ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.</p></li>
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">PixelBoard</span></code> ist für Pixelgenaue Darstellung von Inhalten gedacht.</p></li>
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.</p></li>
 </ul>
-<p>Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse <strong>Boards</strong> sind.</p>
+<p>Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse <code class="docutils literal notranslate"><span class="pre">Board</span></code> sind.</p>
 <blockquote>
 <div><p>Mehr Informationen. Siehe <a class="reference internal" href="../key_concepts/boards.html"><span class="doc std std-doc">Key-Concept: Boards</span></a></p>
+</div></blockquote>
+</div>
+<div class="section" id="beispiele">
+<h3><span class="section-number">2.1.5. </span>Beispiele<a class="headerlink" href="#beispiele" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py">Basic Framework</a> - Ein erstes Framework mit dem du anfangen kannst.</p>
+</div></blockquote>
+<blockquote>
+<div><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py">Basic Framework - Mit Klassen</a> - Wenn du bereits Objektorientierung mit Klassen beherschst, dann kannst du acuh mit diesem Framework anfangen. Hier werden Klassen definiert, aus denen dann Objekte instanziiert werden.</p>
 </div></blockquote>
 </div>
 </div>
@@ -293,6 +312,7 @@
 <li><a class="reference internal" href="#ergebnis">2.1.2. Ergebnis:</a></li>
 <li><a class="reference internal" href="#variante-das-grid-anzeigen">2.1.3. Variante: Das Grid anzeigen</a></li>
 <li><a class="reference internal" href="#ausblick-verschiedene-boards">2.1.4. Ausblick: Verschiedene Boards</a></li>
+<li><a class="reference internal" href="#beispiele">2.1.5. Beispiele</a></li>
 </ul>
 </li>
 </ul>

@@ -6,7 +6,6 @@ from collections import deque
 import miniworldmaker.containers.actionbar as a_bar
 import pkg_resources
 import pygame
-from deprecated import deprecated
 from miniworldmaker.containers import color_toolbar
 from miniworldmaker.containers import container as container_file
 from miniworldmaker.containers import event_console
@@ -69,13 +68,6 @@ class App:
             self.window_surface = pygame.display.set_mode((self.window_width, self.window_height))
         self.window_surface.set_alpha(None)
 
-    @deprecated(version='1.0.44', reason="You should use App.run()")
-    def show(self, image, full_screen: bool = False, log=False):
-        """
-        deprecated
-        """
-        self.run(image, full_screen, log)
-
     def run(self, image, full_screen: bool = False, log=False):
         """
         runs the main_loop
@@ -103,9 +95,6 @@ class App:
         self.window.window_surface.blit(image, self.board.rect)
         App.log.info(
             "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
-        import miniworldmaker.tokens.token as tkn
-        for token_class in tkn.Token.all_subclasses():
-            tkn.Token.check_for_deprecated_methods(token_class)
         # Start the main-loop
         print("run")
         while not App.quit:

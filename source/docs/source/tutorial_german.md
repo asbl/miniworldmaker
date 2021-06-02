@@ -3,9 +3,9 @@ Tutorial - Deutsch
 
 ```{eval-rst}
 .. toctree::
-   :maxdepth: 1
-
    :glob:
+   :numbered:
+   :maxdepth: 1
    
    de/*
 ```

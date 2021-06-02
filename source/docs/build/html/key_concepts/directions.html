@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="5. Events" href="events.html" /><link rel="prev" title="3. Costumes" href="costumes.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Events" href="events.html" /><link rel="prev" title="Costumes" href="costumes.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>4. Directions - miniworldmaker 2021 documentation</title>
+        <title>Directions - miniworldmaker 2021 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../de/00_installation.html">1. Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. Das Spielfeld</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/02_tokens.html">3. Tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../key_concepts.html">Key Concepts</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="costumes.html">3. Costumes</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="costumes.html">Costumes</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
@@ -200,34 +200,106 @@ see <a class="reference external" href="https://en.scratch-wiki.info/wiki/Direct
 <div class="section" id="point-in-direction">
 <h3>point_in_direction<a class="headerlink" href="#point-in-direction" title="Permalink to this headline">¶</a></h3>
 <p>Sets direction of token:</p>
-<div class="highlight-eval_rst notranslate"><div class="highlight"><pre><span></span>.. automethod:: miniworldmaker.tokens.token.Token.point_in_direction
-   :noindex:
+<dl class="py method">
+<dt>
+<code class="sig-prename descclassname"><span class="pre">Token.</span></code><code class="sig-name descname"><span class="pre">point_in_direction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">direction</span></span></em><span class="sig-paren">)</span> → <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.point_in_direction"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Token points in given direction.</p>
+<p>You can use a integer or a string to describe the direction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>direction as integer</strong><strong> or </strong><strong>string</strong> (<em>The</em>) – </p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Options</dt><dd><ul class="simple">
+<li><p>0, “up” - Look up</p></li>
+<li><p>90, “right”, - Look right</p></li>
+<li><p>-90, “left”, - Look left</p></li>
+<li><p>-180, 180, “down” - Look down</p></li>
+</ul>
+</dd>
+</dl>
+<img alt="../_images/direction.png" src="../_images/direction.png"/>
+<p class="rubric">Examples</p>
+<p>Move in a direction with WASD-Keys</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">on_key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="k">if</span> <span class="s2">"W"</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="s2">"up"</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="k">elif</span> <span class="s2">"S"</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="s2">"down"</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="k">elif</span> <span class="s2">"A"</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="s2">"left"</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="k">elif</span> <span class="s2">"D"</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="s2">"right"</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd></dl>
 </div>
 <div class="section" id="turn-left">
 <h3>turn_left<a class="headerlink" href="#turn-left" title="Permalink to this headline">¶</a></h3>
 <p>Turns token left by <em>degrees</em> degrees</p>
-<div class="highlight-eval_rst notranslate"><div class="highlight"><pre><span></span>.. automethod:: miniworldmaker.tokens.token.Token.turn_left
-   :noindex:
-</pre></div>
-</div>
+<dl class="py method">
+<dt>
+<code class="sig-prename descclassname"><span class="pre">Token.</span></code><code class="sig-name descname"><span class="pre">turn_left</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">90</span></span></em><span class="sig-paren">)</span> → <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.turn_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Turns actor by <em>degrees</em> degrees left</p>
+<img alt="../_images/turn_left.png" src="../_images/turn_left.png"/>
+<dl class="simple">
+<dt>Options:</dt><dd><ul class="simple">
+<li><p>You can set the value token.is_rotatable = False if you don’t want the token to be rotated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>degrees</strong> – degrees in left direction</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New direction</p>
+</dd>
+</dl>
+</dd></dl>
 </div>
 <div class="section" id="turn-right">
 <h3>turn_right<a class="headerlink" href="#turn-right" title="Permalink to this headline">¶</a></h3>
 <p>Turns token right by <em>degrees</em> degrees</p>
-<div class="highlight-eval_rst notranslate"><div class="highlight"><pre><span></span>.. automethod:: miniworldmaker.tokens.token.Token.turn_right
-   :noindex:
-</pre></div>
-</div>
+<dl class="py method">
+<dt>
+<code class="sig-prename descclassname"><span class="pre">Token.</span></code><code class="sig-name descname"><span class="pre">turn_right</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">90</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.turn_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Turns token by <em>degrees</em> degrees right</p>
+<img alt="../_images/turn_right.png" src="../_images/turn_right.png"/>
+<dl class="simple">
+<dt>Options:</dt><dd><ul class="simple">
+<li><p>You can set the value token.is_rotatable = False if you don’t want the token to be rotated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>degrees</strong> – degrees in left direction</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New direction</p>
+</dd>
+</dl>
+</dd></dl>
 </div>
 <div class="section" id="flip-x">
 <h3>flip_x<a class="headerlink" href="#flip-x" title="Permalink to this headline">¶</a></h3>
 <p>Mirrors Actor over x-Axis</p>
-<div class="highlight-eval_rst notranslate"><div class="highlight"><pre><span></span>.. automethod:: miniworldmaker.tokens.token.Token.flip_x
-   :noindex:
+<dl class="py method">
+<dt>
+<code class="sig-prename descclassname"><span class="pre">Token.</span></code><code class="sig-name descname"><span class="pre">flip_x</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> → <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.flip_x"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Flips the actor by 180° degrees</p>
+<img alt="../_images/flip_x.png" src="../_images/flip_x.png"/>
+<p class="rubric">Examples</p>
+<p>flip a token.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="k">def</span> <span class="nf">on_sensing_not_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="bp">self</span><span class="o">.</span><span class="n">move_back</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="bp">self</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd></dl>
 </div>
 </div>
 </div>
@@ -241,7 +313,7 @@ see <a class="reference external" href="https://en.scratch-wiki.info/wiki/Direct
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title"><span class="section-number">5. </span>Events</div>
+                <div class="title">Events</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -252,7 +324,7 @@ see <a class="reference external" href="https://en.scratch-wiki.info/wiki/Direct
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><span class="section-number">3. </span>Costumes</div>
+                <div class="title">Costumes</div>
                 
               </div>
             </a>
@@ -286,13 +358,13 @@ see <a class="reference external" href="https://en.scratch-wiki.info/wiki/Direct
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">4. Directions</a><ul>
-<li><a class="reference internal" href="#directions-in-miniworldmaker">4.1. Directions in Miniworldmaker</a></li>
-<li><a class="reference internal" href="#methods">4.2. Methods</a><ul>
-<li><a class="reference internal" href="#point-in-direction">4.2.1. point_in_direction</a></li>
-<li><a class="reference internal" href="#turn-left">4.2.2. turn_left</a></li>
-<li><a class="reference internal" href="#turn-right">4.2.3. turn_right</a></li>
-<li><a class="reference internal" href="#flip-x">4.2.4. flip_x</a></li>
+<li><a class="reference internal" href="#">Directions</a><ul>
+<li><a class="reference internal" href="#directions-in-miniworldmaker">Directions in Miniworldmaker</a></li>
+<li><a class="reference internal" href="#methods">Methods</a><ul>
+<li><a class="reference internal" href="#point-in-direction">point_in_direction</a></li>
+<li><a class="reference internal" href="#turn-left">turn_left</a></li>
+<li><a class="reference internal" href="#turn-right">turn_right</a></li>
+<li><a class="reference internal" href="#flip-x">flip_x</a></li>
 </ul>
 </li>
 </ul>

@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="4. Aktionen" href="03_actions.html" /><link rel="prev" title="2. Das Spielfeld" href="01_board.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="4. Aktionen / Methoden registrieren" href="03_actions.html" /><link rel="prev" title="2. Das Spielfeld" href="01_board.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
         <title>3. Tokens - miniworldmaker 2021 documentation</title>
@@ -114,7 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="00_installation.html">1. Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="01_board.html">2. Das Spielfeld</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">3. Tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03_actions.html">4. Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_movement.html">5. Bewegung</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="06_sensing.html">7. Kollisionen und Sensoren</a></li>
@@ -153,15 +153,15 @@
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../key_concepts.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label for="toctree-checkbox-4"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">1. Boards</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">2. Collisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">3. Costumes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">4. Directions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">5. Events</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">6. Movement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">7. Physics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">8. Sensors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">9. Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">Physics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">Tokens</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
@@ -187,31 +187,51 @@
 <h2><span class="section-number">3.1. </span>Ein Token erstellen<a class="headerlink" href="#ein-token-erstellen" title="Permalink to this headline">¶</a></h2>
 <p>Nachdem du das Spielbrett erstellt hast, wird nun ein Token, <em>(d.h. eine Spielfigur)</em> auf dem Board platziert.</p>
 <p>Dies geht so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">miniworldmaker</span>
+<div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">miniworldmaker</span>
 
 <span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
 <span class="n">board</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">board</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="n">board</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">=</span> <span class="mi">42</span>
-<span class="n">board</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
+<span class="n">board</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
 <span class="n">board</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">Token</span><span class="p">()</span>
-<span class="n">player</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/player.png"</span><span class="p">)</span>
-
-
+<span class="hll"><span class="n">player</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">Token</span><span class="p">()</span>
+</span><span class="hll"><span class="n">player</span><span class="o">.</span><span class="n">add_costume</span><span class="p">(</span><span class="s2">"images/player.png"</span><span class="p">)</span>
+</span>
 <span class="n">board</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
-</div>
+</td></tr></table></div></div>
 <ul class="simple">
 <li><p>In Zeile 9 wird ein Player-Objekt erstellt.</p></li>
-<li><p>In Zeile 10 wird dem Player-Objekt ein Bild zugewiesen.</p></li>
+<li><p>In Zeile 10 wird dem Player-Objekt ein Küstüm zugewiesen.</p></li>
 </ul>
+<div class="section" id="das-kostum">
+<h3><span class="section-number">3.1.1. </span>Das Kostüm<a class="headerlink" href="#das-kostum" title="Permalink to this headline">¶</a></h3>
+<p>Jedes <code class="docutils literal notranslate"><span class="pre">Board</span></code> hat einen <code class="docutils literal notranslate"><span class="pre">Background</span></code>, jedes <code class="docutils literal notranslate"><span class="pre">Token</span></code> hat ein <code class="docutils literal notranslate"><span class="pre">Costume</span></code>. Du *<em>musst</em> einem neuen Token ein Kostüm zuweisen.</p>
+<p>Die Anweisung dafür lautet üblicherweise:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">token_name</span><span class="o">.</span><span class="n">add_costume</span><span class="p">(</span><span class="s2">"path_to_image"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="tiles" src="_images/add_costume.jpg"/></p>
+<p><code class="docutils literal notranslate"><span class="pre">path_to_image</span></code> ist ein (relativer Pfad) zum Bild. Du solltest deine Bilder in den Unterordner <code class="docutils literal notranslate"><span class="pre">images</span></code> ablgegen, dann hat das Bild <code class="docutils literal notranslate"><span class="pre">bild.png</span></code> in dem Unterordner <code class="docutils literal notranslate"><span class="pre">images</span></code> den Pfad `images/bild.png.</p>
+</div>
 <div class="section" id="ergebnis">
-<h3><span class="section-number">3.1.1. </span>Ergebnis<a class="headerlink" href="#ergebnis" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.1.2. </span>Ergebnis<a class="headerlink" href="#ergebnis" title="Permalink to this headline">¶</a></h3>
 <p><img alt="tiles" src="../_images/token.jpg"/></p>
 </div>
 <div class="section" id="ausblick">
-<h3><span class="section-number">3.1.2. </span>Ausblick<a class="headerlink" href="#ausblick" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.1.3. </span>Ausblick<a class="headerlink" href="#ausblick" title="Permalink to this headline">¶</a></h3>
 <p>–&gt; Mehr Informationen. Siehe <a class="reference internal" href="../key_concepts/tokens.html"><span class="doc std std-doc">Tokens</span></a></p>
 </div>
 </div>
@@ -226,7 +246,7 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title"><span class="section-number">4. </span>Aktionen</div>
+                <div class="title"><span class="section-number">4. </span>Aktionen / Methoden registrieren</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -273,8 +293,9 @@
             <ul>
 <li><a class="reference internal" href="#">3. Tokens</a><ul>
 <li><a class="reference internal" href="#ein-token-erstellen">3.1. Ein Token erstellen</a><ul>
-<li><a class="reference internal" href="#ergebnis">3.1.1. Ergebnis</a></li>
-<li><a class="reference internal" href="#ausblick">3.1.2. Ausblick</a></li>
+<li><a class="reference internal" href="#das-kostum">3.1.1. Das Kostüm</a></li>
+<li><a class="reference internal" href="#ergebnis">3.1.2. Ergebnis</a></li>
+<li><a class="reference internal" href="#ausblick">3.1.3. Ausblick</a></li>
 </ul>
 </li>
 </ul>
