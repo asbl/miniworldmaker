@@ -1,11 +1,9 @@
 from miniworldmaker.board_positions.board_position import BoardPosition
 from miniworldmaker.board_positions.board_rect import BoardRect
 from miniworldmaker.boards.board import Board
-from miniworldmaker.boards.physics_board import PhysicsBoard
 from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.boards.tiled_board import TiledBoard
 from miniworldmaker.connectors.board_connector import BoardConnector
-from miniworldmaker.connectors.physics_connector import PhysicsBoardConnector
 from miniworldmaker.connectors.pixel_connector import PixelBoardConnector
 from miniworldmaker.connectors.tiled_connector import TiledBoardConnector
 from miniworldmaker.containers.actionbar import ActionBar
@@ -23,7 +21,6 @@ from miniworldmaker.containers.toolbar_widgets import TimeLabel
 from miniworldmaker.containers.toolbar_widgets import ToolbarButton
 from miniworldmaker.containers.toolbar_widgets import ToolbarLabel
 from miniworldmaker.physics.physics import PhysicsProperty
-from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.tokens.number_token import NumberToken
 from miniworldmaker.tokens.shapes import Circle
 from miniworldmaker.tokens.shapes import Ellipse
@@ -42,11 +39,9 @@ from miniworldmaker.tools.timer import ZeroTimer
 __all__ = ['Token',
            'TextToken',
            'NumberToken',
-           'Actor',
            'TiledBoard',
            'LevelDesignerToolbar',
            'PixelBoard',
-           'PhysicsBoard',
            'Toolbar',
            'Board',
            'ToolbarLabel',
@@ -72,7 +67,6 @@ __all__ = ['Token',
            'PhysicsProperty',
            'TiledBoardConnector',
            'PixelBoardConnector',
-           'PhysicsBoardConnector',
            'BoardRect',
            'BoardConnector',
            'Timed',

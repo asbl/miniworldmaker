@@ -20,7 +20,7 @@ class Meta(type):
             instance.set_physics_default_values()
         if hasattr(instance, "setup_physics"):
             instance.setup_physics()
-            instance._start_physics()
+            instance.start_physics()
         if hasattr(instance, "on_setup"):
             instance.on_setup()
         if hasattr(instance, "setup"):
@@ -119,7 +119,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
             Sets orientation:
 
-            >>>  class Bird(Actor):
+            >>>  class Bird(Token):
             >>>
             >>>    def on_setup(self):
             >>>      self.add_image("images/fly.png")
@@ -793,12 +793,13 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self.kill()
         del (self)
 
-    def _start_physics(self):
+    def start_physics(self):
         """
         Starts the physics engine.
 
         """
         self.physics.token = self
+        self.board._register_physics_collision_handler(self)
         self.physics.setup_physics_model()
         self.physics.start_physics()
 

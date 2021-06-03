@@ -485,7 +485,7 @@ class Appearance(metaclass=MetaAppearance):
 
         Examples:
 
-            >>> class Robot(Actor):
+            >>> class Robot(Token):
             >>>
             >>> def __init__(self, position):
             >>>     super().__init__(position)

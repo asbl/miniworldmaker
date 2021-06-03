@@ -8,12 +8,14 @@ class Timed():
     def __init__(self):
         self.board = app.App.board
         self.board.timed_objects.append(self)
+        self.running = True
 
     def tick(self):
         self.time = self.time - 1
 
     def unregister(self):
-        self.board.timed_objects.remove(self)
+        if self in self.board.timed_objects:
+            self.board.timed_objects.remove(self)
         del(self)
 
     def _call_method(self):
@@ -45,6 +47,7 @@ class Timer(Timed):
         self.actual_time += 1
         if self.actual_time % self.time == 0:
             self.act()
+            self.unregister()
 
     def act(self):
         pass
@@ -74,6 +77,7 @@ class ActionTimer(ZeroTimer):
 
     def act(self):
         self._call_method()
+        self.unregister()
 
 
 class LoopActionTimer(Timer):
