@@ -14,7 +14,7 @@ class MyGrid(PixelBoard):
             self.rocket.started = True
 
 
-class Rocket(Actor):
+class Rocket(Token):
 
     def __init__(self, position):
         super().__init__(position)

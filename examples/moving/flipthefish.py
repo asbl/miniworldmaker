@@ -10,7 +10,7 @@ class MyBoard(TiledBoard):
         self.speed = 20
 
 
-class Fish(Actor):
+class Fish(Token):
 
     def on_setup(self):
         self.add_costume("images/fish.png")

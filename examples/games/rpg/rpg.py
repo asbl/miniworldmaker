@@ -40,7 +40,7 @@ class MyBoard(TiledBoard):
                 self.fireplace.burn()
 
 
-class Player(Actor):
+class Player(Token):
 
     def on_setup(self):
         self.add_image("rpgimages/knight.png")

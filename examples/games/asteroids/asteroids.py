@@ -15,7 +15,7 @@ class MyBoard(mwm.PixelBoard):
         self.add_background("images/galaxy.jpg")
 
 
-class Player(mwm.Actor):
+class Player(mwm.Token):
 
     def __init__(self, position):
         super().__init__(position)
@@ -50,7 +50,7 @@ class Player(mwm.Actor):
         laser.direction = self.direction
 
 
-class Laser(mwm.Actor):
+class Laser(mwm.Token):
 
     def on_setup(self):
         self.add_costume("images/laser.png")
@@ -73,7 +73,7 @@ class Laser(mwm.Actor):
         self.remove()
 
 
-class Asteroid(mwm.Actor):
+class Asteroid(mwm.Token):
     def __init__(self, position):
         super().__init__(position)
         self.add_costume("images/asteroid.png")
@@ -87,7 +87,7 @@ class Asteroid(mwm.Actor):
         self.move()
 
 
-class Explosion(mwm.Actor):
+class Explosion(mwm.Token):
 
     def on_setup(self):
         self.size = (128, 128)

@@ -31,7 +31,7 @@ class MyBoard(TiledBoard):
                 if self.chip:
                     self.placed = True
 
-class Arrow(Actor):
+class Arrow(Token):
 
     def on_setup(self):
         self.spinning = 0

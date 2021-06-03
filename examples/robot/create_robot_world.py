@@ -13,7 +13,7 @@ class MyBoard(TiledBoard):
         self.add_image(path="images/stone.jpg")
 
 
-class Robot(Actor):
+class Robot(Token):
 
     def on_setup(self):
         self.add_image("images/robo_green.png")

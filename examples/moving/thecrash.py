@@ -21,7 +21,7 @@ class Explosion(Token):
         self.add_costume("images/explosion.png")
 
 
-class Robot(Actor):
+class Robot(Token):
 
     def act(self):
         self.move()

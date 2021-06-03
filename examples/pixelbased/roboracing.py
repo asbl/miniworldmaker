@@ -9,13 +9,13 @@ class MyBoard(PixelBoard):
         wall = Wall(position = (100,100))
 
 
-class Wall(Actor):
+class Wall(Token):
 
     def on_setup(self):
         self.add_costume("images/wall.png")
         self.size= (64, 64)
 
-class Robot(Actor):
+class Robot(Token):
 
     def on_setup(self):
         self.add_costume("images/robo_green.png")

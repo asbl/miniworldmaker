@@ -11,7 +11,7 @@ class MyBoard(TiledBoard):
         self.add_to_board(Robot(), (3, 3))
 
 
-class Robot(Actor):
+class Robot(Token):
     def __init__(self):
         super().__init__()
         self.add_image("images/robo_green.png")

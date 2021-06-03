@@ -11,6 +11,7 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_rect
 from miniworldmaker.containers import container
 from miniworldmaker.physics import physics
+from miniworldmaker.tools import timer
 from miniworldmaker.physics import physics as physicsengine
 from miniworldmaker.tokens import token as tkn
 from miniworldmaker.tools import db_manager
@@ -405,7 +406,7 @@ class Board(container.Container, metaclass=MetaBoard):
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
         # for actor in self.tokens:
         #    if actor.rect.collidepoint(pixel):
-        #        token.append(actor)
+        #        token.append(Token)
         # return token
 
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
@@ -453,6 +454,22 @@ class Board(container.Container, metaclass=MetaBoard):
         if size is None:
             size = self.size
         self.window.send_event_to_containers("switch_board", [self, Board, size])
+
+    def start(self):
+        self.is_running = True
+
+    def stop(self, frames = 1):
+        """
+        stops the board in n-frames
+        """
+        if frames == 0:
+            self.is_running = False
+        else:
+            timer.ActionTimer(frames, self.stop, 0)
+
+    def clean(self):
+        for token in self.tokens:
+            token.remove()
 
     def reset(self):
         """Resets the board
@@ -940,6 +957,7 @@ class Board(container.Container, metaclass=MetaBoard):
 
         """
         token_subclasses = tkn.Token.all_subclasses()
+        token_subclasses.add(tkn.Token)
         for cls in token_subclasses:
             Board.token_classes[cls.__name__] = cls
             if cls not in Board.token_class_ids:
@@ -949,10 +967,23 @@ class Board(container.Container, metaclass=MetaBoard):
         return Board.token_classes
 
     def _register_physics_collision_handler(self, token):
+
+        def add_physics_collision_handler(token, other_class, method):
+            handler = physics.PhysicsProperty.space.add_collision_handler(token.__class__.class_id,
+                                                                        other_class.class_id)
+            handler.data["method"] = getattr(token, method)
+            if method.startswith(Board.begin_prefix):
+                handler.data["type"] = "begin"
+                handler.begin = self._physics_collision_handler
+            elif method.startswith(Board.separate_prefix):
+                handler.data["type"] = "separate"
+                handler.separate = self._physics_collision_handler
+
         Board._update_token_subclasses()
-        method_list = [func for func in dir(token.__class__) if
-                       callable(getattr(token.__class__, func)) and (
-                               func.startswith(Board.begin_prefix) or func.startswith(Board.separate_prefix))]
+        method_list = [func for func in dir(token) if
+                       (func.startswith(Board.begin_prefix) or func.startswith(Board.separate_prefix))
+                       and
+                       callable(getattr(token, func))]
         for method_name in method_list:
             if method_name.startswith(Board.begin_prefix):
                 other_class_name = method_name[len(Board.begin_prefix):].capitalize()
@@ -962,19 +993,8 @@ class Board(container.Container, metaclass=MetaBoard):
             if other_class is not None:
                 child_classes = other_class.all_subclasses()
                 for child_class in child_classes:
-                    self.add_physics_collision_handler(token, child_class, method_name)
-                self.add_physics_collision_handler(token, other_class, method_name)
-
-    def add_physics_collision_handler(self, token, other_class, method):
-        handler = physics.PhysicsProperty.space.add_collision_handler(token.__class__.class_id,
-                                                                      other_class.class_id)
-        handler.data["method"] = getattr(token, method)
-        if method.startswith(Board.begin_prefix):
-            handler.data["type"] = "begin"
-            handler.begin = self._physics_collision_handler
-        elif method.startswith(Board.separate_prefix):
-            handler.data["type"] = "separate"
-            handler.separate = self._physics_collision_handler
+                    add_physics_collision_handler(token, child_class, method_name)
+                add_physics_collision_handler(token, other_class, method_name)
 
     def _physics_collision_handler(self, arbiter, space, data):
         rvalue = None

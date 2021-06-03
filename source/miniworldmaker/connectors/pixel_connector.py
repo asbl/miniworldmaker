@@ -10,7 +10,7 @@ from miniworldmaker.tokens import token
 
 class PixelBoardConnector(board_connector.BoardConnector):
     """
-
+    Connects pixelboard and pixeltokens
     """
 
     def __init__(self, token, board):
@@ -72,7 +72,7 @@ class PixelBoardConnector(board_connector.BoardConnector):
 
     @staticmethod
     def filter_actor_list(a_list, actor_type):
-        return [actor for actor in a_list if type(actor) == actor_type]
+        return [actor for actor in a_list if type(Token) == actor_type]
 
     def sensing_tokens(self, token_type=None, distance: int = 1, collision_type="default") -> list:
             destination_rect = self.get_destination_rect(distance=distance)

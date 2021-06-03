@@ -20,12 +20,10 @@ miniworldmaker/board_positions/board_position.py
 miniworldmaker/board_positions/board_rect.py
 miniworldmaker/boards/__init__.py
 miniworldmaker/boards/board.py
-miniworldmaker/boards/physics_board.py
 miniworldmaker/boards/pixel_board.py
 miniworldmaker/boards/tiled_board.py
 miniworldmaker/connectors/__init__.py
 miniworldmaker/connectors/board_connector.py
-miniworldmaker/connectors/physics_connector.py
 miniworldmaker/connectors/pixel_connector.py
 miniworldmaker/connectors/tiled_connector.py
 miniworldmaker/containers/__init__.py
@@ -53,7 +51,6 @@ miniworldmaker/resources/right.png
 miniworldmaker/resources/run.png
 miniworldmaker/resources/up.png
 miniworldmaker/tokens/__init__.py
-miniworldmaker/tokens/actor.py
 miniworldmaker/tokens/number_token.py
 miniworldmaker/tokens/shapes.py
 miniworldmaker/tokens/text_token.py

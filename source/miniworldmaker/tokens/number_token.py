@@ -24,7 +24,7 @@ class NumberToken(text_token.TextToken):
         Sets the number stored in the NumberToken
     """
 
-    def __init__(self, position, number = 0, font_size= 80, color=(255, 255, 255, 255)):
+    def __init__(self, position = (0,0), number = 0, font_size= 80, color=(255, 255, 255, 255)):
         super().__init__(position, str(number), font_size, color)
         self.set_number(number)
         self.is_static = True

@@ -10,7 +10,7 @@ class MyBoard(PixelBoard):
         self.speed = 1
 
 
-class Robot(Actor):
+class Robot(Token):
 
     def setup(self):
         self.add_costume()

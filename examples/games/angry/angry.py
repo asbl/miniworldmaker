@@ -40,7 +40,7 @@ class MyBoard(mwm.PixelBoard):
             self.is_running = False
 
 
-class Arrow(mwm.Actor):
+class Arrow(mwm.Token):
 
     def on_setup(self):
         self.size = (30, 30)
@@ -72,7 +72,7 @@ class Arrow(mwm.Actor):
 class Plattform(mwm.Token):
 
     def on_setup(self):
-        self.add_image("images/stone.png")
+        self.add_costume("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
 
@@ -82,10 +82,10 @@ class Plattform(mwm.Token):
         self.physics.friction = 2
 
 
-class Box(mwm.Actor):
+class Box(mwm.Token):
 
     def on_setup(self):
-        self.add_image("images/box_blue.png")
+        self.add_costume("images/box_blue.png")
         self.size = (40, 40)
 
     def setup_physics(self):
@@ -97,10 +97,10 @@ class Box(mwm.Actor):
         self.remove()
 
 
-class Bird(mwm.Actor):
+class Bird(mwm.Token):
 
     def on_setup(self):
-        self.add_image("images/fly.png")
+        self.add_costume("images/fly.png")
         self.orientation = 180
         self.flip_x()
         self.size = (40, 40)

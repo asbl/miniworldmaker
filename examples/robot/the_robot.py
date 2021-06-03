@@ -19,7 +19,7 @@ class MyBoard(TiledBoard):
         self.add_image(path="images/stone.jpg")
 
 
-class Robot(Actor):
+class Robot(Token):
 
     def on_setup(self):
         print("setup robot")

@@ -32,10 +32,10 @@ class SmallBall(Token):
         self.move()
 
 
-class Obstacle(Actor):
+class Obstacle(Token):
     def __init__(self, position):
         super().__init__(position)
-        self.add_image("images/ball_soccer.png")
+        self.add_costume("images/ball_soccer.png")
         self.size = (80, 80)
 
 board = MyBoard()

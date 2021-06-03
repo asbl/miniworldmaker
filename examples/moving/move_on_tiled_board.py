@@ -12,7 +12,7 @@ class MyBoard(TiledBoard):
         print(self.is_running)
 
 
-class Player(Actor):
+class Player(Token):
 
     def on_setup(self):
         self.add_costume("images/char_blue.png")

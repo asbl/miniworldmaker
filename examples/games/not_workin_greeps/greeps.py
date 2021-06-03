@@ -75,7 +75,7 @@ class Earth(PixelBoard):
         self.index += 1
 
 
-class Ship(Actor):
+class Ship(Token):
 
     def on_setup(self):
         print("setup")
@@ -125,7 +125,7 @@ class Tomatoes(Token):
         return 1
 
 
-class Greep(Actor):
+class Greep(Token):
 
     def on_setup(self):
         self.orientation = - 90

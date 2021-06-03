@@ -1,5 +1,5 @@
 import greenfoot.World;
-import greenfoot.Actor;
+import greenfoot.Token;
 import greenfoot.GreenfootImage;
 
 import java.awt.Color;

@@ -8,7 +8,7 @@ class MyBoard(PixelBoard):
         Robot(position=(50, 50))
 
 
-class Robot(Actor):
+class Robot(Token):
 
     def on_setup(self):
         self.size = (30, 30)

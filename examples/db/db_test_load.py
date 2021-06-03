@@ -8,7 +8,7 @@ class MyBoard(TiledBoard):
         self.add_image("images/stone.jpg")
 
 
-class Robot(Actor):
+class Robot(Token):
     def __init__(self):
         super().__init__()
         self.add_image("images/robo_green.png")
