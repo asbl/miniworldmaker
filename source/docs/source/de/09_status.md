@@ -21,4 +21,6 @@ Dafür gibt es folgende Befehle:
 
   * Oft willst du den aktuellen Punktestand oder ähnliches anzeigen.
 
-  Hierfür bietet dir der **miniworldmaker** spezielle Tokens
+  Hierfür bietet dir der **miniworldmaker** spezielle Tokens an, z.B. TextTokens oder NumberTokens.
+
+  
