@@ -11,9 +11,10 @@ class MyBoard(PixelBoard):
         for i in range(50):
             self.lst.append(Circle((random.randint(0, 800),
                                     random.randint(200, 600)),
-                                   random.randint(40, 80),
-                                   0,
-                                   color=(100, 0, 255, 100)))
+                                    random.randint(40, 80),
+                                    0,
+                                    color=(100, 0, 255, 100))
+                            )
 
     def act(self):
         for circle in self.lst:
