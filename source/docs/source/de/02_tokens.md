@@ -43,7 +43,7 @@ Die Anweisung dafür lautet üblicherweise:
 token_name.add_costume("path_to_image")
 ```
 
-![tiles](../_images/add_costume.jpg)
+![tiles](../images/add_costume.jpg)
 
 `path_to_image` ist ein (relativer Pfad) zum Bild. Du solltest deine Bilder in den Unterordner `images` ablgegen, dann hat das Bild `bild.png` in dem Unterordner `images` den Pfad `images/bild.png.
 

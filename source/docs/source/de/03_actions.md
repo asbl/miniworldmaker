@@ -1,12 +1,14 @@
 Aktionen / Methoden registrieren
 ================================
 
+## Die Act-Methode
+
 Das Spielfeld und alle Tokens können über die Methode **act()** gesteuert werden. 
 Diese Methode wird immer wieder aufgerufen *(genau genommen: Alle **board.speed** Zeiteinheiten)*.
 
 Wenn du ein Token erstellst, kannst du mit dem Decorator **@register** eine Act-Methode zum Spielfeld oder zum Token hinzufügen:
 
-#### Beispiel:
+### Beispiel:
 
 ```{code-block} python
 ---
