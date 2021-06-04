@@ -119,7 +119,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/08_physics.html">9. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/08_timers.html">9. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/10_physics.html">11. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -231,40 +233,6 @@ The costume can be switched with self.switch_costume(index)</p>
 <dd class="field-even"><p>The new costume.</p>
 </dd>
 </dl>
-</dd></dl>
-<dl class="py method">
-<dt id="miniworldmaker.tokens.token.Token.add_image">
-<code class="sig-name descname"><span class="pre">add_image</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> → <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.add_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.add_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds an image to the token.
-Best Practice: Image should me placed in ./images subfolder of your project, because these images
-will be loaded before running the main-loop.</p>
-<p>Loading images is very slow, so this shouldn’t be done in runtime.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>path</strong> – Path to the images.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The image index</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>Create several tokens with images (in example createrobotworld.py)</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="k">class</span> <span class="nc">Robot</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s2">"images/robo_green.png"</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span> <span class="k">class</span> <span class="nc">Wall</span><span class="p">(</span><span class="n">Token</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s2">"images/rock.png"</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span> <span class="k">class</span> <span class="nc">Gold</span><span class="p">(</span><span class="n">Token</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s2">"images/stone_gold.png"</span><span class="p">)</span>
-</pre></div>
-</div>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.tokens.token.Token.all_subclasses">
@@ -492,7 +460,7 @@ If distance = 0, the actor speed will be used.</p>
 If orientation is != 0, the token is rotated by orientation degrees, before any other operation.</p>
 <p class="rubric">Examples</p>
 <p>Sets orientation:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="k">class</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="k">class</span> <span class="nc">Bird</span><span class="p">(</span><span class="n">Token</span><span class="p">):</span>
 <span class="go">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>     <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="s2">"images/fly.png"</span><span class="p">)</span>
@@ -736,6 +704,11 @@ Returns a list of tokens.</p>
 <dt id="miniworldmaker.tokens.token.Token.size">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">size</span></code><a class="headerlink" href="#miniworldmaker.tokens.token.Token.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of the token</p>
+</dd></dl>
+<dl class="py method">
+<dt id="miniworldmaker.tokens.token.Token.start_physics">
+<code class="sig-name descname"><span class="pre">start_physics</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.start_physics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.start_physics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the physics engine.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.tokens.token.Token.switch_costume">

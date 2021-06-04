@@ -12,10 +12,10 @@ Python bietet auch in der library `time` die Funktion `time.sleep(...) an. Diese
 Einen Timer kannst du z.B. so starten:
 
 ```
-miniworldmaker.ActionTimer(24, player.move, None)
+miniworldmaker.ActionTimer(24, player.move)
 ```
 
-Die Funktion erhält 3 Argumente: *(1)* Nach `24` Frames wird die Funktion *(2)* `player.move` ausgeführt, es wird kein Argument (3) (d.h. `None`) an die Funktion übergeben 
+Die Funktion erhält 3 Argumente: *(1)* Nach `24` Frames wird die Funktion *(2)* `player.move` ausgeführt.
 
 ### Timer
 
@@ -36,7 +36,7 @@ Der LoopActionTimer macht das gleiche wie der Actiontimer, allerdings wird die A
 ##### LoopActionTimer erstellen
 
 ```
-loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move, None)
+loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move)
 ```
 ##### LoopActionTimer löschen
 

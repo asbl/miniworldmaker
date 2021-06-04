@@ -119,7 +119,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/08_physics.html">9. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/08_timers.html">9. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/10_physics.html">11. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -206,7 +208,7 @@
 <span class="sd">        Sets the number stored in the NumberToken</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span> <span class="mi">80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">number</span><span class="p">),</span> <span class="n">font_size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_number</span><span class="p">(</span><span class="n">number</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_static</span> <span class="o">=</span> <span class="kc">True</span>

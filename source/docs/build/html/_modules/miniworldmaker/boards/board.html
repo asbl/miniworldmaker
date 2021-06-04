@@ -119,7 +119,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/08_physics.html">9. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/08_timers.html">9. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/10_physics.html">11. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -193,6 +195,7 @@
 <span class="kn">from</span> <span class="nn">miniworldmaker.board_positions</span> <span class="kn">import</span> <span class="n">board_rect</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.containers</span> <span class="kn">import</span> <span class="n">container</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.physics</span> <span class="kn">import</span> <span class="n">physics</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.tools</span> <span class="kn">import</span> <span class="n">timer</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.physics</span> <span class="kn">import</span> <span class="n">physics</span> <span class="k">as</span> <span class="n">physicsengine</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.tokens</span> <span class="kn">import</span> <span class="n">token</span> <span class="k">as</span> <span class="n">tkn</span>
 <span class="kn">from</span> <span class="nn">miniworldmaker.tools</span> <span class="kn">import</span> <span class="n">db_manager</span>
@@ -587,7 +590,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">token</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">pixel</span><span class="p">)]</span></div>
         <span class="c1"># for actor in self.tokens:</span>
         <span class="c1">#    if actor.rect.collidepoint(pixel):</span>
-        <span class="c1">#        token.append(actor)</span>
+        <span class="c1">#        token.append(Token)</span>
         <span class="c1"># return token</span>
 
 <div class="viewcode-block" id="Board.get_tokens_at_rect"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.get_tokens_at_rect">[docs]</a>    <span class="k">def</span> <span class="nf">get_tokens_at_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">,</span> <span class="n">singleitem</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">token_type</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span>
@@ -635,6 +638,22 @@
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"switch_board"</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">Board</span><span class="p">,</span> <span class="n">size</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Board.stop"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        stops the board in n-frames</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">frames</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_running</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timer</span><span class="o">.</span><span class="n">ActionTimer</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">:</span>
+            <span class="n">token</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Board.reset"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""Resets the board</span>
@@ -1122,6 +1141,7 @@
 
 <span class="sd">        """</span>
         <span class="n">token_subclasses</span> <span class="o">=</span> <span class="n">tkn</span><span class="o">.</span><span class="n">Token</span><span class="o">.</span><span class="n">all_subclasses</span><span class="p">()</span>
+        <span class="n">token_subclasses</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tkn</span><span class="o">.</span><span class="n">Token</span><span class="p">)</span>
         <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">token_subclasses</span><span class="p">:</span>
             <span class="n">Board</span><span class="o">.</span><span class="n">token_classes</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
             <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Board</span><span class="o">.</span><span class="n">token_class_ids</span><span class="p">:</span>
@@ -1131,10 +1151,23 @@
         <span class="k">return</span> <span class="n">Board</span><span class="o">.</span><span class="n">token_classes</span>
 
     <span class="k">def</span> <span class="nf">_register_physics_collision_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">add_physics_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">other_class</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="n">physics</span><span class="o">.</span><span class="n">PhysicsProperty</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">add_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">class_id</span><span class="p">,</span>
+                                                                        <span class="n">other_class</span><span class="o">.</span><span class="n">class_id</span><span class="p">)</span>
+            <span class="n">handler</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">begin_prefix</span><span class="p">):</span>
+                <span class="n">handler</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"begin"</span>
+                <span class="n">handler</span><span class="o">.</span><span class="n">begin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_physics_collision_handler</span>
+            <span class="k">elif</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">separate_prefix</span><span class="p">):</span>
+                <span class="n">handler</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"separate"</span>
+                <span class="n">handler</span><span class="o">.</span><span class="n">separate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_physics_collision_handler</span>
+
         <span class="n">Board</span><span class="o">.</span><span class="n">_update_token_subclasses</span><span class="p">()</span>
-        <span class="n">method_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span> <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="k">if</span>
-                       <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">func</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span>
-                               <span class="n">func</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">begin_prefix</span><span class="p">)</span> <span class="ow">or</span> <span class="n">func</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">separate_prefix</span><span class="p">))]</span>
+        <span class="n">method_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span> <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="k">if</span>
+                       <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">begin_prefix</span><span class="p">)</span> <span class="ow">or</span> <span class="n">func</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">separate_prefix</span><span class="p">))</span>
+                       <span class="ow">and</span>
+                       <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">func</span><span class="p">))]</span>
         <span class="k">for</span> <span class="n">method_name</span> <span class="ow">in</span> <span class="n">method_list</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">method_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">begin_prefix</span><span class="p">):</span>
                 <span class="n">other_class_name</span> <span class="o">=</span> <span class="n">method_name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">begin_prefix</span><span class="p">):]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
@@ -1144,19 +1177,8 @@
             <span class="k">if</span> <span class="n">other_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">child_classes</span> <span class="o">=</span> <span class="n">other_class</span><span class="o">.</span><span class="n">all_subclasses</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">child_class</span> <span class="ow">in</span> <span class="n">child_classes</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">add_physics_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">child_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_physics_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">other_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">add_physics_collision_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">other_class</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
-        <span class="n">handler</span> <span class="o">=</span> <span class="n">physics</span><span class="o">.</span><span class="n">PhysicsProperty</span><span class="o">.</span><span class="n">space</span><span class="o">.</span><span class="n">add_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">class_id</span><span class="p">,</span>
-                                                                      <span class="n">other_class</span><span class="o">.</span><span class="n">class_id</span><span class="p">)</span>
-        <span class="n">handler</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"method"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">begin_prefix</span><span class="p">):</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"begin"</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">begin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_physics_collision_handler</span>
-        <span class="k">elif</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">Board</span><span class="o">.</span><span class="n">separate_prefix</span><span class="p">):</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"separate"</span>
-            <span class="n">handler</span><span class="o">.</span><span class="n">separate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_physics_collision_handler</span>
+                    <span class="n">add_physics_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">child_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
+                <span class="n">add_physics_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">other_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_physics_collision_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arbiter</span><span class="p">,</span> <span class="n">space</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">rvalue</span> <span class="o">=</span> <span class="kc">None</span>

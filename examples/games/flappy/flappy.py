@@ -17,9 +17,6 @@ class MyBoard(mwm.PixelBoard):
         self.score.size = (40, 40)
         self.is_running = False
 
-    def act(self):
-        pass
-
 
 class Bird(mwm.Token):
 

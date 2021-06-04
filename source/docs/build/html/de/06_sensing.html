@@ -119,7 +119,9 @@
 <li class="toctree-l2"><a class="reference internal" href="05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="08_physics.html">9. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_timers.html">9. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_physics.html">11. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -192,6 +194,35 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="vergleichen-mit-objekt">
+<h2><span class="section-number">7.2. </span>Vergleichen mit Objekt<a class="headerlink" href="#vergleichen-mit-objekt" title="Permalink to this headline">¶</a></h2>
+<p>Oft soll eine Aktion nur ausgeführt werden, wenn ein <em>bestimmtes</em> Objekt aufgespürt wird. Dies geht z.B. so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player1</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">on_sensing_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">token</span> <span class="o">==</span> <span class="n">player2</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="n">token</span> <span class="o">==</span> <span class="n">player2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="grenzen-des-spielfelds-uberprufen">
+<h2><span class="section-number">7.3. </span>Grenzen des Spielfelds überprüfen<a class="headerlink" href="#grenzen-des-spielfelds-uberprufen" title="Permalink to this headline">¶</a></h2>
+<p>Du kannst auch überprüfen, ob eine Spielfigur an den Grenzen des Spielfelds ist (oder darüber hinaus):</p>
+<p>Nicht auf dem Spielfeld:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player3</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">on_sensing_not_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: I'm not on the board!!!"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>An den Grenzen des Spielfelds:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player4</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">on_sensing_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">borders</span><span class="p">):</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">"Borders are here!"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">borders</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Befindet sich eine Spielfigur an der Position (0,0) wird folgendes ausgegeben:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Borders</span> <span class="pre">are</span> <span class="pre">here!</span> <span class="pre">['right',</span> <span class="pre">'top'</span></code></p>
+<p>Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies kann über die Eigenschaft <code class="docutils literal notranslate"><span class="pre">collision_type</span></code> des aufspürenden Objekts eingestellt werden, z.B. “mask” für einen pixelgenauen Vergleich oder ‘rect’ wenn nur die umschließenden Rechtecke verglichen werden.</p>
 <blockquote>
 <div><p>➥ Mehr über Sensoren: <a class="reference internal" href="../key_concepts/sensors.html"><span class="doc std std-doc">Key Concept: Sensors</span></a></p>
 </div></blockquote>
@@ -254,6 +285,8 @@
             <ul>
 <li><a class="reference internal" href="#">7. Kollisionen und Sensoren</a><ul>
 <li><a class="reference internal" href="#ein-objekt-aufspuren">7.1. Ein Objekt aufspüren</a></li>
+<li><a class="reference internal" href="#vergleichen-mit-objekt">7.2. Vergleichen mit Objekt</a></li>
+<li><a class="reference internal" href="#grenzen-des-spielfelds-uberprufen">7.3. Grenzen des Spielfelds überprüfen</a></li>
 </ul>
 </li>
 </ul>

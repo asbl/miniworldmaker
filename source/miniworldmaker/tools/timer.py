@@ -70,7 +70,7 @@ class ZeroTimer(Timed):
 
 class ActionTimer(ZeroTimer):
 
-    def __init__(self, time, method, parameters):
+    def __init__(self, time, method, parameters = None):
         super().__init__(time)
         self.method = method
         self.parameters = parameters
@@ -82,7 +82,7 @@ class ActionTimer(ZeroTimer):
 
 class LoopActionTimer(Timer):
 
-    def __init__(self, time, method, parameters):
+    def __init__(self, time, method, parameters = None):
         super().__init__(time)
         self.method = method
         self.parameters = parameters

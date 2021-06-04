@@ -119,7 +119,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/08_physics.html">9. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/08_timers.html">9. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/10_physics.html">11. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -202,7 +204,7 @@
             <span class="n">instance</span><span class="o">.</span><span class="n">set_physics_default_values</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">"setup_physics"</span><span class="p">):</span>
             <span class="n">instance</span><span class="o">.</span><span class="n">setup_physics</span><span class="p">()</span>
-            <span class="n">instance</span><span class="o">.</span><span class="n">_start_physics</span><span class="p">()</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">start_physics</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">"on_setup"</span><span class="p">):</span>
             <span class="n">instance</span><span class="o">.</span><span class="n">on_setup</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">"setup"</span><span class="p">):</span>
@@ -301,7 +303,7 @@
 
 <span class="sd">            Sets orientation:</span>
 
-<span class="sd">            &gt;&gt;&gt;  class Bird(Actor):</span>
+<span class="sd">            &gt;&gt;&gt;  class Bird(Token):</span>
 <span class="sd">            &gt;&gt;&gt;</span>
 <span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
 <span class="sd">            &gt;&gt;&gt;      self.add_image("images/fly.png")</span>
@@ -432,47 +434,8 @@
 
 
 
-<div class="viewcode-block" id="Token.add_image"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.add_image">[docs]</a>    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">"""</span>
-<span class="sd">        Adds an image to the token.</span>
-<span class="sd">        Best Practice: Image should me placed in ./images subfolder of your project, because these images</span>
-<span class="sd">        will be loaded before running the main-loop.</span>
-
-<span class="sd">        Loading images is very slow, so this shouldn't be done in runtime.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            path: Path to the images.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The image index</span>
-
-<span class="sd">        Examples:</span>
-
-<span class="sd">            Create several tokens with images (in example createrobotworld.py)</span>
-
-<span class="sd">            &gt;&gt;&gt;  class Robot(Actor):</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
-<span class="sd">            &gt;&gt;&gt;      self.add_image("images/robo_green.png")</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;  class Wall(Token):</span>
-<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
-<span class="sd">            &gt;&gt;&gt;      self.add_image("images/rock.png")</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;  class Gold(Token):</span>
-<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
-<span class="sd">            &gt;&gt;&gt;      self.add_image("images/stone_gold.png")</span>
-
-
-<span class="sd">        """</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_costume</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">class_image</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">class_image</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="k">return</span> <span class="n">image</span></div>
+    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Use token.add_costume or token.costume.add_image"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Token.add_costume"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.add_costume">[docs]</a>    <span class="k">def</span> <span class="nf">add_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">costume</span><span class="o">.</span><span class="n">Costume</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -1014,14 +977,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
         <span class="k">del</span> <span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_start_physics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Token.start_physics"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.start_physics">[docs]</a>    <span class="k">def</span> <span class="nf">start_physics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Starts the physics engine.</span>
 
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">_register_physics_collision_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">setup_physics_model</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">start_physics</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics</span><span class="o">.</span><span class="n">start_physics</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_stop_physics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">"""</span>
@@ -1241,22 +1205,6 @@
     <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">images</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_animation</span> <span class="o">=</span> <span class="n">text</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">images</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">check_for_deprecated_methods</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="n">members</span> <span class="o">=</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">"get_event"</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Deprecated method 'get_event' found in "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                <span class="bp">cls</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", use specific methods (on_key_down, on_key_pressed...) instead"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">"key_down"</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Deprecated method 'key_down' found in "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", use 'on_key_down' instead"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">"key_pressed"</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Deprecated method 'get_event' found in "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", use 'on_key_pressed' instead"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">[</span><span class="n">member</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">members</span> <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"on_sensing_collision_with"</span><span class="p">)]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Deprecated method 'on_sensing_collision_with_[token_class]' found in "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                <span class="bp">cls</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", use 'on_touching_[token_class]' instead"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">[</span><span class="n">member</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">members</span> <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"on_sensing_separation_with"</span><span class="p">)]:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">"Deprecated method 'on_sensing_separation_with_[token_class]' found in "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
-                <span class="bp">cls</span><span class="p">)</span> <span class="o">+</span> <span class="s2">", use 'on_separation_with_[token_class]' instead"</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
