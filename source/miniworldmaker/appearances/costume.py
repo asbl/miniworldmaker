@@ -21,8 +21,8 @@ class Costume(appear.Appearance):
         self._is_upscaled = True
         self._info_overlay = False
         self._is_rotatable = True
-        self.return_to_costume = -1
         self.image_actions_pipeline.append(("info_overlay", self.image_action_info_overlay, "info_overlay"))
+        self.animation_frame = 0
 
     @property
     def info_overlay(self):
@@ -56,23 +56,29 @@ class Costume(appear.Appearance):
 
     def update(self):
         super().update()
-        if self.return_to_costume >= 0:
-           if self.costume_id != self.return_to_costume:
-                    self.parent.switch_costume(self.return_to_costume)
 
     async def _update(self):
         if self.parent.board and self.is_animated:
-            if self._end_animation or (
-                    self.parent.board.frame != 0 and self.parent.board.frame % self.animation_speed == 0):
-                await self.next_image()
-            else:
-                self.reload_image()
-        else:
-            self.reload_image()
+            if self.parent.board.frame != 0:
+                self.animation_frame += 1
+                if self.animation_frame == self.animation_speed:
+                    await self.next_image()
+                    self.animation_frame = 0
+        self.reload_image()
 
     def reset(self):
         self._image_index = 0
         self.end_animation()
 
+    def after_animation(self):
+        self.parent.switch_costume(self.parent.main_costume)
+        self.set_image(0)
+
+    def end_animation(self):
+        self.is_animated = False
+        self.animation_loop = False
+        self.set_image(0)
+        self.animation_frame = 0
+
     def __str__(self):
-        return "Costume for with ID [" + str(self.costume_id) + "] for parent:[" + str(self.parent) + "]"
+        return "Costume for with ID [" + str(self.costume_id) + "] for parent:[" + str(self.parent) + "], images: " + str(self.images_list)

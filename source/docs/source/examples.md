@@ -1,7 +1,19 @@
 Examples
 =========
 
-| Name | Path | Concepts |
-| ---- | ---- | -------- |
-| Basic Framework    | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py)    |  Create a Board and Tokens      | 
-| Basic Framework    | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py)    |  Create a Board and Tokens with Classes, Counter      | 
+## Objects first
+
+| Name | Path | Concepts | Image/Video |
+| ---- | ---- | -------- | ----------- |
+| Basic Framework    | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py)    |  Create a Board and Tokens      | |
+| Flappy Bird    | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/games/flappy/flappy_objects_based.py)    |  Create a Board and Tokens with Classes, Counter, Events, Physics, Game Over      | |
+| Physics Demo I   | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/processing/physics_simulation.py)    | Physics      |  ![physics](_images/physics.gif)|
+|
+
+## With Classes
+
+
+| Name | Path | Concepts | Image/Video |
+| ---- | ---- | -------- | ----------- |
+| Basic Framework    | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py)    |  Create a Board and Tokens with Classes, Counter      | | 
+| Pong (with Physics-Engine)  | [Link](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/games/pong/pong.py)    |  Physics, Counter      | ![pong](_images/ping.png)|

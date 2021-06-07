@@ -33,8 +33,9 @@ Die Richtung ändern kannst du mit folgenden Befehlen:
   
   * **player.point_in_direction(direction)** - Dreht das Token in die Richtung **direction**.
 
-
+:::{note} 
 > ➥ Mehr Infos über Richtungen: [Key Concept:  Directions](../key_concepts/directions.md)
+:::
 
 ### Beispiele
 
