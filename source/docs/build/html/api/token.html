@@ -119,10 +119,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/08_timers.html">9. Timer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/09_status.html">11. Status: Spielstand/Spielende/Levels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/10_physics.html">12. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/08%20animations.html">9. Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/09_timers.html">10. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/10_status.html">11. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/11_physics.html">12. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -223,7 +223,7 @@ pieces and obstacles on the playing field</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.tokens.token.Token.add_costume">
-<code class="sig-name descname"><span class="pre">add_costume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><span class="pre">tuple</span></a><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="appearance.costume.html#miniworldmaker.appearances.costume.Costume" title="miniworldmaker.appearances.costume.Costume"><span class="pre">miniworldmaker.appearances.costume.Costume</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.add_costume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.add_costume" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">add_costume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><span class="pre">list</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="appearance.html#miniworldmaker.appearances.appearance.Appearance" title="miniworldmaker.appearances.appearance.Appearance"><span class="pre">miniworldmaker.appearances.appearance.Appearance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">(255,</span> <span class="pre">0,</span> <span class="pre">255,</span> <span class="pre">100)</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="appearance.costume.html#miniworldmaker.appearances.costume.Costume" title="miniworldmaker.appearances.costume.Costume"><span class="pre">miniworldmaker.appearances.costume.Costume</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.add_costume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.add_costume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new costume to token.
 The costume can be switched with self.switch_costume(index)</p>
 <dl class="field-list simple">
@@ -455,6 +455,17 @@ If distance = 0, the actor speed will be used.</p>
 </div>
 </dd></dl>
 <dl class="py method">
+<dt id="miniworldmaker.tokens.token.Token.next_costume">
+<code class="sig-name descname"><span class="pre">next_costume</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.next_costume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.next_costume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Switches to the next costume of token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>next</strong> – If next is True, the next costume will be selected</p>
+</dd>
+</dl>
+<p>Returns: The new costume</p>
+</dd></dl>
+<dl class="py method">
 <dt id="miniworldmaker.tokens.token.Token.orientation">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">orientation</span></code><a class="headerlink" href="#miniworldmaker.tokens.token.Token.orientation" title="Permalink to this definition">¶</a></dt>
 <dd><p>The orientation “corrects” a wrongly orientation of a token image.
@@ -578,6 +589,16 @@ Warning: If the token is rotated, the rect vertices are not the vertices of the 
 <span class="gp">&gt;&gt;&gt; </span>       <span class="n">other</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
 </pre></div>
 </div>
+</dd></dl>
+<dl class="py method">
+<dt id="miniworldmaker.tokens.token.Token.remove_costume">
+<code class="sig-name descname"><span class="pre">remove_costume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">costume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.remove_costume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.remove_costume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a costume from token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> – The index of the new costume. Defaults to -1 (last costume)</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.tokens.token.Token.sensing_borders">
@@ -713,11 +734,11 @@ Returns a list of tokens.</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.tokens.token.Token.switch_costume">
-<code class="sig-name descname"><span class="pre">switch_costume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="appearance.costume.html#miniworldmaker.appearances.costume.Costume" title="miniworldmaker.appearances.costume.Costume"><span class="pre">miniworldmaker.appearances.costume.Costume</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.switch_costume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.switch_costume" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">switch_costume</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">costume</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="appearance.html#miniworldmaker.appearances.appearance.Appearance" title="miniworldmaker.appearances.appearance.Appearance"><span class="pre">miniworldmaker.appearances.appearance.Appearance</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> → <a class="reference internal" href="appearance.costume.html#miniworldmaker.appearances.costume.Costume" title="miniworldmaker.appearances.costume.Costume"><span class="pre">miniworldmaker.appearances.costume.Costume</span></a><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.switch_costume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.tokens.token.Token.switch_costume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switches the costume of token</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>index</strong> – The index of the new costume. If index=-1, the next costume will be selected</p>
+<dd class="field-odd"><p><strong>next</strong> – If next is True, the next costume will be selected</p>
 </dd>
 </dl>
 <p>Returns: The new costume</p>

@@ -119,10 +119,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../de/05_events.html">6. Ereignisse</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/07_costumes.html">8. Kostüme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/08_timers.html">9. Timer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/09_status.html">11. Status: Spielstand/Spielende/Levels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/10_physics.html">12. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/08%20animations.html">9. Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/09_timers.html">10. Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/10_status.html">11. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/11_physics.html">12. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -206,8 +206,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_upscaled</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_info_overlay</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_rotatable</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">return_to_costume</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_actions_pipeline</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">"info_overlay"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_info_overlay</span><span class="p">,</span> <span class="s2">"info_overlay"</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_frame</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">info_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -241,26 +241,32 @@
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_to_costume</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-           <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_to_costume</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">switch_costume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">return_to_costume</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_end_animation</span> <span class="ow">or</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">animation_speed</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_image</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reload_image</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">reload_image</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">animation_frame</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">animation_frame</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">animation_speed</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_image</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">animation_frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reload_image</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end_animation</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">after_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">switch_costume</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">main_costume</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">end_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_loop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_frame</span> <span class="o">=</span> <span class="mi">0</span>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">"Costume for with ID ["</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">costume_id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"] for parent:["</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"]"</span></div>
+        <span class="k">return</span> <span class="s2">"Costume for with ID ["</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">costume_id</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"] for parent:["</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"], images: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">)</span></div>
 </pre></div>
       </article>
       <footer>
