@@ -36,7 +36,7 @@ board.run()
 
 ### Das Kostüm
 
-Jedes `Board` hat einen `Background`, jedes `Token` hat ein `Costume`. Du **musst* einem neuen Token ein Kostüm zuweisen. 
+Jedes `Board` hat einen `Background`, jedes `Token` hat ein `Costume`. Du **solltest* einem neuen Token ein Kostüm zuweisen. 
 
 Die Anweisung dafür lautet üblicherweise:
 ```

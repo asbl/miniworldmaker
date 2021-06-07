@@ -2,10 +2,10 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Tutorial - English" href="../tutorial_english.html" /><link rel="prev" title="10. Status: Spielstand/Spielende/Levels" href="09_status.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Tutorial - English" href="../tutorial_english.html" /><link rel="prev" title="11. Status: Spielstand/Spielende/Levels" href="09_status.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>11. Physik - miniworldmaker 2021 documentation</title>
+        <title>12. Physik - miniworldmaker 2021 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -120,8 +120,9 @@
 <li class="toctree-l2"><a class="reference internal" href="06_sensing.html">7. Kollisionen und Sensoren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="07_costumes.html">8. Kostüme</a></li>
 <li class="toctree-l2"><a class="reference internal" href="08_timers.html">9. Timer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="09_status.html">10. Status: Spielstand/Spielende/Levels</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">11. Physik</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_Status.html">10. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_status.html">11. Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">12. Physik</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_english.html">Tutorial - English</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label for="toctree-checkbox-2"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -182,11 +183,11 @@
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
         <div class="section" id="physik">
-<h1><span class="section-number">11. </span>Physik<a class="headerlink" href="#physik" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">12. </span>Physik<a class="headerlink" href="#physik" title="Permalink to this headline">¶</a></h1>
 <p>MiniWorldmaker hat eine integrierte Physik-Umgebung.</p>
 <p><img alt="tiles" src="../_images/physics.jpg"/></p>
 <div class="section" id="aktivieren-der-physik-engine">
-<h2><span class="section-number">11.1. </span>Aktivieren der Physik-Engine<a class="headerlink" href="#aktivieren-der-physik-engine" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">12.1. </span>Aktivieren der Physik-Engine<a class="headerlink" href="#aktivieren-der-physik-engine" title="Permalink to this headline">¶</a></h2>
 <p>Die einfachste Art die Physik-Engine zu aktivieren ist ein <strong>PhysicsBoard</strong> zu verwenden.</p>
 <p>Beispiel:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_board</span> <span class="o">=</span> <span class="n">PhysicsBoard</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
@@ -204,7 +205,7 @@
 </div>
 </div>
 <div class="section" id="physikalische-eigenschaften-eines-tokens">
-<h2><span class="section-number">11.2. </span>Physikalische Eigenschaften eines Tokens<a class="headerlink" href="#physikalische-eigenschaften-eines-tokens" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">12.2. </span>Physikalische Eigenschaften eines Tokens<a class="headerlink" href="#physikalische-eigenschaften-eines-tokens" title="Permalink to this headline">¶</a></h2>
 <p>In der Methode <strong>setup_physics</strong> kannst du die physikalischen Eigenschaften eines Tokens festlegen.</p>
 <p>Beispiel:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="bp">self</span><span class="o">.</span><span class="n">line1</span> <span class="o">=</span> <span class="n">Line</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span> <span class="mi">5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
@@ -216,7 +217,7 @@
 <p>Hinweis: Die Methode wird <em>vor</em> <strong>on_setup</strong> ausgeführt.</p>
 </div>
 <div class="section" id="objekte-bewegen">
-<h2><span class="section-number">11.3. </span>Objekte bewegen<a class="headerlink" href="#objekte-bewegen" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">12.3. </span>Objekte bewegen<a class="headerlink" href="#objekte-bewegen" title="Permalink to this headline">¶</a></h2>
 <p>Wenn du Objekte bewegen willst, kannst du ihnen einen “Impuls geben”.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Ball</span><span class="p">(</span><span class="n">Circle</span><span class="p">):</span>
 
@@ -258,7 +259,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><span class="section-number">10. </span>Status: Spielstand/Spielende/Levels</div>
+                <div class="title"><span class="section-number">11. </span>Status: Spielstand/Spielende/Levels</div>
                 
               </div>
             </a>
@@ -292,10 +293,10 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">11. Physik</a><ul>
-<li><a class="reference internal" href="#aktivieren-der-physik-engine">11.1. Aktivieren der Physik-Engine</a></li>
-<li><a class="reference internal" href="#physikalische-eigenschaften-eines-tokens">11.2. Physikalische Eigenschaften eines Tokens</a></li>
-<li><a class="reference internal" href="#objekte-bewegen">11.3. Objekte bewegen</a></li>
+<li><a class="reference internal" href="#">12. Physik</a><ul>
+<li><a class="reference internal" href="#aktivieren-der-physik-engine">12.1. Aktivieren der Physik-Engine</a></li>
+<li><a class="reference internal" href="#physikalische-eigenschaften-eines-tokens">12.2. Physikalische Eigenschaften eines Tokens</a></li>
+<li><a class="reference internal" href="#objekte-bewegen">12.3. Objekte bewegen</a></li>
 </ul>
 </li>
 </ul>

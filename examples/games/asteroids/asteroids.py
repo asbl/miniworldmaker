@@ -9,7 +9,7 @@ class MyBoard(mwm.PixelBoard):
         asteroids = list()
         for i in range(5):
             asteroid = Asteroid(position=(random.randint(30, self.width - 30),
-                                          random.randint(0 + 30, self.height - 30))),
+                                          random.randint(0 + 30, self.height - 30)))
             asteroids.append(asteroid)
         Player(position=(40, 40))
         self.add_background("images/galaxy.jpg")

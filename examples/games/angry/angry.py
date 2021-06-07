@@ -75,22 +75,19 @@ class Plattform(mwm.Token):
         self.add_costume("images/stone.png")
         self.size = (256, 64)
         self.costume.is_textured = True
-
-    def setup_physics(self):
         self.physics.gravity = False
         self.physics.can_move = False
         self.physics.friction = 2
-
+        self.start_physics()
 
 class Box(mwm.Token):
 
     def on_setup(self):
         self.add_costume("images/box_blue.png")
         self.size = (40, 40)
-
-    def setup_physics(self):
         self.physics.friction = 0.1
         self.mass = 1
+        self.start_physics()
 
     def on_sensing_not_on_board(self):
         self.board.counter.inc()
@@ -101,6 +98,14 @@ class Bird(mwm.Token):
 
     def on_setup(self):
         self.add_costume("images/fly.png")
+        self.physics.mass = 5
+        self.physics.friction = 1
+        self.physics.size = 0.7, 0.7
+        self.physics.elasticity = 0
+        self.gravity = True
+        self.physics.shape_type = "circle"
+        self.physics.stable = True
+        self.start_physics()
         self.orientation = 180
         self.flip_x()
         self.size = (40, 40)
@@ -111,16 +116,6 @@ class Bird(mwm.Token):
     def act(self):
         if "bottom" in self.sensing_borders() or "right" in self.sensing_borders():
             self.remove()
-
-
-    def setup_physics(self):
-        self.physics.mass = 5
-        self.physics.friction = 1
-        self.physics.size = 0.7, 0.7
-        self.physics.elasticity = 0
-        self.gravity = True
-        self.physics.shape_type = "circle"
-        self.physics.stable = True
 
 def main():
     board = MyBoard(1024, 700)

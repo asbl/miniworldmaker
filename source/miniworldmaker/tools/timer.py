@@ -18,24 +18,7 @@ class Timed():
             self.board.timed_objects.remove(self)
         del(self)
 
-    def _call_method(self):
-        sig = signature(self.method)
-        if type(self.parameters) == list:
-            if len(sig.parameters) == len(self.parameters):
-                self.method(*self.parameters)
-            else:
-                info = inspect.getframeinfo(inspect.currentframe())
-                raise Exception(
-                    "Wrong number of arguments for " + str(self.method) + " in , got " + str(
-                        len(self.parameters)) + " but should be " + str(
-                        len(sig.parameters)) +
-                    "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
-                )
-        else:
-            if self.parameters is None:
-                self.method()
-            else:
-                self.method(self.parameters)
+
 
 class Timer(Timed):
     def __init__(self, time):
@@ -70,22 +53,47 @@ class ZeroTimer(Timed):
 
 class ActionTimer(ZeroTimer):
 
-    def __init__(self, time, method, parameters = None):
+    def __init__(self, time, method, arguments = None):
         super().__init__(time)
         self.method = method
-        self.parameters = parameters
+        self.arguments = arguments
 
     def act(self):
         self._call_method()
         self.unregister()
+        self.success()
 
+    def success(self, method = None, arguments = None):
+        if method is not None and arguments is None:
+            method()
+        if method is not None and arguments is not None:
+            method(arguments)
+
+    def _call_method(self):
+        sig = signature(self.method)
+        if type(self.arguments) == list:
+            if len(sig.arguments) == len(self.arguments):
+                self.method(*self.arguments)
+            else:
+                info = inspect.getframeinfo(inspect.currentframe())
+                raise Exception(
+                    "Wrong number of arguments for " + str(self.method) + " in , got " + str(
+                        len(self.arguments)) + " but should be " + str(
+                        len(sig.arguments)) +
+                    "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
+                )
+        else:
+            if self.arguments is None:
+                self.method()
+            else:
+                self.method(self.arguments)
 
 class LoopActionTimer(Timer):
 
-    def __init__(self, time, method, parameters = None):
+    def __init__(self, time, method, arguments = None):
         super().__init__(time)
         self.method = method
-        self.parameters = parameters
+        self.arguments = arguments
 
     def act(self):
         self._call_method()

@@ -1,8 +1,9 @@
 import math
 from typing import Union
-
+from typing import Type
 import pygame
 from miniworldmaker.app import app
+from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import appearances
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
@@ -18,9 +19,6 @@ class Meta(type):
             #raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
         if hasattr(instance, "set_physics_default_values"):
             instance.set_physics_default_values()
-        if hasattr(instance, "setup_physics"):
-            instance.setup_physics()
-            instance.start_physics()
         if hasattr(instance, "on_setup"):
             instance.on_setup()
         if hasattr(instance, "setup"):
@@ -94,8 +92,14 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self._initial_direction = 0
         self._dirty = 1
         self.board.add_to_board(self, self.position)
+        self.has_costume = False
+        self.main_costume = None
         if image is not None:
-            self.add_image(image)
+            self.add_costume(image)
+            self.has_costume = True
+        else: 
+            self.add_costume(None)
+            self.has_costume = False
 
     @classmethod
     def from_center(cls, center_position):
@@ -253,7 +257,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def add_image(self, path: str) -> int:
         raise Exception("Use token.add_costume or token.costume.add_image")
 
-    def add_costume(self, source: Union[str, tuple] = (255, 255,255,0)) -> costume.Costume:
+    def add_costume(self, source: Union[str, list[str], Type[Appearance]] = (255, 0,255,100)) -> costume.Costume:
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
@@ -265,42 +269,73 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
             The new costume.
 
         """
+        if not self.has_costume and self.costume != None:
+            self.remove_costume()
+        if source is None:
+            source =  (255, 0,255,100)
         new_costume = costume.Costume(self)
         if type(source) == str:
             new_costume.add_image(source)
             if not self.__class__.class_image:
                 self.__class__.class_image = source
+        if type(source) == list:
+            for image in source:
+                new_costume.add_image(image)
         elif type(source) == tuple:
             new_costume.fill_color = source
-        if self.costume is None:
+        if self.costume is None or not self.has_costume:
             self.costume = new_costume
-            if self.collision_rect == "static-rect":
-                self.rect = self.image.get_rect()
+            self.has_costume = True
+            self.main_costume = new_costume
+        if self.collision_rect == "static-rect":
+            self.rect = self.image.get_rect()
         self.costumes.add(new_costume)
+
+
         return new_costume
 
-    def switch_costume(self, index=-1) -> costume.Costume:
+    def remove_costume(self, costume = None):
+        """Removes a costume from token
+
+        Args:
+            index: The index of the new costume. Defaults to -1 (last costume)
+        """
+        if costume != None:
+            index = self.costumes.get_index_of_costume(costume)
+            self.costumes.remove(index)
+        else:
+            self.costumes.remove(-1)
+
+
+    def switch_costume(self, costume: Union[int, Type[Appearance]]) -> costume.Costume:
         """Switches the costume of token
 
         Args:
-            index: The index of the new costume. If index=-1, the next costume will be selected
+            next: If next is True, the next costume will be selected
 
         Returns: The new costume
-
         """
+        if type(costume) == int:
+            costume = self.costumes.get_costume_at_index(costume)
         self.costume.end_animation()
-
-        if index == -1:
-            index = self.costumes.get_position_of(self.costume)
-            if index < self.costumes.len() - 1:
-                index += 1
-            else:
-                index = 0
-        else:
-            index = index
-        self.costume = self.costumes.get_at_position(index)
+        self.costume = costume
         self.costume.dirty = 1
         return self.costume
+
+    def next_costume(self):
+        """Switches to the next costume of token
+
+        Args:
+            next: If next is True, the next costume will be selected
+
+        Returns: The new costume
+        """
+        self.costume.end_animation()
+        index = self.costumes.get_index_of_costume(self.costume)
+        if index < self.costumes.len() - 1:
+            index += 1
+        else:
+            index = 0
 
     @property
     def direction(self) -> int:
@@ -615,6 +650,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @center_x.setter
     def center_x(self, value):
+        if self.costume is None:
+            raise Exception("Error: Token needs a costume first")
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.centerx = value
@@ -622,6 +659,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @center_y.setter
     def center_y(self, value):
+        if self.costume is None:
+            raise Exception("Error: Token needs a costume first")
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.centery = value
@@ -629,12 +668,15 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @center.setter
     def center(self, value):
+        if self.costume is None:
+            raise Exception("Error: Token needs a costume first")
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.centerx = value[0]
         rect.centery = value[1]
         self.position = rect.center
 
+        
     def move(self, distance: int = 0):
         """Moves actor *distance* steps in current direction
 
@@ -1018,9 +1060,15 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         else:
             Exception("Board" + self.board.__class__ + "has no method bounce_from_token")
 
-    def animate(self, text, images):
-        self.current_animation = text
-        self.costume.animate(text, images)
+    def animate(self, costume):
+        if costume == None:
+            self.costume.animate()
+        else:
+            self.costume.is_animated = False
+            self.costume.animation_loop = False
+            self.switch_costume(costume)
+            self.costume.animate()
+            
 
     def send_message(self, message):
         self.board.window.send_event_to_containers("message", message)

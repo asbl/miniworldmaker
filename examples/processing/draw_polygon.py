@@ -4,7 +4,7 @@ from miniworldmaker import *
 class MyBoard(PixelBoard):
 
     def on_setup(self):
-        self.add_background((255,0,255,0))
+        self.add_background((255,0,255,100))
         self.pointlist = []
 
     def on_mouse_left(self, pos):

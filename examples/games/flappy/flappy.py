@@ -25,10 +25,9 @@ class Bird(mwm.Token):
         self.size = (60, 60)
         self.costume.orientation = 180
         self.flip_x()
-
-    def setup_physics(self):
         self.physics.size = (0.8, 0.8)
         self.physics.shape_type = "circle"
+        self.start_physics()
 
     def on_sensing_borders(self, borders):
         if "bottom" in borders or "top" in borders:
@@ -52,9 +51,8 @@ class Pipe(mwm.Token):
         self.size = (80, 300)
         self.passed = False
         self.speed = 5
-
-    def setup_physics(self):
         self.physics.gravity = False
+        self.start_physics()
 
     def top(self):
         self.costume.orientation = -180

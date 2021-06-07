@@ -1,7 +1,7 @@
 Aktionen / Methoden registrieren
 ================================
 
-## Die Act-Methode
+## Die act()-Methode
 
 Das Spielfeld und alle Tokens können über die Methode **act()** gesteuert werden. 
 Diese Methode wird immer wieder aufgerufen *(genau genommen: Alle **board.speed** Zeiteinheiten)*.

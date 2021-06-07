@@ -1,9 +1,12 @@
 class Appearances:
     def __init__(self, appearance):
-        self.appearances = [appearance]
+        if appearance != None:
+            self.appearances = [appearance]
+        else:
+            self.appearances = []
         self.is_rotatable = None
         self.is_animated = None
-        self.animation_speed = None
+        self.animation_speed = 10
         self.is_upscaled = None
         self.is_scaled = None
         self.is_scaled_to_width = None
@@ -26,13 +29,16 @@ class Appearances:
         if self.is_scaled is not None:
             appearance.is_scaled = self.is_scaled
 
-    def get_position_of(self, appearance):
+    def remove(self, index):
+        del self.appearances[index]
+
+    def get_index_of_costume(self, appearance):
         return self.appearances.index(appearance)
 
     def len(self):
         return len(self.appearances)
 
-    def get_at_position(self, index):
+    def get_costume_at_index(self, index):
         return self.appearances[index]
 
     # def _do_all(self, method, parameters):
@@ -76,6 +82,9 @@ class Appearances:
 
     def list(self):
         return self.appearances
+
+    def __str__(self):
+        return str(len(self.appearances)) + " costumes: " + str(self.appearances)
 
 
 class Costumes(Appearances):

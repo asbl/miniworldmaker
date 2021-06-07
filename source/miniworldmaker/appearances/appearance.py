@@ -45,6 +45,7 @@ class Appearance(metaclass=MetaAppearance):
         self.call_image_actions = {}
         self.animation_speed = 100  #: The animation speed for animations
         self._is_animated = False
+        self.animation_loop = False
         self._is_flipped = False
         self._current_animation_images = None
         self.current_animation = None
@@ -59,7 +60,6 @@ class Appearance(metaclass=MetaAppearance):
         self._text = ""
         self._coloring = None  # Color for colorize operation
         self.draw_shapes = []
-        self._end_animation = False
         # "Action name", image_action_method, "Attribute", enabled)
         self.image_actions_pipeline = [
             ("orientation", self.image_action_set_orientation, "orientation", False),
@@ -331,7 +331,7 @@ class Appearance(metaclass=MetaAppearance):
             self.dirty = 1
         except TypeError:
             self.parent.window.log("ERROR: color should be a 4-tuple (r, g, b, alpha)")
-            raise ()
+            raise Exception("ERROR: color should be a 4-tuple (r, g, b, alpha)")
 
     def draw_shape_append(self, shape, arguments):
         self.draw_shapes.append((shape, arguments))
@@ -442,10 +442,14 @@ class Appearance(metaclass=MetaAppearance):
             if self._image_index < len(self.images_list) - 1:
                 self._image_index = self._image_index + 1
             else:
+                if not self.animation_loop:
+                    self.is_animated = False
+                    self.after_animation()
                 self._image_index = 0
             self.dirty = 1
             self.parent.dirty = 1
             self._reload_all()
+            
 
     async def first_image(self):
         """
@@ -460,7 +464,7 @@ class Appearance(metaclass=MetaAppearance):
         if value == -1:
             value = len(self.images_list) - 1
         if 0 <= value < len(self.images_list):
-            self.image_index = value
+            self._image_index = value
             self.dirty = 1
             self.parent.dirty = 1
             self._reload_all()
@@ -676,21 +680,12 @@ class Appearance(metaclass=MetaAppearance):
         self.font_path = font
         self.font_size = font_size
 
-    def animate(self, text, images):
-        self.end_animation()
-        self._current_animation_images = []
-        self.current_animation = text
-        for image in reversed(images):
-            image_index = self.add_image(image)
-            self.animation_length += 1
-            self._current_animation_images.append(self.images_list[image_index])
-            self.set_image(-1)
-            self.dirty = 1
-        self.add_image(images[0])  # workdaround as dummy
-        self.animation_length += 1
+    def animate(self, loop = False):
+        if loop == True:
+            self.animation_loop = True
+        else:
+            self.animation_loop = False
+        self.is_animated = True
 
-    def end_animation(self):
-        self._end_animation = True
-        while (self.animation_length > 0):
-            self.update()
-        self._end_animation = False
+    def after_animation(self):
+        pass
