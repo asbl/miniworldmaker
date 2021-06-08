@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Board.PhysicsBoard" href="board.physicsboard.html" /><link rel="prev" title="Appearance.Costume" href="appearance.costume.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Board.PixelBoard" href="board.pixelboard.html" /><link rel="prev" title="Appearance.Costume" href="appearance.costume.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
         <title>Board - miniworldmaker 2021 documentation</title>
@@ -109,10 +109,10 @@
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../mwm.html">Miniworldmaker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mwm.html">MiniWorldMaker</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_german.html">Tutorial - Deutsch</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../de/00_installation.html">1. Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. Das Spielfeld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. The Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/02_tokens.html">3. Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/04_movement.html">5. Bewegung</a></li>
@@ -144,7 +144,6 @@
 <li class="toctree-l2"><a class="reference internal" href="appearance.background.html">Appearance.Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="appearance.costume.html">Appearance.Costume</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Board</a></li>
-<li class="toctree-l2"><a class="reference internal" href="board.physicsboard.html">Board.PhysicsBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="board.pixelboard.html">Board.PixelBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="board.tiledboard.html">Board.TiledBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="board_position.html">BoardPositions, Lines and Rectangles</a></li>
@@ -168,6 +167,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../impressum.html">Impressum</a></li>
 </ul>
 
 </div>
@@ -184,41 +184,62 @@
         </label>
         <div class="section" id="board">
 <h1>Board<a class="headerlink" href="#board" title="Permalink to this headline">¶</a></h1>
-<p>Board is the base class of TiledBoard, PixelBoard and PhysicsBoard</p>
+<p>Board is the base class of TiledBoard and PixelBoard. It</p>
+<div class="mermaid">
+            classDiagram
+   Board &lt;|-- PixelBoard
+   Board &lt;|-- TiledBoard
+   class Board{
+   }
+   class PixelBoard{
+
+   }
+   class TiledBoard{
+   }
+        </div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>You do not need this class. Use the subclasses <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> and <code class="docutils literal notranslate"><span class="pre">PixelBoard</span></code></p>
+</div>
 <div class="section" id="id1">
 <h2>Board<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="miniworldmaker.boards.board.Board">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">miniworldmaker.boards.board.</span></code><code class="sig-name descname"><span class="pre">Board</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base Class for Boards.</p>
-<p>You can create a custom board by inherit one of Boars subclasses.</p>
+<p>You can create a custom board by inherit one of Board subclasses or by creating a board-object:</p>
 <p class="rubric">Examples</p>
+<p>Creating a board object:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
+<span class="n">board</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span><span class="mi">20</span>
+<span class="n">board</span><span class="o">.</span><span class="n">rows</span><span class="o">=</span><span class="mi">8</span>
+<span class="n">board</span><span class="o">.</span><span class="n">tile_size</span><span class="o">=</span><span class="mi">40</span>
+</pre></div>
+</div>
 <p>A pixel-board in follow_the_mouse.py:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="k">class</span> <span class="nc">MyBoard</span><span class="p">(</span><span class="n">PixelBoard</span><span class="p">):</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span> <span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/stone.jpg"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">Robot</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span> <span class="n">board</span> <span class="o">=</span> <span class="n">MyBoard</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
-<span class="go">A tiled-board in basicframework1.py:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyBoard</span><span class="p">(</span><span class="n">PixelBoard</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/stone.jpg"</span><span class="p">)</span>
+    <span class="n">Robot</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+
+
+<span class="n">board</span> <span class="o">=</span> <span class="n">MyBoard</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyBoard</span><span class="p">(</span><span class="n">TiledBoard</span><span class="p">):</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span>  <span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">stone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_background</span><span class="p">((</span><span class="s2">"images/stone.png"</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">stone</span><span class="o">.</span><span class="n">is_textured</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="n">stone</span><span class="o">.</span><span class="n">is_scaled_to_tile</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="go">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span> <span class="n">board</span> <span class="o">=</span> <span class="n">MyBoard</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">tile_size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">tile_margin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<p>A tiled-board:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">on_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">stone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_background</span><span class="p">((</span><span class="s2">"images/stone.png"</span><span class="p">))</span>
+    <span class="n">stone</span><span class="o">.</span><span class="n">is_textured</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">stone</span><span class="o">.</span><span class="n">is_scaled_to_tile</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="n">board</span> <span class="o">=</span> <span class="n">MyBoard</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">tile_size</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">tile_margin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>&gt; See [Example](<a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics">https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics</a>)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -236,19 +257,17 @@
 <dd class="field-odd"><p><strong>source</strong> – The path to the first image of the background or a color</p>
 </dd>
 </dl>
-<p>Returns:</p>
-</dd></dl>
-<dl class="py method">
-<dt id="miniworldmaker.boards.board.Board.add_to_board">
-<code class="sig-name descname"><span class="pre">add_to_board</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="board_position.html#miniworldmaker.board_positions.board_position.BoardPosition" title="miniworldmaker.board_positions.board_position.BoardPosition"><span class="pre">miniworldmaker.board_positions.board_position.BoardPosition</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.add_to_board"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.add_to_board" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds an actor to the board.
-Is called in __init__-Method if position is set.</p>
+<p class="rubric">Examples</p>
+<p>Multiple Backgrounds:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
+<span class="o">...</span>
+<span class="n">board</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
+<span class="n">board</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="s2">"images/space.jpg"</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>board</strong> – The board, the actor should be added</p></li>
-<li><p><strong>position</strong> – The position on the board where the actor should be added.</p></li>
-</ul>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The new created background.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -260,38 +279,36 @@ Is called in __init__-Method if position is set.</p>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.container_height">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">container_height</span></code><a class="headerlink" href="#miniworldmaker.boards.board.Board.container_height" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the height of the container</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The height of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)</p>
-</dd>
-</dl>
+<dd><p>The height of the container</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.container_width">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">container_width</span></code><a class="headerlink" href="#miniworldmaker.boards.board.Board.container_width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the width of the container</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The width of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)</p>
-</dd>
-</dl>
+<dd><p>The width of the container</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.fps">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">fps</span></code><a class="headerlink" href="#miniworldmaker.boards.board.Board.fps" title="Permalink to this definition">¶</a></dt>
-<dd><p>The world speed. The world speed is counted in fps (frames per second).</p>
+<dd><p>Frames per second shown on the screen.</p>
+<p>This controls how often the screen is redrawn. However, the game logic
+can be called more often or less often independently of this with board.speed.</p>
+<p>Examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">board</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">board</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">nonlocal</span> <span class="n">i</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="mi">120</span><span class="p">:</span>
+        <span class="n">test_instance</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+        <span class="n">test_instance</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.from_db">
 <em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">from_db</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.from_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.from_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a sqlite db file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file</strong> – </p>
-</dd>
-</dl>
-<p>Returns:</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.get_colors_at_line">
@@ -301,8 +318,10 @@ Is called in __init__-Method if position is set.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>line</strong> – the line</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of all colors found at the line</p>
+</dd>
 </dl>
-<p>Returns: A list of all colors found at the line</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.get_mouse_position">
@@ -357,19 +376,6 @@ Is called in __init__-Method if position is set.</p>
 </div>
 </dd></dl>
 <dl class="py method">
-<dt id="miniworldmaker.boards.board.Board.handle_event">
-<code class="sig-name descname"><span class="pre">handle_event</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.handle_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.handle_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Event handling</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>event</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The event which was thrown, e.g. “key_up”, “act”, “reset”, …</p></li>
-<li><p><strong>data</strong> – The data of the event (e.g. [“S”,”s”], (155,3), …</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.height">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">height</span></code><a class="headerlink" href="#miniworldmaker.boards.board.Board.height" title="Permalink to this definition">¶</a></dt>
 <dd><p>See container_height</p>
@@ -388,7 +394,7 @@ Is called in __init__-Method if position is set.</p>
 <dd class="field-odd"><p><strong>position</strong> – A rectangle or a position</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>true, if area is in grid</p>
+<dd class="field-even"><p>True, if area is in grid</p>
 </dd>
 </dl>
 </dd></dl>
@@ -406,9 +412,15 @@ Is called in __init__-Method if position is set.</p>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.register_sound">
 <code class="sig-name descname"><span class="pre">register_sound</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span> → <span class="pre">Sound</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.register_sound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.register_sound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Registers a sound effect to board-sound effects library
-:param path: The path to sound</p>
-<p>Returns: the sound</p>
+<dd><p>Registers a sound effect to board-sound effects library</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> – The path to sound</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the sound</p>
+</dd>
+</dl>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.remove_tokens_from_rect">
@@ -467,6 +479,24 @@ The file is stored as db file and can be opened with sqlite.</p>
 <p>Returns:</p>
 </dd></dl>
 <dl class="py method">
+<dt id="miniworldmaker.boards.board.Board.speed">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">speed</span></code><a class="headerlink" href="#miniworldmaker.boards.board.Board.speed" title="Permalink to this definition">¶</a></dt>
+<dd><p>How often are events and game logic processed?</p>
+<p>The game logic can be called more often or less often independently from board.fps</p>
+<p>Examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">board</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">board</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">nonlocal</span> <span class="n">i</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">board</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="mi">120</span><span class="p">:</span>
+        <span class="n">test_instance</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+        <span class="n">test_instance</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">board</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.stop">
 <code class="sig-name descname"><span class="pre">stop</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/boards/board.html#Board.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#miniworldmaker.boards.board.Board.stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>stops the board in n-frames</p>
@@ -479,8 +509,10 @@ The file is stored as db file and can be opened with sqlite.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>index</strong> – The index of the new costume. If index=-1, the next costume will be selected</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new costume</p>
+</dd>
 </dl>
-<p>Returns: The new costume</p>
 </dd></dl>
 <dl class="py method">
 <dt id="miniworldmaker.boards.board.Board.tile_margin">
@@ -520,12 +552,12 @@ The file is stored as db file and can be opened with sqlite.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="board.physicsboard.html">
+          <a class="next-page" href="board.pixelboard.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Board.PhysicsBoard</div>
+                <div class="title">Board.PixelBoard</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -588,5 +620,7 @@ The file is stored as db file and can be opened with sqlite.</p>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script >mermaid.initialize({startOnLoad:true});</script>
     <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

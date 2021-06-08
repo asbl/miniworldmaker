@@ -1,40 +1,59 @@
 Tokens
 =======
 
-### Create a new Token class
+A token is a piece on your game board. 
 
-Next, an token is placed on the board.
+All objects in your Miniworld are tokens that can be moved around the board.
 
-This is done as follows
+## Create a token
 
+After you have created the game board, a token, *(i.e. a game piece)* is now placed on the board.
+
+This goes like this:
+
+``{code-block} python
+---
+lineno-start: 1
+emphasize-lines: 9,10
+---
+import miniworldmaker
+
+board = miniworldmaker.TiledBoard()
+board.columns = 20
+board.rows = 8
+board.tile_size = 42
+board.add_background("images/soccer_green.jpg")
+board.speed = 30
+player = miniworldmaker.token()
+player.add_costume("images/player.png")
+
+board.run()
 ```
-class Player(Token):
 
-    def setup(self):
-        self.add_image(path="images/char_blue.png")
-```
-
-  * Line 1 creates a new class as a child class of the class Token.
+  * In line 9, a player object is created.
   
-  * Line 3 defines the setup() method, 
-  which is called when a new Player object is created.
-  
-  * A picture is then added to the Player object in line 4.
+  * In line 10, a costume is assigned to the player object. 
 
-### Add the token to the playing field
+### The costume
 
+Each `board` has a `background`, each `token` has a `costume`. You **should` assign a costume to a new token. 
 
-  So far we have only created one template to create player objects.
-  
-  Now we want to create concrete objects and add them to the board.
-    Add the setup() method of the playing field class:
-
+The statement for this is usually:
 ```
-class MyBoard(TiledBoard):
-
-    def setup(self):
-        ...
-        player1 = Player(position = (3, 3))
+token_name.add_costume("path_to_image")
 ```
+
+![tiles](/_images/add_costume.png)
+
+`path_to_image` is a (relative path) to the image. You should put your images in the subfolder `images`, then the image `image.png` in the subfolder `images` has the path `images/image.png.
+
+### Result
+
+![tiles](/_images/token.jpg)
+
+### View
+
+> --> More information. See [tokens](../key_concepts/tokens.md)
+
 
 Translated with www.DeepL.com/Translator (free version)

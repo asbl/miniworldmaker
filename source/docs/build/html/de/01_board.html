@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="3. Tokens" href="02_tokens.html" /><link rel="prev" title="1. Installation" href="00_installation.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
-        <title>2. Das Spielfeld - miniworldmaker 2021 documentation</title>
+        <title>2. The Board - miniworldmaker 2021 documentation</title>
       <link rel="stylesheet" href="../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
     <link rel="stylesheet" href="../_static/pygments.css">
     <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../_static/pygments_dark.css">
@@ -112,7 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../mwm.html">Miniworldmaker</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../tutorial_german.html">Tutorial - Deutsch</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="00_installation.html">1. Installation</a></li>
-<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2. Das Spielfeld</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">2. The Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02_tokens.html">3. Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_movement.html">5. Bewegung</a></li>
@@ -144,7 +144,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/appearance.background.html">Appearance.Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/appearance.costume.html">Appearance.Costume</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.html">Board</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/board.physicsboard.html">Board.PhysicsBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.pixelboard.html">Board.PixelBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.tiledboard.html">Board.TiledBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board_position.html">BoardPositions, Lines and Rectangles</a></li>
@@ -168,6 +167,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../impressum.html">Impressum</a></li>
 </ul>
 
 </div>
@@ -182,12 +182,12 @@
         <label class="toc-overlay-icon toc-content-icon" for="__toc">
           <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
         </label>
-        <div class="section" id="das-spielfeld">
-<h1><span class="section-number">2. </span>Das Spielfeld<a class="headerlink" href="#das-spielfeld" title="Permalink to this headline">¶</a></h1>
-<p>Los geht es!</p>
-<div class="section" id="eine-erste-welt">
-<h2><span class="section-number">2.1. </span>Eine erste Welt<a class="headerlink" href="#eine-erste-welt" title="Permalink to this headline">¶</a></h2>
-<p>Wir erschaffen die erste Welt. Dies geht mit folgendem Code:</p>
+        <div class="section" id="the-board">
+<h1><span class="section-number">2. </span>The Board<a class="headerlink" href="#the-board" title="Permalink to this headline">¶</a></h1>
+<p>Here we go!</p>
+<div class="section" id="a-first-world">
+<h2><span class="section-number">2.1. </span>A first world<a class="headerlink" href="#a-first-world" title="Permalink to this headline">¶</a></h2>
+<p>Wir erstellen eine erste Welt. Diese kann mit folgendem Code erzeugt werden:</p>
 <div class="highlight-python notranslate"><div class="table-wrapper"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
@@ -212,44 +212,44 @@
 <div class="section" id="was-passiert-hier">
 <h3><span class="section-number">2.1.1. </span>Was passiert hier?<a class="headerlink" href="#was-passiert-hier" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>In Zeile 1 wird die miniworldmaker-Bibliothek importiert.</p></li>
-<li><p>In Zeile 3 wird ein neues <code class="docutils literal notranslate"><span class="pre">Objekt</span></code> von Typ <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> erstellt.</p></li>
-<li><p>In Zeile 4 erhält das neue erstellte Board-Objekt einen <code class="docutils literal notranslate"><span class="pre">Background</span></code>.</p></li>
-<li><p>In Zeile 5-8 werden die verschiedenen Attribute des Objekts verändert.</p></li>
-<li><p>In Zeile 10 wird das Spiel gestartet. Mir <code class="docutils literal notranslate"><span class="pre">board.run()</span></code> wird eine Mainloop gestartet, die das Board immer wieder neu zeichnet.</p></li>
+<li><p>In Zeile 1: Die miniworldmaker library wird importiert.</p></li>
+<li><p>In Zeile 3: Ein neues <code class="docutils literal notranslate"><span class="pre">object</span></code> vom Typ <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> wird erzeugt</p></li>
+<li><p>In Zeile 4: Das neue Objekt erhält einen <code class="docutils literal notranslate"><span class="pre">background</span></code>.</p></li>
+<li><p>In Zeile 5-8: Es werden verschiedene Attribute von ‘board’ verändert.</p></li>
+<li><p>In Zeile 10: Das Spiel wird gestartet. Mit <code class="docutils literal notranslate"><span class="pre">board.run()</span></code> wird eine mainloop gestartet, die das Board immer und immer wieder neu zeichnet.</p></li>
 </ul>
 </div>
 <div class="section" id="ergebnis">
 <h3><span class="section-number">2.1.2. </span>Ergebnis:<a class="headerlink" href="#ergebnis" title="Permalink to this headline">¶</a></h3>
-<p>Je nach Hintergrundbild sieht das Ergebnis bei dir so aus:</p>
+<p>Je nach Hintergrundbild sieht dein Ergebnis so aus:</p>
 <p><img alt="tiles" src="../_images/first.jpg"/></p>
 </div>
-<div class="section" id="variante-das-grid-anzeigen">
-<h3><span class="section-number">2.1.3. </span>Variante: Das Grid anzeigen<a class="headerlink" href="#variante-das-grid-anzeigen" title="Permalink to this headline">¶</a></h3>
-<p>Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen lassen.</p>
+<div class="section" id="variante-show-the-grid">
+<h3><span class="section-number">2.1.3. </span>Variante: Show the grid<a class="headerlink" href="#variante-show-the-grid" title="Permalink to this headline">¶</a></h3>
+<p>Du kannst auch das Grid anzeigen:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">board</span><span class="o">.</span><span class="n">background</span><span class="o">.</span><span class="n">grid_overlay</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="ausblick-verschiedene-boards">
-<h3><span class="section-number">2.1.4. </span>Ausblick: Verschiedene Boards<a class="headerlink" href="#ausblick-verschiedene-boards" title="Permalink to this headline">¶</a></h3>
-<p>Es gibt verschiedene Unterklassen der Klasse Board:</p>
+<h3><span class="section-number">2.1.4. </span>Ausblick: Verschiedene boards<a class="headerlink" href="#ausblick-verschiedene-boards" title="Permalink to this headline">¶</a></h3>
+<p>Es gibt mehrere Kind-Klassen von Board</p>
 <ul class="simple">
-<li><p>Ein <code class="docutils literal notranslate"><span class="pre">PixelBoard</span></code> ist für Pixelgenaue Darstellung von Inhalten gedacht.</p></li>
-<li><p>Ein <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.</p></li>
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">PixelBoard</span></code> ist für pixelgenaue Darstellungen vorgesehen</p></li>
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> ist geeignet für Boards, bei denen sich die Akteure auf “Kacheln” bewegen.</p></li>
 </ul>
-<p>Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse <code class="docutils literal notranslate"><span class="pre">Board</span></code> sind.</p>
+<p>Einige Features der Boards (z.B. Kollissionen) unterscheiden sich geringfügig.</p>
 <blockquote>
-<div><p>Mehr Informationen. Siehe <a class="reference internal" href="../key_concepts/boards.html"><span class="doc std std-doc">Key-Concept: Boards</span></a></p>
+<div><p>Mehr Informationen, siehe <a class="reference internal" href="../key_concepts/boards.html"><span class="doc std std-doc">Key-Concept: Boards</span></a></p>
 </div></blockquote>
 </div>
-<div class="section" id="beispiele">
-<h3><span class="section-number">2.1.5. </span>Beispiele<a class="headerlink" href="#beispiele" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="examples">
+<h3><span class="section-number">2.1.5. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py">Basic Framework</a> - Ein erstes Framework mit dem du anfangen kannst.</p>
+<div><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py">Basic Framework</a> - Ein erstes Programm, mit dem du starten kannst.</p>
 </div></blockquote>
 <blockquote>
-<div><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py">Basic Framework - Mit Klassen</a> - Wenn du bereits Objektorientierung mit Klassen beherschst, dann kannst du acuh mit diesem Framework anfangen. Hier werden Klassen definiert, aus denen dann Objekte instanziiert werden.</p>
+<div><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py">Basic Framework - With Classes</a> - Wenn du bereits OOP Klassen kennst, kannst du mit diesem Framework starten.</p>
 </div></blockquote>
 </div>
 </div>
@@ -309,13 +309,13 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">2. Das Spielfeld</a><ul>
-<li><a class="reference internal" href="#eine-erste-welt">2.1. Eine erste Welt</a><ul>
+<li><a class="reference internal" href="#">2. The Board</a><ul>
+<li><a class="reference internal" href="#a-first-world">2.1. A first world</a><ul>
 <li><a class="reference internal" href="#was-passiert-hier">2.1.1. Was passiert hier?</a></li>
 <li><a class="reference internal" href="#ergebnis">2.1.2. Ergebnis:</a></li>
-<li><a class="reference internal" href="#variante-das-grid-anzeigen">2.1.3. Variante: Das Grid anzeigen</a></li>
-<li><a class="reference internal" href="#ausblick-verschiedene-boards">2.1.4. Ausblick: Verschiedene Boards</a></li>
-<li><a class="reference internal" href="#beispiele">2.1.5. Beispiele</a></li>
+<li><a class="reference internal" href="#variante-show-the-grid">2.1.3. Variante: Show the grid</a></li>
+<li><a class="reference internal" href="#ausblick-verschiedene-boards">2.1.4. Ausblick: Verschiedene boards</a></li>
+<li><a class="reference internal" href="#examples">2.1.5. Examples</a></li>
 </ul>
 </li>
 </ul>
@@ -334,5 +334,7 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script >mermaid.initialize({startOnLoad:true});</script>
     <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

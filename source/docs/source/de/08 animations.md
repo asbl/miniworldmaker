@@ -37,3 +37,9 @@ def on_key_pressed_s(self):
 def on_key_pressed_w(self):
     self.animate(costume_c)
 ```
+
+### Beispiele
+
+:::{note}  
+>➥ Mehr Infos über Richtungen: [Beispiele zu Animationen](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/animations)
+:::

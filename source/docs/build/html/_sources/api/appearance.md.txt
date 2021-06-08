@@ -7,10 +7,28 @@ The Appearance class contains all the logic common to both, e.g. scaling and rot
 
 All actions performed on the images can be found in the class ImageRenderer
 
-```{eval_rst}
-.. inheritance-diagram:: miniworldmaker.appearances.background.Background miniworldmaker.appearances.costume.Costume
-   :top-classes: miniworldmaker.appearances.appearance.Appearance
-   :parts: 1
+::::{important}
+You do not need this class. If you work with tokens, then you use the child class **Costume**. If you work with the board, you use the child class **Background**.
+::::
+
+```{eval-rst}
+.. mermaid::
+
+   classDiagram
+      Appearance <|-- Costume
+      Appearance <|-- Background
+      Token o-- Appearance
+      class Token{
+          +add_costume()
+      }
+      class Appearance{
+          +add_image(str)
+      }
+      class Costume{
+      }
+      class Background{
+
+      }   
 ```
 
 ### Appearance

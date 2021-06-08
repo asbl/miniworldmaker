@@ -2,7 +2,7 @@
 <html class="no-js">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="4. Aktionen / Methoden registrieren" href="03_actions.html" /><link rel="prev" title="2. Das Spielfeld" href="01_board.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="4. Aktionen / Methoden registrieren" href="03_actions.html" /><link rel="prev" title="2. The Board" href="01_board.html" />
 
     <meta name="generator" content="sphinx-3.5.4, furo 2021.04.11.beta34"/>
         <title>3. Tokens - miniworldmaker 2021 documentation</title>
@@ -109,10 +109,10 @@
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../mwm.html">Miniworldmaker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mwm.html">MiniWorldMaker</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../tutorial_german.html">Tutorial - Deutsch</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="00_installation.html">1. Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01_board.html">2. Das Spielfeld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_board.html">2. The Board</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">3. Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04_movement.html">5. Bewegung</a></li>
@@ -144,7 +144,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/appearance.background.html">Appearance.Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/appearance.costume.html">Appearance.Costume</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.html">Board</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/board.physicsboard.html">Board.PhysicsBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.pixelboard.html">Board.PixelBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.tiledboard.html">Board.TiledBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board_position.html">BoardPositions, Lines and Rectangles</a></li>
@@ -168,6 +167,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../impressum.html">Impressum</a></li>
 </ul>
 
 </div>
@@ -226,16 +226,33 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">token_name</span><span class="o">.</span><span class="n">add_costume</span><span class="p">(</span><span class="s2">"path_to_image"</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="tiles" src="images/add_costume.jpg"/></p>
+<p><img alt="tiles" src="../_images/add_costume.png"/></p>
 <p><code class="docutils literal notranslate"><span class="pre">path_to_image</span></code> ist ein (relativer Pfad) zum Bild. Du solltest deine Bilder in den Unterordner <code class="docutils literal notranslate"><span class="pre">images</span></code> ablgegen, dann hat das Bild <code class="docutils literal notranslate"><span class="pre">bild.png</span></code> in dem Unterordner <code class="docutils literal notranslate"><span class="pre">images</span></code> den Pfad `images/bild.png.</p>
 </div>
 <div class="section" id="ergebnis">
 <h3><span class="section-number">3.1.2. </span>Ergebnis<a class="headerlink" href="#ergebnis" title="Permalink to this headline">¶</a></h3>
 <p><img alt="tiles" src="../_images/token.jpg"/></p>
 </div>
+<div class="section" id="faq">
+<h3><span class="section-number">3.1.3. </span>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Mein Token ist falsch ausgerichtet, was soll ich tun?</p></li>
+</ul>
+<p>Ein Token ist dann korrekt ausgerichtet, wenn das Bild nach oben guckt. Wenn das Bild per Default in eine andere Richtung ausgerichtet ist, dann hast du zwei Möglichkeiten</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>- Du kannst das Bild mit einem Bildeditor drehen
+
+- Du kannst in Miniworldmaker die Orientierung des Kostüms ändern. Dies geht mit `my_token.costume.orientation = 90`
+Setze für orientation den passenden Wert, damit das Kostüm korrekt ausgerichtet ist.
+
+Manchmal ist es auch nötig, einzustellen, dass sich zwar das Token drehen kann, das Kostüm aber immer gleich ausgerichtet sein soll. Dies geht mit `my_token.costume.is_rotatable = False`
+</pre></div>
+</div>
+</div>
 <div class="section" id="ausblick">
-<h3><span class="section-number">3.1.3. </span>Ausblick<a class="headerlink" href="#ausblick" title="Permalink to this headline">¶</a></h3>
-<p>–&gt; Mehr Informationen. Siehe <a class="reference internal" href="../key_concepts/tokens.html"><span class="doc std std-doc">Tokens</span></a></p>
+<h3><span class="section-number">3.1.4. </span>Ausblick<a class="headerlink" href="#ausblick" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>–&gt; Mehr Informationen. Siehe <a class="reference internal" href="../key_concepts/tokens.html"><span class="doc std std-doc">Tokens</span></a></p>
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -260,7 +277,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><span class="section-number">2. </span>Das Spielfeld</div>
+                <div class="title"><span class="section-number">2. </span>The Board</div>
                 
               </div>
             </a>
@@ -298,7 +315,8 @@
 <li><a class="reference internal" href="#ein-token-erstellen">3.1. Ein Token erstellen</a><ul>
 <li><a class="reference internal" href="#das-kostum">3.1.1. Das Kostüm</a></li>
 <li><a class="reference internal" href="#ergebnis">3.1.2. Ergebnis</a></li>
-<li><a class="reference internal" href="#ausblick">3.1.3. Ausblick</a></li>
+<li><a class="reference internal" href="#faq">3.1.3. FAQ</a></li>
+<li><a class="reference internal" href="#ausblick">3.1.4. Ausblick</a></li>
 </ul>
 </li>
 </ul>
@@ -317,5 +335,7 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script >mermaid.initialize({startOnLoad:true});</script>
     <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

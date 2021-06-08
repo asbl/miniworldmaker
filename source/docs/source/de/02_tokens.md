@@ -43,14 +43,27 @@ Die Anweisung dafür lautet üblicherweise:
 token_name.add_costume("path_to_image")
 ```
 
-![tiles](../images/add_costume.jpg)
+![tiles](/_images/add_costume.png)
 
 `path_to_image` ist ein (relativer Pfad) zum Bild. Du solltest deine Bilder in den Unterordner `images` ablgegen, dann hat das Bild `bild.png` in dem Unterordner `images` den Pfad `images/bild.png.
 
 ### Ergebnis
 
-![tiles](../_images/token.jpg)
+![tiles](/_images/token.jpg)
+
+### FAQ
+
+  * Mein Token ist falsch ausgerichtet, was soll ich tun?
+
+  Ein Token ist dann korrekt ausgerichtet, wenn das Bild nach oben guckt. Wenn das Bild per Default in eine andere Richtung ausgerichtet ist, dann hast du zwei Möglichkeiten
+
+    - Du kannst das Bild mit einem Bildeditor drehen
+
+    - Du kannst in Miniworldmaker die Orientierung des Kostüms ändern. Dies geht mit `my_token.costume.orientation = 90`
+    Setze für orientation den passenden Wert, damit das Kostüm korrekt ausgerichtet ist.
+
+    Manchmal ist es auch nötig, einzustellen, dass sich zwar das Token drehen kann, das Kostüm aber immer gleich ausgerichtet sein soll. Dies geht mit `my_token.costume.is_rotatable = False`
 
 ### Ausblick
 
---> Mehr Informationen. Siehe [Tokens](../key_concepts/tokens.md)
+> --> Mehr Informationen. Siehe [Tokens](../key_concepts/tokens.md)

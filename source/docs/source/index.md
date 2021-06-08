@@ -5,8 +5,6 @@ MiniWorldMaker
 
 MiniWorldMaker is a game-engine written in python and pygame designed for pupils to create 2D mini worlds and games.
 
-![Miniworldmaker](/images/miniworldmaker.png)
-
 ```{toctree}
   :maxdepth: 1
 mwm
@@ -15,7 +13,10 @@ tutorial_english
 api
 key_concepts
 examples
+impressum
 ```
+
+![Miniworldmaker](/_images/miniworldmaker.png)
 
 Credits
 ---------
@@ -25,9 +26,3 @@ Credits
   * [Deepl](https://www.deepl.com/translator): Assistant for translating pages.
   
   * [Kenny Assets](https://www.kenney.nl/assets): Most of the images in the example-code are based on kenny assets. 
-
-Impressum and Contact
---------------------------
-
-  * [Impressum](impressum.md)
- 

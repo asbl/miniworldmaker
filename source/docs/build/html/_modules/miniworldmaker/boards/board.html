@@ -109,10 +109,10 @@
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../mwm.html">Miniworldmaker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mwm.html">MiniWorldMaker</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial_german.html">Tutorial - Deutsch</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/00_installation.html">1. Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/01_board.html">2. Das Spielfeld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/01_board.html">2. The Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/02_tokens.html">3. Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/04_movement.html">5. Bewegung</a></li>
@@ -144,7 +144,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.background.html">Appearance.Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.costume.html">Appearance.Costume</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board.html">Board</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/board.physicsboard.html">Board.PhysicsBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board.pixelboard.html">Board.PixelBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board.tiledboard.html">Board.TiledBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board_position.html">BoardPositions, Lines and Rectangles</a></li>
@@ -168,6 +167,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../impressum.html">Impressum</a></li>
 </ul>
 
 </div>
@@ -215,34 +215,48 @@
 <div class="viewcode-block" id="Board"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board">[docs]</a><span class="k">class</span> <span class="nc">Board</span><span class="p">(</span><span class="n">container</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">MetaBoard</span><span class="p">):</span>
     <span class="sd">"""Base Class for Boards.</span>
 
-<span class="sd">    You can create a custom board by inherit one of Boars subclasses.</span>
+<span class="sd">    You can create a custom board by inherit one of Board subclasses or by creating a board-object:</span>
 
 <span class="sd">    Examples:</span>
+<span class="sd">        Creating a board object:</span>
+<span class="sd">        </span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            board = miniworldmaker.TiledBoard()</span>
+<span class="sd">            board.columns=20</span>
+<span class="sd">            board.rows=8</span>
+<span class="sd">            board.tile_size=40</span>
 
 <span class="sd">        A pixel-board in follow_the_mouse.py:</span>
+<span class="sd">        </span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            </span>
+<span class="sd">            class MyBoard(PixelBoard):</span>
+<span class="sd">            </span>
+<span class="sd">            def on_setup(self):</span>
+<span class="sd">                self.add_image(path="images/stone.jpg")</span>
+<span class="sd">                Robot(position=(50, 50))</span>
+<span class="sd">            </span>
+<span class="sd">            </span>
+<span class="sd">            board = MyBoard(800, 600)</span>
+<span class="sd">        </span>
+<span class="sd">        A tiled-board:</span>
 
-<span class="sd">        &gt;&gt;&gt;  class MyBoard(PixelBoard):</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt;  def on_setup(self):</span>
-<span class="sd">        &gt;&gt;&gt;    self.add_image(path="images/stone.jpg")</span>
-<span class="sd">        &gt;&gt;&gt;    Robot(position=(50, 50))</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt;  board = MyBoard(800, 600)</span>
-<span class="sd">        A tiled-board in basicframework1.py:</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">        </span>
+<span class="sd">            def on_setup(self):</span>
+<span class="sd">                self.add_image(path="images/soccer_green.jpg")</span>
+<span class="sd">                self.player = Player(position=(3, 4))</span>
+<span class="sd">                self.speed = 10</span>
+<span class="sd">                stone = self.add_background(("images/stone.png"))</span>
+<span class="sd">                stone.is_textured = True</span>
+<span class="sd">                stone.is_scaled_to_tile = True</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">            board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)</span>
 
-<span class="sd">        &gt;&gt;&gt; class MyBoard(TiledBoard):</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt;   def on_setup(self):</span>
-<span class="sd">        &gt;&gt;&gt;     self.add_image(path="images/soccer_green.jpg")</span>
-<span class="sd">        &gt;&gt;&gt;     self.player = Player(position=(3, 4))</span>
-<span class="sd">        &gt;&gt;&gt;     self.speed = 10</span>
-<span class="sd">        &gt;&gt;&gt;     stone = self.add_background(("images/stone.png"))</span>
-<span class="sd">        &gt;&gt;&gt;     stone.is_textured = True</span>
-<span class="sd">        &gt;&gt;&gt;     stone.is_scaled_to_tile = True</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt;</span>
-<span class="sd">        &gt;&gt;&gt;  board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)</span>
+<span class="sd">        &gt; See [Example](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics)</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        columns: columns of new board (default: 40)</span>
 <span class="sd">        rows: rows of new board (default:40)</span>
@@ -300,7 +314,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># All tokens are acting on n'th frame with n = self.speed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_speed</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># All tokens are acting on n'th frame with n = self.speed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clock</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Clock</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__last_update</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">get_ticks</span><span class="p">()</span>
         <span class="c1"># Init graphics</span>
@@ -322,12 +336,6 @@
     <span class="k">def</span> <span class="nf">from_db</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Loads a sqlite db file.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            file:</span>
-
-<span class="sd">        Returns:</span>
-
 <span class="sd">        """</span>
         <span class="n">db</span> <span class="o">=</span> <span class="n">db_manager</span><span class="o">.</span><span class="n">DBManager</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">select_single_row</span><span class="p">(</span><span class="s2">"SELECT rows, columns, tile_size, tile_margin, board_class FROM Board"</span><span class="p">)</span>
@@ -375,11 +383,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">container_width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">        Gets the width of the container</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The width of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)</span>
-
+<span class="sd">        The width of the container</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_container_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile_margin</span>
@@ -388,21 +392,60 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">container_height</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">        Gets the height of the container</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The height of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)</span>
-
+<span class="sd">        The height of the container</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repaint_all</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_container_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile_margin</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_container_height</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        How often are events and game logic processed?</span>
+<span class="sd">        </span>
+<span class="sd">        The game logic can be called more often or less often independently from board.fps</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">        </span>
+<span class="sd">            board.speed = 10</span>
+<span class="sd">            board.fps = 24</span>
+<span class="sd">            def act(self):</span>
+<span class="sd">                nonlocal i</span>
+<span class="sd">                i = i + 1</span>
+<span class="sd">                print(board.frame, i)</span>
+<span class="sd">                if board.frame == 120:</span>
+<span class="sd">                    test_instance.assertEqual(i, 13)</span>
+<span class="sd">                    test_instance.assertEqual(board.frame, 120)</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span>
+
+    <span class="nd">@speed</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="sd">"""</span>
-<span class="sd">        The world speed. The world speed is counted in fps (frames per second).</span>
+<span class="sd">        Frames per second shown on the screen.</span>
+<span class="sd">        </span>
+<span class="sd">        This controls how often the screen is redrawn. However, the game logic </span>
+<span class="sd">        can be called more often or less often independently of this with board.speed.</span>
 
+<span class="sd">        Examples:</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">        </span>
+<span class="sd">            board.speed = 10</span>
+<span class="sd">            board.fps = 24</span>
+<span class="sd">            def act(self):</span>
+<span class="sd">                nonlocal i</span>
+<span class="sd">                i = i + 1</span>
+<span class="sd">                print(board.frame, i)</span>
+<span class="sd">                if board.frame == 120:</span>
+<span class="sd">                    test_instance.assertEqual(i, 13)</span>
+<span class="sd">                    test_instance.assertEqual(board.frame, 120)</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fps</span>
 
@@ -506,7 +549,21 @@
 <span class="sd">        Args:</span>
 <span class="sd">            source: The path to the first image of the background or a color</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Multiple Backgrounds:</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                board = miniworldmaker.TiledBoard()</span>
+<span class="sd">                ...</span>
+<span class="sd">                board.add_background("images/soccer_green.jpg")</span>
+<span class="sd">                board.add_background("images/space.jpg")</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            The new created background.</span>
+
+
 
 <span class="sd">        """</span>
         <span class="n">new_background</span> <span class="o">=</span> <span class="n">background</span><span class="o">.</span><span class="n">Background</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -522,7 +579,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">backgrounds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_background</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_background</span></div>
 
-<div class="viewcode-block" id="Board.add_to_board"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.add_to_board">[docs]</a>    <span class="k">def</span> <span class="nf">add_to_board</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_to_board</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Adds an actor to the board.</span>
 <span class="sd">        Is called in __init__-Method if position is set.</span>
@@ -537,7 +594,7 @@
             <span class="k">raise</span> <span class="ne">UnboundLocalError</span><span class="p">(</span><span class="s2">"super().__init__() was not called"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_register_physics_collision_handler</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
         <span class="c1"># Board Connectors are added in subclasses</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_board_connector</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_board_connector</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_board_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
@@ -558,7 +615,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            line: the line</span>
 
-<span class="sd">        Returns: A list of all colors found at the line</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            A list of all colors found at the line</span>
 
 <span class="sd">        """</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
@@ -706,7 +764,8 @@
 <span class="sd">        Args:</span>
 <span class="sd">            index: The index of the new costume. If index=-1, the next costume will be selected</span>
 
-<span class="sd">        Returns: The new costume</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            The new costume</span>
 
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -755,7 +814,7 @@
     <span class="k">def</span> <span class="nf">_tick_timed_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">tick</span><span class="p">()</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">timed_objects</span><span class="p">]</span>
 
-<div class="viewcode-block" id="Board.handle_event"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.handle_event">[docs]</a>    <span class="k">def</span> <span class="nf">handle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">handle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        Event handling</span>
 
@@ -798,7 +857,7 @@
                     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Wrong number of arguments for "</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">registered_event_handlers</span><span class="p">[</span><span class="n">event</span><span class="p">]),</span>
                                         <span class="s2">" with Arguments "</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a_object</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">"""</span>
@@ -1096,7 +1155,7 @@
 <span class="sd">            position: A rectangle or a position</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            true, if area is in grid</span>
+<span class="sd">            True, if area is in grid</span>
 
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">position</span><span class="p">)</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">:</span>
@@ -1116,10 +1175,12 @@
 <div class="viewcode-block" id="Board.register_sound"><a class="viewcode-back" href="../../../api/board.html#miniworldmaker.boards.board.Board.register_sound">[docs]</a>    <span class="k">def</span> <span class="nf">register_sound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mixer</span><span class="o">.</span><span class="n">Sound</span><span class="p">:</span>
         <span class="sd">"""</span>
 <span class="sd">        Registers a sound effect to board-sound effects library</span>
+<span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            path: The path to sound</span>
 
-<span class="sd">        Returns: the sound</span>
+<span class="sd">        Returns: </span>
+<span class="sd">            the sound</span>
 
 <span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1244,6 +1305,8 @@
 
     <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+
 </pre></div>
       </article>
       <footer>
@@ -1275,5 +1338,7 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script >mermaid.initialize({startOnLoad:true});</script>
     <script src="../../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

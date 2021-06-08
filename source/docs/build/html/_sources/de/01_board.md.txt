@@ -1,11 +1,11 @@
-Das Spielfeld
+The Board
 =============
 
-Los geht es!
+Here we go!
 
-## Eine erste Welt
+## A first world
 
-Wir erschaffen die erste Welt. Dies geht mit folgendem Code:
+Wir erstellen eine erste Welt. Diese kann mit folgendem Code erzeugt werden:
 
 ```{code-block} python
 ---
@@ -26,41 +26,41 @@ board.run()
 
 ### Was passiert hier?
 
-  * In Zeile 1 wird die miniworldmaker-Bibliothek importiert.
-  * In Zeile 3 wird ein neues `Objekt` von Typ `TiledBoard` erstellt.
-  * In Zeile 4 erhält das neue erstellte Board-Objekt einen `Background`.
-  * In Zeile 5-8 werden die verschiedenen Attribute des Objekts verändert.
-  * In Zeile 10 wird das Spiel gestartet. Mir `board.run()` wird eine Mainloop gestartet, die das Board immer wieder neu zeichnet.
+  * In Zeile 1: Die miniworldmaker library wird importiert.
+  * In Zeile 3: Ein neues `object` vom Typ `TiledBoard` wird erzeugt
+  * In Zeile 4: Das neue Objekt erhält einen `background`.
+  * In Zeile 5-8: Es werden verschiedene Attribute von 'board' verändert.
+  * In Zeile 10: Das Spiel wird gestartet. Mit `board.run()` wird eine mainloop gestartet, die das Board immer und immer wieder neu zeichnet.
 
 ### Ergebnis:
 
-Je nach Hintergrundbild sieht das Ergebnis bei dir so aus:
+Je nach Hintergrundbild sieht dein Ergebnis so aus:
 
 ![tiles](../_images/first.jpg)
 
-### Variante: Das Grid anzeigen
+### Variante: Show the grid
 
-Wenn du möchtest kannst du dir auch die Grenzen der einzelnen Tiles anzeigen lassen.
+Du kannst auch das Grid anzeigen:
 
 ```
 board.background.grid_overlay = True
 ```
 
-### Ausblick: Verschiedene Boards
+### Ausblick: Verschiedene boards
 
-Es gibt verschiedene Unterklassen der Klasse Board:
+Es gibt mehrere Kind-Klassen von Board
 
-  * Ein `PixelBoard` ist für Pixelgenaue Darstellung von Inhalten gedacht.
+  * Ein `PixelBoard` ist für pixelgenaue Darstellungen vorgesehen
   
-  * Ein `TiledBoard` ist für Boards gedacht, bei denen sich die Akteure auf quadratischen Kacheln bewegen.
+  * Ein `TiledBoard` ist geeignet für Boards, bei denen sich die Akteure auf "Kacheln" bewegen.
   
 
-Die meisten der Funktionen unterscheiden sich nur geringfügig, da beide Boards Unterklassen der Klasse `Board` sind.
+Einige Features der Boards (z.B. Kollissionen) unterscheiden sich geringfügig.
 
-> Mehr Informationen. Siehe [Key-Concept: Boards](../key_concepts/boards.md)
+> Mehr Informationen, siehe [Key-Concept: Boards](../key_concepts/boards.md)
 
-### Beispiele
+### Examples
 
-> [Basic Framework](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py) - Ein erstes Framework mit dem du anfangen kannst.
+> [Basic Framework](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py) - Ein erstes Programm, mit dem du starten kannst.
 
-> [Basic Framework - Mit Klassen](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py) - Wenn du bereits Objektorientierung mit Klassen beherschst, dann kannst du acuh mit diesem Framework anfangen. Hier werden Klassen definiert, aus denen dann Objekte instanziiert werden.
+> [Basic Framework - With Classes](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py) - Wenn du bereits OOP Klassen kennst, kannst du mit diesem Framework starten.

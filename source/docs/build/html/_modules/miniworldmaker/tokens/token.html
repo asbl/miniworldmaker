@@ -109,10 +109,10 @@
   <input type="hidden" name="area" value="default">
 </form><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../mwm.html">Miniworldmaker</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mwm.html">MiniWorldMaker</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../tutorial_german.html">Tutorial - Deutsch</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/00_installation.html">1. Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../de/01_board.html">2. Das Spielfeld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../de/01_board.html">2. The Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/02_tokens.html">3. Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../de/04_movement.html">5. Bewegung</a></li>
@@ -144,7 +144,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.background.html">Appearance.Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.costume.html">Appearance.Costume</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board.html">Board</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/board.physicsboard.html">Board.PhysicsBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board.pixelboard.html">Board.PixelBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board.tiledboard.html">Board.TiledBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/board_position.html">BoardPositions, Lines and Rectangles</a></li>
@@ -168,6 +167,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../impressum.html">Impressum</a></li>
 </ul>
 
 </div>
@@ -221,7 +221,6 @@
 <span class="sd">    pieces and obstacles on the playing field</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        position (tuple): Position on the board where the token should be created.</span>
 <span class="sd">        collision_type (string):</span>
 <span class="sd">            The parameter collision_type specifies how collisions should be checked:</span>
 
@@ -298,39 +297,6 @@
         <span class="n">obj</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center_position</span> <span class="c1"># pos set to center</span>
         <span class="k">return</span> <span class="n">obj</span></div>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""</span>
-<span class="sd">        The orientation "corrects" a wrongly orientation of a token image.</span>
-<span class="sd">        If orientation is != 0, the token is rotated by orientation degrees, before any other operation.</span>
-
-<span class="sd">        Examples:</span>
-
-<span class="sd">            Sets orientation:</span>
-
-<span class="sd">            &gt;&gt;&gt;  class Bird(Token):</span>
-<span class="sd">            &gt;&gt;&gt;</span>
-<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
-<span class="sd">            &gt;&gt;&gt;      self.add_image("images/fly.png")</span>
-<span class="sd">            &gt;&gt;&gt;      self.orientation = 180</span>
-<span class="sd">            &gt;&gt;&gt;      self.flip_x() #flips actor</span>
-
-<span class="sd">            Instead of using token.orientation, you can also use token.costume.orientation:</span>
-
-<span class="sd">            &gt;&gt;&gt;  def on_setup(self):</span>
-<span class="sd">            &gt;&gt;&gt;    self.add_image("images/fly.png")</span>
-<span class="sd">            &gt;&gt;&gt;    self.costume.orientation = 180</span>
-<span class="sd">            &gt;&gt;&gt;    self.flip_x() #flips actor</span>
-
-<span class="sd">        """</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span>
-
-    <span class="nd">@orientation</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">orientation</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">find_subclass</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
         <span class="n">subclasses</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">all_subclasses</span><span class="p">()</span>
@@ -388,12 +354,8 @@
         <span class="sd">"""</span>
 <span class="sd">        The image of the token:</span>
 
-<span class="sd">        Warning: You should not draw on the image or similar,</span>
-<span class="sd">        as the image will be reloaded during animations or other</span>
-<span class="sd">        operations and changes will not be applied.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The image of the token</span>
+<span class="sd">        &gt; Warning: You should not directly draw on the image</span>
+<span class="sd">        &gt; as the image will be reloaded during animations </span>
 
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="p">:</span>
@@ -419,10 +381,6 @@
         <span class="sd">"""</span>
 <span class="sd">        The surrounding Rectangle as pygame.Rect.</span>
 <span class="sd">        Warning: If the token is rotated, the rect vertices are not the vertices of the token image.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The rectangle describing the image</span>
-
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">collision_type</span> <span class="o">!=</span> <span class="s2">"static-rect"</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -436,11 +394,6 @@
     <span class="nd">@rect</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span> <span class="o">=</span> <span class="n">value</span>
-
-
-
-    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Use token.add_costume or token.costume.add_image"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Token.add_costume"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.add_costume">[docs]</a>    <span class="k">def</span> <span class="nf">add_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="n">Appearance</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">costume</span><span class="o">.</span><span class="n">Costume</span><span class="p">:</span>
         <span class="sd">"""</span>
@@ -524,7 +477,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">""" Sets direction the token is oriented</span>
+        <span class="sd">""" Sets direction of the token.</span>
 
 <span class="sd">        You can use a integer or a string to describe the direction</span>
 
@@ -590,9 +543,6 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: The direction in scratch-style</span>
-
-<span class="sd">        Returns:</span>
-
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">direction</span> <span class="o">+</span> <span class="mi">90</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">-</span> <span class="mi">180</span></div>
 
@@ -604,9 +554,6 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: The direction in math unit circle style.</span>
-
-<span class="sd">        Returns:</span>
-
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="o">-</span> <span class="p">(</span><span class="n">direction</span> <span class="o">+</span> <span class="mi">90</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span> <span class="o">-</span> <span class="mi">180</span></div>
 
@@ -1288,5 +1235,7 @@
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script >mermaid.initialize({startOnLoad:true});</script>
     <script src="../../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

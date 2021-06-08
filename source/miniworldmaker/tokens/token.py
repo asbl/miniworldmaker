@@ -36,7 +36,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     pieces and obstacles on the playing field
 
     Attributes:
-        position (tuple): Position on the board where the token should be created.
         collision_type (string):
             The parameter collision_type specifies how collisions should be checked:
 
@@ -113,39 +112,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         obj.center = center_position # pos set to center
         return obj
 
-    @property
-    def orientation(self):
-        """
-        The orientation "corrects" a wrongly orientation of a token image.
-        If orientation is != 0, the token is rotated by orientation degrees, before any other operation.
-
-        Examples:
-
-            Sets orientation:
-
-            >>>  class Bird(Token):
-            >>>
-            >>>    def on_setup(self):
-            >>>      self.add_image("images/fly.png")
-            >>>      self.orientation = 180
-            >>>      self.flip_x() #flips actor
-
-            Instead of using token.orientation, you can also use token.costume.orientation:
-
-            >>>  def on_setup(self):
-            >>>    self.add_image("images/fly.png")
-            >>>    self.costume.orientation = 180
-            >>>    self.flip_x() #flips actor
-
-        """
-        return self._orientation
-
-    @orientation.setter
-    def orientation(self, value):
-        self._orientation = value
-        if self.costume.orientation != self._orientation:
-            self.costume.orientation = self._orientation
-
     @staticmethod
     def find_subclass(name):
         subclasses = Token.all_subclasses()
@@ -203,12 +169,8 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         The image of the token:
 
-        Warning: You should not draw on the image or similar,
-        as the image will be reloaded during animations or other
-        operations and changes will not be applied.
-
-        Returns:
-            The image of the token
+        > Warning: You should not directly draw on the image
+        > as the image will be reloaded during animations 
 
         """
         if self.costume:
@@ -234,10 +196,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         The surrounding Rectangle as pygame.Rect.
         Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
-
-        Returns:
-            The rectangle describing the image
-
         """
         if self.collision_type != "static-rect":
             if self.dirty == 1:
@@ -251,11 +209,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     @rect.setter
     def rect(self, value):
         self._rect = value
-
-
-
-    def add_image(self, path: str) -> int:
-        raise Exception("Use token.add_costume or token.costume.add_image")
 
     def add_costume(self, source: Union[str, list[str], Type[Appearance]] = (255, 0,255,100)) -> costume.Costume:
         """
@@ -339,7 +292,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
     @property
     def direction(self) -> int:
-        """ Sets direction the token is oriented
+        """ Sets direction of the token.
 
         You can use a integer or a string to describe the direction
 
@@ -405,9 +358,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
         Args:
             value: The direction in scratch-style
-
-        Returns:
-
         """
         return -(direction + 90) % 360 - 180
 
@@ -419,9 +369,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
 
         Args:
             value: The direction in math unit circle style.
-
-        Returns:
-
         """
         return - (direction + 90) % 360 - 180
 

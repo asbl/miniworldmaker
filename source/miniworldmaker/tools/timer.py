@@ -3,7 +3,6 @@ from inspect import signature
 
 from miniworldmaker.app import app
 
-
 class Timed():
     def __init__(self):
         self.board = app.App.board
@@ -30,7 +29,6 @@ class Timer(Timed):
         self.actual_time += 1
         if self.actual_time % self.time == 0:
             self.act()
-            self.unregister()
 
     def act(self):
         pass
@@ -50,24 +48,11 @@ class ZeroTimer(Timed):
     def act(self):
         pass
 
-
-class ActionTimer(ZeroTimer):
-
+class CallTimer(Timer):
     def __init__(self, time, method, arguments = None):
         super().__init__(time)
         self.method = method
-        self.arguments = arguments
-
-    def act(self):
-        self._call_method()
-        self.unregister()
-        self.success()
-
-    def success(self, method = None, arguments = None):
-        if method is not None and arguments is None:
-            method()
-        if method is not None and arguments is not None:
-            method(arguments)
+        self.arguments = arguments    
 
     def _call_method(self):
         sig = signature(self.method)
@@ -88,12 +73,43 @@ class ActionTimer(ZeroTimer):
             else:
                 self.method(self.arguments)
 
-class LoopActionTimer(Timer):
+class ActionTimer(CallTimer):
 
     def __init__(self, time, method, arguments = None):
-        super().__init__(time)
-        self.method = method
-        self.arguments = arguments
+        super().__init__(time, method, arguments)
 
     def act(self):
         self._call_method()
+        self.unregister()
+        self.success()
+
+    def success(self, method = None, arguments = None):
+        if method is not None and arguments is None:
+            method()
+        if method is not None and arguments is not None:
+            method(arguments)
+
+
+
+class LoopActionTimer(CallTimer):
+
+    def __init__(self, time, method, arguments = None):
+        super().__init__(time, method, arguments)
+
+    def act(self):
+        self._call_method()
+
+
+"@decorator"
+def timer(*args, **kwargs):
+    def inner(method):
+        print("timer with " + str(kwargs["frames"]) + "frames" )
+        timer = ActionTimer(kwargs["frames"], method)
+    return inner
+
+"@decorator"
+def loop(*args, **kwargs):
+    def inner(method):
+        print("timer with " + str(kwargs["frames"]) + "frames" )
+        timer = LoopActionTimer(kwargs["frames"], method)
+    return inner

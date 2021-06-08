@@ -53,6 +53,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.napoleon',
     'myst_parser',
+    'sphinxcontrib.mermaid'
 ]
 
 myst_enable_extensions = [

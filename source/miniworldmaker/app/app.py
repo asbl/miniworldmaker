@@ -24,7 +24,7 @@ class App:
     log = logging.getLogger("miniworldmaker")
     board = None
     window = None
-    quit = False
+    _quit = False
 
 
     def __init__(self, title):
@@ -97,7 +97,7 @@ class App:
             "Created window with width: {0}, height: {1}".format(self.window_width, self.window_height))
         # Start the main-loop
         print("run")
-        while not App.quit:
+        while not App._quit:
             self._update()
         pygame.display.quit()
         sys.exit()
@@ -117,7 +117,7 @@ class App:
         if self.dirty:
             self._display_update()
             self.dirty = False
-        if not App.quit:
+        if not App._quit:
             self.repaint_areas = []
             if self.dirty:
                 self.repaint_areas.append(pygame.Rect(0, 0, self.window_width, self.window_height))
@@ -235,13 +235,13 @@ class App:
             keys_pressed = pygame.key.get_pressed()
             key_codes = keys.key_codes_to_keys(keys_pressed)
             if "STRG" in key_codes and "Q" in key_codes:
-                self._call_quit_event()
+                self.quit()
             self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
             self.key_pressed(keys.key_codes_to_keys(keys_pressed))
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
-                self._call_quit_event()
+                self.quit()
             # Event: Mouse-Button Down
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.send_mouse_down(event)
@@ -356,8 +356,8 @@ class App:
             key_codes = keys.key_codes_to_keys(keys_pressed)
         return key_codes
 
-    def _call_quit_event(self):
-        App.quit = True
+    def quit(self):
+        App._quit = True
 
     def key_pressed(self, key):
         def wrapper_accepting_arguments(key):

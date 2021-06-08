@@ -112,7 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../mwm.html">Miniworldmaker</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tutorial_german.html">Tutorial - Deutsch</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label for="toctree-checkbox-1"><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../de/00_installation.html">1. Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. Das Spielfeld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../de/01_board.html">2. The Board</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/02_tokens.html">3. Tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/03_actions.html">4. Aktionen / Methoden registrieren</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../de/04_movement.html">5. Bewegung</a></li>
@@ -144,7 +144,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/appearance.background.html">Appearance.Background</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/appearance.costume.html">Appearance.Costume</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.html">Board</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/board.physicsboard.html">Board.PhysicsBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.pixelboard.html">Board.PixelBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board.tiledboard.html">Board.TiledBoard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/board_position.html">BoardPositions, Lines and Rectangles</a></li>
@@ -168,6 +167,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../impressum.html">Impressum</a></li>
 </ul>
 
 </div>
@@ -184,36 +184,59 @@
         </label>
         <div class="section" id="tokens">
 <h1><span class="section-number">3. </span>Tokens<a class="headerlink" href="#tokens" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="create-a-new-token-class">
-<h2><span class="section-number">3.1. </span>Create a new Token class<a class="headerlink" href="#create-a-new-token-class" title="Permalink to this headline">¶</a></h2>
-<p>Next, an token is placed on the board.</p>
-<p>This is done as follows</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">Token</span><span class="p">):</span>
+<p>A token is a piece on your game board.</p>
+<p>All objects in your Miniworld are tokens that can be moved around the board.</p>
+<div class="section" id="create-a-token">
+<h2><span class="section-number">3.1. </span>Create a token<a class="headerlink" href="#create-a-token" title="Permalink to this headline">¶</a></h2>
+<p>After you have created the game board, a token, <em>(i.e. a game piece)</em> is now placed on the board.</p>
+<p>This goes like this:</p>
+</div>
+<div class="section" id="code-block-python">
+<h2><span class="section-number">3.2. </span>``{code-block} python<a class="headerlink" href="#code-block-python" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="lineno-start-1-emphasize-lines-9-10">
+<h2><span class="section-number">3.3. </span>lineno-start: 1
+emphasize-lines: 9,10<a class="headerlink" href="#lineno-start-1-emphasize-lines-9-10" title="Permalink to this headline">¶</a></h2>
+<p>import miniworldmaker</p>
+<p>board = miniworldmaker.TiledBoard()
+board.columns = 20
+board.rows = 8
+board.tile_size = 42
+board.add_background(“images/soccer_green.jpg”)
+board.speed = 30
+player = miniworldmaker.token()
+player.add_costume(“images/player.png”)</p>
+<p>board.run()</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+  * In line 9, a player object is created.
+  
+  * In line 10, a costume is assigned to the player object. 
 
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"images/char_blue.png"</span><span class="p">)</span>
+### The costume
+
+Each `board` has a `background`, each `token` has a `costume`. You **should` assign a costume to a new token. 
+
+The statement for this is usually:
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Line 1 creates a new class as a child class of the class Token.</p></li>
-<li><p>Line 3 defines the setup() method,
-which is called when a new Player object is created.</p></li>
-<li><p>A picture is then added to the Player object in line 4.</p></li>
-</ul>
-</div>
-<div class="section" id="add-the-token-to-the-playing-field">
-<h2><span class="section-number">3.2. </span>Add the token to the playing field<a class="headerlink" href="#add-the-token-to-the-playing-field" title="Permalink to this headline">¶</a></h2>
-<p>So far we have only created one template to create player objects.</p>
-<p>Now we want to create concrete objects and add them to the board.
-Add the setup() method of the playing field class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyBoard</span><span class="p">(</span><span class="n">TiledBoard</span><span class="p">):</span>
+<p>token_name.add_costume(“path_to_image”)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+![tiles](/_images/add_costume.png)
 
-    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="o">...</span>
-        <span class="n">player1</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+`path_to_image` is a (relative path) to the image. You should put your images in the subfolder `images`, then the image `image.png` in the subfolder `images` has the path `images/image.png.
+
+### Result
+
+![tiles](/_images/token.jpg)
+
+### View
+
+&gt; --&gt; More information. See [tokens](../key_concepts/tokens.md)
+
+
+Translated with www.DeepL.com/Translator (free version)
 </pre></div>
 </div>
-<p>Translated with www.DeepL.com/Translator (free version)</p>
 </div>
 </div>
 
@@ -272,8 +295,10 @@ Add the setup() method of the playing field class:</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">3. Tokens</a><ul>
-<li><a class="reference internal" href="#create-a-new-token-class">3.1. Create a new Token class</a></li>
-<li><a class="reference internal" href="#add-the-token-to-the-playing-field">3.2. Add the token to the playing field</a></li>
+<li><a class="reference internal" href="#create-a-token">3.1. Create a token</a></li>
+<li><a class="reference internal" href="#code-block-python">3.2. ``{code-block} python</a></li>
+<li><a class="reference internal" href="#lineno-start-1-emphasize-lines-9-10">3.3. lineno-start: 1
+emphasize-lines: 9,10</a></li>
 </ul>
 </li>
 </ul>
@@ -290,5 +315,7 @@ Add the setup() method of the playing field class:</p>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script >mermaid.initialize({startOnLoad:true});</script>
     <script src="../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
 </html>

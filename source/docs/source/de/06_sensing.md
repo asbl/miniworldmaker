@@ -50,10 +50,29 @@ def on_sensing_borders(self, borders):
 
 Befindet sich eine Spielfigur an der Position (0,0) wird folgendes ausgegeben:
 
-`Borders are here! ['right', 'top'`
+`Borders are here! ['right', 'top']`
+
+### FAQ
+
+  - Meine Kollisionen werden nicht erkannt, was kann ich tun?
+
+    * Teste zunächst, ob die Methode überhaupt aufgerufen wird, z.B. mit:
+
+    ```
+    @player.register
+    def on_sensing_token(self, token):
+      print(token)
+      ...
+    ```
+
+    Wenn die `print`-Anweisung nicht aufgerufen wird, dann funktioniert der Sensor nicht.
 
 
+### Ausblick
 
 Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies kann über die Eigenschaft `collision_type` des aufspürenden Objekts eingestellt werden, z.B. "mask" für einen pixelgenauen Vergleich oder 'rect' wenn nur die umschließenden Rechtecke verglichen werden.
+
+
+
 
 > ➥ Mehr über Sensoren: [Key Concept: Sensors](../key_concepts/sensors.md)

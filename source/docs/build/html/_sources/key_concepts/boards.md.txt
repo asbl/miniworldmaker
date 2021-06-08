@@ -74,16 +74,3 @@ myboard.rows = 200
   * New tokens are created with top-left corner of token rect at position.
   
   * Two tokens collide when their sprites overlap.
-
-### Physicsboard
-
-A board for games with physic-engine
-
-![tiled_board](../_images/physics.jpg)
-
-### Attributes
-
-  * Every token is added to the physic_engine
-  
-  * Before the method on_setup() (of a token) the method setup_physics() is called. In this method, 
-  physical properties of a token can be defined.
