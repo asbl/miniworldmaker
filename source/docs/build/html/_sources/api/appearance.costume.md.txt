@@ -23,6 +23,11 @@ The 'Costume' class is a child classes of the 'Appearance' class.
       }   
 ```
 
+:::{important}
+Since costumes are bound to tokens, you **don't** need to instantiate costume objects directly.
+Instead use `token.add_costume()`
+:::
+
 ### Costume
 
 ```{eval-rst}
