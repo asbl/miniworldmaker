@@ -35,6 +35,8 @@ from miniworldmaker.tools.timer import LoopActionTimer
 from miniworldmaker.tools.timer import Timed
 from miniworldmaker.tools.timer import Timer
 from miniworldmaker.tools.timer import ZeroTimer
+from miniworldmaker.tools.timer import timer
+from miniworldmaker.tools.timer import loop
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances.costume import Costume
 from miniworldmaker.appearances.background import Background
@@ -77,4 +79,6 @@ __all__ = ['Token',
            'ActionTimer',
            'LoopActionTimer',
            'ZeroTimer',
+           'timer',
+           'loop',
            ]

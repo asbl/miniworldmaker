@@ -30,34 +30,48 @@ class MetaBoard(type):
 class Board(container.Container, metaclass=MetaBoard):
     """Base Class for Boards.
 
-    You can create a custom board by inherit one of Boars subclasses.
+    You can create a custom board by inherit one of Board subclasses or by creating a board-object:
 
     Examples:
+        Creating a board object:
+        
+        .. code-block:: python
+
+            board = miniworldmaker.TiledBoard()
+            board.columns=20
+            board.rows=8
+            board.tile_size=40
 
         A pixel-board in follow_the_mouse.py:
+        
+        .. code-block:: python
+            
+            class MyBoard(PixelBoard):
+            
+            def on_setup(self):
+                self.add_image(path="images/stone.jpg")
+                Robot(position=(50, 50))
+            
+            
+            board = MyBoard(800, 600)
+        
+        A tiled-board:
 
-        >>>  class MyBoard(PixelBoard):
-        >>>
-        >>>  def on_setup(self):
-        >>>    self.add_image(path="images/stone.jpg")
-        >>>    Robot(position=(50, 50))
-        >>>
-        >>>
-        >>>  board = MyBoard(800, 600)
-        A tiled-board in basicframework1.py:
+        .. code-block:: python
+        
+            def on_setup(self):
+                self.add_image(path="images/soccer_green.jpg")
+                self.player = Player(position=(3, 4))
+                self.speed = 10
+                stone = self.add_background(("images/stone.png"))
+                stone.is_textured = True
+                stone.is_scaled_to_tile = True
+        
+        
+            board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
 
-        >>> class MyBoard(TiledBoard):
-        >>>
-        >>>   def on_setup(self):
-        >>>     self.add_image(path="images/soccer_green.jpg")
-        >>>     self.player = Player(position=(3, 4))
-        >>>     self.speed = 10
-        >>>     stone = self.add_background(("images/stone.png"))
-        >>>     stone.is_textured = True
-        >>>     stone.is_scaled_to_tile = True
-        >>>
-        >>>
-        >>>  board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
+        > See [Example](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics)
+
     Args:
         columns: columns of new board (default: 40)
         rows: rows of new board (default:40)
@@ -115,7 +129,7 @@ class Board(container.Container, metaclass=MetaBoard):
         self._image = pygame.Surface((1, 1))
         self.surface = pygame.Surface((1, 1))
         self.frame = 0
-        self.speed = 1 # All tokens are acting on n'th frame with n = self.speed
+        self._speed = 1 # All tokens are acting on n'th frame with n = self.speed
         self.clock = pygame.time.Clock()
         self.__last_update = pygame.time.get_ticks()
         # Init graphics
@@ -137,12 +151,6 @@ class Board(container.Container, metaclass=MetaBoard):
     def from_db(cls, file):
         """
         Loads a sqlite db file.
-
-        Args:
-            file:
-
-        Returns:
-
         """
         db = db_manager.DBManager(file)
         data = db.select_single_row("SELECT rows, columns, tile_size, tile_margin, board_class FROM Board")
@@ -190,11 +198,7 @@ class Board(container.Container, metaclass=MetaBoard):
     @property
     def container_width(self) -> int:
         """
-        Gets the width of the container
-
-        Returns:
-            The width of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)
-
+        The width of the container
         """
         if self._repaint_all:
             self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
@@ -203,21 +207,60 @@ class Board(container.Container, metaclass=MetaBoard):
     @property
     def container_height(self) -> int:
         """
-        Gets the height of the container
-
-        Returns:
-            The height of the container (in pixels on a PixelGrid; in Tiles on a TiledGrid)
-
+        The height of the container
         """
         if self._repaint_all:
             self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
         return self._container_height
 
     @property
+    def speed(self) -> int:
+        """
+        How often are events and game logic processed?
+        
+        The game logic can be called more often or less often independently from board.fps
+
+        Examples:
+
+        .. code-block:: python
+        
+            board.speed = 10
+            board.fps = 24
+            def act(self):
+                nonlocal i
+                i = i + 1
+                print(board.frame, i)
+                if board.frame == 120:
+                    test_instance.assertEqual(i, 13)
+                    test_instance.assertEqual(board.frame, 120)
+        """
+        return self._fps
+
+    @speed.setter
+    def speed(self, value: int):
+        self._fps = value
+
+    @property
     def fps(self) -> int:
         """
-        The world speed. The world speed is counted in fps (frames per second).
+        Frames per second shown on the screen.
+        
+        This controls how often the screen is redrawn. However, the game logic 
+        can be called more often or less often independently of this with board.speed.
 
+        Examples:
+
+        .. code-block:: python
+        
+            board.speed = 10
+            board.fps = 24
+            def act(self):
+                nonlocal i
+                i = i + 1
+                print(board.frame, i)
+                if board.frame == 120:
+                    test_instance.assertEqual(i, 13)
+                    test_instance.assertEqual(board.frame, 120)
         """
         return self._fps
 
@@ -321,7 +364,21 @@ class Board(container.Container, metaclass=MetaBoard):
         Args:
             source: The path to the first image of the background or a color
 
-        Returns:
+        Examples:
+
+            Multiple Backgrounds:
+
+            .. code-block:: python
+
+                board = miniworldmaker.TiledBoard()
+                ...
+                board.add_background("images/soccer_green.jpg")
+                board.add_background("images/space.jpg")
+
+        Returns: 
+            The new created background.
+
+
 
         """
         new_background = background.Background(self)
@@ -373,7 +430,8 @@ class Board(container.Container, metaclass=MetaBoard):
         Args:
             line: the line
 
-        Returns: A list of all colors found at the line
+        Returns: 
+            A list of all colors found at the line
 
         """
         colors = []
@@ -521,7 +579,8 @@ class Board(container.Container, metaclass=MetaBoard):
         Args:
             index: The index of the new costume. If index=-1, the next costume will be selected
 
-        Returns: The new costume
+        Returns: 
+            The new costume
 
         """
         if index == -1:
@@ -911,7 +970,7 @@ class Board(container.Container, metaclass=MetaBoard):
             position: A rectangle or a position
 
         Returns:
-            true, if area is in grid
+            True, if area is in grid
 
         """
         if type(position) == tuple:
@@ -931,10 +990,12 @@ class Board(container.Container, metaclass=MetaBoard):
     def register_sound(self, path) -> pygame.mixer.Sound:
         """
         Registers a sound effect to board-sound effects library
+        
         Args:
             path: The path to sound
 
-        Returns: the sound
+        Returns: 
+            the sound
 
         """
         try:
@@ -1059,3 +1120,5 @@ class Board(container.Container, metaclass=MetaBoard):
 
     def send_message(self, message):
         self.window.send_event_to_containers("message", message)
+
+

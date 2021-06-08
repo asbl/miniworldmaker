@@ -1,7 +1,7 @@
 Tokens
 ======
 
-### Base Token Types
+## Base Token Types
 
   * Token: Base class for all Kinds of Tokens
   * TextToken: A TextToken

@@ -1,6 +1,8 @@
 Costumes
 =========
 
+![UML Diagram](../_images/costume_uml.png)
+
 ### Attributes
   * **costume.info_overlay**: Shows info overlay with border and direction
   * **costume.is_rotatable**: Should the image be rotated when token is rotated?

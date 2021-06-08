@@ -1,19 +1,33 @@
 Board
 ======
 
-Board is the base class of TiledBoard, PixelBoard and PhysicsBoard
+Board is the base class of TiledBoard and PixelBoard. It
 
-```{eval_rst}
-.. inheritance-diagram:: miniworldmaker.boards.pixel_board.PixelBoard miniworldmaker.boards.tiled_board.TiledBoard miniworldmaker.boards.physics_board.PhysicsBoard
-   :top-classes: miniworldmaker.tokens.boards.Board
-   :parts: 1
+```{eval-rst}
+.. mermaid::
+
+   classDiagram
+      Board <|-- PixelBoard
+      Board <|-- TiledBoard
+      class Board{
+      }
+      class PixelBoard{
+
+      }
+      class TiledBoard{
+      }  
 ```
+
+::::{important}
+You do not need this class. Use the subclasses `TiledBoard` and `PixelBoard`
+::::
 
 ## Board
 
 ```{eval-rst}
 .. autoclass:: miniworldmaker.boards.board.Board
    :members:
+   :exclude-members: add_to_board, handle_event
 ```
 
 
