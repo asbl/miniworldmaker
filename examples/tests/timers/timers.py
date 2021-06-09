@@ -13,6 +13,7 @@ player.add_costume("images/char_blue.png")
 player.costume.orientation = - 90
 
 miniworldmaker.ActionTimer(24, player.move, None)
-miniworldmaker.ActionTimer(48, player.move, 2)
+
+miniworldmaker.LoopTimer(48, player.move, 2)
 
 board.run()

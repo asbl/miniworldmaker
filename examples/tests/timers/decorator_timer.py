@@ -12,12 +12,12 @@ player = miniworldmaker.Token(position=(3, 4))
 player.add_costume("images/char_blue.png")
 player.costume.orientation = - 90
 
-@miniworldmaker.timer(frames = 10)
-def do_something():
-    print("I do, so I am!", str(board.frame))
-    
-@miniworldmaker.loop(frames = 20)
-def do_something():
-    print("He're I go again...", str(board.frame))
+@miniworldmaker.timer(frames = 24)
+def moving():
+    player.move()
+
+@miniworldmaker.loop(frames = 48)
+def moving():
+    player.move(2)
 
 board.run()

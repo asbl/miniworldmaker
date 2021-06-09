@@ -41,13 +41,6 @@ class Appearances:
     def get_costume_at_index(self, index):
         return self.appearances[index]
 
-    # def _do_all(self, method, parameters):
-    #    for appearance in self.appearances:
-    #        if parameters is None:
-    #            method()
-    #        else:
-    #            method(parameters)
-
     def _set_all(self, attribute, value):
         for appearance in self.appearances:
             setattr(appearance, attribute, value)
