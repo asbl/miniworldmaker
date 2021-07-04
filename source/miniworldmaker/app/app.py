@@ -40,6 +40,7 @@ class App:
         self.repaint_areas = []
         self.window_surface = None
         self.log_events = "None"
+        self._exit_code = 0
         self.event_console = None
         self.action_bar = None
         self.event_queue = deque()
@@ -100,7 +101,7 @@ class App:
         while not App._quit:
             self._update()
         pygame.display.quit()
-        sys.exit()
+        sys.exit(self._exit_code)
 
     def _setup_images(self):
         from pathlib import Path
@@ -356,7 +357,8 @@ class App:
             key_codes = keys.key_codes_to_keys(keys_pressed)
         return key_codes
 
-    def quit(self):
+    def quit(self, exit_code = 0):
+        self._exit_code = exit_code
         App._quit = True
 
     def key_pressed(self, key):

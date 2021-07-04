@@ -103,13 +103,11 @@ class LoopActionTimer(CallTimer):
 "@decorator"
 def timer(*args, **kwargs):
     def inner(method):
-        print("timer with " + str(kwargs["frames"]) + "frames" )
         timer = ActionTimer(kwargs["frames"], method)
     return inner
 
 "@decorator"
 def loop(*args, **kwargs):
     def inner(method):
-        print("timer with " + str(kwargs["frames"]) + "frames" )
         timer = LoopActionTimer(kwargs["frames"], method)
     return inner

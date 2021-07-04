@@ -3,13 +3,15 @@ import os
 from collections import defaultdict
 from inspect import signature
 from typing import Union
-
+from typing import Type
 import pygame
 from miniworldmaker.app import app
 from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_rect
 from miniworldmaker.containers import container
+from miniworldmaker.appearances import appearances
+from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.physics import physics
 from miniworldmaker.tools import timer
 from miniworldmaker.physics import physics as physicsengine
@@ -75,9 +77,7 @@ class Board(container.Container, metaclass=MetaBoard):
     Args:
         columns: columns of new board (default: 40)
         rows: rows of new board (default:40)
-
     """
-
     registered_collision_handlers_for_tokens = defaultdict(list)
     token_class_ids = defaultdict()  # class_name -> id
     token_classes = defaultdict()  # class_name -> class
@@ -124,7 +124,7 @@ class Board(container.Container, metaclass=MetaBoard):
             for column in range(self.columns):
                 self._grid[row].append(0)
         self.background = None
-        self.backgrounds = []
+        self.backgrounds = appearances.Backgrounds(self.background)
         self._update_background()
         self._image = pygame.Surface((1, 1))
         self.surface = pygame.Surface((1, 1))
@@ -146,6 +146,13 @@ class Board(container.Container, metaclass=MetaBoard):
         self._repaint_all = 1
         self._executed_events = set()
         self.window.send_event_to_containers("setup", self)
+        self.has_background = False
+        if background_image is not None:
+            self.add_background(background_image)
+            self.has_background = True
+        else: 
+            self.add_background(None)
+            self.has_background = False
 
     @classmethod
     def from_db(cls, file):
@@ -234,11 +241,11 @@ class Board(container.Container, metaclass=MetaBoard):
                     test_instance.assertEqual(i, 13)
                     test_instance.assertEqual(board.frame, 120)
         """
-        return self._fps
+        return self._speed
 
     @speed.setter
     def speed(self, value: int):
-        self._fps = value
+        self._speed = value
 
     @property
     def fps(self) -> int:
@@ -356,6 +363,17 @@ class Board(container.Container, metaclass=MetaBoard):
     def class_name(self) -> str:
         return self.__class__.__name__
 
+    def remove_background(self):
+        """Removes a background from board
+
+        Args:
+            index: The index of the new background. Defaults to -1 (last background)
+        """
+        if background != None:
+            index = self.backgrounds.get_index(self.background)
+            self.backgrounds.remove(index)
+        else:
+            self.backgrounds.remove(-1)
 
     def add_background(self, source: Union[str, tuple]) -> background.Background:
         """
@@ -377,21 +395,23 @@ class Board(container.Container, metaclass=MetaBoard):
 
         Returns: 
             The new created background.
-
-
-
         """
+        if not self.has_background and self.background != None:
+            self.remove_background()
+        if source is None:
+            source =  (255, 0,255,100)
         new_background = background.Background(self)
+
         if type(source) == str:
             new_background.add_image(source)
         elif type(source) == tuple:
             new_background.fill(source)
-        if self.background is None:
+        if self.background is None or not self.has_background:
             self.background = new_background
+            self._repaint_all = 1
             self._update_all_costumes()
             self._update_background()
-            new_background.orientation = self.background.orientation
-        self.backgrounds.append(new_background)
+        self.backgrounds.add(new_background)
         return new_background
 
     def add_to_board(self, token, position: board_position.BoardPosition):
@@ -460,12 +480,7 @@ class Board(container.Container, metaclass=MetaBoard):
             >>> tokens = board.get_tokens_by_pixel(position)
 
         """
-        # token = []
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
-        # for actor in self.tokens:
-        #    if actor.rect.collidepoint(pixel):
-        #        token.append(Token)
-        # return token
 
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
         tkn.Token, list]:
@@ -507,11 +522,6 @@ class Board(container.Container, metaclass=MetaBoard):
         tokens = self.get_tokens_at_rect(rect)
         if token is not None:
             [token.remove() for token in Board.filter_actor_list(tokens, token)]
-
-    def switch_board(self, Board, size: tuple = None):
-        if size is None:
-            size = self.size
-        self.window.send_event_to_containers("switch_board", [self, Board, size])
 
     def start(self):
         self.is_running = True
@@ -573,8 +583,8 @@ class Board(container.Container, metaclass=MetaBoard):
                 self.window.send_event_to_containers("setup", self)
         self.window.run(self.image, full_screen=fullscreen)
 
-    def switch_background(self, index=-1) -> background.Background:
-        """Switches the background
+    def switch_background(self, background: Union[int, Type[Appearance]]) -> background.Background:
+        """Switches the background of costume
 
         Args:
             index: The index of the new costume. If index=-1, the next costume will be selected
@@ -583,17 +593,9 @@ class Board(container.Container, metaclass=MetaBoard):
             The new costume
 
         """
-        if index == -1:
-            index = self.backgrounds.index(self.background)
-            if index < len(self.backgrounds) - 1:
-                index += 1
-            else:
-                index = 0
-        else:
-            index = index
-        self.background = self.backgrounds[index]
-        self.background.dirty = 1
-        self.background_changed = 1
+        if type(background) == int:
+            background = self.background.get_index(background)
+        self.background = background
         self._repaint_all = 1
         [token.set_dirty() for token in self.tokens]
         return self.background
@@ -689,7 +691,10 @@ class Board(container.Container, metaclass=MetaBoard):
             return None
 
     def _call_method(self, receiver, method, args):
-        sig = signature(method)
+        try:
+            sig = signature(method)
+        except ValueError:
+            raise Exception("Fehler beim aufrufen der registrierten Methode. Hast du die richtigen Argumente verwendet (auch 'self')?")
         # Don't call method if tokens are already removed:
         if issubclass(receiver.__class__, tkn.Token):
             if not receiver.board:
@@ -1121,4 +1126,8 @@ class Board(container.Container, metaclass=MetaBoard):
     def send_message(self, message):
         self.window.send_event_to_containers("message", message)
 
+    def screenshot(self, filename="screenshot.jpg"):
+        pygame.image.save(self.surface,filename)
 
+    def quit(self, exit_code = 0):
+        self._app.quit(exit_code)

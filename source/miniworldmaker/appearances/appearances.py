@@ -32,6 +32,10 @@ class Appearances:
     def remove(self, index):
         del self.appearances[index]
 
+    def get_index(self, appearance):
+        # Variant for get_index_of_costume #todo: Rename occurences to get_index
+        return self.appearances.index(appearance)
+
     def get_index_of_costume(self, appearance):
         return self.appearances.index(appearance)
 
@@ -83,3 +87,7 @@ class Appearances:
 class Costumes(Appearances):
     def set_flip_vertical(self, value):
         self._set_all("flip_vertical", value)
+
+
+class Backgrounds(Appearances):
+    pass

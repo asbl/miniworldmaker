@@ -92,7 +92,6 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         self._dirty = 1
         self.board.add_to_board(self, self.position)
         self.has_costume = False
-        self.main_costume = None
         if image is not None:
             self.add_costume(image)
             self.has_costume = True
@@ -239,12 +238,10 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         if self.costume is None or not self.has_costume:
             self.costume = new_costume
             self.has_costume = True
-            self.main_costume = new_costume
         if self.collision_rect == "static-rect":
             self.rect = self.image.get_rect()
         self.costumes.add(new_costume)
-
-
+        self.dirty = 1
         return new_costume
 
     def remove_costume(self, costume = None):
@@ -270,7 +267,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
         """
         if type(costume) == int:
             costume = self.costumes.get_costume_at_index(costume)
-        self.costume.end_animation()
+        self.costume.end_animation() # ? neccessary
         self.costume = costume
         self.costume.dirty = 1
         return self.costume

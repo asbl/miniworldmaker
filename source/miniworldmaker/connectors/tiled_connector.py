@@ -83,19 +83,15 @@ class TiledBoardConnector(board_connector.BoardConnector):
             token_type = token.Token.find_subclass(token_type)
 
         target = self.get_destination(self.token.position, self.token.direction, distance)
-        self._update_token_positions()
-        token_list = []
-        if target.is_on_board():
-            position = target
-            if self.board.dynamic_tokens_dict[position.x, position.y]:
-                token_list.extend(self.board.dynamic_tokens_dict[(position.x, position.y)])
-            if self.board.static_tokens_dict[position.x, position.y]:
-                token_list.extend(self.board.static_tokens_dict[(position.x, position.y)])
-        token_list = [token for token in token_list if token != self.token]
+        if self.board.on_board(self.token.position):
+            token_list = self.board.sensing_tokens(self.token.position)
+        if self in token_list:
+            token_list.remove(self)
         # Filter by token type
         if token_type is not None:
             token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
-        return token_list
+        if token_list:
+            return token_list
 
     def sensing_token(self, token_type=None, distance: int = 1) -> list:
         """
@@ -108,19 +104,7 @@ class TiledBoardConnector(board_connector.BoardConnector):
         Returns: The first token at current position or None.
 
         """
-        target = self.get_destination(self.token.position, self.token.direction, distance)
-        self._update_token_positions()
-        token_list = []
-        if self.board.on_board(self.token.position):
-            position = self.token.position
-            if self.board.dynamic_tokens_dict[position.x, position.y]:
-                token_list.extend(self.board.dynamic_tokens_dict[(position.x, position.y)])
-            if self.board.static_tokens_dict[position.x, position.y]:
-                token_list.extend(self.board.static_tokens_dict[(position.x, position.y)])
-        token_list = [token for token in token_list if token != self.token]
-        # Filter by token type
-        if token_type is not None:
-            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
+        token_list = self.sensing_tokens(token_type, distance)
         if token_list:
             return token_list[0]
 
@@ -141,12 +125,6 @@ class TiledBoardConnector(board_connector.BoardConnector):
                 self.board.dynamic_tokens_dict.pop(token)
         else:
             self.board.dynamic_tokens.append(token)
-
-    def _update_token_positions(self) -> None:
-        self.board.dynamic_tokens_dict.clear()
-        for token in self.board.dynamic_tokens:
-            x, y = token.position[0], token.position[1]
-            self.board.dynamic_tokens_dict[(x, y)].append(token)
 
     def set_size(self, value):
         if value != self.token._size:

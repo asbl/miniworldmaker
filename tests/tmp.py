@@ -1,9 +1,9 @@
 import miniworldmaker
 
-board = miniworldmaker.TiledBoard()
-board.add_background("images/space.jpg")
-board.columns=20
-board.rows=8
-board.tile_size=40
-board.fps=60
+board = miniworldmaker.PixelBoard(400,300)
+board.add_background("images/stone.jpg")
+robot = miniworldmaker.Token(position=(50, 50))
+@miniworldmaker.timer(frames = 2)
+def screenshot():
+    board.screenshot("screenshot.png")
 board.run()
