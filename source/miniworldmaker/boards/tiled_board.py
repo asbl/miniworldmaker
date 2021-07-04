@@ -5,7 +5,7 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_rect
 from miniworldmaker.boards import board
 from miniworldmaker.connectors import tiled_connector
-
+from miniworldmaker.board_positions import board_rect
 
 class TiledBoard(board.Board):
 
@@ -88,3 +88,29 @@ class TiledBoard(board.Board):
         else:
             raise TypeError("Parameter must be tuple, BoardPosition or Rect")
         return parameter
+
+    def _update_token_positions(self):
+        self.dynamic_tokens_dict.clear()
+        for token in self.dynamic_tokens:
+            x, y = token.position[0], token.position[1]
+            self.dynamic_tokens_dict[(x, y)].append(token)
+
+    def sensing_tokens(self, position):
+        if type(position) == tuple:
+            position = board_position.BoardPosition(position[0], position[1])
+        self._update_token_positions()
+        token_list = []
+        if self.dynamic_tokens_dict[position[0], position[1]]:
+            token_list.extend(self.dynamic_tokens_dict[(position[0], position[1])])
+        if self.static_tokens_dict[position[1], position[1]]:
+            token_list.extend(self.static_tokens_dict[(position[0], position[1])])
+        token_list = [token for token in token_list]
+        return token_list
+
+    def sensing_token(self, position):
+        token_list = self.sensing_tokens(position)
+        if token_list is None or token_list == []:
+            return None
+        else:
+            return token_list[0]
+        

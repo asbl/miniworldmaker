@@ -25,4 +25,4 @@ MiniWorldMaker allows you to create 2D mini worlds and games.
   
   * Miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
-  * [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/)
+  * [Codeberg](https://codeberg.org/a_siebel/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) | [Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples)

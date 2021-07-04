@@ -1,0 +1,1 @@
+python -m unittest ./miniworldmaker_tests.py

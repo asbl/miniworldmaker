@@ -15,7 +15,7 @@ class MyBoard(mwm.PixelBoard):
         self.pipe4.top()
         self.score = mwm.NumberToken(position=(10, 10))
         self.score.size = (40, 40)
-        self.is_running = False
+        self.stop()
 
 
 class Bird(mwm.Token):

@@ -1,5 +1,7 @@
 import asyncio
 import inspect
+import os
+from pathlib import Path
 from collections import defaultdict
 
 import nest_asyncio
@@ -100,8 +102,8 @@ class Appearance(metaclass=MetaAppearance):
 
         """
         try:
-            import os
-            canonicalized_path = os.path.join(os.path.curdir, path)
+            
+            #canonicalized_path = os.path.join(os.path.curdir, path)
             canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
             if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
@@ -357,12 +359,33 @@ class Appearance(metaclass=MetaAppearance):
         Returns: The index of the added image.
 
         """
+        # Check if image exists
+        import os
+        canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+        if not Path(canonicalized_path).is_file():
+            if "." not in canonicalized_path:
+                replacement_file_found = False
+                for filename_extension in ["jpg", "jpeg", "png"]:
+                      if Path(canonicalized_path + "." + filename_extension).is_file():
+                          path = path + "." + filename_extension
+                          canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+                          replacement_file_found = True
+                if not replacement_file_found:
+                    raise Exception("Error: File '" + canonicalized_path + "' File not found")
+            elif "." in canonicalized_path:
+                for filename_extension in ["jpg", "jpeg", "png"]:
+                      if Path(canonicalized_path.split(".")[0] + "." + filename_extension).is_file():
+                          path = path + "." + filename_extension
+                          raise Exception("Error: File '" + canonicalized_path 
+                        + "' File not found.\n Did you mean '" + path.split(".")[0]  + "." + filename_extension + "'?" )
+                raise Exception("File not found: " + path)
+
+
         _image = Appearance.load_image(path)
         self.images_list.append(_image)
         self.image_paths.append(path)
         self.dirty = 1
         self._reload_all()
-        # self.update()
         return len(self.images_list) - 1
 
     def add_images(self, list_of_paths: list):
@@ -425,7 +448,6 @@ class Appearance(metaclass=MetaAppearance):
                             image = img_action[1](image, parent=self.parent) # perform image action
                             self.cached_images[img_action[0]] = image
                     self.parent.dirty = 1
-
             for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
             self._image = image
