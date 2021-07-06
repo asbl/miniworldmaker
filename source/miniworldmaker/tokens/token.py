@@ -1,6 +1,7 @@
 import math
 from typing import Union
 from typing import Type
+from typing import TypeVar
 import pygame
 from miniworldmaker.app import app
 from miniworldmaker.appearances.appearance import Appearance
@@ -8,6 +9,10 @@ from miniworldmaker.appearances import appearances
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.physics import physics as ph
+
+
+T = TypeVar('T')
+appearance_source = Union[str, list[str], Appearance]
 
 
 class Meta(type):
@@ -209,7 +214,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def rect(self, value):
         self._rect = value
 
-    def add_costume(self, source: Union[str, list[str], Type[Appearance]]) -> costume.Costume:
+    def add_costume(self, source: appearance_source = (255,255,0,0)) -> costume.Costume:
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
