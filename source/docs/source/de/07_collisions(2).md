@@ -62,7 +62,7 @@ Wenn du mit Klassen arbeitest, nimmt dir der **miniworldmaker** etwas Arbeit ab,
 
 Hier kannst du zu deiner Klasse folgende Methode hinzufügen:
 
-`def on_sensing_[objektname](self, other)`
+`def on_sensing_[klassenname](self, other)`
 
 ### Beispiel:
 
@@ -75,6 +75,6 @@ def on_sensing_torch(self, torch):
 
 Bei physikbasiertenspielen geht dies genauso. Dort kannst du die Methode
 
-`def on_touching_[objektname](self, other, info)`
+`def on_touching_[klassenname](self, other, info)`
 
 überschreiben.

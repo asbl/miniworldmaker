@@ -209,7 +209,7 @@ class Token(pygame.sprite.DirtySprite, metaclass = Meta):
     def rect(self, value):
         self._rect = value
 
-    def add_costume(self, source: Union[str, list[str], Type[Appearance]] = (255, 0,255,100)) -> costume.Costume:
+    def add_costume(self, source: Union[str, list[str], Type[Appearance]]) -> costume.Costume:
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)

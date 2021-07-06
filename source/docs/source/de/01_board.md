@@ -1,9 +1,9 @@
-The Board
+Das Spielfeld (Board)
 =============
 
-Here we go!
+Los geht es!
 
-## A first world
+## Die erste Welt
 
 Wir erstellen eine erste Welt. Diese kann mit folgendem Code erzeugt werden:
 
@@ -38,20 +38,20 @@ Je nach Hintergrundbild sieht dein Ergebnis so aus:
 
 ![tiles](../_images/first.jpg)
 
-### Variante: Show the grid
+### Etwas Theorie: Wie funktioniert der Miniworldmaker?
 
-Du kannst auch das Grid anzeigen:
+In Miniworldmaker gibt es zwei unterschiedliche Arten von Objekten, die du erzeugen kannst:
 
-```
-board.background.grid_overlay = True
-```
+  * Board: Ein Spielbrett auf dem sich Spielfiguren befinden.
+  * Token: Spielfiguren die zahlreiche Attribute und Methoden mitbringen, z.B. Bewegung,
+    Kollissionsabfrage, ...
 
 ### Ausblick: Verschiedene boards
 
 Es gibt mehrere Kind-Klassen von Board
 
   * Ein `PixelBoard` ist für pixelgenaue Darstellungen vorgesehen
-  
+
   * Ein `TiledBoard` ist geeignet für Boards, bei denen sich die Akteure auf "Kacheln" bewegen.
   
 
@@ -59,8 +59,8 @@ Einige Features der Boards (z.B. Kollissionen) unterscheiden sich geringfügig.
 
 > Mehr Informationen, siehe [Key-Concept: Boards](../key_concepts/boards.md)
 
-### Examples
+### Beispiele
 
-> [Basic Framework](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py) - Ein erstes Programm, mit dem du starten kannst.
+ * [Basic Framework](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py) - Ein erstes Programm, mit dem du starten kannst.
 
-> [Basic Framework - With Classes](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py) - Wenn du bereits OOP Klassen kennst, kannst du mit diesem Framework starten.
+ * [Basic Framework - With Classes](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_classes.py) - Wenn du bereits OOP Klassen kennst, kannst du mit diesem Framework starten.

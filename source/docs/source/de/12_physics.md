@@ -38,5 +38,16 @@ circle.physics.velocity_x = 600
         self.physics.velocity_y = - self.board.arrow.direction * 50
 ```
 
+## Kollissionen
+
+Kollisionen funktionieren für ein Token in der Physik-Engine anders als bei anderen Token. Eine Kollission findet statt, wenn sich zwei Objekte berühren und es wird unterschieden, wann sich zwei Objekte *beginnen* zu berühren und wann sich zwei Objekte wieder trennen.
+
+Du kannst diese Kollissionen mit 
+
+`on_touching_[objektname](self, other, info)`
+
+abfragen.
+
+
 
 > Mehr Infos: [Physik](../key_concepts/physics.md)
