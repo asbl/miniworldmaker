@@ -1,12 +1,12 @@
-Aktionen / Methoden registrieren
-================================
+Aktionen 
+==========
 
 ## Die act()-Methode
 
-Das Spielfeld und alle Tokens können über die Methode **act()** gesteuert werden. 
-Diese Methode wird immer wieder aufgerufen *(genau genommen: Alle **board.speed** Zeiteinheiten)*.
+Das Spielfeld und alle Tokens können über die Methode `act()` gesteuert werden. 
+Diese Methode wird immer wieder aufgerufen *(genau genommen: Alle `board.speed` Zeiteinheiten)* bis das Spiel beendet wird.
 
-Wenn du ein Token erstellst, kannst du mit dem Decorator **@register** eine Act-Methode zum Spielfeld oder zum Token hinzufügen:
+Wenn du ein Token erstellst, kannst du mit dem Decorator `@register` eine `act()`-Methode zum Spielfeld oder zu deinen Token hinzufügen:
 
 ### Beispiel:
 
@@ -32,6 +32,8 @@ def act(self):
 
 board.run()
 ```
+
+### Was passiert hier?
 
 Interessant sind hier die Zeilen 12-14: Hier wird die Methode act zum Objekt `player` hinzugefügt. Der Decorator `@player.register` bindet die Methode an das Objekt `player`
 

@@ -1,9 +1,9 @@
-Tokens
+Spielfigurn ( Tokens)
 =======
 
-Ein Token ist ein Spielstein auf deinem Spielbrett. 
+Ein **Token** ist ein Spielstein auf deinem Spielbrett. 
 
-Alle Objekte in deiner Miniworld sind Tokens, die auf dem Spielbrett bewegt werden können.
+Alle Objekte in auf deinem Board sind Tokens, die auf dem Spielbrett bewegt werden können.
 
 ## Ein Token erstellen
 
@@ -57,9 +57,9 @@ token_name.add_costume("path_to_image")
 
   Ein Token ist dann korrekt ausgerichtet, wenn das Bild nach oben guckt. Wenn das Bild per Default in eine andere Richtung ausgerichtet ist, dann hast du zwei Möglichkeiten
 
-    - Du kannst das Bild mit einem Bildeditor drehen
+    * Du kannst das Bild mit einem Bildeditor drehen
 
-    - Du kannst in Miniworldmaker die Orientierung des Kostüms ändern. Dies geht mit `my_token.costume.orientation = 90`
+    * Du kannst in Miniworldmaker die Orientierung des Kostüms ändern. Dies geht mit `my_token.costume.orientation = 90`
     Setze für orientation den passenden Wert, damit das Kostüm korrekt ausgerichtet ist.
 
     Manchmal ist es auch nötig, einzustellen, dass sich zwar das Token drehen kann, das Kostüm aber immer gleich ausgerichtet sein soll. Dies geht mit `my_token.costume.is_rotatable = False`
