@@ -1,0 +1,4 @@
+import miniworldmaker.tokens.costumes.token_pixel_costume_manager as token_pixel_costume_manager
+
+class PhysicsBoardCostumeManager(token_pixel_costume_manager.PixelBoardCostumeManager):
+    pass

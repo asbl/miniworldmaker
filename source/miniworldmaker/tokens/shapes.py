@@ -10,7 +10,7 @@ class Shape(tk.Token):
 
     def __init__(self, position: tuple = None, color: tuple = (255, 255, 255, 255)):
         super().__init__(position)
-        self.add_costume((100,0,0,0))
+        self.add_costume((100, 0, 0, 0))
         self.costumes.add(self.costume)
         self.color = color
         self.costume.is_upscaled = False
@@ -127,80 +127,6 @@ class Circle(Shape):
         self._thickness = value
         self.costume.draw_shape_set(*self.draw_shape)
 
-
-class Ellipse(Shape):
-    """
-    An Ellipse-Shape.
-
-    Args:
-        position: The position as 2-tuple. The circle is created with its center at the position
-        width: The width of the ellipse
-        height: The height of the ellipse
-        thickness: The thickness of the bounding line (0: The object is filled)
-        color: The color as 4-tuple (r, g, b, alpha)
-
-    Examples:
-        Example Creation of an ellipse
-
-        >>> Circle((200, 100), 20, 40, 1, color=(255,0,0,255))
-        Creates an red ellise at position (200,100) with width 20 and height 40
-
-        Example Creation of a filled ellipse
-
-        >>> Circle((200, 100), 20, 40, 0, color=(255,0,0,255))
-        Creates a red circle at position (200,100) with width 20 and height 40. The ellipse is filled
-    """
-
-    def __init__(self, position=None, width=20, height=20, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
-        rect = pygame.Rect(0, 0, width, height)
-        rect.center = (position[0], position[1])
-        self._width = width
-        self._height = height
-        super().__init__(rect.topleft, color)
-        self.size = (width, height)
-        self._thickness = thickness
-
-        self.thickness = thickness
-
-    @property
-    def draw_shape(self):
-        return pygame.draw.ellipse, [self.color,
-                                     pygame.Rect(0, 0,
-                                                 int(self.width), int(self.height)),
-                                     self.thickness]
-
-    @property
-    def width(self):
-        """
-        Gets the width of the ellipse
-        If you change the ellipse-size (e.g. with self.size = (x, y), the value will be changed too.
-
-        Returns: The width of the ellipse
-
-        """
-        return self._width
-
-    @property
-    def height(self):
-        """
-        Gets the height of the ellipse
-        If you change the ellipse-size (e.g. with self.size = (x, y), the value will be changed too.
-
-        Returns: The height of the ellipse
-
-        """
-        return self._height
-
-    @property
-    def thickness(self):
-        return self._thickness
-
-    @thickness.setter
-    def thickness(self, value):
-        self._thickness = value
-        self.costume.draw_shape_set(*self.draw_shape)
-
-
 class Line(Shape):
     """
     A Line-Shape.
@@ -230,32 +156,35 @@ class Line(Shape):
             if type(end_position) == int:
                 raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position,
                                 ", type:", type(end_position))
-            width = abs(start_position[0]-end_position[0])+ 2 * thickness
+            
+            width = abs(start_position[0]-end_position[0]) + 2 * thickness
             height = abs(start_position[1] - end_position[1]) + 2 * thickness
             box = pygame.Rect(min(start_position[0], end_position[0]) - thickness,
                               min(start_position[1], end_position[1]) - thickness,
                               width,
                               height)
+            super().__init__(box.center, color)
+            self.size = (width, height)
+            self.position =  start_position 
             self.thickness = thickness
-            box_width = width
-            box_height = height
-            # mod_start
-            x = start_position[0] - box.topleft[0]
-            y = start_position[1] - box.topleft[1]
-            self.mod_start = (x, y)
-            # mod end
-            x = end_position[0] - box.topleft[0]
-            y = end_position[1] - box.topleft[1]
-            self.mod_end = (x, y)
+            shift_x = self.position[0] - self.size[0] / 2
+            shift_y = self.position[1] - self.size[1] / 2
+            print("start pos = ", start_position, "end_pos = ", end_position, "box_topleft = ", box.topleft, "w,h", width, height)
+            # mod_start: Start of line
+            _x_start = start_position[0] - box.topleft[0] 
+            _y_start = start_position[1] - box.topleft[1]
+            self.local_start_position = (_x_start , _y_start  )
+            # mod end: End of line
+            _x_end = end_position[0] - box.topleft[0]
+            _y_end = end_position[1] - box.topleft[1]
+            self.local_end_position = (_x_end , _y_end)
             self.start_position = start_position
             self.end_position = end_position
-            self.local_start_position = self.mod_start
-            self.local_end_position = self.mod_end
-            super().__init__(box.topleft, color)
-            self.size = (box_width, box_height)
+
+            print("draw line", "global start", self.start_position,  "global end", self.end_position, "local_start", self.local_start_position, "local_end", self.local_end_position)
             self.costume.draw_shape_append(pygame.draw.line, [self.color,
-                                                              self.mod_start,
-                                                              self.mod_end,
+                                                              self.local_start_position,
+                                                              self.local_end_position,
                                                               self.thickness])
             self.costume.load_surface()
 
@@ -264,8 +193,6 @@ class Line(Shape):
 
     def set_physics_default_values(self):
         self.physics.shape_type = "line"
-        self.physics.gravity = False
-        self.physics.can_move = False
 
 
 class Rectangle(Shape):
@@ -305,7 +232,6 @@ class Rectangle(Shape):
             super().__init__((box[0], box[1]), color)
             self.size = (abs(box[2]+self.thickness), abs(box[3]+self.thickness))
             self.costume.draw_shape_set(*self.draw_shape)
-            self.physics.correct_angle = 90
 
         except TypeError as e:
             self.remove()
@@ -321,6 +247,7 @@ class Rectangle(Shape):
     def set_physics_default_values(self):
         self.physics.shape_type = "rect"
         self.physics.stable = False
+        self.physics.correct_angle = 90
 
 
 class Polygon(Shape):

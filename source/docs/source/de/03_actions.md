@@ -1,14 +1,18 @@
-Aktionen 
+Aktionen I - Die act()-Methode
 ==========
+
+Du kannst bis jetzt ein Board erstellen und Tokens darauf gestalten. Diese können aber noch nicht handeln.
+
+
 
 ## Die act()-Methode
 
 Das Spielfeld und alle Tokens können über die Methode `act()` gesteuert werden. 
 Diese Methode wird immer wieder aufgerufen *(genau genommen: Alle `board.speed` Zeiteinheiten)* bis das Spiel beendet wird.
 
-Wenn du ein Token erstellst, kannst du mit dem Decorator `@register` eine `act()`-Methode zum Spielfeld oder zu deinen Token hinzufügen:
+![tiles](../_images/act.png)
 
-### Beispiel:
+Wenn du ein Token erstellst, kannst du mit dem Decorator `@register` eine `act()`-Methode zum Spielfeld oder zu deinen Token hinzufügen:
 
 ```{code-block} python
 ---
@@ -21,10 +25,10 @@ board = miniworldmaker.TiledBoard()
 board.columns = 20
 board.rows = 8
 board.tile_size = 42
-board.add_image(path="images/soccer_green.jpg")
+board.add_background("images/soccer_green.jpg")
 board.speed = 30
 player = miniworldmaker.Token()
-player.add_image(path="images/player_1.png")
+player.add_costume("images/player_1.png")
 player.direction = 90
 @player.register
 def act(self):
@@ -35,5 +39,7 @@ board.run()
 
 ### Was passiert hier?
 
-Interessant sind hier die Zeilen 12-14: Hier wird die Methode act zum Objekt `player` hinzugefügt. Der Decorator `@player.register` bindet die Methode an das Objekt `player`
+Zeile 12-14: Der Decorator `@player.register` bindet die Methode `act` an das Objekt `player`.
+
+Auf ähnliche Weise wirst du später öfters Reaktionen auf Events bei Objekten registrieren (z.B. Reaktionen auf Tastatur- oder Mauseingaben oder Kollisionsüberprüfungen).
 

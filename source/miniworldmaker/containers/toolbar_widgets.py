@@ -28,7 +28,7 @@ class ToolbarWidget():
         self._dirty = 1
 
     def get_event(self, event, data):
-        self.parent.window.send_event_to_containers(self.event, 0)
+        self.parent.app.event_manager.send_event_to_containers(self.event, 0)
 
     @property
     def dirty(self):
@@ -93,9 +93,8 @@ class ToolbarButton(ToolbarWidget):
         self.data = text
 
     def get_event(self, event, data):
-        print("send message", self.event, self._text)
-        self.parent.window.send_event_to_containers(self.event, self._text)
-        self.parent.window.send_event_to_containers("message", self._text)
+        self.parent.app.app.event_manager.send_event_to_containers(self.event, self._text)
+        self.parent.app.app.event_manager.send_event_to_containers("message", self._text)
 
 
 class ToolbarLabel(ToolbarWidget):

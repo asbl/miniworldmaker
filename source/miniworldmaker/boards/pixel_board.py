@@ -1,31 +1,24 @@
 from typing import Union
+from miniworldmaker.appearances import background
 
 import pygame
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_rect
-from miniworldmaker.boards import board as bd
-from miniworldmaker.connectors import pixel_connector
-from miniworldmaker.tokens import token as tk
+from miniworldmaker.boards import board  as board_module
+import miniworldmaker.tokens.token as token_module
+from miniworldmaker.boards.board_handler.board_token_handler import board_pixelboardtokenhandler as pixelboardhandler
 
+class PixelBoard(board_module.Board):
 
-class PixelBoard(bd.Board):
+    def __init__(self,
+                 columns: int = 40,
+                 rows: int = 40,
+                 tile_size : int = 1,
+                 tile_margin : int = 0,
+                 background_image=None
+                 ):
+            self.token_handler = pixelboardhandler.PixelBoardTokenHandler(self)
+            super().__init__(columns, rows, tile_size, tile_margin, background_image)
 
-    def _add_board_connector(self, token, position):
-        token.board_connector = pixel_connector.PixelBoardConnector(token, self)
-        token.topleft = position[0], position[1]
-
-    def remove_from_board(self, token: tk.Token):
-        """
-        removes a token from board.
-        The method is called with token.remove()
-
-        Args:
-            token: The token to remove from board.
-
-        Returns:
-
-        """
-        super().remove_from_board(token)
 
     def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
         """
@@ -38,8 +31,7 @@ class PixelBoard(bd.Board):
 
         """
 
-    def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
-        tk.Token, list]:
+    def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[token_module.Token, list]:
         """Returns all tokens that collide with a rectangle.
 
         Args:
@@ -58,11 +50,11 @@ class PixelBoard(bd.Board):
             filtered_tokens.remove(exclude)
         # Filter tokens by token_type
         if token_type is not None:
-            if isinstance(token_type, tk.Token):  # is_token_type a object?
+            if isinstance(token_type, token_module.Token):  # is_token_type a object?
                 filtered_tokens = [token_type]
             else:
                 if type(token_type) == str:  # is token_type a string
-                    token_type = tk.Token.find_subclass(token_type)
+                    token_type = token_module.Token.find_subclass(token_type)
                 if token_type:
                     for token in filtered_tokens:
                         filtered_tokens = [token for token in filtered_tokens if
@@ -82,13 +74,5 @@ class PixelBoard(bd.Board):
                 if a_token.rect.colliderect(rect):
                     return a_token
 
-    def _get_rect_from_parameter(self, parameter):
-        if type(parameter) == tuple:
-            rect = board_position.BoardPosition(parameter[0], parameter[1]).to_rect()
-        elif type(parameter) == board_position.BoardPosition:
-            rect = parameter.to_rect()
-        elif type(parameter) == board_rect.BoardRect:
-            rect = parameter
-        else:
-            raise TypeError("Parameter must be tuple, BoardPosition or Rect")
-        return parameter
+    def is_on_board(self, position: board_position.BoardPosition) -> bool:
+        self.position_handler.is_pos

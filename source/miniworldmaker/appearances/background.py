@@ -17,6 +17,7 @@ class Background(appearance.Appearance):
     def __init__(self, board):
         super().__init__()
         self.parent = board  #: The parent of a Background is the associated board.
+        self.board = board
         # Register image actions which you can be triggered
         self._grid_overlay = False
         self._is_scaled_to_tile = False
@@ -27,7 +28,7 @@ class Background(appearance.Appearance):
 
     def add_image(self, path):
         super().add_image(path)
-        self.parent.window._display_update()
+        self.parent.app.window.display_update()
 
     def after_init(self):
         super().after_init()

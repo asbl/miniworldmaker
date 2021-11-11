@@ -1,5 +1,5 @@
 pygame>=2.0.1
-pymunk<=5.6.0,>=5.6.0
+pymunk>=6.2.0
 asyncio
 nest_asyncio
 deprecated

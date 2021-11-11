@@ -7,12 +7,11 @@ In der objektorientierten Programmierung unterscheidet man **Objekte** und **Kla
 
   * Objekte werden basierend auf Klassen erzeugt. Alle Objekte teilen sich Attribute und Methoden, die Attributswerte können sich allerdings unterscheiden.
 
-Eigene Klassen definieren
-=========================
+## Eigene Klassen definieren
 
 Indem du eigene Klassen definierst, kannst du neue Baupläne erzeugen mit denen später identische Objekte erzeugt (*Fachbegriff*: **instanziiert**) werden können. Du kannst diese Klasse als **Kindklasse** von bestehenden Klassen entwerfen, damit du das Rad nicht neu erfinden musst. Du kannst auf diese Weise vorhandene Baupläne übernehmen und verändern.
 
-## Ein erstes Beispiel
+### Ein erstes Beispiel
 
 Ein Token soll mehrere *Lebenspunkte* haben, die bei einer Kollission reduziert werden. Wenn die Lebenspunke auf 0 fallen, wird das Objekt vernichtet.
 

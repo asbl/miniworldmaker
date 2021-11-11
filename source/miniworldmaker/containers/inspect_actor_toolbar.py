@@ -20,7 +20,7 @@ class InspectActorToolbar(toolbar.Toolbar):
         self.active_token = token
         self.active_token.costume.info_overlay = True
         token.dirty = 1
-        self.window.send_event_to_containers("active_token", token)
+        self.app.window.send_event_to_containers("active_token", token)
         return token
 
     def get_active_token_from_board_position(self, pos):
@@ -45,7 +45,7 @@ class InspectActorToolbar(toolbar.Toolbar):
 
     def _add_to_window(self, window, dock, size=None):
         super()._add_to_window(window, dock, size)
-        for actor in self.window.board.tokens:
+        for actor in self.app.board.tokens:
             # if self.actor.__class__ == act.Actor:
             self.add_widget(TokenButton(token=actor, toolbar=self))
 
@@ -81,7 +81,7 @@ class InspectActorToolbar(toolbar.Toolbar):
 
 
         else:
-            for an_actor in self.window.board.tokens:
+            for an_actor in self.app.window.board.tokens:
                 if self.actor:
                     self.add_widget(TokenButton(token=an_actor))
 

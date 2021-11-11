@@ -1,0 +1,137 @@
+from miniworldmaker.board_positions.board_position_factory import BoardPositionFactory
+from miniworldmaker.board_positions.board_rect_factory import BoardRectFactory
+from typing import List
+
+class BoardPositionHandler:
+
+    def __init__(self, board):
+        self.board = board
+        self._position_factory : BoardPositionFactory = BoardPositionFactory(self.board)
+
+    def get_color(self, position):
+        """
+        Returns the board-color at the current board-position
+
+        Returns: The board-color at the current board position as tuple
+        with r,g,b value and transparency (e.g. (255, 0, 0, 100)
+
+        """
+        position = self._position_factory.create(position)
+        if self.is_position_on_board(position):
+            return self.board.background.get_color_from_pixel(position)
+        else:
+            return ()
+
+
+
+
+    def near(pos1, pos2, distance):
+        """
+        Checks if two Board-Positions are near each other
+
+        Args:
+            other: A second Board-Position.
+            distance: The size of the environment in which 2 positions are called "near".
+
+        Returns:
+            True, If the Positions are near each other.
+
+        """
+        pos1 = BoardPositionFactory.create(pos1)
+        pos2 = BoardPositionFactory.create(pos2)
+        if pos1.x <= pos2.x + distance \
+                and pos1.x >= pos2.x - distance \
+                and pos1.y <= pos2.y + distance \
+                and pos1.y >= pos2.y - distance:
+            return True
+        else:
+            return False
+
+    def is_position_on_board(self, pos):
+        """
+        Checks if BoardPosition is on board
+
+        Returns:
+            True, if Position is on board.
+        """
+        if pos.x >= 0 and pos.y >= 0 and pos.x < self.board.columns and pos.y < self.board.rows:
+            return True
+        else:
+            return False
+
+    def get_borders_from_position(self, pos):
+        borders = []
+        if pos.topleft[0] <= 0:
+            borders.append("left")
+        if pos.topleft[1] + self.board.tile_size >= self.board.height:
+            borders.append("bottom")
+        if pos.topleft[0] + self.board.tile_size >= self.board.width:
+            borders.append("right")
+        if pos.topleft[1] <= 0:
+            borders.append("top")
+        return borders
+
+    def get_borders_from_rect(self, rect):
+        """
+        Gets all borders the rect ist touching.
+
+        Returns: A list of borders as strings: "left", "bottom", "right", or "top"
+
+        """
+        rect = BoardRectFactory(self.board).create(rect)
+        borders = []
+        if rect.topleft[0] <= 0:
+            borders.append("left")
+        if rect.topleft[1] + rect.height >= self.board.height:
+            borders.append("bottom")
+        if rect.topleft[0] + rect.width >= self.board.width:
+            borders.append("right")
+        if rect.topleft[1] <= 0:
+            borders.append("top")
+        return borders
+
+    def is_rect_completly_on_board(self, rect):
+        rect = BoardRectFactory(self.board).create(rect)
+        topleft_on_board = self.is_position_on_board(BoardPositionFactory(self.board).create(tuple([rect.left, rect.top])))
+        bottom_right_on_board = self.is_position_on_board(BoardPositionFactory(self.board).create(tuple([rect.right, rect .bottom])))
+        return topleft_on_board or bottom_right_on_board
+
+
+        """
+        Legacy code:
+        
+                board_position = board_position_factory.BoardPositionFactory(self.board).create(position)
+        rect = board_position.to_rect()
+
+        top_left_x, top_left_y, right, top = rect.topleft[0], \
+                                             rect.topleft[1], \
+                                             rect.right, \
+                                             rect.top
+        if top_left_x < 0 or top_left_y < 0 or rect.right >= self.width or rect.bottom >= self.height:
+            return False
+        else:
+            return True
+        """
+
+    def get_colors_in_rect(self, rect, rect_borders=None):
+        colors = []
+        rect = BoardRectFactory.create(rect)
+        for x in range(self.width):
+            if rect_borders is None or "left" in rect_borders:
+                color = self.board.background.get_color_from_pixel((rect.x + x, rect.y))
+                if color not in colors:
+                    colors.append(color)
+            if rect_borders is None or "right" in rect_borders:
+                color = self.board.background.get_color_from_pixel((rect.x + x, rect.y + rect.height))
+                if color not in colors:
+                    colors.append(color)
+        for y in range(self.height):
+            if rect_borders is None or "top" in rect_borders:
+                color = self.board.background.get_color_from_pixel((rect.x, rect.y + y))
+                if color not in colors:
+                    colors.append(color)
+            if rect_borders is None or "bottom" in rect_borders:
+                color = self.board.background.get_color_from_pixel((rect.x + rect.width, rect.y + y))
+                if color not in colors:
+                    colors.append(color)
+        return colors

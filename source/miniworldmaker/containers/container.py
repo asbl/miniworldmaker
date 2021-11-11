@@ -1,7 +1,5 @@
 import logging
-
 import pygame
-
 
 class Container:
     """
@@ -17,6 +15,7 @@ class Container:
         self.registered_events = {"mouse_left", "mouse_right"}
         # private
         self._window = None  # Set in add_to_window
+        self._app = None
         self._container_width = 0  # Set in add_to_window
         self._container_height = 0  # Set in add_to_window
         self.container_top_left_x = 0  # Set in add_to_window
@@ -36,8 +35,8 @@ class Container:
     def window(self):
         return self._window
 
-    def _add_to_window(self, window, dock, size=None):
-        self._window = window
+    def _add_to_window(self, app, dock, size=None):
+        self._app = app
         if size== None:
             size = self.default_size
         if dock == "top_left":
@@ -45,16 +44,16 @@ class Container:
             self.container_top_left_y = 0
             self.docking_position = dock
         elif dock == "right":
-            self.container_top_left_x = self._window.window_width
+            self.container_top_left_x = self._app.window.width
             self.container_top_left_y = 0
             self.docking_position = dock
-            self._container_height = self._window.window_height
+            self._container_height = self._app.window.height
             self._container_width = size
         elif dock == "bottom":
             self.container_top_left_x = 0
-            self.container_top_left_y = self._window.window_height
+            self.container_top_left_y = self._app.window.height
             self.docking_position = dock
-            self._container_width = self._window.window_width
+            self._container_width = self._app.window.width
             self._container_height = size
         self.clog.info("Added Container {0} with width: {1} and height {2}".format(self, self.width, self.height))
         self._image = pygame.Surface((self.width, self.height))
@@ -67,7 +66,7 @@ class Container:
         pass
 
     def blit_surface_to_window_surface(self):
-        self._window.window_surface.blit(self.surface, self.rect)
+        self._app.window.surface.blit(self.surface, self.rect)
 
     def remove(self):
         pass

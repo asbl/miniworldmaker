@@ -28,8 +28,8 @@ class TextToken(token.Token):
         self.costume.color = color
         self.costume.is_scaled = True
         self.costume.text = text
-        self._auto_size = True
-        self._auto_font_size = False
+        self._auto_size = False
+        self._auto_font_size = True
         self.is_static = True
         self.set_text(text)
 

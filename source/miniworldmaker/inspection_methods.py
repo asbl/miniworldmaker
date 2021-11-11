@@ -1,0 +1,128 @@
+import inspect
+from inspect import signature
+from collections import defaultdict
+from os import stat
+from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError
+from miniworldmaker.tokens import token as tkn
+
+
+class InspectionMethods:
+
+    token_class_ids = defaultdict()  # class_name -> id
+    token_classes = defaultdict()  # class_name as string -> class
+    token_class_id_counter = 0
+   
+    @staticmethod
+    def has_parent_with_name(instance, name):
+        parents = instance.__class__.__bases__
+        for parent in parents:
+            if parent.__name__ == name:
+                return True
+        return False
+
+    @staticmethod
+    def has_class_name(instance, name):
+        if instance.__class__.__name__ == name:
+            return True
+        return False
+
+    @staticmethod
+    def get_instance_method(instance, name):
+        """
+        If a (token-)object has method this returns the method by a given name
+        """
+        if hasattr(instance, name):
+            if callable(getattr(instance, name)):
+                _method = getattr(instance, name)
+                _bound_method = _method.__get__(instance, instance.__class__)
+                return _bound_method
+            else:
+                return None
+        else:
+            return None
+
+    @staticmethod
+    def get_class_methods_starting_with(cls, string):
+        methods = [method for method in dir(cls) if
+                   callable(getattr(cls, method)) and
+                   method.startswith(string)]
+        return methods
+
+    @staticmethod
+    def get_and_call_instance_method(instance, name, args, errors=False):
+        method = InspectionMethods.get_instance_method(instance, name)
+        if method:
+            InspectionMethods.call_instance_method(instance, method, args)
+        elif errors:
+            raise Exception("Method not found")
+
+    @staticmethod
+    def call_instance_method(instance, method: callable, args: tuple):
+        # Don't call method if tokens are already removed:
+        if issubclass(instance.__class__, tkn.Token):
+            if not instance.board:
+                return
+        sig = InspectionMethods.get_signature(method, args)
+        if args == None:
+            method()
+        elif len(sig.parameters) == len(args):
+            method(*args)
+        else:
+            info = inspect.getframeinfo(inspect.currentframe())
+            raise Exception(
+                "Wrong number of arguments for " + str(method) + ".\n Got " + str(
+                    len(args)) + " but should be " + str(
+                    len(sig.parameters)) + "; "
+                "File:" + str(info.filename), "; Method: " + str(method)
+            )
+    
+    def get_signature(method: callable, arguments : tuple, allow_none = True):
+        InspectionMethods.check_signature(method, arguments, allow_none)
+        return signature(method)
+
+    @staticmethod
+    def check_signature(method: callable, arguments : tuple, allow_none = False):
+        if not type(callable(method)):
+            raise NotCallableError(method)
+        if arguments is None and not allow_none:
+            raise NotNullError(method)
+        if type(arguments) is not list and type(arguments) is not tuple and type(arguments) is not dict:
+            arguments = [arguments]
+        try:
+            sig = signature(method)
+        except ValueError as e:
+            raise FirstArgumentShouldBeSelfError(method)
+        i = 0
+        for key, param in sig.parameters.items():
+            if param.default == param.empty and i >= len(arguments):
+                raise WrongArgumentsError(method, arguments)
+            i = i + 1
+        
+    @staticmethod
+    def call_method(method: callable, arguments: tuple):
+        InspectionMethods.check_signature(method, arguments)
+        #try:
+        #method(*arguments)
+        #except Exception as e:
+        #    print(e)
+
+
+    def get_token_class_by_name(name : str):
+        """
+        Search in token dict() variable.
+        """
+        InspectionMethods.update_token_subclasses()
+        name = name.capitalize()
+        return InspectionMethods.token_classes[name]
+
+    def update_token_subclasses():
+        """
+        Returns a dict with class_name->class
+        Returns:
+
+        """
+        token_subclasses = tkn.Token.all_subclasses()
+        token_subclasses.add(tkn.Token)
+        for cls in token_subclasses:
+            InspectionMethods.token_classes[cls.__name__.capitalize()] = cls
+        return InspectionMethods.token_classes
