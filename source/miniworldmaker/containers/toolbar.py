@@ -1,7 +1,7 @@
 import pygame
 from miniworldmaker.containers import container
 from miniworldmaker.containers import toolbar_widgets
-
+from miniworldmaker import app
 
 class Toolbar(container.Container):
 
@@ -10,6 +10,7 @@ class Toolbar(container.Container):
         Base class for toolbars.
         """
         super().__init__()
+        self.app = app.App
         self.widgets = []
         self.timed_widgets = []
         self.position = "right"
@@ -73,11 +74,11 @@ class Toolbar(container.Container):
                         widget.width = self._container_width - self.margin_left - self.margin_right
                         widget.repaint()
                         rect = pygame.Rect(self.rect.left, actual_height, widget.width, widget.height)
-                        self.window.repaint_areas.append(rect)
+                        self.app.window.repaint_areas.append(rect)
                     self.surface.blit(widget.surface, (5, actual_height))
                     actual_height += widget.height + self.row_margin
         if self.repaint_all:
-            self.window.repaint_areas.append(self.rect)
+            self.app.window.repaint_areas.append(self.rect)
             self.repaint_all = False
         self.dirty = 1 # Always dirty so that timed widgets can run
 

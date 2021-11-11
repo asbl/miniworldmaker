@@ -6,7 +6,7 @@ from collections import defaultdict
 
 import nest_asyncio
 import pygame
-from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_position, board_position_factory
 
 
 class MetaAppearance(type):
@@ -30,15 +30,18 @@ class Appearance(metaclass=MetaAppearance):
     """
 
     _images_dict = {}  # dict with key: image_path, value: loaded image
+    counter = 0
 
     def __init__(self):
         self.initialized = False
         self.dirty = 0
         self.blit_images = []  # Images which are blitted on the background
         self.parent = None
+        self.board = None
         self.images_list = []  # Original images
         self._image_index = 0  # current_image index (for animations)
-
+        self.id = Appearance.counter + 1
+        Appearance.counter += 1
         self.image_paths = []  # list with all images
         # properties
         self.raw_image = pygame.Surface((1, 1))  # size set in image()-method
@@ -47,7 +50,7 @@ class Appearance(metaclass=MetaAppearance):
         self.call_image_actions = {}
         self.animation_speed = 100  #: The animation speed for animations
         self._is_animated = False
-        self.animation_loop = False
+        self.loop = False
         self._is_flipped = False
         self._current_animation_images = None
         self.current_animation = None
@@ -169,7 +172,7 @@ class Appearance(metaclass=MetaAppearance):
 
         Examples:
 
-            >>> class Player(miniworldmaker.Token):
+            >>> class Player(Token):
             >>>    def on_setup(self):
             >>>         self.add_image("background_image.jpg")
             >>>         self.costume.is_upscaled = True
@@ -188,7 +191,7 @@ class Appearance(metaclass=MetaAppearance):
 
         Examples:
 
-            >>> class Player(miniworldmaker.Token):
+            >>> class Player(Token):
             >>>    def on_setup(self):
             >>>         self.add_image("background_image.jpg")
             >>>         self.costume.is_rotatable = True
@@ -207,7 +210,7 @@ class Appearance(metaclass=MetaAppearance):
 
         Examples:
 
-            >>> class Player(miniworldmaker.Token):
+            >>> class Player(Token):
             >>>    def on_setup(self):
             >>>         self.add_image("background_image.jpg")
             >>>         self.costume.flip_vertical = True
@@ -231,7 +234,7 @@ class Appearance(metaclass=MetaAppearance):
 
         Examples:
 
-            >>> class Player(miniworldmaker.Token):
+            >>> class Player(Token):
             >>>    def on_setup(self):
             >>>         self.add_image("background_image.jpg")
             >>>         self.costume.orientation = -90
@@ -241,8 +244,6 @@ class Appearance(metaclass=MetaAppearance):
     @orientation.setter
     def orientation(self, value):
         self._orientation = value
-        if self.orientation != self.parent._orientation:
-            self.parent.orientation = self._orientation
         self.call_action("orientation")
 
     @property
@@ -371,16 +372,14 @@ class Appearance(metaclass=MetaAppearance):
                           canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
                           replacement_file_found = True
                 if not replacement_file_found:
-                    raise Exception("Error: File '" + canonicalized_path + "' File not found")
+                    raise FileNotFoundError(canonicalized_path)
             elif "." in canonicalized_path:
                 for filename_extension in ["jpg", "jpeg", "png"]:
                       if Path(canonicalized_path.split(".")[0] + "." + filename_extension).is_file():
                           path = path + "." + filename_extension
-                          raise Exception("Error: File '" + canonicalized_path 
-                        + "' File not found.\n Did you mean '" + path.split(".")[0]  + "." + filename_extension + "'?" )
-                raise Exception("File not found: " + path)
-
-
+                          raise FileNotFoundError(canonicalized_path )
+                raise FileNotFoundError(path)
+        #set image by path
         _image = Appearance.load_image(path)
         self.images_list.append(_image)
         self.image_paths.append(path)
@@ -416,7 +415,7 @@ class Appearance(metaclass=MetaAppearance):
 
     def load_surface(self) -> pygame.Surface:
         if not self.surface_loaded:
-            image = pygame.Surface(self.parent.size, pygame.SRCALPHA)
+            image = pygame.Surface((self.parent.width, self.parent.height), pygame.SRCALPHA)
             image.fill(self.fill_color)
             image.set_alpha(255)
             self.dirty = 1
@@ -464,7 +463,7 @@ class Appearance(metaclass=MetaAppearance):
             if self._image_index < len(self.images_list) - 1:
                 self._image_index = self._image_index + 1
             else:
-                if not self.animation_loop:
+                if not self.loop:
                     self.is_animated = False
                     self.after_animation()
                 self._image_index = 0
@@ -545,7 +544,7 @@ class Appearance(metaclass=MetaAppearance):
                                           search_color=color,
                                           threshold=threshold)
 
-    def color_at(self, position: board_position.BoardPosition) -> tuple:
+    def get_color_from_pixel(self, position: board_position.BoardPosition) -> tuple:
         """
         Returns the color at a specific position
 
@@ -555,10 +554,8 @@ class Appearance(metaclass=MetaAppearance):
         Returns: The color
 
         """
-        if type(position) == tuple:
-            position = board_position.BoardPosition(position[0], position[1])
-        if position.is_on_board():
-            return self._image.get_at(position.to_pixel())
+
+        return self._image.get_at(position.to_int())
 
     def call_action(self, action):
         reload = False
@@ -596,7 +593,7 @@ class Appearance(metaclass=MetaAppearance):
         return image
 
     def image_action_texture(self, image, parent):
-        background = pygame.Surface(parent.size)
+        background = pygame.Surface((self.parent.width, self.parent.height))
         background.fill((255, 255, 255))
         i, j, width, height = 0, 0, 0, 0
         while width < parent.width:
@@ -611,8 +608,8 @@ class Appearance(metaclass=MetaAppearance):
 
     def image_action_upscale(self, image: pygame.Surface, parent) -> pygame.Surface:
         if parent.size != 0:
-            scale_factor_x = parent.size[0] / image.get_width()
-            scale_factor_y = parent.size[1] / image.get_height()
+            scale_factor_x = parent.width / image.get_width()
+            scale_factor_y = parent.height / image.get_height()
             scale_factor = min(scale_factor_x, scale_factor_y)
             new_width = int(image.get_width() * scale_factor)
             new_height = int(image.get_height() * scale_factor)
@@ -620,18 +617,18 @@ class Appearance(metaclass=MetaAppearance):
         return image
 
     def image_action_scale(self, image: pygame.Surface, parent, ) -> pygame.Surface:
-        image = pygame.transform.scale(image, parent.size)
+        image = pygame.transform.scale(image, (self.parent.width, self.parent.height))
         return image
 
     def image_action_scale_to_height(self, image: pygame.Surface, parent, ) -> pygame.Surface:
-        scale_factor = parent.size[1] / image.get_height()
+        scale_factor = parent.height / image.get_height()
         new_width = int(image.get_width() * scale_factor)
         new_height = int(image.get_height() * scale_factor)
         image = pygame.transform.scale(image, (new_width, new_height))
         return image
 
     def image_action_scale_to_width(self, image: pygame.Surface, parent, ) -> pygame.Surface:
-        scale_factor = parent.size[0] / image.get_width()
+        scale_factor = parent.width / image.get_width()
         new_width = int(image.get_width() * scale_factor)
         new_height = int(image.get_height() * scale_factor)
         image = pygame.transform.scale(image, (new_width, new_height))
@@ -639,7 +636,8 @@ class Appearance(metaclass=MetaAppearance):
 
     def image_action_rotate(self, image: pygame.Surface, parent) -> pygame.Surface:
         if self.parent.direction != 0:
-            return pygame.transform.rotate(image, - (self.parent.direction))
+            rotated_image = pygame.transform.rotate(image, - (self.parent.direction))
+            return rotated_image
         else:
             return image
 
@@ -678,16 +676,16 @@ class Appearance(metaclass=MetaAppearance):
         return image
 
     @staticmethod
-    def crop_image(image: pygame.Surface, parent, appearance) -> pygame.Surface:
-        cropped_surface = pygame.Surface(parent.size)
+    def crop_image(self, image: pygame.Surface, parent, appearance) -> pygame.Surface:
+        cropped_surface = pygame.Surface((self.parent.width, self.parent.height))
         cropped_surface.fill((255, 255, 255))
-        cropped_surface.blit(image, (0, 0), (0, 0, parent.size[0], parent.size[1]))
+        cropped_surface.blit(image, (0, 0), (0, 0, (self.parent.width, self.parent.height)))
         return cropped_surface
 
     def image_action_write_text(self, image: pygame.Surface, parent) -> pygame.Surface:
         font_size = 0
         if self.font_size == 0:
-            font_size = parent.size[1]
+            font_size = parent.width
         else:
             font_size = self.font_size
         if self.font_path is None:
@@ -702,12 +700,14 @@ class Appearance(metaclass=MetaAppearance):
         self.font_path = font
         self.font_size = font_size
 
-    def animate(self, loop = False):
-        if loop == True:
-            self.animation_loop = True
-        else:
-            self.animation_loop = False
+    def animate(self):
         self.is_animated = True
 
     def after_animation(self):
         pass
+
+    """ 
+    Register method for decorator
+    """
+    def register(self, method: callable):
+        self.board.token_handler.register_token_method(self, method)

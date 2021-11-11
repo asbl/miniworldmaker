@@ -42,6 +42,9 @@ class Appearances:
     def len(self):
         return len(self.appearances)
 
+    def count_costumes(self):
+        return len(self.appearances)
+
     def get_costume_at_index(self, index):
         return self.appearances[index]
 

@@ -36,7 +36,7 @@ class Console(container.Container):
                 label = myfont.render(text, 1, (0, 0, 0))
                 row.blit(label, (10, 5))
                 self.surface.blit(row, (self.margin_left, self.margin_first + i * self.row_height + i * self.row_margin))
-        self.window.repaint_areas.append(self.rect)
+        self._app.window.repaint_areas.append(self.rect)
         self.dirty = 0
 
     def max_height(self):

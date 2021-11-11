@@ -1,11 +1,11 @@
 from collections import defaultdict
 from typing import Union
-
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_rect
+import pygame
+from miniworldmaker.board_positions import board_position, board_position_factory
 from miniworldmaker.boards import board
-from miniworldmaker.connectors import tiled_connector
-from miniworldmaker.board_positions import board_rect
+from miniworldmaker.tokens.sensors import token_tiledboardsensor
+from miniworldmaker.boards.board_handler.board_token_handler import board_tiledtokenhandler
+from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
 
 class TiledBoard(board.Board):
 
@@ -18,16 +18,15 @@ class TiledBoard(board.Board):
             tile_size: The size of a tile
             tile_margin: The margin between tiles
         """
-        self.default_token_speed = 1
-        self.dynamic_tokens_dict = defaultdict(list)  # the dict is regularly updated
-        self.dynamic_tokens = []  # List with all dynamic actors
-        self.static_tokens_dict = defaultdict(list)
+        self.token_handler = board_tiledtokenhandler.TiledBoardTokenHandler(self)
+        self.default_token_speed : int = 1
+        self.dynamic_tokens_dict : defaultdict = defaultdict(list)  # the dict is regularly updated
+        self.dynamic_tokens : list = []  # List with all dynamic actors
+        self.static_tokens_dict : defaultdict = defaultdict(list)
+        if columns * tile_size > 8000 or  rows * tile_size > 8000:
+            raise TiledBoardTooBigError(columns, rows, tile_size)
         super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin,
                          background_image=background_image)
-
-    def _add_board_connector(self, token, position):
-        token.position = position
-        token.board_connector = tiled_connector.TiledBoardConnector(token, self)
 
     @staticmethod
     def get_neighbour_cells(position: tuple) -> list:
@@ -53,7 +52,7 @@ class TiledBoard(board.Board):
         cells.append([x_pos + 1, y_pos - 1])
         return cells
 
-    def on_board(self, value: Union[tuple, board_position.BoardPosition, board_rect.BoardRect]) -> bool:
+    def is_position_on_board(self, value: tuple) -> bool:
         """
         Checks if position is on board
 
@@ -63,10 +62,10 @@ class TiledBoard(board.Board):
         Returns:
 
         """
-        pos = self._get_position_from_parameter(value)
-        return pos.is_on_board()
+        position = board_position_factory.BoardPositionFactory(self).create(value)
+        return self.position_handler.is_position_on_board(position)
 
-    def borders(self, value: Union[tuple, board_position.BoardPosition, board_rect.BoardRect]) -> list:
+    def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
         """
 
         Args:
@@ -75,19 +74,8 @@ class TiledBoard(board.Board):
         Returns:
 
         """
-        pos = self._get_position_from_parameter(value)
-        return pos.borders()
-
-    def _get_position_from_parameter(self, parameter):
-        if type(parameter) == tuple:
-            pos = board_position.BoardPosition(parameter[0], parameter[1])
-        elif type(parameter) == board_position.BoardPosition:
-            pos = parameter
-        elif type(parameter) == board_rect.BoardRect:
-            pos = board_position.BoardPosition.from_rect(parameter)
-        else:
-            raise TypeError("Parameter must be tuple, BoardPosition or Rect")
-        return parameter
+        position = board_position_factory.BoardPositionFactory(self).create(value)
+        return self.position_handler.get_borders_from_position(position)
 
     def _update_token_positions(self):
         self.dynamic_tokens_dict.clear()

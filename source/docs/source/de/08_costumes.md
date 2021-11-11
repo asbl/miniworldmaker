@@ -3,40 +3,39 @@ Kostüme
 
 ### Kostüme
 
-Jedes Token verfügt über ein oder mehrere Bilder. 
+Jedes Token verfügt über ein oder mehrere Kostüme. Kostüme verfügen über mehrere Bilder, mit denen Animationen beschrieben werden können.
 
-Indem du das Bild wechselst kannst du z.B. Animationen erschaffen.
+![Animationen](../_images/costumes.png)
 
-![UML Diagramm](../_images/costumes.png)
 
- > Für Scratch-Umsteiger: Kostüme funktionieren im Miniworldmaker etwas anders als in Scratch.
- > Während in Scratch jedes Kostüm aus genau einem Bild besteht kann ein Kostüm im Miniworldmaker aus mehreren Bildern bestehen.
- > 
- > Auf diese Art kannst du unterschiedliche Posen in einem Kostüm darstellen und unterschiedliche Animationen in unterschiedliche Kostüme auftrennen. 
 
 ### Das erste Kostüm
 
 Mit der Funktion
-```
+
+```python
 self.add_costume("images/image.jpg")
 ```
 
 kannst du ein neues Kostüm hinzufügen. 
 
-Wenn noch kein Kostüm hinzufefügt wird, wird dies auch automatisch dein erstes Kostüm.
+Wenn noch kein Kostüm hinzugefügt wurde, wird dies auch automatisch dein erstes Kostüm.
 
 
-### Weitere Bilder hinzufügen
+### Weitere Bilder zu einem Kostüm hinzufügen
  
- Mit der Anweisung **costume.add_image** kannst du weitere Bilder zu einem Kostüm hinzufügen. 
+Mit der Anweisung **costume.add_image** kannst du weitere Bilder zu einem Kostüm hinzufügen. 
  
- ```
+```python
 self.costume.add_image("images/image_2.jpg")
 ```
 
-### Ein Kostüm animieren.
+Alternativ kannst du direkt auch eine Liste von Bildern zu einem Kostüm hinzufügen:
 
-Wenn du mehrere Bilder zu einem Kostüm hinzufügen willst, geht dies mit der Option:
+```python
+self.costume.add_image(["images/image_1.jpg, images/image_2.jpg"])
+```
+
 
 ### Animationen
 
@@ -47,24 +46,9 @@ Dazu musst du zunächst mehrere Bilder zu einem Kostüm hinzufügen (siehe oben)
 
 Anschließend kannst du das Kostüm folgendermaßen animieren:
 
-```
+```python
 self.costume.is_animated = True
 self.costume.animation_speed = 10
-```
-
-### Weitere Kostüme hinzufügen.
-
-Mit folgender Anweisung fügst du weitere Kostüme hinzu:
-
-```
-my_costume = self.add_costume("image.png")
-```
-
-Es wird ein neues Kostüm mit dem Bild image.png angelegt.
-Du kannst auch weitere Bilder zu dem Kostüm hinzufügen:
-
-```
-my_costume.add_image("image2.png")
 ```
 
 ### Zwischen Kostümen wechseln
@@ -82,7 +66,7 @@ Die Anweisung springt zum nächsten Kostüm. Du kannst als Parameter auch eine Z
 
 Es gibt diverse Möglichkeiten das Aussehen deines Bildes anzupassen, z.B. ob dieses rotierbar ist, automatisch skaliert werden soll usw.
 
---> Hier findest du mehr Infomrationen: [Costumes](../key_concepts/costumes.md)
+--> Hier findest du mehr Informationen: [Costumes](../key_concepts/costumes.md)
 
 
 

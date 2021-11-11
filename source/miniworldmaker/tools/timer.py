@@ -1,7 +1,9 @@
 import inspect
 from inspect import signature
 
-from miniworldmaker.app import app
+from miniworldmaker import app
+from miniworldmaker.inspection_methods import InspectionMethods
+
 
 class Timed():
     def __init__(self):
@@ -16,7 +18,6 @@ class Timed():
         if self in self.board.timed_objects:
             self.board.timed_objects.remove(self)
         del(self)
-
 
 
 class Timer(Timed):
@@ -48,34 +49,20 @@ class ZeroTimer(Timed):
     def act(self):
         pass
 
+
 class CallTimer(Timer):
-    def __init__(self, time, method, arguments = None):
+    def __init__(self, time, method, arguments=None):
         super().__init__(time)
         self.method = method
-        self.arguments = arguments    
+        self.arguments = arguments
 
     def _call_method(self):
-        sig = signature(self.method)
-        if type(self.arguments) == list:
-            if len(sig.arguments) == len(self.arguments):
-                self.method(*self.arguments)
-            else:
-                info = inspect.getframeinfo(inspect.currentframe())
-                raise Exception(
-                    "Wrong number of arguments for " + str(self.method) + " in , got " + str(
-                        len(self.arguments)) + " but should be " + str(
-                        len(sig.arguments)) +
-                    "Additional Information: File:" + str(info.filename), "; Method: " + str(method)
-                )
-        else:
-            if self.arguments is None:
-                self.method()
-            else:
-                self.method(self.arguments)
+        InspectionMethods.call_method(self.method, self.arguments)
+
 
 class ActionTimer(CallTimer):
 
-    def __init__(self, time, method, arguments = None):
+    def __init__(self, time, method, arguments=None):
         super().__init__(time, method, arguments)
 
     def act(self):
@@ -83,17 +70,16 @@ class ActionTimer(CallTimer):
         self.unregister()
         self.success()
 
-    def success(self, method = None, arguments = None):
+    def success(self, method=None, arguments=None):
         if method is not None and arguments is None:
             method()
         if method is not None and arguments is not None:
             method(arguments)
 
 
-
 class LoopActionTimer(CallTimer):
 
-    def __init__(self, time, method, arguments = None):
+    def __init__(self, time, method, arguments=None):
         super().__init__(time, method, arguments)
 
     def act(self):
@@ -101,12 +87,17 @@ class LoopActionTimer(CallTimer):
 
 
 "@decorator"
+
+
 def timer(*args, **kwargs):
     def inner(method):
         timer = ActionTimer(kwargs["frames"], method)
     return inner
 
+
 "@decorator"
+
+
 def loop(*args, **kwargs):
     def inner(method):
         timer = LoopActionTimer(kwargs["frames"], method)

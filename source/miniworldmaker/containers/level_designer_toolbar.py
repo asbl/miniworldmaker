@@ -17,7 +17,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.add_widget(ToolbarLabel("Left Click to add Tokens"))
         self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
-        import miniworldmaker.tokens.token as tk
+        import tokens.token as tk
         class_set = self.all_subclasses(tk.Token)
         excluded = ["Token",
                     "Actor",
@@ -56,7 +56,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                                 self.selected_token_type((j, i))
                     else:
                         try:
-                            import miniworldmaker.board_positions.board_position as bp
+                            import board_positions.board_position as bp
                             self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
                         except TypeError:
                             print("Can't create tokens with more than one parameter position yet")
@@ -76,7 +76,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                         rect = board_position.BoardPosition(data[0], data[1]).to_rect()
                         token = self.board.get_tokens_at_rect(rect, singleitem=True)
                         if token.__class__ != self.selected_token_type:
-                            import miniworldmaker.board_positions.board_position as bp
+                            import board_positions.board_position as bp
                             token = self.selected_token_type(position=bp.BoardPosition.from_pixel(data))
         if "mouse_right" in event:
             if self.board.is_in_container(data[0], data[1]):
@@ -99,7 +99,6 @@ class TokenButton(ToolbarWidget):
         self.parent = parent
         self.board = board
         # token = token_type(position = None)
-        print(token_type, token_type.class_image)
         if token_type.class_image:
             self._img_path = token_type.class_image
         self._text_padding = 30
