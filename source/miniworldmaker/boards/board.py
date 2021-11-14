@@ -18,12 +18,6 @@ from miniworldmaker.boards.board_handler.board_background_handler import BoardBa
 from miniworldmaker.boards.board_handler.board_position_handler import BoardPositionHandler
 
 
-#class MetaBoard(type):
-#    def __call__(cls, *args, **kwargs):
-#        instance = super().__call__(*args, **kwargs)
-#        return instance
-
-
 class Board(container.Container):
     """Base Class for Boards.
 
@@ -31,7 +25,7 @@ class Board(container.Container):
 
     Examples:
         Creating a board object:
-        
+
         .. code-block:: python
 
             board = miniworldmaker.TiledBoard()
@@ -40,22 +34,22 @@ class Board(container.Container):
             board.tile_size=40
 
         A pixel-board in follow_the_mouse.py:
-        
+
         .. code-block:: python
-            
+
             class MyBoard(PixelBoard):
-            
+
             def on_setup(self):
                 self.add_image(path="images/stone.jpg")
                 Robot(position=(50, 50))
-            
-            
+
+
             board = MyBoard(800, 600)
-        
+
         A tiled-board:
 
         .. code-block:: python
-        
+
             def on_setup(self):
                 self.add_image(path="images/soccer_green.jpg")
                 self.player = Player(position=(3, 4))
@@ -63,8 +57,8 @@ class Board(container.Container):
                 stone = self.add_background(("images/stone.png"))
                 stone.is_textured = True
                 stone.is_scaled_to_tile = True
-        
-        
+
+
             board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
 
         > See [Example](https://codeberg.org/a_siebel/r/src/branch/main/examples/basics)
@@ -73,15 +67,14 @@ class Board(container.Container):
         columns: columns of new board (default: 40)
         rows: rows of new board (default:40)
     """
-    
 
     subclasses = None
 
     def __init__(self,
                  columns: int = 40,
                  rows: int = 40,
-                 tile_size : int = 1,
-                 tile_margin : int = 0,
+                 tile_size: int = 1,
+                 tile_margin: int = 0,
                  background_image=None
                  ):
         if self.__class__ == Board:
@@ -92,48 +85,45 @@ class Board(container.Container):
         self.position_handler = BoardPositionHandler(self)
         pygame.init()
         # public
-        self.is_running : bool = True
+        self.is_running: bool = True
         # protected
-        self._is_setup : bool = False
+        self._is_setup: bool = False
         if not hasattr(self, "_fps"):
-            self._fps : int = 60  # property speed
-        self._key_pressed : bool = False
-        self._animated : bool = False
-        self._grid  : list = []
-        self._orientation : int = 0
+            self._fps: int = 60  # property speed
+        self._key_pressed: bool = False
+        self._animated: bool = False
+        self._grid: list = []
+        self._orientation: int = 0
         if type(columns) != int or type(rows) != int:
-                raise BoardArgumentsError(columns, rows)
+            raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
         self._grid = []
         for row in range(self.rows):
             self._grid.append([])
             for column in range(self.columns):
                 self._grid[row].append(0)
-        self.frame : int = 0
-        self._speed : int = 1 # All tokens are acting on n'th frame with n = self.speed
-        self.clock : pygame.time.Clock = pygame.time.Clock()
-        self.__last_update = pygame.time.get_ticks()
+        self.frame: int = 0
+        self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
+        self.clock: pygame.time.Clock = pygame.time.Clock()
         # Init graphics
-        self.app : app.App = app.App("miniworldmaker")
+        self.app: app.App = app.App("miniworldmaker")
         self.app.container_manager.add_container(self, "top_left")
         app.App.board = self
         self.background_handler.init_background(background_image)
         self.background_handler.update_background()
         self.collision_handler = BoardCollisionHandler(self)
-        self.dirty : int = 1
-        self.timed_objects : list = []
+        self.dirty: int = 1
+        self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         print("Create board")
-
 
     @classmethod
     def from_db(cls, file):
         """
         Loads a sqlite db file.
         """
-        database_handler = BoardDatabaseHandler(board = cls())
+        database_handler = BoardDatabaseHandler(board=cls())
         return database_handler.board_from_db()
-        
 
     @classmethod
     def all_subclasses(cls):
@@ -149,14 +139,15 @@ class Board(container.Container):
     def __str__(self):
         return "{0} with {1} columns and {2} rows" \
             .format(self.__class__.__name__, self.columns, self.rows)
-            
+
     @property
     def container_width(self) -> int:
         """
         The width of the container
         """
         if self.background_handler.repaint_all:
-            self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
+            self._container_width = self.columns * self.tile_size + \
+                (self.columns + 1) * self.tile_margin
         return self._container_width
 
     @property
@@ -165,20 +156,21 @@ class Board(container.Container):
         The height of the container
         """
         if self.background_handler.repaint_all:
-            self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
+            self._container_height = self.rows * \
+                self.tile_size + (self.rows + 1) * self.tile_margin
         return self._container_height
 
     @property
     def speed(self) -> int:
         """
         How often are events and game logic processed?
-        
+
         The game logic can be called more often or less often independently from board.fps
 
         Examples:
 
         .. code-block:: python
-        
+
             board.speed = 10
             board.fps = 24
             def act(self):
@@ -203,14 +195,14 @@ class Board(container.Container):
     def fps(self) -> int:
         """
         Frames per second shown on the screen.
-        
+
         This controls how often the screen is redrawn. However, the game logic 
         can be called more often or less often independently of this with board.speed.
 
         Examples:
 
         .. code-block:: python
-        
+
             board.speed = 10
             board.fps = 24
             def act(self):
@@ -285,7 +277,7 @@ class Board(container.Container):
         return (self.columns, self.rows)
 
     @size.setter
-    def size(self, value : tuple):
+    def size(self, value: tuple):
         self.columns = value[0]
         self.rows = value[1]
         self.background_handler.dirty = 1
@@ -334,9 +326,9 @@ class Board(container.Container):
 
     @registered_events.setter
     def registered_events(self, value):
-        return # @TODO setter is used so that board_event_handler is not overwritten by board parent class container
-        
-    @property 
+        return  # @TODO setter is used so that board_event_handler is not overwritten by board parent class container
+
+    @property
     def background(self):
         return self.background_handler.background
 
@@ -353,7 +345,7 @@ class Board(container.Container):
         """
         self.token_handler.remove_from_board(token)
 
-    def remove_background(self, background = None):
+    def remove_background(self, background=None):
         """Removes a background from board
 
         Args:
@@ -394,8 +386,6 @@ class Board(container.Container):
             position: The position on the board where the actor should be added.
         """
         self.token_handler.add_token_to_board(token, position)
-
-
 
     def blit_surface_to_window_surface(self):
         self.app.window.surface.blit(self.surface, self.rect)
@@ -443,7 +433,7 @@ class Board(container.Container):
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
 
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
-        token_module.Token, list]:
+            token_module.Token, list]:
         """
         Gets all Tokens which are colliding with a given rect.
 
@@ -469,9 +459,11 @@ class Board(container.Container):
     def surface(self):
         return self.background_handler.surface
 
-
     @surface.setter
     def surface(self, value):
+        """
+        Method is overwritten in subclasses
+        """
         pass
 
     def remove_tokens_from_rect(self, rect, token_class=None, exclude=None):
@@ -485,7 +477,7 @@ class Board(container.Container):
         Returns: all tokens in the area
         """
         board_rect = board_rect_factory.BoardRectFactory(self).create(rect)
-        tokens = self.get_tokens_at_rect(rect)
+        tokens = self.get_tokens_at_rect(board_rect)
         for token in tokens:
             if token is not None:
                 [token.remove() for token in Board.filter_actor_list(tokens, token_class)]
@@ -493,7 +485,7 @@ class Board(container.Container):
     def start(self):
         self.is_running = True
 
-    def stop(self, frames = 1):
+    def stop(self, frames=1):
         """
         stops the board in n-frames
         """
@@ -579,7 +571,7 @@ class Board(container.Container):
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
         self.event_handler.handle_event(event, data)
-      
+
     def save_to_db(self, file):
         """
         Saves the current board an all actors to database.
@@ -639,11 +631,12 @@ class Board(container.Container):
 
     def _update_event_handling(self):
         self.event_handler.update_event_handling()
-    
+
     def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
         pass
-    
+
     " @decorator"
+
     def register(self, method):
         bound_method = method.__get__(self, self.__class__)
         setattr(self, method.__name__, bound_method)
@@ -653,9 +646,9 @@ class Board(container.Container):
         self.app.event_manager.send_event_to_containers("message", message)
 
     def screenshot(self, filename="screenshot.jpg"):
-        pygame.image.save(self.surface,filename)
+        pygame.image.save(self.surface, filename)
 
-    def quit(self, exit_code = 0):
+    def quit(self, exit_code=0):
         self.app.quit(exit_code)
 
     def add_board_sensor_to_token(self, token, position):

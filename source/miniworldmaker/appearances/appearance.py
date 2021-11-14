@@ -7,6 +7,7 @@ from collections import defaultdict
 import nest_asyncio
 import pygame
 from miniworldmaker.board_positions import board_position, board_position_factory
+from miniworldmaker.exceptions.miniworldmaker_exception import ColorException
 
 
 class MetaAppearance(type):
@@ -105,8 +106,6 @@ class Appearance(metaclass=MetaAppearance):
 
         """
         try:
-            
-            #canonicalized_path = os.path.join(os.path.curdir, path)
             canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
             if canonicalized_path in Appearance._images_dict.keys():
                 # load image from img_dict
@@ -218,9 +217,6 @@ class Appearance(metaclass=MetaAppearance):
         """
         return self._flip_vertical
 
-    def set_parent_attributes(self, attribute):
-        pass
-
     @flip_vertical.setter
     def flip_vertical(self, value):
         self._flip_vertical = value
@@ -318,11 +314,9 @@ class Appearance(metaclass=MetaAppearance):
     def text(self, value):
         if value == "":
             self._text = ""
-            # self.surface_loaded = False
             self.dirty = 1
         else:
             self._text = value
-            # self.surface_loaded = False
             self.dirty = 1
         self.call_action("write_text")
         self._reload_all()
@@ -334,7 +328,7 @@ class Appearance(metaclass=MetaAppearance):
             self.dirty = 1
         except TypeError:
             self.parent.window.log("ERROR: color should be a 4-tuple (r, g, b, alpha)")
-            raise Exception("ERROR: color should be a 4-tuple (r, g, b, alpha)")
+            raise ColorException("ERROR: color should be a 4-tuple (r, g, b, alpha)")
 
     def draw_shape_append(self, shape, arguments):
         self.draw_shapes.append((shape, arguments))
@@ -501,6 +495,9 @@ class Appearance(metaclass=MetaAppearance):
         return 1
 
     async def _update(self):
+        """ 
+        method is overwritten in subclasses costume and background.
+        """
         pass
 
     @property
@@ -704,6 +701,9 @@ class Appearance(metaclass=MetaAppearance):
         self.is_animated = True
 
     def after_animation(self):
+        """
+        the method is overwritten in subclasses costume and appearance
+        """
         pass
 
     """ 

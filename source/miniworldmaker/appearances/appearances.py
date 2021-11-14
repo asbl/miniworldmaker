@@ -1,9 +1,9 @@
 class Appearances:
     def __init__(self, appearance):
         if appearance != None:
-            self.appearances = [appearance]
+            self.appearances_list = [appearance]
         else:
-            self.appearances = []
+            self.appearances_list = []
         self.is_rotatable = None
         self.is_animated = None
         self.animation_speed = 10
@@ -13,7 +13,7 @@ class Appearances:
         self.is_scaled_to_height = None
 
     def add(self, appearance):
-        self.appearances.append(appearance)
+        self.appearances_list.append(appearance)
         if self.is_rotatable is not None:
             appearance.is_rotatable = self.is_rotatable
         if self.is_animated is not None:
@@ -30,26 +30,26 @@ class Appearances:
             appearance.is_scaled = self.is_scaled
 
     def remove(self, index):
-        del self.appearances[index]
+        del self.appearances_list[index]
 
     def get_index(self, appearance):
         # Variant for get_index_of_costume #todo: Rename occurences to get_index
-        return self.appearances.index(appearance)
+        return self.appearances_list.index(appearance)
 
     def get_index_of_costume(self, appearance):
-        return self.appearances.index(appearance)
+        return self.appearances_list.index(appearance)
 
     def len(self):
-        return len(self.appearances)
+        return len(self.appearances_list)
 
     def count_costumes(self):
-        return len(self.appearances)
+        return len(self.appearances_list)
 
     def get_costume_at_index(self, index):
-        return self.appearances[index]
+        return self.appearances_list[index]
 
     def _set_all(self, attribute, value):
-        for appearance in self.appearances:
+        for appearance in self.appearances_list:
             setattr(appearance, attribute, value)
 
     def set_animated(self, value):
@@ -81,10 +81,10 @@ class Appearances:
         self._set_all("is_scaled", value)
 
     def list(self):
-        return self.appearances
+        return self.appearances_list
 
     def __str__(self):
-        return str(len(self.appearances)) + " costumes: " + str(self.appearances)
+        return str(len(self.appearances_list)) + " costumes: " + str(self.appearances_list)
 
 
 class Costumes(Appearances):

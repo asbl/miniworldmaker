@@ -14,12 +14,10 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
     def __init__(self, token, board):
         super().__init__(token, board)
-        #self.token.size = (self.board.tile_size, self.board.tile_size)
         if hasattr(self, "is_static") and self.is_static is True:
             self.board.static_tokens_dict[token.position].append(token)
         else:
             self.board.dynamic_tokens.append(token)
-        #token.size = (self.board.tile_size, self.board.tile_size)
         self.token.fps = token.board.default_token_speed
 
     def get_destination(self, start, direction, distance) -> board_position.BoardPosition:

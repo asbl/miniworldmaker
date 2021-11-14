@@ -1,5 +1,5 @@
 import math
-from typing import Union, Type, TypeVar, List
+from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 import pygame
 from miniworldmaker import app
 from miniworldmaker.appearances.appearance import Appearance
@@ -45,6 +45,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     pieces and obstacles on the playing field
 
     Attributes:
+    
         collision_type (string):
             The parameter collision_type specifies how collisions should be checked:
 
@@ -64,8 +65,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     class_image = None
     subclasses = None
 
-    def __init__(self, position=None, image=None):
-        self.setup_completed = False
+    def __init__(self, position: Optional[Union[Tuple, "board_position.BoardPosition"]] = None, image: Optional[str] = None):
+        self.setup_completed: bool = False
         self._managers = list()
         self.is_setup = 1  # Was init called ?
         self.costume_manager = None
@@ -76,11 +77,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.board.token_handler.add_token_managers(self, image, position)
         pygame.sprite.DirtySprite.__init__(self)
         self.board.token_handler.add_token_to_board(self, self.position)
-        self.collision_type = ""
+        self.collision_type: str = ""
         Token.token_count += 1
-        self.speed = 1
-        self.token_id = Token.token_count + 1
-        self._collision_type = "default"
+        self.speed: int = 1
+        self.token_id: int = Token.token_count + 1
+        self._collision_type: str = "default"
 
     @property
     def last_position(self):
@@ -89,8 +90,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     @property
     def last_direction(self):
         return self.position_manager.last_direction
-
-
 
     @classmethod
     def from_center(cls, center_position: board_position.BoardPosition):
@@ -214,7 +213,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.costume_manager.add_costume(source)
 
-    def remove_costume(self, costume=None):
+    def remove_costume(self, costume: int = None):
         """Removes a costume from token
 
         Args:
@@ -240,7 +239,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Returns: The new costume
         """
-        self.next_costume()
+        self.costume_manager.next_costume()
 
     @property
     def costume(self):
@@ -261,7 +260,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     @orientation.setter
     def orientation(self, value):
         self.costume.orientation = value
-        
+
     @property
     def direction(self) -> int:
         """ Sets direction of the token.
@@ -315,7 +314,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         self.direction = self.position_manager.unit_circle_to_dir(value)
 
-
     def turn_left(self, degrees: int = 90) -> int:
         """Turns actor by *degrees* degrees left
 
@@ -350,7 +348,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.turn_right(degrees)
 
-    def point_in_direction(self, direction : int) -> int:
+    def point_in_direction(self, direction: int) -> int:
         """Token points in given direction.
 
         You can use a integer or a string to describe the direction
@@ -383,13 +381,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.point_in_direction(direction)
 
-    def delta_x(self, distance : int) -> int:
+    def delta_x(self, distance: int) -> int:
         return math.sin(math.radians(self.direction)) * distance
 
-    def delta_y(self, distance : int) -> int:
+    def delta_y(self, distance: int) -> int:
         return - math.cos(math.radians(self.direction)) * distance
 
-    def point_towards_position(self, destination : int) -> int:
+    def point_towards_position(self, destination: int) -> int:
         """
         Token points towards a given position
 
@@ -411,7 +409,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.point_towards_position(destination)
 
-    def point_towards_token(self, other) -> int:
+    def point_towards_token(self, other: "Token") -> int:
         """
         Token points towards another token.
 
@@ -456,7 +454,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         The position of the token as BoardPosition (x, y)
         """
         return self.position_manager.position
-        
+
     @position.setter
     def position(self, value: Union[board_position.BoardPosition, tuple]):
         self.position_manager.position = value
@@ -478,7 +476,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.y
 
     @y.setter
-    def y(self, value : float):
+    def y(self, value: float):
         self.position_manager.y = value
 
     @property
@@ -505,7 +503,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.topleft
 
     @topleft.setter
-    def topleft(self, value):
+    def topleft(self, value: Union[Tuple, board_position.BoardPosition]):
         self.position_manager.topleft = value
 
     @property
@@ -518,15 +516,15 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.center
 
     @center_x.setter
-    def center_x(self, value):
+    def center_x(self, value: float):
         self.position_manager.center_x = value
 
     @center_y.setter
-    def center_y(self, value):
+    def center_y(self, value: float):
         self.position_manager.center_y = value
 
     @center.setter
-    def center(self, value):
+    def center(self, value: Union[Tuple, board_position.BoardPosition]):
         self.position_manager.center = value
 
     def move(self, distance: int = 0):
@@ -666,7 +664,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def is_rotatable(self, value):
         self.costume.is_rotatable = True
 
-    def bounce_from_border(self, borders):
+    def bounce_from_border(self, borders: List):
         """ Bounces the actor from a border.
 
         Args:
@@ -692,7 +690,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.sensing_on_board(distance=distance)
 
-    def sensing_tokens(self, token_type=None, distance: int = 0, collision_type="default"):
+    def sensing_tokens(self, token_type: str = None, distance: int = 0, collision_type: str = "default"):
         """Senses if tokens are on tokens position.
         Returns a list of tokens.
 
@@ -709,7 +707,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.sensing_tokens(token_type, distance)
 
-    def sensing_token(self, token_type=None, distance: int = 0, collision_type="default"):
+    def sensing_token(self, token_type: str = None, distance: int = 0, collision_type: str = "default"):
         """Senses if tokens are on tokens position.
         Returns the first found token.
 
@@ -793,7 +791,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return "bottom" in self.board_sensor.sensing_borders(distance)
 
-    def sensing_colors(self, colors, distance):
+    def sensing_colors(self, colors: Tuple, distance: int):
         """
         Senses colors in board-background at token-position
 
@@ -807,7 +805,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         colors = self.board_sensor.sensing_colors(colors, distance)
         return colors
 
-    def sensing_point(self, boardPosition):
+    def sensing_point(self, boardPosition: Union["board_position.Boardposition", Tuple]):
         """
         Is the token colliding with a specific (global) point?
 
@@ -818,23 +816,22 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     """ 
     Register method for decorator
     """
+
     def register(self, method: callable):
         self.board.token_handler.register_token_method(self, method)
 
-    def bounce_from_token(self, other):
-            self.position_manager.bounce_from_token(other)
+    def bounce_from_token(self, other: "Token"):
+        self.position_manager.bounce_from_token(other)
 
-    def animate(self, speed : int = 10):
+    def animate(self, speed: int = 10):
         self.costume_manager.animate(speed)
 
-    def animate_costume(self, costume, speed : int = 10):
+    def animate_costume(self, costume: "costume.Costume", speed: int = 10):
         self.costume_manager.animate_costume(costume, speed)
 
     def loop_animation(self, speed: int = 10):
         self.costume_manager.loop_animation(speed)
 
-    def send_message(self, message):
+    def send_message(self, message: str):
         self.board.app.event_manager.send_event_to_containers(
             "message", message)
-
-    

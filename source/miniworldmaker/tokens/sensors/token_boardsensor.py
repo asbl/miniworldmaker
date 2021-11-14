@@ -47,4 +47,7 @@ class TokenBoardSensor():
                 return self.token.direction
 
     def remove(self):
+        """
+        Method is overwritten in subclasses
+        """
         pass

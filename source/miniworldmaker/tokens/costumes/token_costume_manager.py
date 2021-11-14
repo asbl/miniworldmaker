@@ -2,7 +2,7 @@ from miniworldmaker.appearances import appearances
 from typing import Union, Type, TypeVar, List
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import costume
-from miniworldmaker.exceptions.miniworldmaker_exception import CostumeIsNoneError
+from miniworldmaker.exceptions.miniworldmaker_exception import CostumeIsNoneError, CostumeOutOfBoundsError
 
 appearance_source = Union[str, List[str], Appearance]
 
@@ -96,11 +96,7 @@ class TokenCostumeManager:
         """
         if type(costume) == int:
             if costume >= self.costumes.count_costumes():
-                msg = "Error: Token" + str(self.token) + " has " + str(self.costumes.count_costumes()
-                                                                       ) + " costumes. You can't access costume #" + str(costume)
-                if (self.costumes.count_costumes() == costume):
-                    msg += "\nRemember: tokens are counted from 0!"
-                raise Exception(msg)
+                raise CostumeOutOfBoundsError(self.token, self.costumes.count_costumes, costume)
             costume = self.costumes.get_costume_at_index(costume)
         self.costume.end_animation()  # ? neccessary
         self.costume = costume
@@ -154,6 +150,9 @@ class TokenCostumeManager:
         self.costume.animate()
 
     def remove(self):
+        """
+        The method is overwritten in subclasses
+        """
         pass
 
     def get_token_rect(self):

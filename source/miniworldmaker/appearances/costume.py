@@ -59,12 +59,11 @@ class Costume(appear.Appearance):
         super().update()
 
     async def _update(self):
-        if self.parent.board and self.is_animated:
-            if self.parent.board.frame != 0:
-                self.animation_frame += 1
-                if self.animation_frame == self.animation_speed:
-                    await self.next_image()
-                    self.animation_frame = 0
+        if self.parent.board and self.is_animated and self.parent.board.frame != 0:
+            self.animation_frame += 1
+            if self.animation_frame == self.animation_speed:
+                await self.next_image()
+                self.animation_frame = 0
         self.reload_image()
 
     def reload_image(self):

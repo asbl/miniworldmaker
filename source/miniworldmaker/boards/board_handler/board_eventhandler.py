@@ -48,7 +48,7 @@ class BoardEventHandler:
         # any key down?
         method = InspectionMethods.get_instance_method(receiver, "on_" + str(event))
         if method:
-            InspectionMethods.call_instance_method(receiver, method, [data])
+            InspectionMethods.call_instance_method(receiver, method, list([data]))
         # specific key down?
         for key in data:
             if key == key.lower():
