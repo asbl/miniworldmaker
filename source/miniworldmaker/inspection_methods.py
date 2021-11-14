@@ -1,4 +1,5 @@
 import inspect
+from typing import Union, Optional
 from inspect import signature
 from collections import defaultdict
 from os import stat
@@ -11,7 +12,7 @@ class InspectionMethods:
     token_class_ids = defaultdict()  # class_name -> id
     token_classes = defaultdict()  # class_name as string -> class
     token_class_id_counter = 0
-   
+
     @staticmethod
     def has_parent_with_name(instance, name):
         parents = instance.__class__.__bases__
@@ -57,31 +58,24 @@ class InspectionMethods:
             raise Exception("Method not found")
 
     @staticmethod
-    def call_instance_method(instance, method: callable, args: tuple):
+    def call_instance_method(instance, method: callable, args: Optional[Union[tuple, list]], allow_none = True):
         # Don't call method if tokens are already removed:
-        if issubclass(instance.__class__, tkn.Token):
-            if not instance.board:
-                return
-        sig = InspectionMethods.get_signature(method, args)
+        method = getattr(instance, method.__name__)
+        if issubclass(instance.__class__, tkn.Token) and not instance.board:
+            return
+        InspectionMethods.check_signature(method, args, allow_none)
         if args == None:
             method()
-        elif len(sig.parameters) == len(args):
-            method(*args)
         else:
-            info = inspect.getframeinfo(inspect.currentframe())
-            raise Exception(
-                "Wrong number of arguments for " + str(method) + ".\n Got " + str(
-                    len(args)) + " but should be " + str(
-                    len(sig.parameters)) + "; "
-                "File:" + str(info.filename), "; Method: " + str(method)
-            )
-    
-    def get_signature(method: callable, arguments : tuple, allow_none = True):
+            method(*args)
+
+    @staticmethod
+    def get_signature(method: callable, arguments: tuple, allow_none=True):
         InspectionMethods.check_signature(method, arguments, allow_none)
         return signature(method)
 
     @staticmethod
-    def check_signature(method: callable, arguments : tuple, allow_none = False):
+    def check_signature(method: callable, arguments: tuple, allow_none=False):
         if not type(callable(method)):
             raise NotCallableError(method)
         if arguments is None and not allow_none:
@@ -97,17 +91,17 @@ class InspectionMethods:
             if param.default == param.empty and i >= len(arguments):
                 raise WrongArgumentsError(method, arguments)
             i = i + 1
-        
+
     @staticmethod
     def call_method(method: callable, arguments: tuple):
         InspectionMethods.check_signature(method, arguments)
-        #try:
-        #method(*arguments)
-        #except Exception as e:
+        # try:
+        # method(*arguments)
+        # except Exception as e:
         #    print(e)
 
-
-    def get_token_class_by_name(name : str):
+    @staticmethod
+    def get_token_class_by_name(name: str):
         """
         Search in token dict() variable.
         """
@@ -115,6 +109,7 @@ class InspectionMethods:
         name = name.capitalize()
         return InspectionMethods.token_classes[name]
 
+    @staticmethod
     def update_token_subclasses():
         """
         Returns a dict with class_name->class

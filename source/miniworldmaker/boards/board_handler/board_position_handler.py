@@ -96,23 +96,6 @@ class BoardPositionHandler:
         bottom_right_on_board = self.is_position_on_board(BoardPositionFactory(self.board).create(tuple([rect.right, rect .bottom])))
         return topleft_on_board or bottom_right_on_board
 
-
-        """
-        Legacy code:
-        
-                board_position = board_position_factory.BoardPositionFactory(self.board).create(position)
-        rect = board_position.to_rect()
-
-        top_left_x, top_left_y, right, top = rect.topleft[0], \
-                                             rect.topleft[1], \
-                                             rect.right, \
-                                             rect.top
-        if top_left_x < 0 or top_left_y < 0 or rect.right >= self.width or rect.bottom >= self.height:
-            return False
-        else:
-            return True
-        """
-
     def get_colors_in_rect(self, rect, rect_borders=None):
         colors = []
         rect = BoardRectFactory.create(rect)

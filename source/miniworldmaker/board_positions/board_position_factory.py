@@ -3,6 +3,8 @@ from miniworldmaker import app
 from miniworldmaker.board_positions.board_position import BoardPosition
 import pygame
 
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
+
 class BoardPositionFactory:
 
     def __init__(self, board):
@@ -19,7 +21,7 @@ class BoardPositionFactory:
         y = int(float_position[1])
         return BoardPosition(x,y)
 
-    def from_tuple(cls, tpl: tuple):
+    def from_tuple(self, tpl: tuple):
         """
         Gets a board position from tuple.
 
@@ -53,7 +55,7 @@ class BoardPositionFactory:
         elif type(value) == pygame.Rect:
             return value.topleft
         else:
-            raise Exception("No valid type in board_position_Factory create, found:" + str(type(value)))
+            raise NoValidBoardPositionError(value)
 
     def to_pixel(self) -> tuple:
         """

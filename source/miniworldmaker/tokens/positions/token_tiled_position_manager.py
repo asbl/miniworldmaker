@@ -1,6 +1,8 @@
 import miniworldmaker.tokens.positions.token_position_manager as token_positionmanager
 import pygame
 
+from miniworldmaker.exceptions.miniworldmaker_exception import SizeOnTiledBoardError
+
 
 class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
     def __init__(self, token, position):
@@ -20,4 +22,4 @@ class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
 
     @size.setter
     def size(self, value):
-        raise Exception("You can't set size for tokens on a tiled board (size is always (1,1)")
+        raise SizeOnTiledBoardError()

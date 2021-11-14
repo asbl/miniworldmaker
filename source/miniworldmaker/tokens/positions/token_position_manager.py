@@ -8,6 +8,8 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_position_factory
 import pygame
 
+from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
+
 
 class TokenPositionManager:
     def __init__(self, token, position):
@@ -115,8 +117,8 @@ class TokenPositionManager:
 
     @center_x.setter
     def center_x(self, value):
-        if self.token.costume is None:
-            raise Exception("Error: Token needs a costume first")
+        if self.costume is None:
+            raise NoCostumeSetError(self.token)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.centerx = value
@@ -131,7 +133,7 @@ class TokenPositionManager:
     @center_y.setter
     def center_y(self, value):
         if self.costume is None:
-            raise Exception("Error: Token needs a costume first")
+            raise NoCostumeSetError(self.token)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.centery = value
@@ -141,14 +143,14 @@ class TokenPositionManager:
     def center(self, value):
         self.set_center(value)
 
-    def set_center(self,value):
-        if self.token.costume is None:
-            raise Exception("Error: Token needs a costume first")
+    def set_center(self, value):
+        if self.costume is None:
+            raise NoCostumeSetError(self.token)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
         rect.centerx = value[0]
         rect.centery = value[1]
-        self.position = rect.topleft        
+        self.position = rect.topleft
 
     @property
     def topleft(self) -> board_position.BoardPosition:
@@ -240,8 +242,8 @@ class TokenPositionManager:
 
         """
         angle = self.direction
-        if ("top" in borders and (
-                (self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0))):
+        if ("top" in borders and
+                (self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0)):
             self.point_in_direction(0)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
@@ -258,8 +260,6 @@ class TokenPositionManager:
             self.point_in_direction(90)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
-        else:
-            pass
         return self
 
     def bounce_from_token(self, other):
@@ -295,6 +295,9 @@ class TokenPositionManager:
         return self.direction
 
     def remove(self):
+        """
+        Method is overwritten in subclasses
+        """
         pass
 
     @property
