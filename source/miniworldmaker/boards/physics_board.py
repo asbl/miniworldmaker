@@ -39,3 +39,12 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         self.gravity_x = value[0]
         self.gravity_y = value[1]
         self.space.gravity = self.gravity_x, self.gravity_y
+
+    @property
+    def damping(self):
+        return self.gravity_x, self.gravity_y
+
+    @damping.setter
+    def damping(self, value: tuple):
+        self._damping = value
+        self.space.damping = self._damping

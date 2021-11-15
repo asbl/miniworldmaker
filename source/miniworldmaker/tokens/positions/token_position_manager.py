@@ -78,7 +78,6 @@ class TokenPositionManager:
             self._size = value
             self.token.dirty = 1
             self.token.costume_manager.reload_costume()
-            self.token.board.collision_handler.reload()
         return self._size
 
     @property
@@ -94,7 +93,6 @@ class TokenPositionManager:
 
     def get_position(self) -> board_position.BoardPosition:
         return board_position_factory.BoardPositionFactory(self.token.board).create(self._position)
-            
 
     def set_position(self, value):
         self.token.dirty = 1

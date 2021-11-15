@@ -1,4 +1,4 @@
-from math import radians
+from math import radians, degrees
 import miniworldmaker.tokens.positions.token_pixel_position_manager as pixel_position_manager
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
@@ -34,11 +34,21 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         if hasattr(self.token, "physics"):
             self.token.physics.reload()
 
+    def get_direction(self):
+        if hasattr(self.token, "physics") and self.token.physics._body:
+            return degrees(self.token.physics._body.angle) 
+        else:
+            return super().get_direction()
+
     def set_direction(self, value):
         if self.token.physics._body:
             self.token.physics._body.angle = radians(value)
         else:
             super().set_direction(value)
+
+        
+    def get_direction_from_miniworldmaker(self):
+        return super().get_direction()
 
     def set_direction_from_pymunk(self, value):
         super().set_direction(value)

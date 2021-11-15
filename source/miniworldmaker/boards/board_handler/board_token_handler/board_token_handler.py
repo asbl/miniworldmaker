@@ -35,16 +35,28 @@ class BoardTokenHandler:
         if token.is_setup != 1:
             raise UnboundLocalError("super().__init__() was not called")
 
-    def add_position_manager_to_token():
+    def add_position_manager_to_token(self, token, position):
+        """
+        Implemented in subclasses
+        """
         pass
 
     def add_board_sensor_to_token(self, token):
+        """
+        Implemented in subclasses
+        """
         pass
 
-    def add_board_costume_manager_to_token(self, token):
+    def add_board_costume_manager_to_token(self, token, image):
+        """
+        Implemented in subclasses
+        """
         pass
 
     def remove_token_from_board(self, token):
+        """
+        Implemented in subclasses
+        """
         pass
 
     def clean(self):

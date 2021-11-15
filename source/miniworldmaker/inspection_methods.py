@@ -93,12 +93,13 @@ class InspectionMethods:
             i = i + 1
 
     @staticmethod
-    def call_method(method: callable, arguments: tuple):
-        InspectionMethods.check_signature(method, arguments)
-        # try:
-        # method(*arguments)
-        # except Exception as e:
-        #    print(e)
+    def call_method(method: callable, arguments: tuple, allow_none=True):
+        InspectionMethods.check_signature(method, arguments, allow_none = allow_none)
+        if arguments == None:
+            method()
+        else:
+            method(*arguments)
+
 
     @staticmethod
     def get_token_class_by_name(name: str):

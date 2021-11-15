@@ -33,10 +33,8 @@ class InspectActorToolbar(toolbar.Toolbar):
                 if self.active_token == tokens[i]:
                     if i < len(tokens) - 1:
                         return tokens[i + 1]
-                        break
                     else:
                         return tokens[0]
-                        break
                 i = i + 1
         if not tokens:
             return None

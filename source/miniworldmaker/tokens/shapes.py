@@ -192,7 +192,7 @@ class Line(Shape):
             raise e
 
     def set_physics_default_values(self):
-        self.physics.shape_type = "line"
+        self.physics.simulation = "static"
 
 
 class Rectangle(Shape):
