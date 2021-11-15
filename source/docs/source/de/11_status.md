@@ -11,9 +11,13 @@ Zum Spielende/Levelwechsel sind folgendes typische Aktionen:
 Dafür gibt es folgende Befehle:
 
   * `board.stop()`: Stoppt das Spielfeld. Es werden keine Aktionen mehr ausgeführt und keine Events abgefragt.
+  
   * `board.start()`: Dies hebt einen Stop-Befehl auf.
+  
   * `board.is_running`:  Mit dieser Variable kannst du den Status des Spielfelds abfragen.
+  
   * `board.clear()`: Die Funktion entfernt alle Figuren vom Spielfeld.
+  
   * `board.reset()`: Die Funktion löscht das aktuelle Spielfeld und erstellt ein neues Spielfeld mit allen Figuren so wie sie in `board.on_setup()` erzeugt wurden.
 
 

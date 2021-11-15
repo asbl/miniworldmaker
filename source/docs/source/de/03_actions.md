@@ -43,3 +43,10 @@ Zeile 12-14: Der Decorator `@player.register` bindet die Methode `act` an das Ob
 
 Auf ähnliche Weise wirst du später öfters Reaktionen auf Events bei Objekten registrieren (z.B. Reaktionen auf Tastatur- oder Mauseingaben oder Kollisionsüberprüfungen).
 
+## Ausblick
+
+  * [Vollständiges Beispiel](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tutorial/03%20-%20actions.py)
+
+  * [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/2%20Movement)
+
+ 

@@ -74,6 +74,11 @@ class BoardBackgroundHandler:
                 self.board.app.window.repaint_areas.append(self.board.rect)
                 self.repaint_all = False
 
+    def full_repaint(self):
+        self.dirty = 1
+        self.repaint_all = 1
+        self.repaint()
+
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.background.count_pixels_by_color(rect, color, threshold)
 

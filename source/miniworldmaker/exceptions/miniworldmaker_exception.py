@@ -1,8 +1,9 @@
 from inspect import signature
 
 
-class MiniworldMakerError(Exception):
-    pass
+class MiniworldMakerError(RuntimeError):
+    def __init__(self, message):
+        super().__init__(self.message)
 
 
 class NoRunError(MiniworldMakerError):
@@ -99,4 +100,9 @@ class NoCostumeSetError(MiniworldMakerError):
 class SizeOnTiledBoardError(MiniworldMakerError):
     def __init__(self):
         self.message = f"You can't set size for tokens on a tiled board (size is always (1,1)"
+        super().__init__(self.message)
+
+class TokenArgumentShouldBeTuple(MiniworldMakerError):
+    def __init__(self):
+        self.message = f"First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets? Instanciate the token with Token((x,y)) instead of  Token(x,y)"
         super().__init__(self.message)

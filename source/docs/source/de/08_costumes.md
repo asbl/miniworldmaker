@@ -64,9 +64,8 @@ Die Anweisung springt zum nächsten Kostüm. Du kannst als Parameter auch eine Z
 
 ### Darstellung von Bildern
 
-Es gibt diverse Möglichkeiten das Aussehen deines Bildes anzupassen, z.B. ob dieses rotierbar ist, automatisch skaliert werden soll usw.
+  * Es gibt diverse Möglichkeiten das Aussehen deines Bildes anzupassen, z.B. ob dieses rotierbar ist, automatisch skaliert werden soll usw.
 
---> Hier findest du mehr Informationen: [Costumes](../key_concepts/costumes.md)
-
+  * --> Hier findest du mehr Informationen: [Costumes](../key_concepts/costumes.md)
 
 

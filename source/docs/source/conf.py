@@ -130,6 +130,7 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
+html_css_files = ["custom.css"]
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -218,7 +219,7 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-napoleon_google_docstring = True
+napoleon_google_dochstring = True
 napoleon_include_init_with_doc = True
 
 # At the bottom of conf.py

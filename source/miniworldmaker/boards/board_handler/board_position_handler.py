@@ -2,11 +2,12 @@ from miniworldmaker.board_positions.board_position_factory import BoardPositionF
 from miniworldmaker.board_positions.board_rect_factory import BoardRectFactory
 from typing import List
 
+
 class BoardPositionHandler:
 
     def __init__(self, board):
         self.board = board
-        self._position_factory : BoardPositionFactory = BoardPositionFactory(self.board)
+        self._position_factory: BoardPositionFactory = BoardPositionFactory(self.board)
 
     def get_color(self, position):
         """
@@ -22,10 +23,7 @@ class BoardPositionHandler:
         else:
             return ()
 
-
-
-
-    def near(pos1, pos2, distance):
+    def near(self, pos1, pos2, distance):
         """
         Checks if two Board-Positions are near each other
 
@@ -92,8 +90,10 @@ class BoardPositionHandler:
 
     def is_rect_completly_on_board(self, rect):
         rect = BoardRectFactory(self.board).create(rect)
-        topleft_on_board = self.is_position_on_board(BoardPositionFactory(self.board).create(tuple([rect.left, rect.top])))
-        bottom_right_on_board = self.is_position_on_board(BoardPositionFactory(self.board).create(tuple([rect.right, rect .bottom])))
+        topleft_on_board = self.is_position_on_board(
+            BoardPositionFactory(self.board).create(tuple([rect.left, rect.top])))
+        bottom_right_on_board = self.is_position_on_board(
+            BoardPositionFactory(self.board).create(tuple([rect.right, rect .bottom])))
         return topleft_on_board or bottom_right_on_board
 
     def get_colors_in_rect(self, rect, rect_borders=None):
@@ -105,7 +105,8 @@ class BoardPositionHandler:
                 if color not in colors:
                     colors.append(color)
             if rect_borders is None or "right" in rect_borders:
-                color = self.board.background.get_color_from_pixel((rect.x + x, rect.y + rect.height))
+                color = self.board.background.get_color_from_pixel(
+                    (rect.x + x, rect.y + rect.height))
                 if color not in colors:
                     colors.append(color)
         for y in range(self.height):
@@ -114,7 +115,8 @@ class BoardPositionHandler:
                 if color not in colors:
                     colors.append(color)
             if rect_borders is None or "bottom" in rect_borders:
-                color = self.board.background.get_color_from_pixel((rect.x + rect.width, rect.y + y))
+                color = self.board.background.get_color_from_pixel(
+                    (rect.x + rect.width, rect.y + y))
                 if color not in colors:
                     colors.append(color)
         return colors

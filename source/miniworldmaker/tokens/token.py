@@ -5,6 +5,7 @@ from miniworldmaker import app
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple
 from miniworldmaker.tokens import token_physics as token_physics
 from miniworldmaker import inspection_methods
 
@@ -17,9 +18,10 @@ class Meta(type):
     def __call__(cls, *args, **kwargs):
         try:
             instance = super().__call__(*args, **kwargs)
+        except NoValidBoardPositionError:
+            raise TokenArgumentShouldBeTuple()
         except TypeError:
             raise
-            #raise TypeError("Wrong number of arguments for {0}-constructor. See method-signature: {0}{1}".format(cls.__name__,inspect.signature(cls.__init__)))
         if instance.costume:
             instance.costume._reload_all()
         if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board, "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(app.App.board, "PhysicsBoard"):

@@ -68,10 +68,10 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         if type(token_type) == str:
             token_type = token.Token.find_subclass(token_type)
 
-        # @todo ??? target = self.get_destination(self.token.position, self.token.direction, distance)
-        token_list : list = None
-        if self.board.is_position_on_board(self.token.position):
-            token_list = self.board.sensing_tokens(self.token.position)
+        target_position = self.get_destination(self.token.position, self.token.direction, distance)
+        token_list : list = list()
+        if self.board.is_position_on_board(target_position):
+            token_list = self.board.sensing_tokens(target_position)
         if token_list and self.token in token_list:
             token_list.remove(self.token)
         # Filter by token type
