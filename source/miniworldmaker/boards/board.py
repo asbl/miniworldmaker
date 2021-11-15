@@ -239,7 +239,6 @@ class Board(container.Container):
     @rows.setter
     def rows(self, value):
         self._rows = value
-        # self.app.window.dirty = 1
         self.background_handler.full_repaint()
 
     @property
@@ -612,11 +611,15 @@ class Board(container.Container):
         self.event_handler.update_event_handling()
 
     def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
-        pass
-
-    " @decorator"
+        return self.position_handler.is_position_on_board(position)
 
     def register(self, method):
+        """
+        Used as decorator
+        e.g.
+        @register
+        def method...
+        """
         bound_method = method.__get__(self, self.__class__)
         setattr(self, method.__name__, bound_method)
         return bound_method
@@ -629,9 +632,6 @@ class Board(container.Container):
 
     def quit(self, exit_code=0):
         self.app.quit(exit_code)
-
-    def add_board_sensor_to_token(self, token, position):
-        pass
 
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)

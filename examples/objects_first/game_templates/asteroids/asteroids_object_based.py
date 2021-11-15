@@ -16,7 +16,7 @@ for i in range(2):
         if borders:
             self.bounce_from_border(borders)
         self.move()
-asteroids.append(asteroid)
+    asteroids.append(asteroid)
 
 player = Token(position=(40, 40))
 player.add_costume("images/ship.png")

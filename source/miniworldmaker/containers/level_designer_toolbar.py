@@ -3,6 +3,7 @@ import os
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
+from miniworldmaker.inspection_methods import InspectionMethods
 
 
 class LevelDesignerToolbar(toolbar.Toolbar):
@@ -18,7 +19,6 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
         import tokens.token as tk
-        class_set = self.all_subclasses(tk.Token)
         excluded = ["Token",
                     "Actor",
                     "TextToken",
@@ -39,10 +39,6 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         if os.path.exists(db_file):
             self.add_widget(LoadButton(board=self.board, text="Load", filename=db_file))
         self.board.is_running = False
-
-    def all_subclasses(self, parent_cls) -> set:
-        return set(parent_cls.__subclasses__()).union(
-            [s for c in parent_cls.__subclasses__() for s in self.all_subclasses(c)])
 
     def get_event(self, event, data):
         super().get_event(event, data)
@@ -98,7 +94,6 @@ class TokenButton(ToolbarWidget):
         super().__init__()
         self.parent = parent
         self.board = board
-        # token = token_type(position = None)
         if token_type.class_image:
             self._img_path = token_type.class_image
         self._text_padding = 30

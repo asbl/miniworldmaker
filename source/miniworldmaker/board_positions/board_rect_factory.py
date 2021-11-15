@@ -34,8 +34,6 @@ class BoardRectFactory:
         if position is not None:
             if dimensions is not None:
                 new_rect.topleft = dimensions.topleft
-            else:
-                new_rect.topleft = (pixel_x, pixel_y)
         else:
-            position = (0, 0)
+            new_rect.topleft = (pixel_x, pixel_y)
         return new_rect

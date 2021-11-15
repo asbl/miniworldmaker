@@ -57,7 +57,7 @@ class CallTimer(Timer):
         self.arguments = arguments
 
     def _call_method(self):
-        InspectionMethods.call_method(self.method, self.arguments)
+        InspectionMethods.call_method(self.method, self.arguments, allow_none = True)
 
 
 class ActionTimer(CallTimer):

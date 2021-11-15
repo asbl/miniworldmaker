@@ -1,9 +1,9 @@
+from miniworldmaker import db_manager
+import os
+from miniworldmaker.tokens import token as tkn
 class BoardDatabaseHandler:
-    def __init__(self, board):
-         self.board = board
 
-
-
+    @classmethod
     def board_from_db(cls, file):
         """
         Loads a sqlite db file.

@@ -78,6 +78,9 @@ class Costume(appear.Appearance):
 
 
     def after_animation(self):
+        """
+        Can be overwritten by main-program
+        """
         pass
 
     def end_animation(self):

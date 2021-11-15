@@ -2,14 +2,11 @@ from collections import defaultdict
 from miniworldmaker.inspection_methods import InspectionMethods
 import inspect
 
+
 class BoardCollisionHandler:
     def __init__(self, board):
         self.board = board
-        registered_collision_handlers_for_tokens = defaultdict(list)
-        self.tokens_with_collisionhandler : defaultdict = defaultdict(list)
-
-    def reload(self):
-        pass
+        self.tokens_with_collisionhandler: defaultdict = defaultdict(list)
 
     def handle_all_collisions(self):
         for token in self.board.tokens:
@@ -17,7 +14,6 @@ class BoardCollisionHandler:
             self._handle_collision_with_borders(token)
             self._handle_on_board(token)
 
-    
     def _handle_collision_with_tokens(self, token):
         members = dir(token)
         found_tokens = []
@@ -36,7 +32,7 @@ class BoardCollisionHandler:
                         method_name = ('on_sensing_' + str(other_class.__name__)).lower()
                         method = InspectionMethods.get_instance_method(token, method_name)
                         if method:
-                           InspectionMethods.call_instance_method(token, method, [other_token])
+                            InspectionMethods.call_instance_method(token, method, [other_token])
 
     def _handle_collision_with_borders(self, token):
         border_methods_dict = {"on_sensing_left_border": InspectionMethods.get_instance_method(token, "on_sensing_left_border"),
@@ -49,16 +45,20 @@ class BoardCollisionHandler:
             sensed_borders = token.sensing_borders()
             if sensed_borders:
                 if on_sensing_borders:
-                     InspectionMethods.call_instance_method(token, on_sensing_borders, [sensed_borders])
+                    InspectionMethods.call_instance_method(
+                        token, on_sensing_borders, [sensed_borders])
                 for key in border_methods_dict.keys():
                     if border_methods_dict[key]:
                         for border in sensed_borders:
                             if border in key:
-                                InspectionMethods.call_instance_method(token, border_methods_dict[key], None)
+                                InspectionMethods.call_instance_method(
+                                    token, border_methods_dict[key], None)
 
     def _handle_on_board(self, a_object):
-        on_board_handler = InspectionMethods.get_instance_method(a_object, 'on_sensing_on_board'.lower())
-        not_on_board_handler = InspectionMethods.get_instance_method(a_object, 'on_sensing_not_on_board'.lower())
+        on_board_handler = InspectionMethods.get_instance_method(
+            a_object, 'on_sensing_on_board'.lower())
+        not_on_board_handler = InspectionMethods.get_instance_method(
+            a_object, 'on_sensing_not_on_board'.lower())
         if on_board_handler or not_on_board_handler:
             is_on_board = a_object.sensing_on_board()
             if is_on_board:

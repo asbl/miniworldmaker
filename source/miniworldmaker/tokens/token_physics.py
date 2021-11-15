@@ -60,7 +60,6 @@ class TokenPhysics:
         self._correct_angle = 90
         self._body = None
         self._shape = None
-        self.correct_angle = 0
         self.dirty = 1
         self.model_setup_complete = False
         self.size = (1, 1)  # scale factor for physics box model
@@ -138,7 +137,7 @@ class TokenPhysics:
                 self._shape.elasticity = self.elasticity
                 self._shape.token = self.token
                 self._shape.collision_type = hash(
-                        self.token.__class__.__name__) % ((sys.maxsize + 1) * 2)
+                    self.token.__class__.__name__) % ((sys.maxsize + 1) * 2)
                 self.board.space.add(self._body, self._shape)
             if self.simulation == "static":
                 self.board.space.reindex_static()
@@ -152,7 +151,7 @@ class TokenPhysics:
 
     def set_pymunk_direction(self):
         self._body.angle = math.radians(
-            self.token.direction + self.correct_angle)
+            self.token.position_manager.get_direction_from_miniworldmaker())
 
     def set_mwm_token_position(self):
         self.token.center = pymunk.pygame_util.from_pygame(
@@ -161,7 +160,7 @@ class TokenPhysics:
 
     def set_mwm_token_direction(self):
         self.token.position_manager.set_direction_from_pymunk(
-            math.degrees(self._body.angle) - self.correct_angle)
+            math.degrees(self._body.angle))
         self.dirty = 0
 
     def reload(self):
@@ -350,7 +349,8 @@ class TokenPhysics:
         Args:
             power: The power-value of the impulse.
         """
+        direction = 180 - direction
         impulse = pymunk.Vec2d(1, 0)
-        impulse = impulse.rotated_degrees(direction + 180)
+        impulse = impulse.rotated_degrees(direction)
         impulse = power * 1000 * impulse.normalized()
         self._body.apply_impulse_at_local_point(impulse)

@@ -29,7 +29,6 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
     def add_board_costume_manager_to_token(self, token, image):
         token.costume_manager = physicsboardcostumemanager.PhysicsBoardCostumeManager(token, image)
         token._managers.append(token.costume_manager)
-        # image = token.costume._image.get_rect()
 
     def remove_token_from_board(self, token):
         super().remove_token_from_board(token)
@@ -146,7 +145,7 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
                 im.InspectionMethods.get_and_call_instance_method(
                     token, method.__name__, [self, collision])
             # Korrekte Methode ist da
-            handler_cls = PhysicsBoardTokenHandler.get_touching_method_other_class(method)
+            PhysicsBoardTokenHandler.get_touching_method_other_class(method)
         return True
 
     def pymunk_separation_collision_listener(self, arbiter, space, data):
@@ -164,5 +163,5 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
                 im.InspectionMethods.get_and_call_instance_method(
                     token, method.__name__, [self, collision])
             # Korrekte Methode ist da
-            handler_cls = PhysicsBoardTokenHandler.get_touching_method_other_class(method)
+            PhysicsBoardTokenHandler.get_touching_method_other_class(method)
         return True

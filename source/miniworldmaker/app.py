@@ -24,9 +24,7 @@ class App:
     """
     log = logging.getLogger("miniworldmaker")
     board: "Board" = None
-    window: Window = None
     _quit: bool = False
-    app = None
 
     def __init__(self, title):
         print("init miniworldmaker app...")
@@ -37,8 +35,8 @@ class App:
         self.event_manager: EventManager = EventManager(self)
         self.sound_manager: sound_manager.SoundManager = sound_manager.SoundManager(self)
         self.window: Window = Window(title, self.container_manager, self.event_manager)
-        App.app = self
-        App.window = self.window
+        App.app: App = self
+        App.window: Window = self.window
         self._exit_code: int = 0
 
     def run(self, image, full_screen: bool = False, log=False):
@@ -60,10 +58,7 @@ class App:
         self._setup_images()
         self.window.display_update()
         pygame.display.update([image.get_rect()])
-        if log is True:
-            logging.basicConfig(level=logging.DEBUG)
-        else:
-            logging.basicConfig(level=logging.INFO)
+
         self.window.surface.blit(image, self.board.rect)
         # Start the main-loop
         print("run")

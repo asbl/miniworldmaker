@@ -114,8 +114,8 @@ class Bird(mwm.Token):
     def on_begin_simulation(self):
         print("impulse", self.position, self.physics._body.position, self.size)
         direction = self.board.arrow.direction
-        power = 30000
-        self.physics.impulse_in_direction(direction, power)
+        power = 20000
+        self.impulse(direction, power)
         #self.board.shoots.inc()
 
     def act(self):

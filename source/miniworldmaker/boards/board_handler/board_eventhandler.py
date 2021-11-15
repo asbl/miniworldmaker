@@ -23,7 +23,7 @@ class BoardEventHandler:
                 all_objects = list(tokens) + [self.board]
             else:
                 all_objects = [self]
-            # global events
+            # handle global events
             if event in ["reset"]:
                 self.handle_reset_event()
             if event in ["setup"]:
@@ -102,11 +102,11 @@ class BoardEventHandler:
         del self
         return board
 
-    def handle_switch_board_event(self, old_board, Board, size: tuple):
+    def handle_switch_board_event(self, old_board, new_board, size: tuple):
         self._app.event_manager.event_queue.clear()
         for token in self.tokens:
             token.remove()
-        self._app.board = Board(size[0], size[1])
+        self._app.board = new_board(size[0], size[1])
         board = self._app.board
         board.run()
         board.event_queue.clear()
@@ -117,24 +117,16 @@ class BoardEventHandler:
         # any key down?
         method = InspectionMethods.get_instance_method(receiver, "act")
         if method:
-            sig = InspectionMethods.get_signature(method, None)
-            if len(sig.parameters) == 0:
-                InspectionMethods.call_instance_method(receiver, method, None)
-            else:
-                raise Exception("Wrong number of arguments for act-Method (should be: 0)")
+            InspectionMethods.call_instance_method(receiver, method, None)
 
     def handle_button_event(self, receiver, event, data):
         # any key down?
         method = InspectionMethods.get_instance_method(receiver, "on_button_pressed")
         if method:
-            sig = InspectionMethods.get_signature(method, data)
-            if len(sig.parameters) == 1:
-                InspectionMethods.call_instance_method(receiver, method, data)
+            InspectionMethods.call_instance_method(receiver, method, data)
 
     def handle_message_event(self, receiver, event, data):
         # any key down?
         method = InspectionMethods.get_instance_method(receiver, "on_message")
         if method:
-            sig = InspectionMethods.get_signature(method, (str(data),))
-            if len(sig.parameters) == 1:
-                InspectionMethods.call_instance_method(receiver, method, (str(data),))
+            InspectionMethods.call_instance_method(receiver, method, (str(data),))
