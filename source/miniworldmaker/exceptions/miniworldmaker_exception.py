@@ -106,3 +106,8 @@ class TokenArgumentShouldBeTuple(MiniworldMakerError):
     def __init__(self):
         self.message = f"First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets? Instanciate the token with Token((x,y)) instead of  Token(x,y)"
         super().__init__(self.message)
+
+class PhysicsSimulationTypeError(MiniworldMakerError):
+    def __init__(self):
+        self.message = f"Physics simulation should be `None`, `static`, `manual` or `simulated`(default)"
+        super().__init__(self.message)

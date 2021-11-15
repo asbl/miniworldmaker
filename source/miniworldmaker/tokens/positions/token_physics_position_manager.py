@@ -1,6 +1,7 @@
 from math import radians
 import miniworldmaker.tokens.positions.token_pixel_position_manager as pixel_position_manager
 from miniworldmaker.board_positions import board_position
+from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
 
 
 class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManager):
@@ -9,6 +10,7 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         if not self.size:
             self.size = (40, 40)
         self.token.board.token_handler.register_token_method(self.token, self.impulse)
+        self.token.board.token_handler.register_token_method(self.token, self.set_simulation)
 
     def set_position(self, value):
         pos = super().set_position(value)
@@ -43,3 +45,9 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
 
     def impulse(self, direction=float, power=int):
         self.token.physics.impulse_in_direction(direction, power)
+
+    def set_simulation(self, simulation_type : str):
+        if simulation_type in ["simulated", "manual", "static", None]:
+            self.token.physics.simulation = simulation_type
+        else:
+            raise PhysicsSimulationTypeError()
