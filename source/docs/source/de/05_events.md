@@ -49,33 +49,14 @@ def on_message(self, message):
         do_something()
   ```
 
-### Vollständiges Beispiel
+## Ausblick
 
-```{code-block} python
----
-lineno-start: 1
-emphasize-lines: 12,13,14
----
-import miniworldmaker
+* [Vollständiges Beispiel](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tutorial/05%20-%20events.py)
 
-board = miniworldmaker.TiledBoard()
-board.columns = 20
-board.rows = 8
-board.tile_size = 42
-board.add_background("images/soccer_green.jpg")
-board.speed = 30
-player = miniworldmaker.Token()
-player.add_costume("images/player_1.png")
-@player.register
-def act(self):
-    self.direction = 90
-    self.move()
+* Weitere Ereignisse
 
-board.run()
-```
+  :::{note}  
+  >➥ Mehr Infos über Richtungen: [Key Concept: Events](../key_concepts/events.md)
+  :::
 
-## Weitere Ereignisse:
-
-:::{note}  
->➥ Mehr Infos über Richtungen: [Key Concept: Events](../key_concepts/events.md)
-:::
+* [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/8%20Events)

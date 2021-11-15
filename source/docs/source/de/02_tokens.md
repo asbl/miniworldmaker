@@ -63,4 +63,6 @@ token_name.add_costume("path_to_image")
 
 ### Ausblick
 
-> --> Mehr Informationen. Siehe [Tokens](../key_concepts/tokens.md)
+* --> Mehr Informationen. Siehe [Tokens](../key_concepts/tokens.md)
+
+* [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds)

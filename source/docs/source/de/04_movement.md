@@ -48,35 +48,12 @@ Die Richtung kannst du mit folgenden Befehlen ändern:
 
   ![movement](/_images/movement.jpg)
 
-### Vollständiges Beispiel:
-
-```{code-block} python
----
-lineno-start: 1
-emphasize-lines: 12,13,14
----
-import miniworldmaker
-
-board = miniworldmaker.TiledBoard()
-board.columns = 20
-board.rows = 8
-board.tile_size = 42
-board.add_background("images/soccer_green.jpg")
-board.speed = 30
-player = miniworldmaker.Token()
-player.add_costume("images/player_1.png")
-@player.register
-def act(self):
-    self.direction = 90
-    self.move()
-
-board.run()
-```
-
 :::{note} 
 > ➥ Mehr Infos über Richtungen: [Key Concept:  Directions](../key_concepts/directions.md)
 :::
 
-### Weitere Beispiele
+## Ausblick
 
-> [Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/moving)
+  * [Vollständiges Beispiel](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tutorial/04%20-%20movement%20and%20direction.py)
+
+  * [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/2%20Movement)

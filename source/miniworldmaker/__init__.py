@@ -1,3 +1,4 @@
+import sys
 from miniworldmaker.board_positions.board_position_factory import BoardPositionFactory
 from miniworldmaker.board_positions.board_rect_factory import BoardRectFactory
 from miniworldmaker.boards.board import Board
@@ -80,3 +81,4 @@ __all__ = ['Token',
            'timer',
            'loop',
            ]
+

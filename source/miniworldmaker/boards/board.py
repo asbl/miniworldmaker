@@ -40,7 +40,7 @@ class Board(container.Container):
             class MyBoard(PixelBoard):
 
             def on_setup(self):
-                self.add_image(path="images/stone.jpg")
+                self.add_background(path="images/stone.jpg")
                 Robot(position=(50, 50))
 
 
@@ -50,18 +50,9 @@ class Board(container.Container):
 
         .. code-block:: python
 
-            def on_setup(self):
-                self.add_image(path="images/soccer_green.jpg")
-                self.player = Player(position=(3, 4))
-                self.speed = 10
-                stone = self.add_background(("images/stone.png"))
-                stone.is_textured = True
-                stone.is_scaled_to_tile = True
-
-
             board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
 
-        > See [Example](https://codeberg.org/a_siebel/r/src/branch/main/examples/basics)
+        > See [Examples](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds)
 
     Args:
         columns: columns of new board (default: 40)
@@ -92,16 +83,10 @@ class Board(container.Container):
             self._fps: int = 60  # property speed
         self._key_pressed: bool = False
         self._animated: bool = False
-        self._grid: list = []
         self._orientation: int = 0
         if type(columns) != int or type(rows) != int:
             raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
-        self._grid = []
-        for row in range(self.rows):
-            self._grid.append([])
-            for column in range(self.columns):
-                self._grid[row].append(0)
         self.frame: int = 0
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self.clock: pygame.time.Clock = pygame.time.Clock()
@@ -254,9 +239,8 @@ class Board(container.Container):
     @rows.setter
     def rows(self, value):
         self._rows = value
-        self.app.window.dirty = 1
-        self.background_handler.dirty = 1
-        self.background_handler.repaint_all = 1
+        # self.app.window.dirty = 1
+        self.background_handler.full_repaint()
 
     @property
     def columns(self) -> int:
@@ -268,9 +252,7 @@ class Board(container.Container):
     @columns.setter
     def columns(self, value):
         self._columns = value
-        self.app.window.dirty = 1
-        self.background_handler.dirty = 1
-        self.background_handler.repaint_all = 1
+        self.background_handler.full_repaint()
 
     @property
     def size(self) -> tuple:
@@ -280,8 +262,7 @@ class Board(container.Container):
     def size(self, value: tuple):
         self.columns = value[0]
         self.rows = value[1]
-        self.background_handler.dirty = 1
-        self.background_handler.repaint_all = 1
+        self.background_handler.full_repaint()
 
     @property
     def tile_size(self) -> int:
@@ -293,8 +274,7 @@ class Board(container.Container):
     @tile_size.setter
     def tile_size(self, value):
         self._tile_size = value
-        self.app.window.dirty = 1
-        self.background_handler.repaint_all = 1
+        self.background_handler.full_repaint()
 
     @property
     def tile_margin(self) -> int:
@@ -306,8 +286,7 @@ class Board(container.Container):
     @tile_margin.setter
     def tile_margin(self, value):
         self._tile_margin = value
-        self.app.window.dirty = 1
-        self.background_handler.repaint_all = 1
+        self.background_handler.full_repaint()
 
     @property
     def tokens(self) -> pygame.sprite.LayeredDirty:

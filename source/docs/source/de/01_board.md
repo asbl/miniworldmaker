@@ -59,10 +59,9 @@ Es gibt mehrere Kind-Klassen von Board
   
   * Ein `PhysicsBoard` simuliert physikalische Eigenschaften und Objekte auf dem Board.
   
-Einige Features der Boards (z.B. Kollisionen) unterscheiden sich geringfügig.
+  Einige Features der Boards (z.B. Kollisionen) unterscheiden sich geringfügig.
 
-> Mehr Informationen, siehe [Key-Concept: Boards](../key_concepts/boards.md)
+  > Mehr Informationen, siehe [Key-Concept: Boards](../key_concepts/boards.md)
 
-### Beispiele
+  * [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds)
 
- * [Basic Framework](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/basics/basicframework_objects.py) - Ein erstes Programm, mit dem du starten kannst.

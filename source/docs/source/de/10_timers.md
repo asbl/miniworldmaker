@@ -17,6 +17,8 @@ Einen Timer kannst du z.B. so starten:
 miniworldmaker.ActionTimer(24, player.move)
 ```
 
+![movement](/_images/actiontimer.png)
+
 Die Funktion erhält 2 Argumente: 
 
   * Nach `24` Frames (1)
@@ -38,19 +40,17 @@ miniworldmaker.ActionTimer(24, player.move, None)
 
 Der LoopActionTimer macht das gleiche wie der Actiontimer, allerdings wird die Aktion mit gleichen Abständen immer wieder wiederholt. Wenn diese Schleife enden soll, muss der Timer gelöscht werden:
 
-#### LoopActionTimer erstellen
+  * So erstellst du einen Loop-Actiontimer. Der erste Parameter gibt an in welchen Abständen die Schleife wiederholt werden soll.
 
-So erstellst du einen Loop-Actiontimer. Der erste Parameter gibt an in welchen Abständen die Schleife wiederholt werden soll.
+  ```
+  loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move)
+  ```
 
-```
-loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move)
-```
-#### LoopActionTimer löschen
+  * So kannst du einen LoopActionTimer wieder entfernen.
 
-So kannst du einen LoopActionTimer wieder entfernen.
-```
-loopactiontimer.unregister()
-```
+  ```
+  loopactiontimer.unregister()
+  ```
 
 
 

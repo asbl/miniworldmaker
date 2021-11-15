@@ -1,4 +1,5 @@
 import logging
+import traceback
 import sys
 from collections import deque
 
@@ -7,7 +8,7 @@ import pygame
 import __main__
 
 import inspect
-from miniworldmaker.exceptions.miniworldmaker_exception import NoRunError
+from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, NoRunError
 from miniworldmaker.window import Window
 from miniworldmaker.event_manager import EventManager
 from miniworldmaker.container_manager import ContainerManager
@@ -16,8 +17,13 @@ from miniworldmaker import sound_manager
 version = pkg_resources.require("miniworldmaker")[0].version
 print("Show new miniworldmaker v.{0} Window".format(version))
 print("Let's go")
+print("Set excepthook")
+def foo(exctype, value, tb):
+    print("EEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRROOOR")
 
+sys.excepthook = foo
 
+print(sys.excepthook)
 class App:
     """The class app contains the game itself. It's created the first time you call board.shbow().
     """
@@ -95,6 +101,7 @@ class App:
             self.event_manager.handle_event_queue()
             self.container_manager.reload_containers()
             self.window.display_repaint()
+
            
     def quit(self, exit_code = 0):
         self._exit_code = exit_code

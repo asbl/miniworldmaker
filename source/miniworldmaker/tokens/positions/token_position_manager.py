@@ -1,6 +1,8 @@
 from miniworldmaker.appearances import appearances
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
 from typing import Union
 from typing import Type
+import traceback
 from typing import TypeVar
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import costume
@@ -92,6 +94,7 @@ class TokenPositionManager:
 
     def get_position(self) -> board_position.BoardPosition:
         return board_position_factory.BoardPositionFactory(self.token.board).create(self._position)
+            
 
     def set_position(self, value):
         self.token.dirty = 1

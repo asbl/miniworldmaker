@@ -29,7 +29,7 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
     def add_board_costume_manager_to_token(self, token, image):
         token.costume_manager = physicsboardcostumemanager.PhysicsBoardCostumeManager(token, image)
         token._managers.append(token.costume_manager)
-        image = token.costume._image.get_rect()
+        # image = token.costume._image.get_rect()
 
     def remove_token_from_board(self, token):
         super().remove_token_from_board(token)

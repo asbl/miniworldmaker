@@ -67,38 +67,6 @@ Befindet sich eine Spielfigur an der Position (0,0) wird folgendes ausgegeben:
 
 `Borders are here! ['right', 'top']`
 
-### Vollständiges Beispiel
-
-```{code-block} python
----
-lineno-start: 1
-emphasize-lines: 1,5,6
----
-import miniworldmaker
-
-board = miniworldmaker.TiledBoard()
-board.columns = 20
-board.rows = 8
-board.tile_size = 42
-board.add_background("images/soccer_green.jpg")
-board.speed = 30
-player1 = miniworldmaker.Token()
-player1.add_costume("images/player_1.png")
-player2 = miniworldmaker.Token((8, 0))
-player2.add_costume("images/player_1.png")
-@player1.register
-def act(self):
-    self.direction = 90
-    if not self.sensing_tokens():
-        self.move()
-@player1.register
-def on_sensing_token(self, other):
-    global player2
-    if other == player2:
-      print("I found you!")
-board.run()
-```
-
 ### FAQ
 
   - Meine Kollisionen werden nicht erkannt, was kann ich tun?
@@ -117,9 +85,12 @@ board.run()
 
 ### Ausblick
 
-Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies kann über die Eigenschaft `collision_type` des aufspürenden Objekts eingestellt werden, z.B. "mask" für einen pixelgenauen Vergleich oder 'rect' wenn nur die umschließenden Rechtecke verglichen werden.
+  * [Vollständiges Beispiel](
+> ➥ Mehr über Sensoren: [Key Concept: Sensors](../key_concepts/sensors.md))
+
+  * Mehr über Sensoren: [Key Concept: Sensors](../key_concepts/sensors.md)
+
+  * Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies kann über die Eigenschaft `collision_type` des aufspürenden Objekts eingestellt werden, z.B. "mask" für einen pixelgenauen Vergleich oder 'rect' wenn nur die umschließenden Rechtecke verglichen werden.
 
 
 
-
-> ➥ Mehr über Sensoren: [Key Concept: Sensors](../key_concepts/sensors.md)
