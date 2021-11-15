@@ -17,36 +17,29 @@ from miniworldmaker import sound_manager
 version = pkg_resources.require("miniworldmaker")[0].version
 print("Show new miniworldmaker v.{0} Window".format(version))
 print("Let's go")
-print("Set excepthook")
-def foo(exctype, value, tb):
-    print("EEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRROOOR")
 
-sys.excepthook = foo
 
-print(sys.excepthook)
 class App:
     """The class app contains the game itself. It's created the first time you call board.shbow().
     """
     log = logging.getLogger("miniworldmaker")
-    board : "Board" = None
-    window : Window = None
-    _quit : bool = False
+    board: "Board" = None
+    window: Window = None
+    _quit: bool = False
     app = None
 
-
     def __init__(self, title):
-        print ("init miniworldmaker app...")
+        print("init miniworldmaker app...")
         with open(__main__.__file__) as f:
             if ".run()" not in f.read():
                 raise NoRunError()
-        self.container_manager : ContainerManager = ContainerManager(self)
-        self.event_manager : EventManager = EventManager(self)
-        self.sound_manager : sound_manager.SoundManager = sound_manager.SoundManager(self)
-        self.window : Window = Window(title, self.container_manager, self.event_manager)
+        self.container_manager: ContainerManager = ContainerManager(self)
+        self.event_manager: EventManager = EventManager(self)
+        self.sound_manager: sound_manager.SoundManager = sound_manager.SoundManager(self)
+        self.window: Window = Window(title, self.container_manager, self.event_manager)
         App.app = self
         App.window = self.window
-
-        self._exit_code : int = 0
+        self._exit_code: int = 0
 
     def run(self, image, full_screen: bool = False, log=False):
         """
@@ -102,8 +95,6 @@ class App:
             self.container_manager.reload_containers()
             self.window.display_repaint()
 
-           
-    def quit(self, exit_code = 0):
+    def quit(self, exit_code=0):
         self._exit_code = exit_code
         App._quit = True
-

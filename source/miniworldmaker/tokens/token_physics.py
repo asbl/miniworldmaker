@@ -106,43 +106,42 @@ class TokenPhysics:
             try:
                 shift_x = self.token.size[0] / 2
                 shift_y = self.token.size[1] / 2
-                print("shape data", self.token.board.image, self.token.size, self.token.position, self.token.size)
-                #start = (self.token.start_position[0], self.token.start_position[1])
-                #end = (self.token.local_end_position[0], self.token.local_end_position[1])
-                start = pymunk.pygame_util.from_pygame((self.token.local_start_position[0] - shift_x, self.token.local_start_position[1] - shift_y), self.token.board.image)
-                end = pymunk.pygame_util.from_pygame((self.token.local_end_position[0] - shift_x, self.token.local_end_position[1] - shift_y), self.token.board.image)
-                shape = pymunk.Segment(self._body, start, end,self.token.thickness)
+                start = pymunk.pygame_util.from_pygame(
+                    (self.token.local_start_position[0] - shift_x, self.token.local_start_position[1] - shift_y), self.token.board.image)
+                end = pymunk.pygame_util.from_pygame(
+                    (self.token.local_end_position[0] - shift_x, self.token.local_end_position[1] - shift_y), self.token.board.image)
+                shape = pymunk.Segment(self._body, start, end, self.token.thickness)
             except AttributeError:
-                raise AttributeError("ERROR: token.board is not set.")
+                if not hasattr(self.token, "board") or not self.token.board:
+                    raise AttributeError("token.board is not set.")
         else:
-            raise("AttributeError: no shape set")
+            raise AttributeError("No shape set!")
         return shape
 
     def setup_physics_model(self):
         if self.dirty and self.token.position:  # if token is on board
-            # self._moment = self.get_pymunk_moment()
             # create body
             self._body = pymunk_engine.Body(body_type=self.body_type)
-            # self._body.size = (self.token.width/, self.token.height)
-            # disable velocity for tokens if token has no gravity
             self.set_pymunk_position()
             self.set_pymunk_direction()
             self._body.size = (self.size[0] * self.token.width, self.size[1] * self.token.height)
+            # disable velocity for tokens if token has no gravity
             if self.simulation == "static":
                 self._body.velocity_func = lambda body, gravity, damping, dt: None
             else:
                 self._body.velocity = self.velocity_x, self._velocity_y
             # Adds object to space
-            self._shape = self.get_pymunk_shape()
-            self._shape.density = self.density
-            self._shape.friction = self.friction
-            self._shape.elasticity = self.elasticity
-            self._shape.token = self.token
-            self._shape.collision_type = hash(
-                self.token.__class__.__name__) % ((sys.maxsize + 1) * 2)
-            self.board.space.add(self._body, self._shape)
-            if self.shape_type.lower() != "line":
-                self.board.space.reindex_shapes_for_body(self._body)
+            if self._simulation != None:
+                self._shape = self.get_pymunk_shape()
+                self._shape.density = self.density
+                self._shape.friction = self.friction
+                self._shape.elasticity = self.elasticity
+                self._shape.token = self.token
+                self._shape.collision_type = hash(
+                        self.token.__class__.__name__) % ((sys.maxsize + 1) * 2)
+                self.board.space.add(self._body, self._shape)
+            if self.simulation == "static":
+                self.board.space.reindex_static()
             self.dirty = 0
             self.model_setup_complete = True
 
@@ -154,9 +153,6 @@ class TokenPhysics:
     def set_pymunk_direction(self):
         self._body.angle = math.radians(
             self.token.direction + self.correct_angle)
-        #+ self.token.costume.orientation + self.correct_angle
-        # self._body.angle = math.radians(
-        #        self.token.direction_at_unit_circle - self.token.costume.orientation )
 
     def set_mwm_token_position(self):
         self.token.center = pymunk.pygame_util.from_pygame(
@@ -164,8 +160,6 @@ class TokenPhysics:
         self.dirty = 0
 
     def set_mwm_token_direction(self):
-        # - self.token.costume.orientation
-        #self.token._direction = math.degrees(self._body.angle)
         self.token.position_manager.set_direction_from_pymunk(
             math.degrees(self._body.angle) - self.correct_angle)
         self.dirty = 0
@@ -200,17 +194,18 @@ class TokenPhysics:
             self._gravity = False
             self._can_move = False
             self._stable = True
-        if value.lower() == "static":
+        elif value.lower() == "static":
             self._is_rotatable = False
             self._gravity = False
             self._can_move = False
             self._stable = True
-        if value.lower() == "manual":
+            self.density = 0
+        elif value.lower() == "manual":
             self._is_rotatable = True
             self._gravity = False
             self._can_move = True
             self._stable = True
-        if value.lower() == "simulated":
+        elif value.lower() == "simulated":
             self._is_rotatable = False
             self._gravity = True
             self._can_move = True
@@ -220,7 +215,7 @@ class TokenPhysics:
 
     @property
     def body_type(self):
-        if self.simulation == None or self.simulation == "static":
+        if self.simulation is None or self.simulation == "static":
             return pymunk.Body.STATIC
         elif self.simulation == "manual":
             return pymunk.Body.KINEMATIC
