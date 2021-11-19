@@ -80,3 +80,7 @@ class TextToken(token.Token):
         self._auto_font_size = value
         if self._auto_font_size is True:
             self._auto_size = False
+
+    def set_size(self, value):
+        super().set_size(value)
+        self.set_auto_size()

@@ -68,8 +68,6 @@ class TokenCostumeManager:
         if self.costume is None or not self.has_costume:
             self.costume = new_costume
             self.has_costume = True
-        if self.token.collision_rect == "static-rect":
-            self.rect = rect
         self.costumes.add(new_costume)
         self.dirty = 1
         return new_costume
@@ -163,4 +161,4 @@ class TokenCostumeManager:
             return self._rect
 
     def reload_costume(self):
-        self.token.costume._reload_all()
+        self.costume._reload_all()

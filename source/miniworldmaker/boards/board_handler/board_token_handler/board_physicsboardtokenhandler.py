@@ -45,7 +45,7 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
              for token in self.physics_tokens]
             # simulate
             steps = self.board.accuracy
-            for x in range(steps):
+            for _ in range(steps):
                 # if self.physics.space is not None: - can be removed
                 self.board.space.step(1 / (60 * steps))
             # postprocess
@@ -143,14 +143,13 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
                 im.InspectionMethods.get_and_call_instance_method(
-                    token, method.__name__, [self, collision])
+                    token, method.__name__, [other, collision])
             # Korrekte Methode ist da
             PhysicsBoardTokenHandler.get_touching_method_other_class(method)
         return True
 
     def pymunk_separation_collision_listener(self, arbiter, space, data):
         # Translate pymunk variables to miniworldmaker variables
-        collision_method_for_token = None
         token = arbiter.shapes[0].token
         other = arbiter.shapes[1].token
         collision = dict()
@@ -161,7 +160,7 @@ class PhysicsBoardTokenHandler(pixelboardtokenhandler.PixelBoardTokenHandler):
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
                 im.InspectionMethods.get_and_call_instance_method(
-                    token, method.__name__, [self, collision])
+                    token, method.__name__, [other, collision])
             # Korrekte Methode ist da
             PhysicsBoardTokenHandler.get_touching_method_other_class(method)
         return True

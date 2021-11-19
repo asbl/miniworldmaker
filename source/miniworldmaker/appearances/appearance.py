@@ -8,6 +8,7 @@ import nest_asyncio
 import pygame
 from miniworldmaker.board_positions import board_position, board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import ColorException
+from miniworldmaker.file_manager import FileManager
 
 
 class MetaAppearance(type):
@@ -93,42 +94,14 @@ class Appearance(metaclass=MetaAppearance):
         self.cached_images = defaultdict()
         self.animation_length = 0
 
-
-    @staticmethod
-    def load_image(path):
-        """
-        Loads an image from an path.
-
-        Args:
-            path: The path to image
-
-        Returns: The image loaded
-
-        """
-        try:
-            canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
-            if canonicalized_path in Appearance._images_dict.keys():
-                # load image from img_dict
-                _image = Appearance._images_dict[canonicalized_path]
-            else:
-                try:
-                    _image = pygame.image.load(canonicalized_path).convert_alpha()
-                    Appearance._images_dict[canonicalized_path] = _image
-                except pygame.error:
-                    raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
-            return _image
-        except FileExistsError:
-            raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
-
     def after_init(self):
         self._reload_all()
         # self.update()
         self.initialized = True
 
     def _reload_all(self):
-        for img_action in self.image_actions_pipeline:
-            self.reload_actions[img_action[0]] = True
         self.dirty = 1
+        self.call_action("all")
 
     @property
     def font_size(self):
@@ -318,7 +291,7 @@ class Appearance(metaclass=MetaAppearance):
         else:
             self._text = value
             self.dirty = 1
-        self.call_action("write_text")
+        # self.call_action("write_text") #@todo: Write text should be sufficient
         self._reload_all()
 
     def fill(self, color):
@@ -343,6 +316,48 @@ class Appearance(metaclass=MetaAppearance):
         self.set_image(-1)
         self._reload_all()
 
+    def find_image_file(self, path: str) -> str:
+        """
+        Search if file exists.
+        Corrects path if file ending is missing.
+        """
+        canonicalized_path = FileManager.relative_to_absolute_path(path)
+        if Path(canonicalized_path).is_file():
+            return Path(canonicalized_path)
+        else:
+            if not FileManager.has_ending:
+                return FileManager.get_path_with_file_ending(path, ["jpg", "jpeg", "png"])
+            else:
+                return FileManager.get_path_with_file_ending(canonicalized_path.split(".")[0], ["jpg", "jpeg", "png"])
+
+    @staticmethod
+    def load_image(path):
+        """
+        Loads an image from an path.
+
+        Args:
+            path: The path to image
+
+        Returns: The image loaded
+
+        """
+        try:
+            canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
+            if canonicalized_path in Appearance._images_dict.keys():
+                # load image from img_dict
+                _image = Appearance._images_dict[canonicalized_path]
+            else:
+                try:
+                    _image = pygame.image.load(canonicalized_path).convert_alpha()
+                    Appearance._images_dict[canonicalized_path] = _image
+                except pygame.error:
+                    raise FileExistsError(
+                        "File '{0}' does not exist. Check your path to the image.".format(path))
+            return _image
+        except FileExistsError:
+            raise FileExistsError(
+                "File '{0}' does not exist. Check your path to the image.".format(path))
+
     def add_image(self, path: str) -> int:
         """
         Adds an image to the appearance
@@ -354,26 +369,8 @@ class Appearance(metaclass=MetaAppearance):
         Returns: The index of the added image.
 
         """
-        # Check if image exists
-        import os
-        canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
-        if not Path(canonicalized_path).is_file():
-            if "." not in canonicalized_path:
-                replacement_file_found = False
-                for filename_extension in ["jpg", "jpeg", "png"]:
-                      if Path(canonicalized_path + "." + filename_extension).is_file():
-                          path = path + "." + filename_extension
-                          canonicalized_path = str(path).replace('/', os.sep).replace('\\', os.sep)
-                          replacement_file_found = True
-                if not replacement_file_found:
-                    raise FileNotFoundError(canonicalized_path)
-            elif "." in canonicalized_path:
-                for filename_extension in ["jpg", "jpeg", "png"]:
-                      if Path(canonicalized_path.split(".")[0] + "." + filename_extension).is_file():
-                          path = path + "." + filename_extension
-                          raise FileNotFoundError(canonicalized_path )
-                raise FileNotFoundError(path)
-        #set image by path
+        path = self.find_image_file(path)
+        # set image by path
         _image = Appearance.load_image(path)
         self.images_list.append(_image)
         self.image_paths.append(path)
@@ -416,33 +413,51 @@ class Appearance(metaclass=MetaAppearance):
             self.raw_image = image
         return self.raw_image
 
-    def reload_image(self):
-        """ Performs all actions in image pipeline"""
-        if self.dirty == 1:
-            if self._current_animation_images:
-                self._image_index = len(self.images_list) - 1
-            if self.images_list and self._image_index < len(self.images_list) and self.images_list[self._image_index]:
-                image = self.images_list[self._image_index]  # if there is a image list load image by index
-            else:  # no image files - Render raw surface
-                image = self.load_surface()
-            for img_action in self.image_actions_pipeline:
+    def _reset_image_index(self):
+        if self._current_animation_images:
+            self._image_index = len(self.images_list) - 1
+
+
+    def _load_image_by_image_index(self):
+        if self.images_list and self._image_index < len(self.images_list) and self.images_list[self._image_index]:
+            # if there is a image list load image by index
+            image = self.images_list[self._image_index]
+        else:  # no image files - Render raw surface
+            image = self.load_surface()
+        return image
+
+    def _perform_action_pipeline_on_image(self, image):
+        for img_action in self.image_actions_pipeline:
                 # If an image action is to be executed again,
                 # load the last cached image from the pipeline and execute
                 # all subsequent image actions.
                 if self.reload_actions[img_action[0]] is False \
                         and img_action[0] in self.cached_images.keys() \
                         and self.cached_images[img_action[0]]:
-                    if getattr(self, img_action[2]):
-                        if self.parent.size != (0, 0):
-                            image = self.cached_images[img_action[0]] # Reload image from cache
-                else: # reload_actions is true
-                    if getattr(self, img_action[2]):
-                        if self.parent.size != (0, 0):
-                            image = img_action[1](image, parent=self.parent) # perform image action
+                    if getattr(self, img_action[2]) and self.parent.size != (0, 0):
+                            image = self.cached_images[img_action[0]]  # Reload image from cache
+                else:  # reload_actions is true
+                    if getattr(self, img_action[2]) and self.parent.size != (0, 0):
+                            # perform image action
+                            image = img_action[1](image, parent=self.parent)
                             self.cached_images[img_action[0]] = image
                     self.parent.dirty = 1
-            for blit_image in self.blit_images:
+        return image
+
+    def _blit_on_image(self, image):
+        for blit_image in self.blit_images:
                 image.blit(blit_image[0], blit_image[1])
+
+        return image
+
+
+    def reload_image(self):
+        """ Performs all actions in image pipeline"""
+        if self.dirty == 1:
+            self._reset_image_index()
+            image = self._load_image_by_image_index()
+            image = self._perform_action_pipeline_on_image(image)
+            image = self._blit_on_image(image)
             self._image = image
             self.dirty = 0
             for key in self.reload_actions.keys():
@@ -464,7 +479,6 @@ class Appearance(metaclass=MetaAppearance):
             self.dirty = 1
             self.parent.dirty = 1
             self._reload_all()
-            
 
     async def first_image(self):
         """
@@ -475,7 +489,7 @@ class Appearance(metaclass=MetaAppearance):
         self.parent.dirty = 1
         self._reload_all()
 
-    def set_image(self, value : int) -> bool:
+    def set_image(self, value: int) -> bool:
         if value == -1:
             value = len(self.images_list) - 1
         if 0 <= value < len(self.images_list):
@@ -558,12 +572,12 @@ class Appearance(metaclass=MetaAppearance):
         reload = False
         for img_action in self.image_actions_pipeline:
             if img_action[0] == action or action == "all":
-                reload = True # reload image action
+                reload = True  # reload image action
             if reload:
-                self.reload_actions[img_action[0]] = True # reload all actions after image action
+                self.reload_actions[img_action[0]] = True  # reload all actions after image action
         self.dirty = 1
         self.parent.dirty = 1
-        #self.update()
+        # self.update()
 
     def call_actions(self, actions):
         reload = False
@@ -577,12 +591,7 @@ class Appearance(metaclass=MetaAppearance):
         return self.image
 
     def call_all_actions(self):
-        for img_action in self.image_actions_pipeline:
-            self.reload_actions[img_action[0]] = True
-        self.dirty = 1
-        self.parent.dirty = 1
-        #self.update()
-        return self.image
+        self.call_action("all")
 
     def image_action_draw_shapes(self, image: pygame.Surface, parent) -> pygame.Surface:
         for draw_action in self.draw_shapes:
@@ -633,7 +642,8 @@ class Appearance(metaclass=MetaAppearance):
 
     def image_action_rotate(self, image: pygame.Surface, parent) -> pygame.Surface:
         if self.parent.direction != 0:
-            rotated_image = pygame.transform.rotate(image, - (self.parent.direction))
+            rotated_image = pygame.transform.rotozoom(image, - (self.parent.direction), 1)
+            #image.blit(rotated_image, new_rect)
             return rotated_image
         else:
             return image
@@ -709,5 +719,6 @@ class Appearance(metaclass=MetaAppearance):
     """ 
     Register method for decorator
     """
+
     def register(self, method: callable):
         self.board.token_handler.register_token_method(self, method)

@@ -54,10 +54,13 @@ class CallTimer(Timer):
     def __init__(self, time, method, arguments=None):
         super().__init__(time)
         self.method = method
-        self.arguments = arguments
+        if arguments or arguments == 0:
+            self.arguments = [arguments]
+        else:
+            self.arguments = None
 
     def _call_method(self):
-        InspectionMethods.call_method(self.method, self.arguments, allow_none = True)
+        InspectionMethods.call_method(self.method, self.arguments, allow_none = False)
 
 
 class ActionTimer(CallTimer):

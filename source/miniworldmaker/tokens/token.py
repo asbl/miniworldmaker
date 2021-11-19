@@ -20,8 +20,6 @@ class Meta(type):
             instance = super().__call__(*args, **kwargs)
         except NoValidBoardPositionError:
             raise TokenArgumentShouldBeTuple()
-        except TypeError:
-            raise
         if instance.costume:
             instance.costume._reload_all()
         if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board, "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(app.App.board, "PhysicsBoard"):
@@ -191,7 +189,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @dirty.setter
     def dirty(self, value: int):
-        self.costume_manager.dirty = value
+        if self.costume_manager:
+            self.costume_manager.dirty = value
 
     @property
     def rect(self) -> pygame.Rect:
@@ -434,6 +433,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @size.setter
     def size(self, value: tuple):
+        self.set_size(value)
+
+    def set_size(self, value: tuple):
         self.position_manager.size = value
 
     @property
@@ -552,17 +554,17 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.move(distance)
 
-    def move_up(self):
-        return self.position_manager.move_in_direction("up")
+    def move_up(self, distance : int = 1):
+        return self.position_manager.move_in_direction("up", distance)
 
-    def move_down(self):
-        return self.position_manager.move_in_direction("down")
+    def move_down(self, distance : int = 1):
+        return self.position_manager.move_in_direction("down", distance)
 
-    def move_left(self):
-        return self.position_manager.move_in_direction("left")
+    def move_left(self, distance : int = 1):
+        return self.position_manager.move_in_direction("left", distance)
 
-    def move_right(self):
-        return self.position_manager.move_in_direction("right")
+    def move_right(self, distance : int = 1):
+        return self.position_manager.move_in_direction("right", distance)
 
     def move_back(self):
         """
@@ -611,7 +613,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             The token itself
 
         """
-        return self.position_manager.move_in_direction(direction)
+        return self.position_manager.move_in_direction(direction, distance)
 
     def move_to(self, position: board_position.BoardPosition):
         """Moves token *distance* to a specific board_posiition
@@ -807,13 +809,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         colors = self.board_sensor.sensing_colors(colors, distance)
         return colors
 
-    def sensing_point(self, boardPosition: Union["board_position.Boardposition", Tuple]):
+    def sensing_point(self, board_position: Union["board_position.Boardposition", Tuple]):
         """
         Is the token colliding with a specific (global) point?
 
         Returns: True if point is below token
         """
-        return self.rect.collidepoint(boardPosition)
+        return self.rect.collidepoint(board_position)
 
     """ 
     Register method for decorator

@@ -32,6 +32,9 @@ class TokenPositionManager:
 
     @property
     def rect(self):
+        return self.get_rect()
+
+    def get_rect(self):
         return pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
 
     @classmethod
@@ -76,7 +79,6 @@ class TokenPositionManager:
         if value != self._size:
             self._old_size = self._size
             self._size = value
-            self.token.dirty = 1
             self.token.costume_manager.reload_costume()
         return self._size
 
@@ -108,7 +110,7 @@ class TokenPositionManager:
 
     @property
     def center(self) -> board_position.BoardPosition:
-        return board_position_factory.BoardPositionFactory(self.token.board).create((self.center_x, self.center_y))
+        return self.get_center()
 
     @property
     def center_x(self):
@@ -144,8 +146,11 @@ class TokenPositionManager:
     def center(self, value):
         self.set_center(value)
 
+    def get_center(self):
+        return board_position_factory.BoardPositionFactory(self.token.board).create((self.center_x, self.center_y))
+
     def set_center(self, value):
-        if self.costume is None:
+        if self.token.costume is None:
             raise NoCostumeSetError(self.token)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
@@ -165,15 +170,14 @@ class TokenPositionManager:
     def move(self, distance: int = 0):
         if distance == 0:
             distance = self.token.speed
-        destination = self.token.board_sensor.get_destination(
-            self.position, self.direction, distance)
+        destination = self.token.board_sensor.get_destination(self.position, self.direction, distance)
         self.position = destination
         return self
 
     def move_in_direction(self, direction: Union[int, str], distance=1):
         direction = self._value_to_direction(direction)
         self.direction = direction
-        self.move()
+        self.move(distance)
         return self
 
     def move_back(self):
@@ -181,8 +185,8 @@ class TokenPositionManager:
         self.direction = self.last_direction
         return self
 
-    def move_to(self, position: board_position.BoardPosition):
-        self.position = position
+    def move_to(self, new_center_position: board_position.BoardPosition):
+        self.center = new_center_position
         return self
 
     def _value_to_direction(self, value) -> int:
@@ -213,7 +217,7 @@ class TokenPositionManager:
         return value
 
     @staticmethod
-    def dir_to_unit_circle(direction: int):
+    def dir_to_unit_circle(direction: float):
         """
         Transforms the current direction into standard-unit-circle direction
 
@@ -223,7 +227,7 @@ class TokenPositionManager:
         return -(direction + 90) % 360 - 180
 
     @staticmethod
-    def unit_circle_to_dir(direction: int):
+    def unit_circle_to_dir(direction: float):
         """
         Transforms the current direction from standard-unit-circle direction
         into scratch-style coordinates

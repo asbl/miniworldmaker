@@ -3,6 +3,7 @@ import pymunk as pymunk_engine
 from pymunk import body
 import pymunk.pygame_util
 import sys
+from typing import Union
 
 
 class TokenPhysics:
@@ -103,13 +104,16 @@ class TokenPhysics:
                                   )
         elif self.shape_type.lower() == "line":
             try:
-                shift_x = self.token.size[0] / 2
-                shift_y = self.token.size[1] / 2
+                print("size", self.token.size, "pos", self.token.position, self.token.costume, self.token.rect)
+                shift_x = self.token.size[0] / 2 + self.token.position[0]
+                shift_y = - (self.token.board.size[1] - self.token.size[1] / 2 - self.token.position[1])
+                print("shift y",shift_y)
                 start = pymunk.pygame_util.from_pygame(
-                    (self.token.local_start_position[0] - shift_x, self.token.local_start_position[1] - shift_y), self.token.board.image)
+                    (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y), self.token.board.image)
                 end = pymunk.pygame_util.from_pygame(
-                    (self.token.local_end_position[0] - shift_x, self.token.local_end_position[1] - shift_y), self.token.board.image)
+                    (self.token.end_position[0] - shift_x, self.token.end_position[1] -  shift_y), self.token.board.image)
                 shape = pymunk.Segment(self._body, start, end, self.token.thickness)
+                print("shape", start, end)
             except AttributeError:
                 if not hasattr(self.token, "board") or not self.token.board:
                     raise AttributeError("token.board is not set.")
@@ -141,7 +145,7 @@ class TokenPhysics:
                 self.board.space.add(self._body, self._shape)
             if self.simulation == "static":
                 self.board.space.reindex_static()
-            self.dirty = 0
+            self.dirty = 1
             self.model_setup_complete = True
 
     def set_pymunk_position(self):
@@ -150,8 +154,7 @@ class TokenPhysics:
             pymunk_position, self.token.board.image)
 
     def set_pymunk_direction(self):
-        self._body.angle = math.radians(
-            self.token.position_manager.get_direction_from_miniworldmaker())
+        self._body.angle = self.token.position_manager.get_pymunk_direction_from_miniworldmaker()
 
     def set_mwm_token_position(self):
         self.token.center = pymunk.pygame_util.from_pygame(
@@ -159,8 +162,7 @@ class TokenPhysics:
         self.dirty = 0
 
     def set_mwm_token_direction(self):
-        self.token.position_manager.set_direction_from_pymunk(
-            math.degrees(self._body.angle))
+        self.token.position_manager.set_mwm_direction_from_pymunk()
         self.dirty = 0
 
     def reload(self):
@@ -173,7 +175,6 @@ class TokenPhysics:
                 self.board.space.remove(self._body)
             # Set new properties and reset to space
             self.setup_physics_model()
-            self.dirty = 0
         else:
             self.dirty = 1
 
@@ -266,7 +267,7 @@ class TokenPhysics:
         return self._mass
 
     @mass.setter
-    def mass(self, value: float):
+    def mass(self, value: Union[float, str]):
         # mass
         if value != "inf":
             self._mass = value
@@ -283,7 +284,6 @@ class TokenPhysics:
 
         """
         if (self._body and not self._body.body_type == pymunk_engine.Body.STATIC) and self.dirty:
-            # if (True):
             self.set_pymunk_position()
             self.set_pymunk_direction()
             self.board.space.reindex_shapes_for_body(self._body)
@@ -348,9 +348,22 @@ class TokenPhysics:
 
         Args:
             power: The power-value of the impulse.
+            direction: pymunk direction
         """
-        direction = 180 - direction
         impulse = pymunk.Vec2d(1, 0)
         impulse = impulse.rotated_degrees(direction)
         impulse = power * 1000 * impulse.normalized()
         self._body.apply_impulse_at_local_point(impulse)
+
+    def force_in_direction(self, direction, power):
+        """
+        Adds an force in token-direction
+
+        Args:
+            power: The power-value of the force.
+            direction: pymunk direction
+        """
+        force = pymunk.Vec2d(1, 0)
+        force = force.rotated_degrees(direction)
+        force = power * 100000 * force.normalized()
+        self._body.apply_force_at_local_point(force, (0,0))

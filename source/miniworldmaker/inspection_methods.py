@@ -94,7 +94,7 @@ class InspectionMethods:
 
     @staticmethod
     def call_method(method: callable, arguments: tuple, allow_none=True):
-        InspectionMethods.check_signature(method, arguments, allow_none = allow_none)
+        InspectionMethods.check_signature(method, arguments, allow_none = True)
         if arguments == None:
             method()
         else:

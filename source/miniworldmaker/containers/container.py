@@ -63,18 +63,27 @@ class Container:
         return self._container_width, self._container_height
 
     def repaint(self):
+        """ 
+        Implemented in subclasses
+        """
         pass
 
     def blit_surface_to_window_surface(self):
         self._app.window.surface.blit(self.surface, self.rect)
 
     def remove(self):
+        """ 
+        Implemented in subclasses
+        """
         pass
 
     def handle_event(self, event, data):
         self.get_event(event, data)
 
     def get_event(self, event, data):
+        """ 
+        Implemented in subclasses
+        """
         pass
 
     def is_in_container(self, x, y):
@@ -92,6 +101,9 @@ class Container:
         return self.docking_position
 
     def update(self):
+        """ 
+        Implemented in subclasses
+        """
         pass
 
     @property

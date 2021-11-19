@@ -5,6 +5,7 @@ setup.py
 miniworldmaker/__init__.py
 miniworldmaker/app.py
 miniworldmaker/container_manager.py
+miniworldmaker/db_manager.py
 miniworldmaker/event_manager.py
 miniworldmaker/inspection_methods.py
 miniworldmaker/sound_manager.py
@@ -69,6 +70,5 @@ miniworldmaker/tokens/text_token.py
 miniworldmaker/tokens/token.py
 miniworldmaker/tokens/token_physics.py
 miniworldmaker/tools/__init__.py
-miniworldmaker/tools/db_manager.py
 miniworldmaker/tools/keys.py
 miniworldmaker/tools/timer.py
