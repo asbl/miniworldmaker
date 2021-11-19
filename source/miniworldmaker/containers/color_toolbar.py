@@ -17,10 +17,9 @@ class ColorToolbar(toolbar.Toolbar):
         self.add_widget(self.color_label)
 
     def get_event(self, event, data):
-        if "mouse_left" in event:
-            if self.board.is_in_container(data[0], data[1]):
-                self.color_label.set_text(str(self.board.background.color_at(data)))
-                self.color_label.set_color(self.board.background.color_at(data))
+        if "mouse_left" in event and self.board.is_in_container(data[0], data[1]):
+            self.color_label.set_text(str(self.board.background.color_at(data)))
+            self.color_label.set_color(self.board.background.color_at(data))
 
 
 class ColorLabel(ToolbarLabel):

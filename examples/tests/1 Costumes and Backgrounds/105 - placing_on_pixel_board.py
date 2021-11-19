@@ -4,8 +4,8 @@ board = miniworldmaker.PixelBoard()
 board.add_background("images/soccer_green.jpg")
 board.size = (800,300)
 board.background.is_scaled_to_width = True
-# Places two tokens
-topleft = miniworldmaker.Token(position=(20, 20))
+# 4 tokens: In topleft corner, at (20,20)
+t1 = miniworldmaker.Token(position=(0, 0))
 t2 = miniworldmaker.Token(position=(60, 40))
 t2.add_costume("images/char_blue.png")
 t3 = miniworldmaker.Token(position=(100, 40))

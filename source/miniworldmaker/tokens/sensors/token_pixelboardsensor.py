@@ -27,7 +27,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         with the edges of the playing field.
         """
         borders = None
-        for i in range(distance + 1):
+        for _ in range(distance + 1):
             target_rect = self.get_destination_rect(distance)
             borders = self.board.position_handler.get_borders_from_rect(target_rect)
             if borders:

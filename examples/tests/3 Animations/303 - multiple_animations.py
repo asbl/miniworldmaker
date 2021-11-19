@@ -18,7 +18,7 @@ costume_a.animation_speed = 80
 costume_b.animation_speed = 80
 costume_c.animation_speed = 80
 mwm.ActionTimer(30,robo.animate_costume,costume_b)
-mwm.ActionTimer(90,robo.animate_costume,(costume_c, 10))
+mwm.ActionTimer(90,robo.animate_costume,costume_c)
 robo.costume.animate()
 board.run()
 

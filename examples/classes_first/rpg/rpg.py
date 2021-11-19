@@ -12,7 +12,6 @@ class MyBoard(TiledBoard):
         for i in range(self.rows):
             for j in range(self.columns):
                 Grass((j, i))
-                print("add grass")
         Wall((0, 4))
         Wall((1, 4))
         Wall((2, 4))
@@ -27,7 +26,7 @@ class MyBoard(TiledBoard):
         self.fireplace = Fireplace((10, 14))
         self.door = Door((6, 2))
         self.player = Player((8, 2))
-        #self.play_music("rpgsounds/bensound-betterdays.mp3")
+        self.play_music("rpgsounds/bensound-betterdays.mp3")
         self.toolbar = self.add_container(Toolbar(), "right")
         self.console = self.add_container(Console(), "bottom")
         print("setup finished")
@@ -48,23 +47,18 @@ class Player(Token):
         self.inventory = []
 
     def on_key_down_w(self):
-        self.point_in_direction("up")
-        self.move()
+        self.move_up()
 
     def on_key_down_s(self):
-        self.point_in_direction("down")
-        self.move()
+        self.move_down()
 
     def on_key_down_a(self):
-        self.point_in_direction("left")
-        self.move()
+        self.move_left()
 
     def on_key_down_d(self):
-        self.point_in_direction("right")
-        self.move()
+        self.move_right()
 
     def on_sensing_torch(self, torch):
-        print("Sensing torch")
         message = "Du findest eine Fackel. Möchtest du sie aufheben?"
         choices = ["Ja", "Nein"]
         reply = easygui.buttonbox(message, "RPG", choices)
@@ -91,7 +85,6 @@ class Player(Token):
 class Wall(Token):
 
     def on_setup(self):
-        self.is_static = True
         self.add_costume("rpgimages/wall.png")
 
 
@@ -99,7 +92,6 @@ class Grass(Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/grass.png")
-        self.is_static = True
 
 
 class Torch(Token):

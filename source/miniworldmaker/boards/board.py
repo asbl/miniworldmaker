@@ -524,7 +524,7 @@ class Board(container.Container):
     def update(self):
         # This is the board-mainloop()
         # Called in miniworldwindow.update as container.update()
-        if self.is_running:
+        if self.is_running or self.frame == 0:
             # Acting for all actors
             if self.frame % self.speed == 0:
                 self.token_handler.act_all()
@@ -576,7 +576,7 @@ class Board(container.Container):
         Returns:
 
         """
-        self.app.sound_manager.play_music()
+        self.app.sound_manager.play_music(path)
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.background_handler.find_colors(rect, color, threshold)

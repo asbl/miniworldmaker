@@ -46,7 +46,7 @@ class Player(mwm.Token):
         self.bounce_from_border(borders)
 
     def shoot(self):
-        laser = Laser.from_center(self.position)
+        laser = Laser.from_center(self.center)
         laser.direction = self.direction
 
 

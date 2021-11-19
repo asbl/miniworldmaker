@@ -38,7 +38,8 @@ class Costume(appear.Appearance):
         """
         self._info_overlay = value
         self.dirty = 1
-        self.call_action("info_overlay")
+        if value == 0:
+            self._reload_all()
 
     def set_costume(self, index):
         self._image_index = index

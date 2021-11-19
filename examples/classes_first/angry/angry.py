@@ -9,7 +9,6 @@ class MyBoard(mwm.PhysicsBoard):
     def on_setup(self):
         self.add_background("images/backgroundColorGrass.png")
         self.arrow = Arrow(position=(160, 250))
-        self.arrow.direction = -10
         self.plattform = Plattform(position=(600, 260))
         # row 1
         Box(position=(610, 220))
@@ -48,6 +47,7 @@ class Arrow(mwm.Token):
     def on_setup(self):
         self.size = (30, 30)
         self.add_costume("images/tank_arrowFull.png")
+        self.direction = 0
         self.costume.is_scaled = True
         self.speed = 0
         self.shoot = 0
@@ -58,6 +58,7 @@ class Arrow(mwm.Token):
             self.turn_left(2)
         elif "s" in keys:
             self.turn_right(2)
+        #print(self.direction)
 
     def on_key_down(self, keys):
         if self.board.is_running:
@@ -112,7 +113,6 @@ class Bird(mwm.Token):
 
         
     def on_begin_simulation(self):
-        print("impulse", self.position, self.physics._body.position, self.size)
         direction = self.board.arrow.direction
         power = 20000
         self.impulse(direction, power)

@@ -4,6 +4,7 @@ import miniworldmaker as mwm
 class Board(mwm.PhysicsBoard):
     
     def on_setup(self):
+        self.add_background((0,0,0,255))
         a = A()
         b = B()
         c = C()

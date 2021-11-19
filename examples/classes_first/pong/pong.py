@@ -4,8 +4,8 @@ from miniworldmaker import *
 class PongBoard(PhysicsBoard):
 
     def on_setup(self):
+        self.debug = True
         self.add_background((100, 0, 0, 255))
-        # self.add_background("images/background.png")
         self.damping = 1
         self.gravity = 0, 0
         self.player1 = Paddle((10, 130), width=10, height=80, thickness=0)
@@ -19,6 +19,8 @@ class PongBoard(PhysicsBoard):
         self.points_left.physics.simulation = None
         self.points_right = NumberToken((600, 100), 0, 100)
         self.points_right.size = (200, 200)
+        self.points_right.costume._reload_all()
+        self.points_right.costume.dirty = 1
         self.points_right.physics.simulation = None
         self.ball = Ball((295, 5))
 
@@ -59,16 +61,18 @@ class Ball(Circle):
        self.direction = 30
        self.size = (30,30)
        self.position = (400,200)
-       self.physics.mass = 5
+       self.physics.mass = 1
        self.physics.elasticity = 1
        self.physics.friction = 0
 
        
     def on_begin_simulation(self):
-       self.impulse(70, 1600)
+       self.impulse(70, 2500)
        
     def on_touching_line(self, line, collision):
+        print("touching line ", line)
         if line == self.board.left:
+            print("inc points")
             self.board.points_right.inc()
         if line == self.board.right:
             self.board.points_left.inc()

@@ -20,6 +20,7 @@ class ActionBar(container.Container):
         self.widgets = []
         self.position = "right"
         self.board = board
+        self._app = board.app
         self.listen_to_all_events = False
         self.add_widget(PlayButton(self.board))
         self.add_widget(RunButton(self.board))
@@ -30,7 +31,7 @@ class ActionBar(container.Container):
         self.add_widget(SpeedUpButton(self.board))
         self.board.is_running = False
         self.dirty = 1
-        self.default_size = 40
+        self.default_size = 80
 
     def add_widget(self, widget):
         """
@@ -61,7 +62,7 @@ class ActionBar(container.Container):
                     self.surface.blit(widget.surface, (actual_position, 5))
                     actual_position += widget.width + 5  # 5 is padding between elements
                 self.dirty = 0
-                self.app.repaint_areas.append(self.rect)
+                self.board._app.window.repaint_areas.append(self.rect)
 
     def _widgets_total_width(self):
         width = 0
@@ -73,13 +74,12 @@ class ActionBar(container.Container):
         if event == "mouse_left":
             actual_position = 5
             x, y = data[0], data[1]
-            if self.is_in_container(x, y):
-                if not x > self._widgets_total_width():
-                    for widget in self.widgets:
-                        if actual_position + widget.width + 5 > x:
-                            return widget.get_event(event, data)
-                        else:
-                            actual_position = actual_position + widget.width + 5
+            if self.is_in_container(x, y) and not x > self._widgets_total_width():
+                for widget in self.widgets:
+                    if actual_position + widget.width + 5 > x:
+                        return widget.get_event(event, data)
+                    else:
+                        actual_position = actual_position + widget.width + 5
         elif event == "board_speed_changed":
             for widget in self.widgets:
                 widget.get_event(event, data)
@@ -109,7 +109,8 @@ class ActionBarWidget():
         self._text_padding = 5
         self._img_path = None
         self.surface = None
-        self.package_directory = (os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
+        self.package_directory = (os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), os.pardir))
         self._dirty = 1
 
     def get_event(self, event, data):
@@ -174,7 +175,8 @@ class PlayButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.board._act_all()
+            self.board.is_running = True
+            self.board.stop(1)
 
 
 class RunButton(ActionBarWidget):
@@ -198,7 +200,6 @@ class RunButton(ActionBarWidget):
             return os.path.join(self.package_directory, "resources", 'pause.png')
         else:
             return os.path.join(self.package_directory, "resources", 'run.png')
-
 
     def get_event(self, event, data):
         if event == "mouse_left":
@@ -242,7 +243,7 @@ class ResetButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.parent.window.send_event_to_containers(self.event, self._text)
+            self.parent._app.event_manager.send_event_to_containers(self.event, self._text)
             for token in self.board.tokens:
                 token.remove()
             self.board.reset()
@@ -265,11 +266,15 @@ class InfoButton(ActionBarWidget):
             if self.state is False:
                 for token in self.board.tokens:
                     token.costume.info_overlay = True
+                    self.board.is_running = True
+                    self.board.stop(1)
                     self.state = True
 
             else:
                 for token in self.board.tokens:
                     token.costume.info_overlay = False
+                    self.board.is_running = True
+                    self.board.stop(1)
                     self.state = False
 
 
@@ -303,6 +308,7 @@ class SpeedDownButton(ActionBarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.board.fps -= 1
+            self.parent._app.event_manager.send_event_to_containers("board_speed_changed", self.board.fps)
 
 
 class SpeedUpButton(ActionBarWidget):
@@ -319,3 +325,4 @@ class SpeedUpButton(ActionBarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.board.fps += 1
+            self.parent._app.event_manager.send_event_to_containers("board_speed_changed", self.board.fps)

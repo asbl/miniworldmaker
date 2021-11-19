@@ -22,13 +22,12 @@ class Console(container.Container):
         self.row_margin = 10
         self.margin_left = 10
         self.margin_right = 10
-        self._dirty = 1
+        self.dirty = 1
 
     def repaint(self):
         self.surface = pygame.Surface((self._container_width, self._container_height))
         if self.dirty:
             self.surface.fill((255, 255, 255))
-            package_directory = os.path.dirname(os.path.abspath(__file__))
             myfont = pygame.font.SysFont("monospace", 15)
             for i, text in enumerate(self._text_queue):
                 row = pygame.Surface((self.width - (self.margin_left + self.margin_right), self.row_height))
@@ -37,7 +36,7 @@ class Console(container.Container):
                 row.blit(label, (10, 5))
                 self.surface.blit(row, (self.margin_left, self.margin_first + i * self.row_height + i * self.row_margin))
         self._app.window.repaint_areas.append(self.rect)
-        self.dirty = 0
+        self.dirty = 1
 
     def max_height(self):
         width = self.margin_first

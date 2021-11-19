@@ -1,3 +1,4 @@
+from miniworldmaker.board_positions.board_position import BoardPosition
 import pygame
 from miniworldmaker.tokens import token as tk
 from miniworldmaker.appearances import costume
@@ -23,6 +24,12 @@ class Shape(tk.Token):
         width = max(x_coordinates) - x
         height = max(y_coordinates) - y
         return pygame.Rect(x, y, width, height)
+
+    @classmethod
+    def from_center(cls, position: tuple, color: tuple):
+        shape = Shape(position=position, color=color)
+        shape.center = position
+        return shape
 
 
 class Point(Shape):
@@ -82,18 +89,20 @@ class Circle(Shape):
     """
 
     def __init__(self, position=None, radius: int = 10, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
-        try:
+        self._thickness = thickness
+        self.color = color
+        super().__init__(position, color)
+        self.size = (radius * 2, radius * 2)
+        self.costume.draw_shape_set(*self.draw_shape)
+        rect = pygame.Rect(0, 0, radius, radius)
+        rect.center = (self.position[0], self.position[1])
+        self.position = rect.center
 
-            self._thickness = thickness
-            self.color = color
-            super().__init__(position, color)
-            self.size = (radius * 2, radius * 2)
-            self.costume.draw_shape_set(*self.draw_shape)
-            rect = pygame.Rect(0, 0, radius, radius)
-            rect.center = (self.position[0], self.position[1])
-            self.position = rect.center
-        except TypeError as e:
-            raise e
+    @classmethod
+    def from_center(cls, position=None, radius: int = 10, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
+        circle = Circle(position=position, radius=radius, thickness=thickness, color=color)
+        circle.center = position
+        return circle
 
     @property
     def draw_shape(self):
@@ -127,6 +136,7 @@ class Circle(Shape):
         self._thickness = value
         self.costume.draw_shape_set(*self.draw_shape)
 
+
 class Line(Shape):
     """
     A Line-Shape.
@@ -149,49 +159,41 @@ class Line(Shape):
                  end_position: tuple,
                  thickness: int = 1,
                  color: tuple = (255, 255, 255, 255), ):
-        try:
-            if type(start_position) == int:
-                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value",
-                                start_position, ", type:", type(start_position))
-            if type(end_position) == int:
-                raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position,
-                                ", type:", type(end_position))
-            
-            width = abs(start_position[0]-end_position[0]) + 2 * thickness
-            height = abs(start_position[1] - end_position[1]) + 2 * thickness
-            box = pygame.Rect(min(start_position[0], end_position[0]) - thickness,
-                              min(start_position[1], end_position[1]) - thickness,
-                              width,
-                              height)
-            super().__init__(box.center, color)
-            self.size = (width, height)
-            self.position =  start_position 
-            self.thickness = thickness
-            shift_x = self.position[0] - self.size[0] / 2
-            shift_y = self.position[1] - self.size[1] / 2
-            print("start pos = ", start_position, "end_pos = ", end_position, "box_topleft = ", box.topleft, "w,h", width, height)
-            # mod_start: Start of line
-            _x_start = start_position[0] - box.topleft[0] 
-            _y_start = start_position[1] - box.topleft[1]
-            self.local_start_position = (_x_start , _y_start  )
-            # mod end: End of line
-            _x_end = end_position[0] - box.topleft[0]
-            _y_end = end_position[1] - box.topleft[1]
-            self.local_end_position = (_x_end , _y_end)
-            self.start_position = start_position
-            self.end_position = end_position
+        if type(start_position) == int:
+            raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value",
+                            start_position, ", type:", type(start_position))
+        if type(end_position) == int:
+            raise TypeError("Error: First argument ist int - Should be tuple or BoardPosition, value", end_position,
+                            ", type:", type(end_position))
 
-            print("draw line", "global start", self.start_position,  "global end", self.end_position, "local_start", self.local_start_position, "local_end", self.local_end_position)
-            self.costume.draw_shape_append(pygame.draw.line, [self.color,
-                                                              self.local_start_position,
-                                                              self.local_end_position,
-                                                              self.thickness])
-            self.costume.load_surface()
-
-        except TypeError as e:
-            raise e
+        width = abs(start_position[0]-end_position[0]) + 2 * thickness
+        height = abs(start_position[1] - end_position[1]) + 2 * thickness
+        box = pygame.Rect(min(start_position[0], end_position[0]) - thickness,
+                          min(start_position[1], end_position[1]) - thickness,
+                          width,
+                          height)
+        super().__init__(box.center, color)
+        self.size = (width, height)
+        self.position = start_position
+        self.thickness = thickness
+        # mod_start: Start of line
+        _x_start = start_position[0] - box.topleft[0]
+        _y_start = start_position[1] - box.topleft[1]
+        self.local_start_position = (_x_start, _y_start)
+        # mod end: End of line
+        _x_end = end_position[0] - box.topleft[0]
+        _y_end = end_position[1] - box.topleft[1]
+        self.local_end_position = (_x_end, _y_end)
+        self.start_position = start_position
+        self.end_position = end_position
+        self.costume.draw_shape_append(pygame.draw.line, [self.color,
+                                                          self.local_start_position,
+                                                          self.local_end_position,
+                                                          self.thickness])
+        self.costume.load_surface()
 
     def set_physics_default_values(self):
+        self.physics.shape_type = "line"
         self.physics.simulation = "static"
 
 
@@ -213,7 +215,7 @@ class Rectangle(Shape):
         Creates a red rect with the topleft position (200, 100), the height 10 and the width 10
     """
 
-    def __init__(self, topleft, width, height, thickness=1, color: tuple = (255, 255, 255, 255)):
+    def __init__(self, topleft : BoardPosition, width : float, height : float, thickness : int =1, color: tuple = (255, 255, 255, 255)):
         try:
             if type(topleft) != tuple:
                 raise TypeError("Error: First argument topleft should be a 2-tuple")
@@ -236,6 +238,12 @@ class Rectangle(Shape):
         except TypeError as e:
             self.remove()
             raise e
+
+    @classmethod
+    def from_center(cls, center : BoardPosition, width : float, height : float, thickness : int =1, color: tuple = (255, 255, 255, 255)):
+        rect = Rectangle(topleft = center, width = width, height = height, thickness = thickness, color = color)
+        rect.center = center
+        return rect
 
     @property
     def draw_shape(self):
@@ -272,19 +280,16 @@ class Polygon(Shape):
     """
 
     def __init__(self, pointlist, thickness=1, color: tuple = (255, 255, 255, 255)):
-        try:
-            box = self.bounding_box(pointlist)
-            super().__init__((box[0], box[1]), color)
-            self.size = (abs(box[0] - box[2]) + 4, abs(box[1] - box[3]) + 4)
-            self.mod_pointlist = []
-            self.thickness = thickness
-            for point in pointlist:
-                x = point[0] - box[0]
-                y = point[1] - box[1]
-                self.mod_pointlist.append((x, y))
-            self.costume.draw_shape_set(*self.draw_shape)
-        except TypeError as e:
-            raise e
+        box = self.bounding_box(pointlist)
+        super().__init__((box[0], box[1]), color)
+        self.size = (abs(box[0] - box[2]) + 4, abs(box[1] - box[3]) + 4)
+        self.mod_pointlist = []
+        self.thickness = thickness
+        for point in pointlist:
+            x = point[0] - box[0]
+            y = point[1] - box[1]
+            self.mod_pointlist.append((x, y))
+        self.costume.draw_shape_set(*self.draw_shape)
 
     @property
     def draw_shape(self):
