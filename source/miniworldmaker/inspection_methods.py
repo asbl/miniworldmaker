@@ -84,7 +84,7 @@ class InspectionMethods:
             arguments = [arguments]
         try:
             sig = signature(method)
-        except ValueError as e:
+        except ValueError:
             raise FirstArgumentShouldBeSelfError(method)
         i = 0
         for key, param in sig.parameters.items():

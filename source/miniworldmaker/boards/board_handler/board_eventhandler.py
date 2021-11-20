@@ -91,6 +91,7 @@ class BoardEventHandler:
                 self.board._is_setup = True
         return self
 
+
     def handle_reset_event(self):
         self.board.app.event_manager.event_queue.clear()
         for token in self.board.tokens:
@@ -99,19 +100,17 @@ class BoardEventHandler:
         self.board.app.board.run()
         board = self.app.board
         board.event_queue.clear()
-        del self
         return board
 
-    def handle_switch_board_event(self, old_board, new_board, size: tuple):
-        self._app.event_manager.event_queue.clear()
-        for token in self.tokens:
-            token.remove()
-        self._app.board = new_board(size[0], size[1])
-        board = self._app.board
-        board.run()
-        board.event_queue.clear()
-        del self
-        return board
+    def handle_switch_board_event(self, new_board):
+        app = self.board.app
+        app.event_manager.event_queue.clear()
+        old_board = app.board
+        # old_board.remove()
+        app.board = new_board
+        new_board.running = True
+        new_board.run()
+        return new_board
 
     def handle_act_event(self, receiver):
         # any key down?

@@ -12,7 +12,7 @@ board.tile_size = 40
 token1 = miniworldmaker.Token(position=(0, 1), image="images/player.png")
 token1.costume.orientation = -90
 print(token1.position)
-print("default directiob", token1.direction)
+print("default direction", token1.direction)
 print("default orientation", token1.costume.orientation)
 token2 = miniworldmaker.Token(position=(0, 2), image="images/player.png")
 token2.costume.orientation = 90

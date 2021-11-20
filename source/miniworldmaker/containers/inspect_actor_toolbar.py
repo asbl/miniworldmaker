@@ -1,6 +1,7 @@
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
-
+from miniworldmaker.board_positions import board_position_factory
+from miniworldmaker import inspection_methods
 
 class InspectActorToolbar(toolbar.Toolbar):
 
@@ -20,7 +21,7 @@ class InspectActorToolbar(toolbar.Toolbar):
         self.active_token = token
         self.active_token.costume.info_overlay = True
         token.dirty = 1
-        self.app.window.send_event_to_containers("active_token", token)
+        self.board.app.event_manager.send_event_to_containers("active_token", token)
         return token
 
     def get_active_token_from_board_position(self, pos):
@@ -43,61 +44,52 @@ class InspectActorToolbar(toolbar.Toolbar):
 
     def _add_to_window(self, window, dock, size=None):
         super()._add_to_window(window, dock, size)
-        for actor in self.app.board.tokens:
+        for actor in self.board.tokens:
             # if self.actor.__class__ == act.Actor:
             self.add_widget(TokenButton(token=actor, toolbar=self))
 
-    def handle_event(self, event, data):
-        if event and "mouse" in event and self.board.get_mouse_position() and self.board.get_mouse_position().is_on_board():
-            if event == "mouse_left":
+    def _set_active_token_from_mouse(self, event, data):
+        if event and "mouse" in event and self.board.get_mouse_position():
+            mouse_pos = board_position_factory.BoardPositionFactory(
+                self.board).create(self.board.get_mouse_position())
+            if self.board.is_position_on_board(mouse_pos) and event == "mouse_left":
                 token = self.get_active_token_from_board_position(data)
                 if token:
                     self.set_active_token(token)
+
+    def _replace_active_token(self, event, data):
+        self.actor = data
+        self.remove_all_widgets()
+        self.add_widget(ToolbarLabel("Class: " + str(self.actor.__class__.__name__)))
+        self.add_widget(ToolbarLabel("ID: " + str(self.actor.token_id)))
+        self.direction_label = self.add_widget(
+            ToolbarLabel("Direction: " + str(self.actor.direction)))
+        rounded_position = "Position: (" + str(round(self.actor.position[0], 0)) + "," + str(
+            round(self.actor.position[1], 0)) + ")"
+        self.position_label = self.add_widget(ToolbarLabel(rounded_position))
+
+    def _update_active_token_data(self, event, data):
+        if self.direction_label and self.position_label:
+            self.direction_label = self.direction_label.set_text(
+                "Direction: " + str(self.actor.direction))
+            rounded_position = "Position: (" + str(round(self.actor.position[0], 0)) + "," + str(
+                round(self.actor.position[1], 0)) + ")"
+            self.position_label = self.position_label.set_text(rounded_position)
+
+    def handle_event(self, event, data):
+        self._set_active_token_from_mouse(event, data)
         super().get_event(event, data)
         if event == "active_token":
             self.actor = data
         if self.actor is not None:
             if event == "active_token" or "token" in event:
-                self.actor = data
-                self.remove_all_widgets()
-                self.add_widget(ToolbarLabel("Class: " + str(self.actor.__class__.__name__)))
-                self.add_widget(ToolbarLabel("ID: " + str(self.actor.token_id)))
-                self.direction_label = self.add_widget(ToolbarLabel("Direction: " + str(self.actor.direction)))
-                rounded_position = "Position: (" + str(round(self.actor.position[0], 0)) + "," + str(
-                    round(self.actor.position[1], 0)) + ")"
-                self.position_label = self.add_widget(ToolbarLabel(rounded_position))
-                method_list = [func for func in self.actor.__class__.__dict__ if
-                               not func.startswith("_") and not func in ['get_event', 'class_image']]
-                for method in method_list:
-                    self.add_widget(
-                        MethodButton(text="--> call method: {0}".format(method), actor=self.actor, method=method))
+                self._replace_active_token(event, data)
             else:
-                if self.direction_label and self.position_label:
-                    self.direction_label = self.direction_label.set_text("Direction: " + str(self.actor.direction))
-                    rounded_position = "Position: (" + str(round(self.actor.position[0], 0)) + "," + str(round(self.actor.position[1],0)) + ")"
-                    self.position_label = self.position_label.set_text(rounded_position)
-
-
+                self._update_active_token_data(event, data)
         else:
-            for an_actor in self.app.window.board.tokens:
+            for an_actor in self.board.tokens:
                 if self.actor:
                     self.add_widget(TokenButton(token=an_actor))
-
-
-class MethodButton(ToolbarButton):
-
-    def __init__(self, text, actor, method):
-        super().__init__(text=text)
-        self.actor = actor
-        self.method = method
-
-    def get_event(self, event, data):
-        if self.actor is not None:
-            getattr(self.actor, str(self.method))()
-
-    def __str__(self):
-        return "MethodButton, {0}".format(self.actor)
-
 
 class TokenButton(ToolbarButton):
 

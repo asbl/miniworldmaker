@@ -1,6 +1,6 @@
 import logging
 from tkinter import filedialog
-import tkinter as Tk
+import tkinter as tk
 import pygame
 
 
@@ -27,7 +27,7 @@ class ToolbarWidget():
         self._dirty = 1
 
     def get_event(self, event, data):
-        self.parent.app.event_manager.send_event_to_containers(self.event, 0)
+        self.parent.board.app.event_manager.send_event_to_containers(self.event, 0)
 
     @property
     def dirty(self):
@@ -117,47 +117,60 @@ class SaveButton(ToolbarWidget):
         self.set_text(text)
         self.event = "label"
         self.data = text
-        self.board = board
+        self.app = board.app
         self.file = filename
-
-    def set_file(self):
-        pass
+        self.tokens = None
 
     def get_event(self, event, data):
         if event == "mouse_left":
             if self.file is None:
-                Tk().withdraw()
-                try:
-                    self.file = filedialog.asksaveasfilename(initialdir="./", title="Select file",
-                                                             filetypes=(("db files", "*.db"), ("all files", "*.*")))
-                    self.board.save_to_db(self.file)
-                    self.board.window.send_event_to_containers("Saved new world", self.file)
-                except:
-                    print("Not saved!")
+                tk.Tk().withdraw()
+                self.file = filedialog.asksaveasfilename(initialdir="./", title="Select file",
+                                                         filetypes=(("db files", "*.db"), ("all files", "*.*")))
+                self.app.board.save_to_db(self.file)
+                self.app.board.send_message("Saved new world", self.file)
             else:
-                self.board.save_to_db(self.file)
-                self.board.window.send_event_to_containers("Saved new world", self.file)
+                self.app.board.save_to_db(self.file)
+                self.app.board.send_message("Saved new world", self.file)
+                print("Board was saved to file:", self.file)
 
 
 class LoadButton(ToolbarWidget):
 
-    def __init__(self, board, text, filename = None, img_path=None, ):
+    def __init__(self, board, text, filename=None, img_path=None, ):
         super().__init__()
         if img_path != None:
             self.set_image(img_path)
         self.set_text(text)
         self.file = filename
-        self.board = board
+        self.app = board.app
+        try:
+            self.app.board.load_tokens_from_db(self.file)
+        except Exception as e:
+            print("Import-Error - Tokens where not loaded.")
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            Tk().withdraw()
+            tk.Tk().withdraw()
             if self.file is None:
                 self.file = filedialog.askopenfilename(initialdir="./", title="Select file",
                                                        filetypes=(("db files", "*.db"), ("all files", "*.*")))
-            self.board = self.board.__class__.from_db(self.file)
-            self.board.window.send_event_to_containers("Loaded new world", self.file)
-            self.board.show()
+            new_board = self.app.board.load_board_from_db(self.file)
+            self.board = new_board
+            self.board.switch_board(new_board,)
+
+
+class ClearButton(ToolbarWidget):
+
+    def __init__(self, board, text,  img_path=None, ):
+        super().__init__()
+        self.set_text(text)
+        self.app = board.app
+
+    def get_event(self, event, data):
+        if event == "mouse_left":
+            print(self.app.board)
+            self.app.board.clear()
 
 
 class CounterLabel(ToolbarWidget):
