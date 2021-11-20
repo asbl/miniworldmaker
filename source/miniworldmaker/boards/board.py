@@ -13,7 +13,8 @@ from miniworldmaker.tools import timer
 from miniworldmaker.tokens import token as token_module
 from miniworldmaker.boards.board_handler.board_eventhandler import BoardEventHandler
 from miniworldmaker.boards.board_handler.board_collision_handler import BoardCollisionHandler
-from miniworldmaker.boards.board_handler.board_databasehandler import BoardDatabaseHandler
+from miniworldmaker.data import import_factory
+from miniworldmaker.data import export_factory
 from miniworldmaker.boards.board_handler.board_background_handler import BoardBackgroundHandler
 from miniworldmaker.boards.board_handler.board_position_handler import BoardPositionHandler
 
@@ -85,7 +86,12 @@ class Board(container.Container):
         self._animated: bool = False
         self._orientation: int = 0
         if type(columns) != int or type(rows) != int:
-            raise BoardArgumentsError(columns, rows)
+            if type(columns) == tuple:
+                size = columns
+                columns =  size[0]
+                rows = size[1]
+            else:
+                raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
         self.frame: int = 0
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
@@ -102,13 +108,32 @@ class Board(container.Container):
         self.app.event_manager.send_event_to_containers("setup", self)
         print("Create board")
 
-    @classmethod
-    def from_db(cls, file):
+    def load_board_from_db(self, file):
         """
         Loads a sqlite db file.
         """
-        database_handler = BoardDatabaseHandler(board=cls())
-        return database_handler.board_from_db()
+        return import_factory.ImportBoardFromDB(file, self.__class__).load()
+
+    def load_tokens_from_db(self, file):
+        return import_factory.ImportTokensFromDB(file).load()
+
+    def save_to_db(self, file):
+        """
+        Saves the current board an all actors to database.
+        The file is stored as db file and can be opened with sqlite.
+
+        Args:
+            file: The file as relative location
+
+        Returns:
+
+        """
+        export = export_factory.ExportBoardToDBFactory(file, self)
+        export.remove_file()
+        export.save()
+        print("exported board")
+        export_factory.ExportTokensToDBFactory(file, self.tokens).save()
+        print("exported tokens")
 
     @classmethod
     def all_subclasses(cls):
@@ -239,6 +264,7 @@ class Board(container.Container):
     @rows.setter
     def rows(self, value):
         self._rows = value
+        self.app.window.dirty = 1
         self.background_handler.full_repaint()
 
     @property
@@ -251,6 +277,7 @@ class Board(container.Container):
     @columns.setter
     def columns(self, value):
         self._columns = value
+        self.app.window.dirty = 1
         self.background_handler.full_repaint()
 
     @property
@@ -261,6 +288,7 @@ class Board(container.Container):
     def size(self, value: tuple):
         self.columns = value[0]
         self.rows = value[1]
+        self.app.window.dirty = 1
         self.background_handler.full_repaint()
 
     @property
@@ -273,6 +301,7 @@ class Board(container.Container):
     @tile_size.setter
     def tile_size(self, value):
         self._tile_size = value
+        self.app.window.dirty = 1
         self.background_handler.full_repaint()
 
     @property
@@ -285,6 +314,7 @@ class Board(container.Container):
     @tile_margin.setter
     def tile_margin(self, value):
         self._tile_margin = value
+        self.app.window.dirty = 1
         self.background_handler.full_repaint()
 
     @property
@@ -472,8 +502,15 @@ class Board(container.Container):
         else:
             timer.ActionTimer(frames, self.stop, 0)
 
+    def clear(self):
+        self.token_handler.clean()
+
     def clean(self):
         self.token_handler.clean()
+
+    def remove(self):
+        for token in self.tokens:
+            token.remove()
 
     def reset(self):
         """Resets the board
@@ -508,6 +545,7 @@ class Board(container.Container):
             if hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
                 self.app.event_manager.send_event_to_containers("setup", self)
         self.app.run(self.image, full_screen=fullscreen)
+
 
     def switch_background(self, background: Union[int, Type[Appearance]]) -> Background:
         """Switches the background of costume
@@ -549,19 +587,6 @@ class Board(container.Container):
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
         self.event_handler.handle_event(event, data)
-
-    def save_to_db(self, file):
-        """
-        Saves the current board an all actors to database.
-        The file is stored as db file and can be opened with sqlite.
-
-        Args:
-            file: The file as relative location
-
-        Returns:
-
-        """
-        self.database_handler.save_to_db(file)
 
     def play_sound(self, path: str):
         self.app.sound_manager.play_sound(path)
@@ -624,9 +649,9 @@ class Board(container.Container):
         setattr(self, method.__name__, bound_method)
         return bound_method
 
-    def send_message(self, message):
+    def send_message(self, message, data = None):
         self.app.event_manager.send_event_to_containers("message", message)
-
+ 
     def screenshot(self, filename="screenshot.jpg"):
         pygame.image.save(self.surface, filename)
 
@@ -635,3 +660,6 @@ class Board(container.Container):
 
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)
+
+    def switch_board(self, new_board):
+        self.event_handler.handle_switch_board_event(new_board)

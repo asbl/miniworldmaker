@@ -1,6 +1,5 @@
+from miniworldmaker.containers import toolbar_widgets
 from miniworldmaker.containers import toolbar
-from miniworldmaker.containers.toolbar_widgets import *
-
 
 class ColorToolbar(toolbar.Toolbar):
     """
@@ -18,11 +17,11 @@ class ColorToolbar(toolbar.Toolbar):
 
     def get_event(self, event, data):
         if "mouse_left" in event and self.board.is_in_container(data[0], data[1]):
-            self.color_label.set_text(str(self.board.background.color_at(data)))
-            self.color_label.set_color(self.board.background.color_at(data))
+            self.color_label.set_text(str(self.board.background.get_color_from_pixel(data)))
+            self.color_label.set_color(self.board.background.get_color_from_pixel(data))
 
 
-class ColorLabel(ToolbarLabel):
+class ColorLabel(toolbar_widgets.ToolbarLabel):
     def __init__(self, text):
         super().__init__(text)
 

@@ -12,6 +12,7 @@ class Container:
         self.surface = pygame.Surface((1, 1))
         self.background_color = (255, 255, 255)
         self.default_size = 100
+        self.container_size = self.default_size
         self.registered_events = {"mouse_left", "mouse_right"}
         # private
         self._window = None  # Set in add_to_window
@@ -38,25 +39,26 @@ class Container:
     def _add_to_window(self, app, dock, size=None):
         self._app = app
         if size== None:
-            size = self.default_size
-        if dock == "top_left":
-            self.container_top_left_x = 0
-            self.container_top_left_y = 0
-            self.docking_position = dock
-        elif dock == "right":
-            self.container_top_left_x = self._app.window.width
-            self.container_top_left_y = 0
-            self.docking_position = dock
-            self._container_height = self._app.window.height
-            self._container_width = size
-        elif dock == "bottom":
-            self.container_top_left_x = 0
-            self.container_top_left_y = self._app.window.height
-            self.docking_position = dock
-            self._container_width = self._app.window.width
-            self._container_height = size
+            self.container_size = self.default_size
+        else:
+            self.container_size = size
+        self.docking_position = dock
+        self.update_width_and_height()
         self.clog.info("Added Container {0} with width: {1} and height {2}".format(self, self.width, self.height))
         self._image = pygame.Surface((self.width, self.height))
+
+    def update_width_and_height(self):
+        if self.docking_position == "top_left":
+            self.container_top_left_x = 0
+            self.container_top_left_y = 0     
+        elif self.docking_position == "right":
+            self.container_top_left_y = 0
+            self._container_height = self._app.window.height
+            self._container_width = self.container_size
+        elif self.docking_position == "bottom":
+            self.container_top_left_x = 0
+            self._container_width = self._app.window.width
+            self._container_height = self.container_size
 
     @property
     def size(self):

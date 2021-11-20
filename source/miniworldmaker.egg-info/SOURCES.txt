@@ -7,6 +7,7 @@ miniworldmaker/app.py
 miniworldmaker/container_manager.py
 miniworldmaker/db_manager.py
 miniworldmaker/event_manager.py
+miniworldmaker/file_manager.py
 miniworldmaker/inspection_methods.py
 miniworldmaker/sound_manager.py
 miniworldmaker/window.py
@@ -48,7 +49,6 @@ miniworldmaker/containers/container.py
 miniworldmaker/containers/event_console.py
 miniworldmaker/containers/inspect_actor_toolbar.py
 miniworldmaker/containers/level_designer_toolbar.py
-miniworldmaker/containers/main_container.py
 miniworldmaker/containers/toolbar.py
 miniworldmaker/containers/toolbar_widgets.py
 miniworldmaker/resources/down.png

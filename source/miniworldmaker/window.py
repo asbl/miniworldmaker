@@ -7,10 +7,10 @@ import os
 
 class Window:
 
-    def __init__(self, title, container_manager : ContainerManager, event_manager : EventManager):
+    def __init__(self, title, container_manager: ContainerManager, event_manager: EventManager):
         self.title = title
-        self.container_manager : ContainerManager = container_manager
-        self.event_manager : EventManager = event_manager
+        self.container_manager: ContainerManager = container_manager
+        self.event_manager: EventManager = event_manager
         self.default_size = 200
         self.dirty = 1
         self.repaint_areas = []
@@ -24,7 +24,7 @@ class Window:
             pygame.display.set_icon(surface)
         except:
             pass
-        
+
     def update(self):
         if self.dirty:
             self.display_update()
@@ -39,19 +39,17 @@ class Window:
         self.repaint_areas = []
 
     def display_update(self):
-        self.recalculate_dimensions()
         if self.full_screen:
             self.surface = pygame.display.set_mode((self.width, self.height, ), pygame.FULLSCREEN)
         else:
             self.surface = pygame.display.set_mode((self.width, self.height))
         self.surface.set_alpha(None)
-       
+
     def reload_repaint_areas(self):
         self.repaint_areas = []
         if self.dirty:
             self.repaint_areas.append(pygame.Rect(0, 0, self.width, self.height))
             self.dirty = 0
-
 
     def recalculate_dimensions(self):
         self.container_manager.update_containers()
@@ -60,7 +58,6 @@ class Window:
         self.dirty = 1
         self.repaint_areas.append(pygame.Rect(0, 0, self.width, self.height))
         self._containers_width, self._containers_height = containers_width, containers_height
-
 
     @property
     def width(self) -> int:

@@ -85,6 +85,7 @@ class EventManager:
         return wrapper_accepting_arguments
 
     def get_keys(self):
+        key_codes = None
         if pygame.key.get_pressed().count(1) != 0:
             keys_pressed = pygame.key.get_pressed()
             key_codes = keys.key_codes_to_keys(keys_pressed)

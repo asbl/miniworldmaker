@@ -105,7 +105,7 @@ class TokenPositionManager:
             self.dirty = 1
             if self.token.board:
                 self.token.board.app.event_manager.send_event_to_containers(
-                    "token_moved", self)
+                    "token_moved", self.token)
         return self.position
 
     @property

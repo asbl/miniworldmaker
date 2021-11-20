@@ -18,14 +18,22 @@ class BoardRectFactory:
         else:
             raise NoValidBoardRectError()
 
+    def from_position(self, position, dimensions = None):
+        if dimensions is None:
+            new_rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)
+        else:
+            new_rect = pygame.Rect(0, 0, dimensions[0], dimensions[1])
+        new_rect.topleft = position
+        return new_rect
+    
     def from_tiled_position(self, position):
-        return self.from_rect_topleft(position)
+        return self.from_rect_topleft(position, new_rect)
 
     def from_rect_topleft(self, position=None, dimensions: pygame.Rect = None) -> pygame.Rect:
         if dimensions is None:
             new_rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)
         else:
-            new_rect = pygame.Rect.BoardRect(0, 0, dimensions.width, dimensions.height)
+            new_rect = pygame.Rect(0, 0, dimensions.width, dimensions.height)
         # board position to pixel
         pixel_x = position.x * self.board.tile_size + position.x * \
             self.board.tile_margin + self.board.tile_margin

@@ -32,6 +32,7 @@ class App:
             if ".run()" not in f.read():
                 raise NoRunError()
         self.container_manager: ContainerManager = ContainerManager(self)
+        self.mainloop_started = False
         self.event_manager: EventManager = EventManager(self)
         self.sound_manager: sound_manager.SoundManager = sound_manager.SoundManager(self)
         self.window: Window = Window(title, self.container_manager, self.event_manager)
@@ -39,7 +40,7 @@ class App:
         App.window: Window = self.window
         self._exit_code: int = 0
 
-    def run(self, image, full_screen: bool = False, log=False):
+    def run(self, image, full_screen: bool = False):
         """
         runs the main_loop
 
@@ -51,21 +52,26 @@ class App:
             full_screen:
             log:
         """
+        self.image = image
         self.full_screen = full_screen
-        self.window.recalculate_dimensions()
-        App.log.info(
-            "Created window with width: {0}, height: {1}".format(self.window.width, self.window.height))
-        self._setup_images()
-        self.window.display_update()
-        pygame.display.update([image.get_rect()])
-
-        self.window.surface.blit(image, self.board.rect)
         # Start the main-loop
-        print("run")
+        self.prepare_mainloop()
+        self.reload_window()
+        self.mainloop_started = True
+        if self.mainloop_started:
+            self.start_mainloop()
+
+    def prepare_mainloop(self):
+        self._setup_images()
+
+    def start_mainloop(self):
         while not App._quit:
             self._update()
         pygame.display.quit()
         sys.exit(self._exit_code)
+
+    def reload_window(self):
+        self.window.recalculate_dimensions()
 
     def _setup_images(self):
         from pathlib import Path
@@ -85,6 +91,7 @@ class App:
         if self.window.dirty:
             self.window.display_update()
         if not App._quit:
+            self.window.recalculate_dimensions()
             self.window.reload_repaint_areas()
             self.event_manager.handle_event_queue()
             self.container_manager.reload_containers()

@@ -25,8 +25,6 @@ class ContainerManager():
 
     def add_container(self, container, dock, size=None) -> container_file.Container:
         self.app.window.recalculate_dimensions()
-        for ct in self.containers:
-            print("add container", container, self.app.window.height)
         if dock == "right" or dock == "top_left":
             self.containers_right.append(container)
         if dock == "bottom" or dock == "top_left":
@@ -35,8 +33,9 @@ class ContainerManager():
         if size is None:
             size = container.default_size
         container._add_to_window(self.app, dock, size)
+        self.app.window.recalculate_dimensions()
         self.app.window.display_update()
-        self.dirty = 1
+        self.app.window.dirty = 1
         for ct in self.containers:
             ct.dirty = 1
         if self.app.board:
@@ -51,7 +50,7 @@ class ContainerManager():
         if container in self.containers_bottom:
             self.containers_bottom.remove(container)
         #self._display_update()
-        self.dirty = 1
+        self.app.window.dirty = 1
         for ct in self.containers:
             ct.dirty = 1
         if self.board:
@@ -69,7 +68,7 @@ class ContainerManager():
         for ct in self.containers_bottom:
             ct.container_top_left_y = top_left
             top_left += ct.container_height
-        self.dirty = 1
+        self.app.window.dirty = 1
 
     def recalculate_containers_width(self) -> int:    
         containers_width : int  = 0

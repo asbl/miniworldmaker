@@ -65,8 +65,9 @@ class Toolbar(container.Container):
         self.repaint_all = True
 
     def repaint(self):
-        self.surface = pygame.Surface((self._container_width, self._container_height))
         if self.dirty:
+            self.update_width_and_height()
+            self.surface = pygame.Surface((self.width, self.height))
             self.surface.fill((255, 255, 255, 255))
             if self.widgets:
                 actual_height = self.margin_first
