@@ -290,6 +290,7 @@ class Board(container.Container):
         self.rows = value[1]
         self.app.window.dirty = 1
         self.background_handler.full_repaint()
+        self.app.window.dirty = 1
 
     @property
     def tile_size(self) -> int:

@@ -72,6 +72,7 @@ class App:
 
     def reload_window(self):
         self.window.recalculate_dimensions()
+        self.window.dirty = 1
 
     def _setup_images(self):
         from pathlib import Path
@@ -89,13 +90,15 @@ class App:
         """
         self.event_manager.process_pygame_events()
         if self.window.dirty:
-            self.window.display_update()
-        if not App._quit:
             self.window.recalculate_dimensions()
             self.window.reload_repaint_areas()
+            self.window.display_update()
+        if not App._quit:
             self.event_manager.handle_event_queue()
+            
             self.container_manager.reload_containers()
             self.window.display_repaint()
+            
 
     def quit(self, exit_code=0):
         self._exit_code = exit_code

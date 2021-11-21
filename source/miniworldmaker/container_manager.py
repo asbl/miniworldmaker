@@ -70,6 +70,7 @@ class ContainerManager():
             top_left += ct.container_height
         self.app.window.dirty = 1
 
+
     def recalculate_containers_width(self) -> int:    
         containers_width : int  = 0
         for container in self.containers:
