@@ -1,4 +1,4 @@
-import miniworldmaker.tokens.positions.token_position_manager as token_positionmanager
+from miniworldmaker.tokens.positions import token_position_manager as token_positionmanager
 import pygame
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_position_factory

@@ -3,7 +3,7 @@ import miniworldmaker.tokens.costumes.token_physics_costume_manager as physicsbo
 import miniworldmaker.tokens.positions.token_physics_position_manager as physicspositionmanager
 import miniworldmaker.boards.board_handler.board_token_handler.board_pixelboardtokenhandler as pixelboardtokenhandler
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens import token_physics
+from miniworldmaker.tokens.physics import token_physics
 from miniworldmaker import inspection_methods as im
 import sys
 

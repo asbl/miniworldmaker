@@ -1,5 +1,5 @@
 from math import radians, degrees
-import miniworldmaker.tokens.positions.token_pixel_position_manager as pixel_position_manager
+from miniworldmaker.tokens.positions import token_pixel_position_manager as pixel_position_manager
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
 

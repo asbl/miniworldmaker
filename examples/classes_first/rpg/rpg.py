@@ -1,7 +1,6 @@
 import easygui
 from miniworldmaker import *
 
-
 class MyBoard(TiledBoard):
 
     def on_setup(self):

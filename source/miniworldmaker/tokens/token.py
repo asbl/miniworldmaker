@@ -6,7 +6,7 @@ from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple
-from miniworldmaker.tokens import token_physics as token_physics
+from miniworldmaker.tokens.physics import token_physics
 from miniworldmaker import inspection_methods
 
 
