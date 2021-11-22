@@ -1,9 +1,6 @@
 import math
-
-import pygame
-from miniworldmaker.board_positions.board_rect_factory import BoardRectFactory
 from miniworldmaker.board_positions import board_position
-import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
+from miniworldmaker.tokens.sensors import token_boardsensor as boardsensor
 from miniworldmaker.tokens import token
 
 
@@ -50,8 +47,9 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
         """
         target = self.get_destination(self.token.position, self.token.direction, distance)
-        target_rect = BoardRectFactory(self.token.board).from_tiled_position(target)
-        return self.token.board.position_handler.get_borders_from_rect(target_rect)
+        rect = ((target.x, target.y, self.board.tile_size, self.board.tile_size))
+        print(type(rect))
+        return self.token.board.position_handler.get_borders_from_rect(rect)
 
 
     def sensing_tokens(self, token_type=None, distance: int = 0) -> list:

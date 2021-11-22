@@ -1,6 +1,6 @@
 import os
 from miniworldmaker.tokens import token as tkn
-from miniworldmaker.data import db_manager
+from miniworldmaker.boards.data import db_manager
 
 
 class ExportFactory():
@@ -90,3 +90,4 @@ class ExportTokensToDBFactory(ExportFactory, ExportDBFactory, ExportTokensFactor
             self.db.insert(table="token", row=row)
         self.db.commit()
         self.db.close_connection()
+

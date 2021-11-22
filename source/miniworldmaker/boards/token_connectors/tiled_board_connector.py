@@ -1,15 +1,15 @@
 import miniworldmaker.tokens.sensors.token_tiledboardsensor as tiledboardsensor
 import miniworldmaker.tokens.costumes.token_tiled_costume_manager as tiledboardcostumemanager
 import miniworldmaker.tokens.positions.token_tiled_position_manager as tiledpositionmanager
-import miniworldmaker.boards.board_handler.board_token_handler.board_token_handler as board_tokenhandler
+import miniworldmaker.boards.token_connectors.token_connector as token_connector
 from miniworldmaker.board_positions import board_position
 
 
-class TiledBoardTokenHandler(board_tokenhandler.BoardTokenHandler):
+class TiledBoardConnector(token_connector.TokenConnector):
 
-    def add_token_to_board(self, token, position: board_position.BoardPosition):
-        super().add_token_to_board(token, position)
-        token.costume_manager.set_size()
+    def add_token_to_board(self, position: board_position.BoardPosition):
+        super().add_token_to_board(position)
+        self.token.costume_manager.set_size()
 
     def add_board_sensor_to_token(self, token):
         token.board_sensor = tiledboardsensor.TokenTiledBoardSensor(token, self.board)

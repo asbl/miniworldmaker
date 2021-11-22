@@ -1,7 +1,6 @@
 from miniworldmaker.board_positions.board_position import BoardPosition
 import pygame
 from miniworldmaker.tokens import token as tk
-from miniworldmaker.appearances import costume
 
 
 class Shape(tk.Token):

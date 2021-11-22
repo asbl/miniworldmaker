@@ -1,6 +1,6 @@
 from collections import defaultdict
-from miniworldmaker.inspection_methods import InspectionMethods
 import inspect
+from miniworldmaker.tools.inspection_methods import InspectionMethods
 
 
 class BoardCollisionHandler:

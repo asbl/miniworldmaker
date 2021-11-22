@@ -3,7 +3,7 @@ from miniworldmaker.appearances import appearances
 from miniworldmaker.appearances import background
 
 
-class BoardBackgroundHandler:
+class BoardViewHandler:
 
     def __init__(self, board):
         self.board = board
@@ -41,8 +41,7 @@ class BoardBackgroundHandler:
         if self.background is None or not self.has_background:
             self.background = new_background
             self.repaint_all = 1
-            if self.board.token_handler:
-                self.board.token_handler.update_all_costumes()
+            self.update_all_costumes()
             self.update_background()
         self.backgrounds.add(new_background)
         return new_background
@@ -87,3 +86,6 @@ class BoardBackgroundHandler:
         if self.background:
             return self.background.image
         return pygame.Surface((1, 1))
+
+    def update_all_costumes(self):
+        [token.costume.update() for token in self.board.tokens]

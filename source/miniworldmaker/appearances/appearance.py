@@ -8,8 +8,8 @@ import nest_asyncio
 import pygame
 from miniworldmaker.board_positions import board_position, board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import ColorException
-from miniworldmaker.file_manager import FileManager
-
+from miniworldmaker.app.file_manager import FileManager
+from miniworldmaker.tools import binding
 
 class MetaAppearance(type):
     def __call__(cls, *args, **kwargs):
@@ -717,9 +717,11 @@ class Appearance(metaclass=MetaAppearance):
         """
         pass
 
-    """ 
-    Register method for decorator
-    """
 
     def register(self, method: callable):
-        self.board.token_handler.register_token_method(self, method)
+        """ 
+        Register method for decorator. Registers method to token or background.
+        """        
+        bound_method = binding.bind_method(self, method)
+        return bound_method
+        

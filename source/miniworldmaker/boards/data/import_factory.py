@@ -1,4 +1,4 @@
-from miniworldmaker.data import db_manager
+from miniworldmaker.boards.data import db_manager
 from miniworldmaker.tokens import token
 
 

@@ -9,12 +9,12 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         super().__init__(token, position)
         if not self.size:
             self.size = (40, 40)
-        self.token.board.token_handler.register_token_method(self.token, self.impulse)
-        self.token.board.token_handler.register_token_method(self.token, self.force)
-        self.token.board.token_handler.register_token_method(self.token, self.set_simulation)
-        self.token.board.token_handler.register_token_method(self.token, self.set_velocity_x)
-        self.token.board.token_handler.register_token_method(self.token, self.set_velocity_y)
-        self.token.board.token_handler.register_token_method(self.token, self.set_velocity)
+        self.token.register(self.impulse)
+        self.token.register(self.force)
+        self.token.register(self.set_simulation)
+        self.token.register(self.set_velocity_x)
+        self.token.register(self.set_velocity_y)
+        self.token.register(self.set_velocity)
 
     def set_position(self, value):
         pos = super().set_position(value)

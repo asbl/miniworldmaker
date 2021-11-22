@@ -1,4 +1,3 @@
-import os
 import pygame
 from collections import deque
 from inspect import getmembers

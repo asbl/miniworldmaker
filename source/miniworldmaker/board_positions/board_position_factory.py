@@ -1,5 +1,3 @@
-from miniworldmaker.board_positions import board_rect_factory
-from miniworldmaker import app
 from miniworldmaker.board_positions.board_position import BoardPosition
 import pygame
 

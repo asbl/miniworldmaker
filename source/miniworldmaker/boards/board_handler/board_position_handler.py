@@ -57,17 +57,6 @@ class BoardPositionHandler:
         else:
             return False
 
-    def get_borders_from_position(self, pos):
-        borders = []
-        if pos.topleft[0] <= 0:
-            borders.append("left")
-        if pos.topleft[1] + self.board.tile_size >= self.board.height:
-            borders.append("bottom")
-        if pos.topleft[0] + self.board.tile_size >= self.board.width:
-            borders.append("right")
-        if pos.topleft[1] <= 0:
-            borders.append("top")
-        return borders
 
     def get_borders_from_rect(self, rect):
         """

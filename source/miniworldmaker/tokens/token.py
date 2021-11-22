@@ -1,14 +1,14 @@
 import math
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 import pygame
-from miniworldmaker import app
+from miniworldmaker.app import app
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple
 from miniworldmaker.tokens.physics import token_physics
-from miniworldmaker import inspection_methods
-
+from miniworldmaker.tools import inspection_methods
+from miniworldmaker.tools import binding
 
 T = TypeVar('T')
 appearance_source = Union[str, List[str], Appearance]
@@ -33,7 +33,7 @@ class Meta(type):
             instance.setup()
         if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board, "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(app.App.board, "PhysicsBoard"):
             instance.physics.start()
-            instance.board.token_handler.physics_tokens.append(instance)
+            instance.board.physics_tokens.append(instance)
             if hasattr(instance, "on_begin_simulation"):
                 instance.on_begin_simulation()
         return instance
@@ -66,22 +66,19 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     subclasses = None
 
     def __init__(self, position: Optional[Union[Tuple, "board_position.BoardPosition"]] = None, image: Optional[str] = None):
-        self.setup_completed: bool = False
         self._managers = list()
-        self.is_setup = 1  # Was init called ?
         self.costume_manager = None
         self.board_sensor = None
         self.position_manager = None
         self.board = app.App.board
-        self._collision_rect = None
-        self.board.token_handler.add_token_managers(self, image, position)
+        _token_connector = self.board.get_token_connector(self)
+        _token_connector.add_token_managers(image, position)
         pygame.sprite.DirtySprite.__init__(self)
-        self.board.token_handler.add_token_to_board(self, self.position)
-        self.collision_type: str = ""
+        _token_connector.add_token_to_board(self.position)
         Token.token_count += 1
         self.speed: int = 1
         self.token_id: int = Token.token_count + 1
-        self._collision_type: str = "default"
+        self.collision_type: str = ""
 
     @property
     def last_position(self):
@@ -200,8 +197,16 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.rect
 
+    def get_rect(self):
+        return self.position_manager.rect
+
     def add_costume(self, source: appearance_source = (255, 255, 0, 0)) -> costume.Costume:
-        """
+        """    def register(self, method: callable):
+        bound_method = method.__get__(self, self.__class__)
+        setattr(self, method.__name__, bound_method)
+        if method.__name__ == "on_setup":
+            self.on_setup()
+        return bound_method
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
@@ -585,14 +590,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.move_back()
 
-    @property
-    def collision_rect(self):
-        return self._collision_rect
-
-    @collision_rect.setter
-    def collision_rect(self, value):
-        self._collision_rect = value
-
     def move_in_direction(self, direction: Union[int, str], distance=1):
         """Moves token *distance* steps into a *direction*.
 
@@ -818,11 +815,14 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.rect.collidepoint(board_position)
 
     """ 
-    Register method for decorator
+    This method is used for the @register decorator. It adds a method to an object
     """
 
     def register(self, method: callable):
-        self.board.token_handler.register_token_method(self, method)
+        bound_method = binding.bind_method(self, method)
+        if method.__name__ == "on_setup":
+            self.on_setup()
+        return bound_method
 
     def bounce_from_token(self, other: "Token"):
         self.position_manager.bounce_from_token(other)

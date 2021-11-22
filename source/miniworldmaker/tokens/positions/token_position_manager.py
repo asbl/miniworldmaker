@@ -1,15 +1,8 @@
-from miniworldmaker.appearances import appearances
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
-from typing import Union
-from typing import Type
-import traceback
-from typing import TypeVar
-from miniworldmaker.appearances.appearance import Appearance
-from miniworldmaker.appearances import costume
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_position_factory
 import pygame
 
+from typing import Union
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 
 

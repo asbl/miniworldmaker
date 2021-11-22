@@ -1,12 +1,10 @@
 from typing import Union
-from miniworldmaker.appearances import background
 
 import pygame
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.boards import board as board_module
-import miniworldmaker.tokens.token as token_module
-from miniworldmaker.boards.board_handler.board_token_handler import board_pixelboardtokenhandler as pixelboardhandler
-
+from miniworldmaker.tokens import token as token_module
+from miniworldmaker.boards.token_connectors.pixel_board_connector import PixelBoardConnector
 
 class PixelBoard(board_module.Board):
 
@@ -17,8 +15,11 @@ class PixelBoard(board_module.Board):
                  tile_margin: int = 0,
                  background_image=None
                  ):
-        self.token_handler = pixelboardhandler.PixelBoardTokenHandler(self)
         super().__init__(columns, rows, tile_size, tile_margin, background_image)
+
+
+    def get_token_connector(self, token):
+        return PixelBoardConnector(self, token)
 
     def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
         """
@@ -43,7 +44,7 @@ class PixelBoard(board_module.Board):
         # filter
         if token_type:
             filtered_tokens = [token for token in token_list if
-                            (issubclass(token.__class__, token_type) or token.__class__ == token_type)]
+                               (issubclass(token.__class__, token_type) or token.__class__ == token_type)]
         return filtered_tokens
 
     def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[token_module.Token, list]:
@@ -72,6 +73,7 @@ class PixelBoard(board_module.Board):
             for token in filtered_tokens:
                 if token.rect.colliderect(rect):
                     return token
+            return []
 
     def is_on_board(self, position: board_position.BoardPosition) -> bool:
         self.position_handler.is_pos

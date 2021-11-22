@@ -1,6 +1,6 @@
 from collections import defaultdict
 from inspect import signature
-from miniworldmaker.inspection_methods import InspectionMethods
+from miniworldmaker.tools.inspection_methods import InspectionMethods
 
 class BoardEventHandler:
 
@@ -18,11 +18,8 @@ class BoardEventHandler:
         """
         if event not in self.executed_events:  # events shouldn't be called more than once per tick
             self.executed_events.add(event)
-            if self.board.token_handler:
-                tokens = self.board.token_handler.tokens
-                all_objects = list(tokens) + [self.board]
-            else:
-                all_objects = [self]
+            tokens = self.board.tokens
+            all_objects = list(tokens) + [self.board]
             # handle global events
             if event in ["reset"]:
                 self.handle_reset_event()

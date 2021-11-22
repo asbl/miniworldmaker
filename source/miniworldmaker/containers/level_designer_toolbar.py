@@ -3,7 +3,7 @@ import os
 from miniworldmaker.board_positions import board_position, board_rect_factory, board_position_factory
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import SaveButton, LoadButton, ToolbarWidget, ToolbarLabel, ToolbarButton
-from miniworldmaker.inspection_methods import InspectionMethods
+from miniworldmaker.tools.inspection_methods import InspectionMethods
 from miniworldmaker.tokens import token
 from miniworldmaker.containers.toolbar_widgets import ClearButton
 from miniworldmaker.exceptions import miniworldmaker_exception

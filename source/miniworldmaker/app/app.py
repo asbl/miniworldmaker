@@ -1,7 +1,5 @@
 import logging
-import traceback
 import sys
-from collections import deque
 
 import pkg_resources
 import pygame
@@ -9,10 +7,10 @@ import __main__
 
 import inspect
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, NoRunError
-from miniworldmaker.window import Window
-from miniworldmaker.event_manager import EventManager
-from miniworldmaker.container_manager import ContainerManager
-from miniworldmaker import sound_manager
+from miniworldmaker.app.window import Window
+from miniworldmaker.app.event_manager import EventManager
+from miniworldmaker.app.container_manager import ContainerManager
+from miniworldmaker.app import sound_manager
 
 version = pkg_resources.require("miniworldmaker")[0].version
 print("Show new miniworldmaker v.{0} Window".format(version))
@@ -95,7 +93,6 @@ class App:
             self.window.display_update()
         if not App._quit:
             self.event_manager.handle_event_queue()
-            
             self.container_manager.reload_containers()
             self.window.display_repaint()
             

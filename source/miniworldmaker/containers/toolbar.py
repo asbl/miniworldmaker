@@ -1,7 +1,7 @@
 import pygame
 from miniworldmaker.containers import container
 from miniworldmaker.containers import toolbar_widgets
-from miniworldmaker import app
+from miniworldmaker.app import app
 
 
 class Toolbar(container.Container):

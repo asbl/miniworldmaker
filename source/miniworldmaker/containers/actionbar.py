@@ -1,7 +1,7 @@
 import logging
 import os
-
 import pygame
+
 from miniworldmaker.containers import container
 
 
@@ -308,7 +308,8 @@ class SpeedDownButton(ActionBarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.board.fps -= 1
-            self.parent._app.event_manager.send_event_to_containers("board_speed_changed", self.board.fps)
+            self.parent._app.event_manager.send_event_to_containers(
+                "board_speed_changed", self.board.fps)
 
 
 class SpeedUpButton(ActionBarWidget):
@@ -325,4 +326,5 @@ class SpeedUpButton(ActionBarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.board.fps += 1
-            self.parent._app.event_manager.send_event_to_containers("board_speed_changed", self.board.fps)
+            self.parent._app.event_manager.send_event_to_containers(
+                "board_speed_changed", self.board.fps)

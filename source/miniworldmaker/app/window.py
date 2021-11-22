@@ -1,6 +1,6 @@
 import pygame
-from miniworldmaker.container_manager import ContainerManager
-from miniworldmaker.event_manager import EventManager
+from miniworldmaker.app.container_manager import ContainerManager
+from miniworldmaker.app.event_manager import EventManager
 
 import os
 
