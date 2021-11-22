@@ -1,5 +1,3 @@
-import os
-
 import pygame
 from miniworldmaker.containers import container
 

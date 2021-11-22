@@ -85,7 +85,7 @@ class TokenPhysics:
         """
         if self.started == False:
             self.started = True
-            self.board.token_handler.count_tokens += 1
+            # self.board.count_tokens += 1
             self.setup_physics_model()  # After on_setup
 
     def get_pymunk_shape(self):

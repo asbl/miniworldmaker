@@ -92,3 +92,4 @@ class Costume(appear.Appearance):
 
     def __str__(self):
         return "Costume with ID [" + str(self.id) + "] for parent:[" + str(self.parent) + "], images: " + str(self.images_list)
+

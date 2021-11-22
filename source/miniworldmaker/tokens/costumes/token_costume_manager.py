@@ -1,5 +1,5 @@
-from miniworldmaker.appearances import appearances
 from typing import Union, Type, TypeVar, List
+from miniworldmaker.appearances import appearances
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeIsNoneError, CostumeOutOfBoundsError

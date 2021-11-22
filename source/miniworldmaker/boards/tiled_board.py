@@ -3,9 +3,8 @@ from typing import Union
 import pygame
 from miniworldmaker.board_positions import board_position, board_position_factory
 from miniworldmaker.boards import board
-from miniworldmaker.tokens.sensors import token_tiledboardsensor
-from miniworldmaker.boards.board_handler.board_token_handler import board_tiledtokenhandler
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
+from miniworldmaker.boards.token_connectors.tiled_board_connector import TiledBoardConnector
 
 class TiledBoard(board.Board):
 
@@ -18,7 +17,6 @@ class TiledBoard(board.Board):
             tile_size: The size of a tile
             tile_margin: The margin between tiles
         """
-        self.token_handler = board_tiledtokenhandler.TiledBoardTokenHandler(self)
         self.default_token_speed : int = 1
         self.dynamic_tokens_dict : defaultdict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens : list = []  # List with all dynamic actors
@@ -27,6 +25,10 @@ class TiledBoard(board.Board):
             raise TiledBoardTooBigError(columns, rows, tile_size)
         super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin,
                          background_image=background_image)
+
+
+    def get_token_connector(self, token):
+        return TiledBoardConnector(self, token)
 
     @staticmethod
     def get_neighbour_cells(position: tuple) -> list:

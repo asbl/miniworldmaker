@@ -1,5 +1,4 @@
 import miniworldmaker.tokens.costumes.token_costume_manager as token_costumemanager
-import pygame
 
 
 class TiledBoardCostumeManager(token_costumemanager.TokenCostumeManager):

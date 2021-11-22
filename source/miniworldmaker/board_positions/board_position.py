@@ -6,7 +6,7 @@ class BoardPosition(collections.namedtuple('Point', ['x', 'y'])):
     A BoardPosition Object represents a position on a Board.
 
     As a subclass of namedtuple, BoardPosition is for
-    performance reasons not mutable.
+    performance reasons not mutable. 
 
     On a tiled board, the BoardPosition does not describe pixels
     but tiles coordinates.

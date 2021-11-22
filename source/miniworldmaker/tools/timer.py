@@ -1,8 +1,7 @@
-import inspect
 from inspect import signature
 
-from miniworldmaker import app
-from miniworldmaker.inspection_methods import InspectionMethods
+from miniworldmaker.app import app
+from miniworldmaker.tools.inspection_methods import InspectionMethods
 
 
 class Timed():

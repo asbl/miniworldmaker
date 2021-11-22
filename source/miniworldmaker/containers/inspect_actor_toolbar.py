@@ -1,7 +1,7 @@
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.board_positions import board_position_factory
-from miniworldmaker import inspection_methods
+from miniworldmaker.tools import inspection_methods
 
 class InspectActorToolbar(toolbar.Toolbar):
 

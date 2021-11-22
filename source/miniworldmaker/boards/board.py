@@ -1,22 +1,25 @@
 from typing import Union
 from typing import Type
 import pygame
-from miniworldmaker import app
+from miniworldmaker.app import app
+from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances.background import Background
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.board_positions import board_rect_factory
 from miniworldmaker.board_positions import board_position
+from miniworldmaker.boards.board_handler.board_event_handler import BoardEventHandler
+from miniworldmaker.boards.board_handler.board_collision_handler import BoardCollisionHandler
+from miniworldmaker.boards.board_handler.board_view_handler import BoardViewHandler
+from miniworldmaker.boards.board_handler.board_position_handler import BoardPositionHandler
+from miniworldmaker.boards.token_connectors.token_connector import TokenConnector
 from miniworldmaker.containers import container
-from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.exceptions.miniworldmaker_exception import BoardArgumentsError, BoardInstanceError
 from miniworldmaker.tools import timer
 from miniworldmaker.tokens import token as token_module
-from miniworldmaker.boards.board_handler.board_eventhandler import BoardEventHandler
-from miniworldmaker.boards.board_handler.board_collision_handler import BoardCollisionHandler
-from miniworldmaker.data import import_factory
-from miniworldmaker.data import export_factory
-from miniworldmaker.boards.board_handler.board_background_handler import BoardBackgroundHandler
-from miniworldmaker.boards.board_handler.board_position_handler import BoardPositionHandler
+from miniworldmaker.tools import inspection_methods
+from miniworldmaker.boards.data import import_factory
+from miniworldmaker.boards.data import export_factory
+from miniworldmaker.tokens.token import Token
 
 
 class Board(container.Container):
@@ -71,9 +74,10 @@ class Board(container.Container):
                  ):
         if self.__class__ == Board:
             raise BoardInstanceError()
+        self._tokens = pygame.sprite.LayeredDirty()
         self.event_handler = BoardEventHandler(self)
         super().__init__()
-        self.background_handler = BoardBackgroundHandler(self)
+        self.view_handler = BoardViewHandler(self)
         self.position_handler = BoardPositionHandler(self)
         pygame.init()
         # public
@@ -88,7 +92,7 @@ class Board(container.Container):
         if type(columns) != int or type(rows) != int:
             if type(columns) == tuple:
                 size = columns
-                columns =  size[0]
+                columns = size[0]
                 rows = size[1]
             else:
                 raise BoardArgumentsError(columns, rows)
@@ -100,13 +104,16 @@ class Board(container.Container):
         self.app: app.App = app.App("miniworldmaker")
         self.app.container_manager.add_container(self, "top_left")
         app.App.board = self
-        self.background_handler.init_background(background_image)
-        self.background_handler.update_background()
+        self.view_handler.init_background(background_image)
+        self.view_handler.update_background()
         self.collision_handler = BoardCollisionHandler(self)
         self.dirty: int = 1
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         print("Create board")
+
+    def get_token_connector(self, token):
+        return TokenConnector(self, token)
 
     def load_board_from_db(self, file):
         """
@@ -155,7 +162,7 @@ class Board(container.Container):
         """
         The width of the container
         """
-        if self.background_handler.repaint_all:
+        if self.view_handler.repaint_all:
             self._container_width = self.columns * self.tile_size + \
                 (self.columns + 1) * self.tile_margin
         return self._container_width
@@ -165,7 +172,7 @@ class Board(container.Container):
         """
         The height of the container
         """
-        if self.background_handler.repaint_all:
+        if self.view_handler.repaint_all:
             self._container_height = self.rows * \
                 self.tile_size + (self.rows + 1) * self.tile_margin
         return self._container_height
@@ -199,7 +206,7 @@ class Board(container.Container):
 
     @property
     def has_background(self) -> bool:
-        return self.background_handler.has_background
+        return self.view_handler.has_background
 
     @property
     def fps(self) -> int:
@@ -265,7 +272,7 @@ class Board(container.Container):
     def rows(self, value):
         self._rows = value
         self.app.window.dirty = 1
-        self.background_handler.full_repaint()
+        self.view_handler.full_repaint()
 
     @property
     def columns(self) -> int:
@@ -278,7 +285,7 @@ class Board(container.Container):
     def columns(self, value):
         self._columns = value
         self.app.window.dirty = 1
-        self.background_handler.full_repaint()
+        self.view_handler.full_repaint()
 
     @property
     def size(self) -> tuple:
@@ -288,8 +295,7 @@ class Board(container.Container):
     def size(self, value: tuple):
         self.columns = value[0]
         self.rows = value[1]
-        self.app.window.dirty = 1
-        self.background_handler.full_repaint()
+        self.view_handler.full_repaint()
         self.app.window.dirty = 1
 
     @property
@@ -303,7 +309,7 @@ class Board(container.Container):
     def tile_size(self, value):
         self._tile_size = value
         self.app.window.dirty = 1
-        self.background_handler.full_repaint()
+        self.view_handler.full_repaint()
 
     @property
     def tile_margin(self) -> int:
@@ -316,14 +322,14 @@ class Board(container.Container):
     def tile_margin(self, value):
         self._tile_margin = value
         self.app.window.dirty = 1
-        self.background_handler.full_repaint()
+        self.view_handler.full_repaint()
 
     @property
     def tokens(self) -> pygame.sprite.LayeredDirty:
         """
         A list of all tokens registered to the grid.
         """
-        return self.token_handler.tokens
+        return self._tokens
 
     @property
     def class_name(self) -> str:
@@ -339,7 +345,7 @@ class Board(container.Container):
 
     @property
     def background(self):
-        return self.background_handler.background
+        return self.view_handler.background
 
     def remove_from_board(self, token: token_module.Token):
         """
@@ -360,7 +366,7 @@ class Board(container.Container):
         Args:
             index: The index of the new background. Defaults to -1 (last background)
         """
-        self.background_handler.remove_background()
+        self.view_handler.remove_background()
 
     def add_background(self, source: Union[str, tuple]) -> Background:
         """
@@ -383,7 +389,7 @@ class Board(container.Container):
         Returns: 
             The new created background.
         """
-        self.background_handler.add_background(source)
+        self.view_handler.add_background(source)
 
     def add_to_board(self, token, position: tuple):
         """
@@ -462,11 +468,11 @@ class Board(container.Container):
         """
         The current displayed image
         """
-        return self.background_handler.image
+        return self.view_handler.image
 
     @property
     def surface(self):
-        return self.background_handler.surface
+        return self.view_handler.surface
 
     @surface.setter
     def surface(self, value):
@@ -528,7 +534,7 @@ class Board(container.Container):
         self.app.event_manager.send_event_to_containers("reset", self)
 
     def repaint(self):
-        self.background_handler.repaint()
+        self.view_handler.repaint()
 
     def run(self, fullscreen=False):
         """
@@ -547,7 +553,6 @@ class Board(container.Container):
                 self.app.event_manager.send_event_to_containers("setup", self)
         self.app.run(self.image, full_screen=fullscreen)
 
-
     def switch_background(self, background: Union[int, Type[Appearance]]) -> Background:
         """Switches the background of costume
 
@@ -558,7 +563,7 @@ class Board(container.Container):
             The new costume
 
         """
-        self.background_handler.switch_background(background)
+        self.view_handler.switch_background(background)
 
     def update(self):
         # This is the board-mainloop()
@@ -566,15 +571,26 @@ class Board(container.Container):
         if self.is_running or self.frame == 0:
             # Acting for all actors
             if self.frame % self.speed == 0:
-                self.token_handler.act_all()
+                self.act_all()
             self.collision_handler.handle_all_collisions()
             # run animations
-            self.token_handler.update_all_costumes()
-            self.background_handler.update_background()
+            self.view_handler.update_all_costumes()
+            self.view_handler.update_background()
             self._tick_timed_objects()
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
         self.event_handler.executed_events.clear()
+
+    def act_all(self):
+        for token in self.tokens:
+            if token.board:  # is on board
+                self.event_handler.handle_act_event(token)
+        # If board has act method call board.act()
+        method = inspection_methods.InspectionMethods.get_instance_method(
+            self, "act")
+        if method:
+            method = inspection_methods.InspectionMethods.call_instance_method(
+                self, method, None)
 
     def _tick_timed_objects(self):
         [obj.tick() for obj in self.timed_objects]
@@ -605,7 +621,7 @@ class Board(container.Container):
         self.app.sound_manager.play_music(path)
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.background_handler.find_colors(rect, color, threshold)
+        return self.view_handler.find_colors(rect, color, threshold)
 
     def get_mouse_position(self) -> Union[board_position.BoardPosition, None]:
         """
@@ -650,9 +666,9 @@ class Board(container.Container):
         setattr(self, method.__name__, bound_method)
         return bound_method
 
-    def send_message(self, message, data = None):
+    def send_message(self, message, data=None):
         self.app.event_manager.send_event_to_containers("message", message)
- 
+
     def screenshot(self, filename="screenshot.jpg"):
         pygame.image.save(self.surface, filename)
 

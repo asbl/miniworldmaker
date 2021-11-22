@@ -1,5 +1,3 @@
-import pygame
-
 KEYS = {20: "Q",
         26: "W",
         8: "E",
