@@ -25,10 +25,12 @@ class App:
     _quit: bool = False
 
     def check_for_run_method(self):
-        if 'get_ipython' not in globals():
+        try:
             with open(__main__.__file__) as f:
                 if ".run()" not in f.read():
                     raise NoRunError()
+        except AttributeError:
+            print("can't check if run() is present (This can happen if you are using jupyter notebooks. Resuming)")
 
     def __init__(self, title):
         print("init miniworldmaker app...")

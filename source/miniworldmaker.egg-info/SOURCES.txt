@@ -38,6 +38,11 @@ miniworldmaker/boards/data/__init__.py
 miniworldmaker/boards/data/db_manager.py
 miniworldmaker/boards/data/export_factory.py
 miniworldmaker/boards/data/import_factory.py
+miniworldmaker/boards/token_connectors/__init__.py
+miniworldmaker/boards/token_connectors/physics_board_connector.py
+miniworldmaker/boards/token_connectors/pixel_board_connector.py
+miniworldmaker/boards/token_connectors/tiled_board_connector.py
+miniworldmaker/boards/token_connectors/token_connector.py
 miniworldmaker/containers/__init__.py
 miniworldmaker/containers/actionbar.py
 miniworldmaker/containers/color_toolbar.py
