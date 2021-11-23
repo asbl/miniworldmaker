@@ -11,7 +11,6 @@ from miniworldmaker.app.window import Window
 from miniworldmaker.app.event_manager import EventManager
 from miniworldmaker.app.container_manager import ContainerManager
 from miniworldmaker.app import sound_manager
-from miniworldmaker.boards import board
 
 
 
@@ -19,7 +18,7 @@ class App:
     """The class app contains the game itself. It's created the first time you call board.shbow().
     """
     log = logging.getLogger("miniworldmaker")
-    board: board.Board = None
+    board = None
     _quit: bool = False
 
     def check_for_run_method(self):
