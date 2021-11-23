@@ -8,6 +8,13 @@ miniworldmaker.egg-info/SOURCES.txt
 miniworldmaker.egg-info/dependency_links.txt
 miniworldmaker.egg-info/requires.txt
 miniworldmaker.egg-info/top_level.txt
+miniworldmaker/app/__init__.py
+miniworldmaker/app/app.py
+miniworldmaker/app/container_manager.py
+miniworldmaker/app/event_manager.py
+miniworldmaker/app/file_manager.py
+miniworldmaker/app/sound_manager.py
+miniworldmaker/app/window.py
 miniworldmaker/appearances/__init__.py
 miniworldmaker/appearances/appearance.py
 miniworldmaker/appearances/appearances.py
