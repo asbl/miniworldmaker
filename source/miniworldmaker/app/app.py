@@ -11,17 +11,15 @@ from miniworldmaker.app.window import Window
 from miniworldmaker.app.event_manager import EventManager
 from miniworldmaker.app.container_manager import ContainerManager
 from miniworldmaker.app import sound_manager
+from miniworldmaker.boards import board
 
-version = pkg_resources.require("miniworldmaker")[0].version
-print("Show new miniworldmaker v.{0} Window".format(version))
-print("Let's go")
 
 
 class App:
     """The class app contains the game itself. It's created the first time you call board.shbow().
     """
     log = logging.getLogger("miniworldmaker")
-    board: "Board" = None
+    board: board.Board = None
     _quit: bool = False
 
     def check_for_run_method(self):
@@ -32,8 +30,14 @@ class App:
         except AttributeError:
             print("can't check if run() is present (This can happen if you are using jupyter notebooks. Resuming)")
 
-    def __init__(self, title):
+    def _output_start(self):
         print("init miniworldmaker app...")
+        version = pkg_resources.require("miniworldmaker")[0].version
+        print("Show new miniworldmaker v.{0} Window".format(version))
+        print("Let's go")
+
+    def __init__(self, title):
+        self._output_start()
         self.check_for_run_method()
         self.container_manager: ContainerManager = ContainerManager(self)
         self.mainloop_started = False
