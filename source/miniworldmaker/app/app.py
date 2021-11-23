@@ -24,11 +24,15 @@ class App:
     board: "Board" = None
     _quit: bool = False
 
+    def check_for_run_method(self):
+        if 'get_ipython' not in globals():
+            with open(__main__.__file__) as f:
+                if ".run()" not in f.read():
+                    raise NoRunError()
+
     def __init__(self, title):
         print("init miniworldmaker app...")
-        with open(__main__.__file__) as f:
-            if ".run()" not in f.read():
-                raise NoRunError()
+        self.check_for_run_method()
         self.container_manager: ContainerManager = ContainerManager(self)
         self.mainloop_started = False
         self.event_manager: EventManager = EventManager(self)
