@@ -57,14 +57,14 @@ bird.physics.shape_type = "circle"
 #bird.flip_x()
 bird.is_rotatable = False
 
-#@bird.register
-#def on_sensing_borders(self, borders):
-#    if "bottom" in borders or "top" in borders:
-#        end=mwm.TextToken()
-#        end.set_text("Game over!")
-#        end.position = (400,200)
-#        board.game_over = True
-#          board.stop()
+@bird.register
+def on_sensing_borders(self, borders):
+    if "bottom" in borders or "top" in borders:
+        end=mwm.TextToken()
+        end.set_text("Game over!")
+        end.position = (400,200)
+        board.game_over = True
+        board.stop()
 
 @bird.register
 def on_touching_token(self, other, info):

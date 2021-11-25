@@ -14,7 +14,6 @@ class FileManager:
 
     @staticmethod
     def get_path_with_file_ending(path, ending):
-        print(path, ending)
         for filename_extension in ending:
             if Path(path + "." + filename_extension).is_file():
                 print(path + "." + filename_extension)

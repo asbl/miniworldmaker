@@ -565,7 +565,6 @@ class Appearance(metaclass=MetaAppearance):
         Returns: The color
 
         """
-        print(position)
         position = board_position_factory.BoardPositionFactory(self).create(position)
         return self._image.get_at(position.to_int())
 

@@ -1,10 +1,10 @@
 import random
 import miniworldmaker as mwm
 
-board = mwm.PhysicsBoard(800, 600)
-print("board", board.gravity)
+board = mwm.PhysicsBoard((800, 600))
+#board.gravity = (0, 900)
+print("board", board.gravity, board.space.gravity)
 board.add_background("images/background.png")
-
 
 a = mwm.Token()
 a.size = (40,40)

@@ -1,34 +1,37 @@
 import pymunk as pymunk_engine
-from miniworldmaker.boards import pixel_board  as pixel_board_module
+from miniworldmaker.boards import pixel_board as pixel_board_module
 from miniworldmaker.tools import inspection_methods as im
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
 from miniworldmaker.tokens import token
 
-from tools.inspection_methods import InspectionMethods
+from miniworldmaker.tools.inspection_methods import InspectionMethods
+
+
 class PhysicsBoard(pixel_board_module.PixelBoard):
 
     def __init__(self,
                  columns: int = 40,
                  rows: int = 40,
-                 tile_size : int = 1,
-                 tile_margin : int = 0,
+                 tile_size: int = 1,
+                 tile_margin: int = 0,
                  background_image=None
                  ):
-            self.gravity_x = 0
-            self.gravity_y = -900
-            self.debug = False
-            self.collision_types = list
-            self.accuracy = 1
-            self.space = pymunk_engine.Space()
-            self.space.gravity = self.gravity_x, self.gravity_y
-            self.space.iterations = 35
-            self.space.damping = 0.9
-            self.space.collision_persistence = 10
-            self.physics_tokens = list()
-            self.touching_methods = list()  # filled in token_handler
-            self.separation_methods = list()  # filled in token_handler
-            # Note: This is the grandparent constructor
-            super(pixel_board_module.PixelBoard, self).__init__(columns, rows, tile_size, tile_margin, background_image)
+        super(pixel_board_module.PixelBoard, self).__init__(
+            columns, rows, tile_size, tile_margin, background_image)
+        self.gravity_x = 0
+        self.gravity_y = -900
+        self.debug = False
+        self.collision_types = list
+        self.accuracy = 1
+        self.space = pymunk_engine.Space()
+        self.space.gravity = self.gravity_x, self.gravity_y
+        self.space.iterations = 35
+        self.space.damping = 0.9
+        self.space.collision_persistence = 10
+        self.physics_tokens = list()
+        self.touching_methods = list()  # filled in token_handler
+        self.separation_methods = list()  # filled in token_handler
+
 
     def get_token_connector(self, token):
         return PhysicsBoardConnector(self, token)
@@ -69,13 +72,12 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         return methods
 
     def register_all_physics_handlers(self, token):
-        InspectionMethods._update_token_subclasses()
+        PhysicsBoard._update_token_subclasses()
         physics_handlers = self.get_physics_handlers(token)
         for method in physics_handlers:
             self.register_physics_handlers(token, method)
 
     def register_physics_handlers(self, token, method):
-        
         if method.__name__.startswith("on_touching_") or method.__name__.startswith("on_separation_from_"):
             if method.__name__.startswith("on_touching_"):
                 event = "begin"
@@ -112,8 +114,6 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
             # postprocess
             [token.physics.simulation_postprocess_token()
              for token in self.physics_tokens]
-
-
 
     @property
     def gravity(self):

@@ -48,7 +48,6 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         """
         target = self.get_destination(self.token.position, self.token.direction, distance)
         rect = ((target.x, target.y, self.board.tile_size, self.board.tile_size))
-        print(type(rect))
         return self.token.board.position_handler.get_borders_from_rect(rect)
 
 
