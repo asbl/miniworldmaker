@@ -169,7 +169,6 @@ class ClearButton(ToolbarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            print(self.app.board)
             self.app.board.clear()
 
 
