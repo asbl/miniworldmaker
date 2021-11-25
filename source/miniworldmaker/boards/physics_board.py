@@ -2,7 +2,9 @@ import pymunk as pymunk_engine
 from miniworldmaker.boards import pixel_board  as pixel_board_module
 from miniworldmaker.tools import inspection_methods as im
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
+from miniworldmaker.tokens import token
 
+from tools.inspection_methods import InspectionMethods
 class PhysicsBoard(pixel_board_module.PixelBoard):
 
     def __init__(self,
@@ -43,6 +45,23 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         other_cls = im.InspectionMethods.get_token_class_by_name(other_cls_name)
         return other_cls
 
+    @staticmethod
+    def _update_token_subclasses():
+        """
+        Returns a dict with class_name->class
+        updat
+        Returns:
+
+        """
+        token_subclasses = token.Token.all_subclasses()
+        for cls in token_subclasses:
+            InspectionMethods.token_classes[cls.__name__] = cls
+            if cls not in InspectionMethods.token_class_ids:
+                cls.class_id = InspectionMethods.token_class_id_counter
+                InspectionMethods.token_class_ids[cls] = InspectionMethods.token_class_id_counter
+                InspectionMethods.token_class_id_counter += 1
+        return InspectionMethods.token_classes
+
     def get_physics_handlers(self, token):
         methods = [getattr(token, method_name) for method_name in dir(token)
                    if hasattr(token, method_name) and callable(getattr(token, method_name))
@@ -50,11 +69,13 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         return methods
 
     def register_all_physics_handlers(self, token):
+        InspectionMethods._update_token_subclasses()
         physics_handlers = self.get_physics_handlers(token)
         for method in physics_handlers:
             self.register_physics_handlers(token, method)
 
     def register_physics_handlers(self, token, method):
+        
         if method.__name__.startswith("on_touching_") or method.__name__.startswith("on_separation_from_"):
             if method.__name__.startswith("on_touching_"):
                 event = "begin"

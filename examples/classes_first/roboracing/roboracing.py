@@ -21,7 +21,7 @@ class Robot(Token):
     def on_setup(self):
         self.add_costume("images/robo_green.png")
         self.costume.orientation = -90
-        self.size= (64 , 512)
+        self.size= (64 , 64)
         self.costume.is_scaled = True
 
     def act(self):
