@@ -1,4 +1,5 @@
 import pymunk as pymunk_engine
+import sys
 from miniworldmaker.boards import pixel_board as pixel_board_module
 from miniworldmaker.tools import inspection_methods as im
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
@@ -19,7 +20,7 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         super(pixel_board_module.PixelBoard, self).__init__(
             columns, rows, tile_size, tile_margin, background_image)
         self.gravity_x = 0
-        self.gravity_y = -900
+        self.gravity_y = 900
         self.debug = False
         self.collision_types = list
         self.accuracy = 1
@@ -32,6 +33,29 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         self.touching_methods = list()  # filled in token_handler
         self.separation_methods = list()  # filled in token_handler
 
+
+    def _pymunk_register_collision_handler(self, token, other_class, event, method):
+        """
+        Adds pymunk collission handler, which is evaluated by pymunk engine.
+        The event (begin, end) and the method (on_touching...) are added as data to the handler
+
+        Args:
+            token: The token
+            other_class: The class which should be detected by collision handler
+            event: The pymunk-event  (begin or separate)
+            method: The method, e.g. on_touching_token or on_separation_from_token. Last part is a class name       
+        """
+
+        space = self.space
+        token_id = hash(token.__class__.__name__) % ((sys.maxsize + 1) * 2)
+        other_id = hash(other_class.__name__) % ((sys.maxsize + 1) * 2)
+        handler = space.add_collision_handler(token_id, other_id)
+        handler.data["method"] = getattr(token, method.__name__)
+        handler.data["type"] = event
+        if event == "begin":
+            handler.begin = self.pymunk_touching_collision_listener
+        if event == "separate":
+            handler.separate = self.pymunk_separation_collision_listener
 
     def get_token_connector(self, token):
         return PhysicsBoardConnector(self, token)

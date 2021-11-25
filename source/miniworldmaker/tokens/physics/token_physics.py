@@ -349,6 +349,7 @@ class TokenPhysics:
         impulse = pymunk.Vec2d(1, 0)
         impulse = impulse.rotated_degrees(direction)
         impulse = power * 1000 * impulse.normalized()
+        print("impulse", impulse)
         self._body.apply_impulse_at_local_point(impulse)
 
     def force_in_direction(self, direction, power):
@@ -361,5 +362,6 @@ class TokenPhysics:
         """
         force = pymunk.Vec2d(1, 0)
         force = force.rotated_degrees(direction)
-        force = power * 100000 * force.normalized()
+        force = power * 10000 * force.normalized()
+        print("force", force)
         self._body.apply_force_at_local_point(force, (0,0))
