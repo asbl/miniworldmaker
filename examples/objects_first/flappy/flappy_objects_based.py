@@ -22,7 +22,8 @@ for pipe in pipes:
     
     @pipe.register
     def act(self):
-        print(pipe.physics._body.position)
+        pass
+        # print(pipe.physics._body.position)
         
 #self.move_in_direction("left")
 #self.direction = 0
@@ -78,13 +79,14 @@ def on_touching_token(self, other, info):
 
 @bird.register
 def on_key_pressed_space(self):
-    self.physics.velocity_y = 200
+    self.physics.velocity_y = - 200
     if board.is_running is False and not board.game_over:
         board.start()
         
 @bird.register
 def act(self):
-    print(bird.physics._body.position)
+    pass
+    #print(bird.physics._body.position)
 
 board.run()
 

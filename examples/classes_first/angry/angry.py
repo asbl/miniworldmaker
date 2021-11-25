@@ -105,7 +105,6 @@ class Bird(mwm.Token):
         self.physics.mass = 5
         self.physics.friction = 1
         self.physics.elasticity = 0
-        self.simulation = "simulated"
         self.physics.shape_type = "circle"
         self.orientation = 180
         self.flip_x()

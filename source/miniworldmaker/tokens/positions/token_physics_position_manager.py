@@ -64,10 +64,10 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         super().set_direction(mwm_direction)
 
     def impulse(self, direction=float, power=int):
-        self.token.physics.impulse_in_direction(180 - direction, power)
+        self.token.physics.impulse_in_direction(180 + direction, power)
 
     def force(self, direction=float, power=int):
-        self.token.physics.force_in_direction(180 - direction, power)
+        self.token.physics.force_in_direction(180 + direction, power)
 
     def set_simulation(self, simulation_type: str):
         if simulation_type in ["simulated", "manual", "static", None]:

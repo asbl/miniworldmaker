@@ -13,4 +13,5 @@ for i in range(100):
     circles.append(circle)
 line2 = Line((0, 200), (398, 400), 2, color=(100, 100, 255))
 line2.physics.simulation = "manual"
+print(globals())
 board.run()
