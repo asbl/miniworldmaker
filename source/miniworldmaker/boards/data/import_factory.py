@@ -1,6 +1,8 @@
 from miniworldmaker.boards.data import db_manager
 from miniworldmaker.tokens import token
 
+from miniworldmaker.tools.inspection_methods import InspectionMethods
+
 
 class ImportFactory():
     def __init__(self):
@@ -59,7 +61,7 @@ class ImportTokensFromDB(ImportDBFactory, ImportFactory):
                 direction = token_data[4]
                 token_class_name = class_name
                 token_class = token.Token
-                class_list = token.Token.all_subclasses()
+                class_list = InspectionMethods.all_subclasses(token.Token)
                 for cls_obj in class_list:
                     if cls_obj.__name__ == token_class_name:
                         token_class = cls_obj

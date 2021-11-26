@@ -111,3 +111,8 @@ class PhysicsSimulationTypeError(MiniworldMakerError):
     def __init__(self):
         self.message = f"Physics simulation should be `None`, `static`, `manual` or `simulated`(default)"
         super().__init__(self.message)
+
+class TokenClassNotFound(MiniworldMakerError):
+    def __init__(self, name):
+        self.message = f"Token class `{name}` not found"
+        super().__init__(self.message)

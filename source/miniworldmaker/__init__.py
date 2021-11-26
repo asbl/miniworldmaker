@@ -14,3 +14,10 @@ for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
         if isclass(attribute):  
             globals()[attribute_name] = attribute
             __all__.append(attribute.__name__)
+
+# needed for decorators:
+from miniworldmaker.tools.timer import timer
+from miniworldmaker.tools.timer import loop
+
+__all__.append(timer.__name__)
+__all__.append(loop.__name__)
