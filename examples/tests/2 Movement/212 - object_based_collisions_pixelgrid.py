@@ -17,10 +17,10 @@ player2.size = (40, 40)
 player2.add_costume("images/char_blue.png")
 player2.costume.orientation = - 90
 
-player2 = miniworldmaker.Token(position=(90, 4))
-player2.size = (40, 40)
-player2.add_costume("images/char_blue.png")
-player2.costume.orientation = - 90
+player3 = miniworldmaker.Token(position=(90, 4))
+player3.size = (40, 40)
+player3.add_costume("images/char_blue.png")
+player3.costume.orientation = - 90
 
 @player1.register
 def act(self):
@@ -33,6 +33,7 @@ def act(self):
 
 @player1.register
 def on_sensing_token(self, token):
+    global player2
     print("player 1: I'm sensing a collision with", token)
     print("token is player 2?", token==player2)
     

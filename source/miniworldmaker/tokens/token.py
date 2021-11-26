@@ -67,6 +67,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def __init__(self, position: Optional[Union[Tuple, "board_position.BoardPosition"]] = None, image: Optional[str] = None):
         self._managers = list()
+        self.token_id: int = Token.token_count + 1
         self.costume_manager = None
         self.board_sensor = None
         self.position_manager = None
@@ -77,7 +78,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         _token_connector.add_token_to_board(self.position)
         Token.token_count += 1
         self.speed: int = 1
-        self.token_id: int = Token.token_count + 1
+        
         self.collision_type: str = ""
 
     @property
@@ -99,26 +100,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         obj = cls(position=(0, 0))  # temp positition
         obj.center = center_position  # pos set to center
         return obj
-
-    @staticmethod
-    def find_subclass(name: str):
-        subclasses = Token.all_subclasses()
-        for subclass in subclasses:
-            if subclass.__name__ == name:
-                return subclass
-
-    @classmethod
-    def all_subclasses(cls):
-        """
-        Gets all subclasses from Token-Class
-        """
-        def rec_all_subs(cls) -> set:
-            if cls.subclasses is None:
-                return set(cls.__subclasses__()).union(
-                    [s for c in cls.__subclasses__() for s in rec_all_subs(c)])
-            else:
-                return cls.subclasses
-        return rec_all_subs(cls)
 
     @property
     def costume_count(self):

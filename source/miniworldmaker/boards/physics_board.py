@@ -1,10 +1,10 @@
 import pymunk as pymunk_engine
 import sys
+from miniworldmaker.exceptions.miniworldmaker_exception import TokenClassNotFound
 from miniworldmaker.boards import pixel_board as pixel_board_module
 from miniworldmaker.tools import inspection_methods as im
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
 from miniworldmaker.tokens import token
-
 from miniworldmaker.tools.inspection_methods import InspectionMethods
 
 
@@ -30,9 +30,8 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         self.space.damping = 0.9
         self.space.collision_persistence = 10
         self.physics_tokens = list()
-        self.touching_methods = list()  # filled in token_handler
-        self.separation_methods = list()  # filled in token_handler
-
+        self.touching_methods = set()  # filled in token_handler
+        self.separate_methods = set()  # filled in token_handler
 
     def _pymunk_register_collision_handler(self, token, other_class, event, method):
         """
@@ -61,26 +60,14 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         return PhysicsBoardConnector(self, token)
 
     @staticmethod
-    def get_touching_method_other_class(method):
-        other_cls_name = method.__name__[len("on_touching_"):].lower()
-        other_cls = im.InspectionMethods.get_token_class_by_name(other_cls_name)
-        return other_cls
-
-    @staticmethod
-    def get_separation_method_other_class(method):
-        other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-        other_cls = im.InspectionMethods.get_token_class_by_name(other_cls_name)
-        return other_cls
-
-    @staticmethod
     def _update_token_subclasses():
         """
         Returns a dict with class_name->class
-        updat
+  
         Returns:
 
         """
-        token_subclasses = token.Token.all_subclasses()
+        token_subclasses = InspectionMethods.all_subclasses(token.Token)
         for cls in token_subclasses:
             InspectionMethods.token_classes[cls.__name__] = cls
             if cls not in InspectionMethods.token_class_ids:
@@ -89,33 +76,47 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
                 InspectionMethods.token_class_id_counter += 1
         return InspectionMethods.token_classes
 
-    def get_physics_handlers(self, token):
-        methods = [getattr(token, method_name) for method_name in dir(token)
-                   if hasattr(token, method_name) and callable(getattr(token, method_name))
-                   and method_name.startswith("on_touching_") or method_name.startswith("on_separation_from_")]
-        return methods
+    def get_physics_collision_methods_for_token(self, token):
+        return [getattr(token, method_name) for method_name in dir(token)
+                if hasattr(token, method_name) and callable(getattr(token, method_name))
+                and method_name.startswith("on_touching_") or method_name.startswith("on_separation_from_")]
 
-    def register_all_physics_handlers(self, token):
-        PhysicsBoard._update_token_subclasses()
-        physics_handlers = self.get_physics_handlers(token)
-        for method in physics_handlers:
-            self.register_physics_handlers(token, method)
-
-    def register_physics_handlers(self, token, method):
-        if method.__name__.startswith("on_touching_") or method.__name__.startswith("on_separation_from_"):
+    def register_all_physics_collision_handlers_for_token(self, token, new_class = None):
+        """
+        Registers on__touching and on_seperation-Methods to token.
+        If new_class is set, only methods with new class (e.g. on_touching_new_class are se.t)
+        """
+        collision_methods = self.get_physics_collision_methods_for_token(token)
+        for method in collision_methods:
+            # is on_touching or on_separation - Get other class name from method_name?
             if method.__name__.startswith("on_touching_"):
-                event = "begin"
-                other_cls = PhysicsBoard.get_touching_method_other_class(method)
-                self.touching_methods.append(method)
+                event, other_cls, method_set = self._get_touching_method_data(method)
             elif method.__name__.startswith("on_separation_from_"):
-                event = "separate"
-                other_cls = PhysicsBoard.get_separation_method_other_class(method)
-                self.separate_methods.append(method)
-            child_classes = other_cls.all_subclasses()
-            for child_class in child_classes:
-                # Add physics handler for class and all subclasses
-                self._pymunk_register_collision_handler(token, child_class, event, method)
-            self._pymunk_register_collision_handler(token, other_cls, event, method)
+                event, other_cls, method_set = self._get_separation_method_data(method)
+            # if other_class exists, append method and register collision handler
+            if other_cls and (not new_class or other_cls == new_class):
+                method_set.add(method)
+                token_classes = self.get_token_classes()
+                child_classes = [token_class for token_class in token_classes if issubclass(
+                    token_class, other_cls)]
+                for child_class in child_classes:
+                    # Add physics handler for class and all subclasses
+                    self._pymunk_register_collision_handler(token, child_class, event, method)
+                self._pymunk_register_collision_handler(token, other_cls, event, method)
+
+    def _get_touching_method_data(self, method):
+        event = "begin"
+        other_cls_name = method.__name__[len("on_touching_"):].lower()
+        other_cls = self.find_token_class_for_name(other_cls_name)
+        method_set = self.touching_methods
+        return event, other_cls, method_set
+
+    def _get_separation_method_data(self, method):
+        event = "separate"
+        other_cls_name = method.__name__[len("on_separation_from_"):].lower()
+        other_cls = self.find_token_class_for_name(other_cls_name)
+        method_set = self.separate_methods
+        return event, other_cls, method_set
 
     def remove_token_from_board(self, token):
         super().remove_token_from_board(token)
@@ -169,7 +170,7 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         # get touching token_handler for token
         for method in self.touching_methods:
             method_other_cls_name = method.__name__[len("on_touching_"):].lower()
-            method_other_cls = im.InspectionMethods.get_token_class_by_name(method_other_cls_name)
+            method_other_cls = self.find_token_class_for_name(method_other_cls_name)
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
                 im.InspectionMethods.get_and_call_instance_method(
@@ -195,3 +196,6 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
             # Korrekte Methode ist da
             #handler_cls = PhysicsBoard.get_touching_method_other_class(method)
         return True
+
+    def run(self):
+        super().run()

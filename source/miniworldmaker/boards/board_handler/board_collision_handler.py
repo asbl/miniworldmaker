@@ -14,25 +14,38 @@ class BoardCollisionHandler:
             self._handle_collision_with_borders(token)
             self._handle_on_board(token)
 
+    def _get_magic_methods(self, token):
+        border_methods_dict = {"on_sensing_left_border": InspectionMethods.get_instance_method(token, "on_sensing_left_border"),
+                               "on_sensing_right_border": InspectionMethods.get_instance_method(token, "on_sensing_right_border"),
+                               "on_sensing_bottom_border": InspectionMethods.get_instance_method(token, "on_sensing_bottom_border"),
+                               "on_sensing_top_border": InspectionMethods.get_instance_method(token, "on_sensing_top_border"),
+                               "on_sensing_on_board": InspectionMethods.get_instance_method(token, 'on_sensing_on_board'.lower()),
+                               "on_sensing_not_on_board": InspectionMethods.get_instance_method(token, 'on_sensing_not_on_board'.lower()),
+                               "on_sensing_borders":InspectionMethods.get_instance_method(token, "on_sensing_borders")
+                               }
+        return border_methods_dict
+
+    def _handle_collision_with_token(self, token, other_token):
+        parents = inspect.getmro(other_token.__class__)
+        other_and_parents = list(parents)
+        if other_and_parents:
+            for other_class in other_and_parents:
+                method_name = ('on_sensing_' + str(other_class.__name__)).lower()
+                method = InspectionMethods.get_instance_method(token, method_name)
+                if method:
+                    InspectionMethods.call_instance_method(token, method, [other_token])
+
     def _handle_collision_with_tokens(self, token):
         members = dir(token)
         found_tokens = []
-        for token_type in [member[11:] for member in members if member.startswith("on_sensing_")]:
+        for token_type in [member[11:] for member in members if member.startswith("on_sensing_") and member not in self._get_magic_methods(token).keys()]:
             tokens_for_token_type = token.sensing_tokens(token_type=token_type.capitalize())
             if tokens_for_token_type:
                 for found_token in tokens_for_token_type:
                     if found_token not in found_tokens:
                         found_tokens.append(found_token)
-        if found_tokens:
-            for other_token in found_tokens:
-                parents = inspect.getmro(other_token.__class__)
-                other_and_parents = list(parents)
-                if other_and_parents:
-                    for other_class in other_and_parents:
-                        method_name = ('on_sensing_' + str(other_class.__name__)).lower()
-                        method = InspectionMethods.get_instance_method(token, method_name)
-                        if method:
-                            InspectionMethods.call_instance_method(token, method, [other_token])
+                        self._handle_collision_with_token(token, found_token)
+                
 
     def _handle_collision_with_borders(self, token):
         border_methods_dict = {"on_sensing_left_border": InspectionMethods.get_instance_method(token, "on_sensing_left_border"),

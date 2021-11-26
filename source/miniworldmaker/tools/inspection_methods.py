@@ -1,9 +1,10 @@
 import inspect
+import sys
 from typing import Union, Optional
 from inspect import signature
 from collections import defaultdict
 from os import stat
-from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError
+from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
 from miniworldmaker.tokens import token as tkn
 
 
@@ -12,6 +13,7 @@ class InspectionMethods:
     token_class_ids = defaultdict()  # class_name -> id
     token_classes = defaultdict()  # class_name as string -> class
     token_class_id_counter = 0
+
 
     @staticmethod
     def has_parent_with_name(instance, name):
@@ -99,26 +101,3 @@ class InspectionMethods:
             method()
         else:
             method(*arguments)
-
-
-    @staticmethod
-    def get_token_class_by_name(name: str):
-        """
-        Search in token dict() variable.
-        """
-        InspectionMethods.update_token_subclasses()
-        name = name.capitalize()
-        return InspectionMethods.token_classes[name]
-
-    @staticmethod
-    def update_token_subclasses():
-        """
-        Returns a dict with class_name->class
-        Returns:
-
-        """
-        token_subclasses = tkn.Token.all_subclasses()
-        token_subclasses.add(tkn.Token)
-        for cls in token_subclasses:
-            InspectionMethods.token_classes[cls.__name__.capitalize()] = cls
-        return InspectionMethods.token_classes

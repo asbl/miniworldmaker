@@ -110,7 +110,8 @@ class Board(container.Container):
         self.dirty: int = 1
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
-        print("Create board")
+        self.cache = dict()
+        self.cache["token_classes"] = self.get_token_classes()
 
     def get_token_connector(self, token):
         return TokenConnector(self, token)
@@ -680,3 +681,19 @@ class Board(container.Container):
 
     def switch_board(self, new_board):
         self.event_handler.handle_switch_board_event(new_board)
+
+    def get_tokens_by_class_name(self, classname):
+        return [token for token in self._tokens if token.__class__.__name__ == classname]
+
+    def get_token_classes(self):
+        return set([token.__class__ for token in self._tokens])
+
+    def get_tokens_by_class(self, classname):
+        return [token for token in self._tokens if isinstance(token,classname)]
+
+    def find_token_class_for_name(self, classname):
+        classname = classname.lower()
+        for token_cls in self.get_token_classes():
+            if token_cls.__name__.lower() == classname:
+                return token_cls
+        return None

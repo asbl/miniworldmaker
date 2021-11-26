@@ -63,7 +63,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
         """
         if type(token_type) == str:
-            token_type = token.Token.find_subclass(token_type)
+            token_type = self.board.find_token_class_for_name(token_type)
 
         target_position = self.get_destination(self.token.position, self.token.direction, distance)
         token_list : list = list()

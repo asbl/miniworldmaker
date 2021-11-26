@@ -103,8 +103,11 @@ class TokenPhysics:
                                   )
         elif self.shape_type.lower() == "line":
             try:
+                # pymunk 5.6 values
+                #shift_x = self.token.size[0] / 2 + self.token.position[0]
+                #shift_y = - (self.token.board.size[1] - self.token.size[1] / 2 - self.token.position[1])
                 shift_x = self.token.size[0] / 2 + self.token.position[0]
-                shift_y = - (self.token.board.size[1] - self.token.size[1] / 2 - self.token.position[1])
+                shift_y = self.token.size[1] / 2 + self.token.position[1]
                 start = pymunk.pygame_util.from_pygame(
                     (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y), self.token.board.image)
                 end = pymunk.pygame_util.from_pygame(
@@ -349,7 +352,6 @@ class TokenPhysics:
         impulse = pymunk.Vec2d(1, 0)
         impulse = impulse.rotated_degrees(direction)
         impulse = power * 1000 * impulse.normalized()
-        print("impulse", impulse)
         self._body.apply_impulse_at_local_point(impulse)
 
     def force_in_direction(self, direction, power):
@@ -363,5 +365,4 @@ class TokenPhysics:
         force = pymunk.Vec2d(1, 0)
         force = force.rotated_degrees(direction)
         force = power * 10000 * force.normalized()
-        print("force", force)
         self._body.apply_force_at_local_point(force, (0,0))

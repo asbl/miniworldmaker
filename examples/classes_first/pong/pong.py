@@ -67,7 +67,7 @@ class Ball(Circle):
 
        
     def on_begin_simulation(self):
-       self.impulse(70, 2500)
+       self.impulse(160, 2500)
        
     def on_touching_line(self, line, collision):
         print("touching line ", line)

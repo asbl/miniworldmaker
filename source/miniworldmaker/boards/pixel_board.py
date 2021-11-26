@@ -38,11 +38,12 @@ class PixelBoard(board_module.Board):
         filtered_tokens = token_list
         # token class_name --> class
         if type(token_type) == str:  # is token_type a string
-            token_type = token_module.Token.find_subclass(token_type)
+            token_type = self.find_token_class_for_name(token_type)
         # single token --> list
         if isinstance(token_type, token_module.Token):  # is_token_type a object?
             token_list = [token_type]
         # filter
+        token_type = None
         if token_type:
             filtered_tokens = [token for token in token_list if
                                (issubclass(token.__class__, token_type) or token.__class__ == token_type)]

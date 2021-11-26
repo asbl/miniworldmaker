@@ -16,7 +16,9 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
 
     def add_token_to_board(self, position: board_position.BoardPosition):
         super().add_token_to_board(position)
-        self.board.register_all_physics_handlers(self.token)
+        self.board.register_all_physics_collision_handlers_for_token(self.token)
+        for token in self.board.tokens:
+            self.board.register_all_physics_collision_handlers_for_token(token, self.token.__class__)
 
     def add_position_manager_to_token(self, token, position):
         token.position_manager = physicspositionmanager.PhysicsBoardPositionManager(
@@ -39,4 +41,4 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         """
         super().register_token_method(token, method)
         # Register physic collision methods
-        self.register_physics_handlers(token, method)
+    
