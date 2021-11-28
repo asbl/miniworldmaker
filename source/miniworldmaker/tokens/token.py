@@ -71,6 +71,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.costume_manager = None
         self.board_sensor = None
         self.position_manager = None
+        self.method_manager = None
         self.board = app.App.board
         _token_connector = self.board.get_token_connector(self)
         _token_connector.add_token_managers(image, position)
@@ -78,8 +79,18 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         _token_connector.add_token_to_board(self.position)
         Token.token_count += 1
         self.speed: int = 1
-        
         self.collision_type: str = ""
+        self._layer = 0
+
+    @property 
+    def layer(self):
+        return self._layer
+
+    @layer.setter 
+    def layer(self, value):
+        self._layer = value
+        self.board._tokens.change_layer(self, value)
+
 
     @property
     def last_position(self):

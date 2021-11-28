@@ -1,4 +1,5 @@
 import pkgutil
+from miniworldmaker import config
 from inspect import isclass
 from pkgutil import iter_modules
 from pathlib import Path
@@ -18,6 +19,6 @@ for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
 # needed for decorators:
 from miniworldmaker.tools.timer import timer
 from miniworldmaker.tools.timer import loop
-
+__all__.append(config)
 __all__.append(timer.__name__)
 __all__.append(loop.__name__)

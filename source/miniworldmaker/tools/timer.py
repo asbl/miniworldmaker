@@ -1,5 +1,4 @@
 from inspect import signature
-
 from miniworldmaker.app import app
 from miniworldmaker.tools.inspection_methods import InspectionMethods
 
@@ -64,7 +63,7 @@ class CallTimer(Timer):
 
 class ActionTimer(CallTimer):
 
-    def __init__(self, time, method, arguments=None):
+    def __init__(self, time, method, arguments=None, global_variables = None):
         super().__init__(time, method, arguments)
 
     def act(self):

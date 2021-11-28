@@ -2,13 +2,14 @@ from collections import defaultdict
 from inspect import signature
 from miniworldmaker.tools.inspection_methods import InspectionMethods
 
+
 class BoardEventHandler:
 
     def __init__(self, board):
-        self.executed_events : set = set() 
+        self.executed_events: set = set()
         self.board = board
 
-    def handle_event(self,event : str,data):
+    def handle_event(self, event: str, data):
         """ 
         Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
 
@@ -39,7 +40,6 @@ class BoardEventHandler:
                     self.handle_message_event(a_object, event, data)
                 if event in ["button_pressed"]:
                     self.handle_button_event(a_object, event, data)
-
 
     def handle_key_event(self, receiver, event, data):
         # any key down?
@@ -88,7 +88,6 @@ class BoardEventHandler:
                 self.board._is_setup = True
         return self
 
-
     def handle_reset_event(self):
         self.board.app.event_manager.event_queue.clear()
         for token in self.board.tokens:
@@ -102,8 +101,6 @@ class BoardEventHandler:
     def handle_switch_board_event(self, new_board):
         app = self.board.app
         app.event_manager.event_queue.clear()
-        old_board = app.board
-        # old_board.remove()
         app.board = new_board
         new_board.running = True
         new_board.run()

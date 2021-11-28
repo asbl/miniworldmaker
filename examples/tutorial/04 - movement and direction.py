@@ -10,7 +10,9 @@ player = miniworldmaker.Token()
 player.add_costume("images/player_1.png")
 @player.register
 def act(self):
-    self.direction = 90
     self.move()
+@player.register
+def on_key_down_a(self):
+    self.turn_left()
 
 board.run()
