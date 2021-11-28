@@ -45,15 +45,13 @@ class Kara(miniworldmaker.Token):
         self.add_costume("images/kara.png")
         self.orientation = -90
         
-        
-    def move_right(self, distance):
-        super().move_right(distance)
+    def push(self, method):
         tokens = self.sensing_tokens()
         if tokens:
             for token in tokens:
                 if isinstance(token, Box):
                     box = token
-                    box.move_right()
+                    getattr(box, method)()
                     tokens = box.sensing_tokens() 
                     for next_token in tokens:
                         obstacle = next_token
@@ -61,7 +59,22 @@ class Kara(miniworldmaker.Token):
                             self.move_back()
                             box.move_back()
                             return 
-                            
+        
+    def move_right(self):
+        super().move_right(1)
+        self.push("move_right")
+
+    def move_top(self):
+        super().move_right(1)
+        self.push("move_top")
+
+    def move_left(self):
+        super().move_right(1)
+        self.push("move_left")
+
+    def move_down(self):
+        super().move_down(1)
+        self.push("move_right")
         
         
 class Storage(miniworldmaker.Token):

@@ -58,10 +58,11 @@ class ExportBoardToDBFactory(ExportFactory, ExportDBFactory, ExportBoardFactory)
         cur.execute(query_board)
         self.db.commit()
         board_dict = {"board_class": self.board.__class__.__name__,
-                      "height": self.board.height,
-                      "width": self.board.width,
-                      "tile_margin": self.board.tile_margin,
                       "tile_size": self.board.tile_size,
+                      "height": self.board.rows,
+                      "width": self.board.columns,
+                      "tile_margin": self.board.tile_margin,
+                      
                       }
         self.db.insert(table="board", row=board_dict)
         self.db.commit()
@@ -76,11 +77,10 @@ class ExportTokensToDBFactory(ExportFactory, ExportDBFactory, ExportTokensFactor
     def save(self):
         query_tokens = """     CREATE TABLE `token` (
                         `token_id`		INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-                        `y`		        INTEGER,
                         `x`			    INTEGER,
+                        `y`		        INTEGER,
                         `direction`     FLOAT,
-                        `token_class`	TEXT,
-                        `parent_class`  TEXT
+                        `token_class`	TEXT
                         );
                         """
         cur = self.db.cursor
