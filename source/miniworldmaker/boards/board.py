@@ -1,6 +1,7 @@
 from typing import Union
 from typing import Type
 import pygame
+import inspect
 from miniworldmaker.app import app
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances.background import Background
@@ -111,7 +112,10 @@ class Board(container.Container):
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.cache = dict()
-        self.cache["token_classes"] = self.get_token_classes()
+        self.cache["token_classes"] = self.get_token_classes() #@todo: No cache implemented yet
+    
+
+        
 
     def get_token_connector(self, token):
         return TokenConnector(self, token)
@@ -571,8 +575,10 @@ class Board(container.Container):
         # Called in miniworldwindow.update as container.update()
         if self.is_running or self.frame == 0:
             # Acting for all actors
-            if self.frame % self.speed == 0:
+            if self.frame > 0 and self.frame % self.speed == 0:
                 self.act_all()
+            if inspection_methods.InspectionMethods.get_instance_method(self, "on_run"):
+                self.handle_on_run_method()
             self.collision_handler.handle_all_collisions()
             # run animations
             self.view_handler.update_all_costumes()
@@ -581,6 +587,13 @@ class Board(container.Container):
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
         self.event_handler.executed_events.clear()
+
+    def handle_on_run_method(self):
+        on_run = inspect.getsourcelines(self.on_run)[0]
+        if self.frame % self.speed == 0 and self.frame != 0:
+            line_number = self.frame // self.speed + 2
+            if line_number < len(on_run):
+                exec(on_run[line_number].strip())
 
     def act_all(self):
         for token in self.tokens:

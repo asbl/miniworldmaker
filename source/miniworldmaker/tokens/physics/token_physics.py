@@ -42,26 +42,26 @@ class TokenPhysics:
     """
 
     def __init__(self, token, board):
-        self.started = False
+        self.started: bool = False
         self._body_type = pymunk.Body.DYNAMIC
         self.board = board
-        self.token = token
-        self.simulation = "simulated"
-        self._mass = 1
-        self._gravity = False
-        self._stable = False
-        self._can_move = True
-        self.density = 10
-        self._friction = 10
-        self._velocity_x = 0
-        self._velocity_y = 0
-        self._elasticity = 0.5
-        self._shape_type = "rect"
-        self._correct_angle = 90
-        self._body = None
-        self._shape = None
-        self.dirty = 1
-        self.model_setup_complete = False
+        self.token: token.Token = token
+        self.simulation: str = "simulated"
+        self._mass: float = 1
+        self._gravity: bool = False
+        self._stable: bool = False
+        self._can_move: bool = True
+        self.density: float = 10
+        self._friction: float = 10
+        self._velocity_x: float = 0
+        self._velocity_y: float = 0
+        self._elasticity: float = 0.5
+        self._shape_type: str = "rect"
+        self._correct_angle: float = 90
+        self._body: Union[pymunk_engine.Body, None] = None
+        self._shape: Union[pymunk_engine.Shape, None] = None
+        self.dirty: int = 1
+        self.model_setup_complete: bool = False
         self.size = (1, 1)  # scale factor for physics box model
 
     def start(self):
@@ -111,7 +111,7 @@ class TokenPhysics:
                 start = pymunk.pygame_util.from_pygame(
                     (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y), self.token.board.image)
                 end = pymunk.pygame_util.from_pygame(
-                    (self.token.end_position[0] - shift_x, self.token.end_position[1] -  shift_y), self.token.board.image)
+                    (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
                 shape = pymunk.Segment(self._body, start, end, self.token.thickness)
             except AttributeError:
                 if not hasattr(self.token, "board") or not self.token.board:
@@ -341,7 +341,7 @@ class TokenPhysics:
     def is_rotatable(self, value: bool):
         self._is_rotatable = value
 
-    def impulse_in_direction(self, direction, power):
+    def impulse_in_direction(self, direction: float, power: float):
         """
         Adds an impulse in token-direction
 
@@ -354,7 +354,7 @@ class TokenPhysics:
         impulse = power * 1000 * impulse.normalized()
         self._body.apply_impulse_at_local_point(impulse)
 
-    def force_in_direction(self, direction, power):
+    def force_in_direction(self, direction: float, power: float):
         """
         Adds an force in token-direction
 
@@ -365,4 +365,4 @@ class TokenPhysics:
         force = pymunk.Vec2d(1, 0)
         force = force.rotated_degrees(direction)
         force = power * 10000 * force.normalized()
-        self._body.apply_force_at_local_point(force, (0,0))
+        self._body.apply_force_at_local_point(force, (0, 0))
