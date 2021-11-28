@@ -112,22 +112,21 @@ class Board(container.Container):
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.cache = dict()
-        self.cache["token_classes"] = self.get_token_classes() #@todo: No cache implemented yet
-    
-
+        self.cache["token_classes"] = self.get_token_classes()  # @todo: No cache implemented yet
+        self.load_from_db = False
         
 
     def get_token_connector(self, token):
         return TokenConnector(self, token)
 
-    def load_board_from_db(self, file):
+    def load_board_from_db(self, file: str):
         """
         Loads a sqlite db file.
         """
         return import_factory.ImportBoardFromDB(file, self.__class__).load()
 
-    def load_tokens_from_db(self, file):
-        return import_factory.ImportTokensFromDB(file).load()
+    def load_tokens_from_db(self, file: str, token_classes: list):
+        return import_factory.ImportTokensFromDB(file, token_classes).load()
 
     def save_to_db(self, file):
         """
@@ -363,7 +362,7 @@ class Board(container.Container):
         Returns:
 
         """
-        self.token_handler.remove_from_board(token)
+        self.get_token_connector(token).remove_from_board(token)
 
     def remove_background(self, background=None):
         """Removes a background from board
@@ -398,14 +397,14 @@ class Board(container.Container):
 
     def add_to_board(self, token, position: tuple):
         """
-        Adds an actor to the board.
+        Adds a Token to the board.
         Is called in __init__-Method if position is set.
 
         Args:
             board: The board, the actor should be added
             position: The position on the board where the actor should be added.
         """
-        self.token_handler.add_token_to_board(token, position)
+        self.get_token_connector(token).add_token_to_board(token, position)
 
     def blit_surface_to_window_surface(self):
         self.app.window.surface.blit(self.surface, self.rect)
@@ -515,12 +514,9 @@ class Board(container.Container):
             timer.ActionTimer(frames, self.stop, 0)
 
     def clear(self):
-        self.token_handler.clean()
+        self.clean()
 
     def clean(self):
-        self.token_handler.clean()
-
-    def remove(self):
         for token in self.tokens:
             token.remove()
 
@@ -702,7 +698,7 @@ class Board(container.Container):
         return set([token.__class__ for token in self._tokens])
 
     def get_tokens_by_class(self, classname):
-        return [token for token in self._tokens if isinstance(token,classname)]
+        return [token for token in self._tokens if isinstance(token, classname)]
 
     def find_token_class_for_name(self, classname):
         classname = classname.lower()
