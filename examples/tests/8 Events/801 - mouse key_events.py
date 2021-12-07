@@ -8,7 +8,7 @@ board.tile_size = 40
 
 @board.register
 def on_mouse_left(self, position):
-    print("left" + str(position))
+    print("left" + str(position), type(position))
     
 @board.register
 def on_mouse_right(self, position):

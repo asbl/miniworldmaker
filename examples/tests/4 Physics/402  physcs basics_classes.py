@@ -1,10 +1,11 @@
 import random
 import miniworldmaker as mwm
 
-class Board(mwm.PhysicsBoard):
+class MyPhysicsBoard(mwm.PhysicsBoard):
     
     def on_setup(self):
-        self.add_background((0,0,0,255))
+        print("Am i called?")
+        self.add_background((0,0,0,100))
         a = A()
         b = B()
         c = C()
@@ -34,7 +35,7 @@ class D(mwm.Token):
         self.add_costume("images/fly.png")
         self.physics.simulation = "static"
 
-board = Board(600, 600)
+board = MyPhysicsBoard(600, 600)
 board.run()
 
 

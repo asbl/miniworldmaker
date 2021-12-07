@@ -18,7 +18,6 @@ class PixelBoard(board_module.Board):
                  ):
         super().__init__(columns, rows, tile_size, tile_margin, background_image)
 
-
     def get_token_connector(self, token):
         return PixelBoardConnector(self, token)
 
@@ -43,13 +42,12 @@ class PixelBoard(board_module.Board):
         if isinstance(token_type, token_module.Token):  # is_token_type a object?
             token_list = [token_type]
         # filter
-        token_type = None
         if token_type:
             filtered_tokens = [token for token in token_list if
                                (issubclass(token.__class__, token_type) or token.__class__ == token_type)]
         return filtered_tokens
 
-    def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[token_module.Token, list]:
+    def get_tokens_at_rect(self, rect: pygame.Rect) -> list:
         """Returns all tokens that collide with a rectangle.
 
         Args:
@@ -63,19 +61,15 @@ class PixelBoard(board_module.Board):
             If singleitem = False, the method returns the first token.
 
         """
-        filtered_tokens = self.tokens.copy()
-        filtered_tokens = self._filter_tokens_by_type(filtered_tokens, token_type)
-        if exclude in filtered_tokens:
-            filtered_tokens.remove(exclude)
-        # Get all coliding tokens
-        if not singleitem:
-            return [token for token in filtered_tokens if token.rect.colliderect(rect)]
-        else:
-            # Get first colliding token
-            for token in filtered_tokens:
-                if token.rect.colliderect(rect):
-                    return token
-            return []
+        return [token for token in self.tokens if token.rect.colliderect(rect)]
+    
+
+    def get_single_token_at_rect(self, rect: pygame.Rect) -> token_module.Token:
+        # Get first colliding token
+        for token in self.tokens:
+            if token.rect.colliderect(rect):
+                return token
+        return []
 
     def is_on_board(self, position: board_position.BoardPosition) -> bool:
         self.position_handler.is_pos

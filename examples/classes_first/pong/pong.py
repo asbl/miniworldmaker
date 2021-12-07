@@ -70,7 +70,7 @@ class Ball(Circle):
        self.impulse(160, 2500)
        
     def on_touching_line(self, line, collision):
-        print("touching line ", line)
+        print("touching line ", line, collision, self.board.left)
         if line == self.board.left:
             print("inc points")
             self.board.points_right.inc()

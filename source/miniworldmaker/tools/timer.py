@@ -1,9 +1,10 @@
-from inspect import signature
 from miniworldmaker.app import app
-from miniworldmaker.tools.inspection_methods import InspectionMethods
+from miniworldmaker.tools import inspection_methods
 
 
 class Timed():
+    """Base class for all timers
+    """
     def __init__(self):
         self.board = app.App.board
         self.board.timed_objects.append(self)
@@ -13,13 +14,18 @@ class Timed():
         self.time = self.time - 1
 
     def unregister(self):
+        """remove timer from board
+        """
         if self in self.board.timed_objects:
             self.board.timed_objects.remove(self)
         del(self)
 
 
 class Timer(Timed):
-    def __init__(self, time):
+    """Base class for timers. Calls act() Method after `time` frames.
+    """
+
+    def __init__(self, time: int):
         super().__init__()
         self.time = time
         self.actual_time = 0
@@ -30,26 +36,34 @@ class Timer(Timed):
             self.act()
 
     def act(self):
+        """Act method for timer. Called after `actual_time` frames.
+        """
         pass
 
 
-class ZeroTimer(Timed):
-    def __init__(self, time):
-        super().__init__()
-        self.time = time
+class ActionTimer(Timer):
+    """Calls a method after `time` frames.
 
-    def tick(self):
-        self.time -= 1
-        if self.time == 0:
-            self.act()
-            self.unregister()
+    Example:
+        Player moves after 48 frames::
 
-    def act(self):
-        pass
+            miniworldmaker.ActionTimer(48, player.move, 2)
 
+        Same as above with decorator::
 
-class CallTimer(Timer):
-    def __init__(self, time, method, arguments=None):
+            @miniworldmaker.timer(frames = 24)
+            def moving():
+                player.move()
+    """
+
+    def __init__(self, time: int, method: callable, arguments=None):
+        """
+
+        Args:
+            time (int): After `time` frames, the method is called
+            method (callable): The method to call.
+            arguments ([type], optional): Arguments for the method.
+        """
         super().__init__(time)
         self.method = method
         if arguments or arguments == 0:
@@ -57,19 +71,13 @@ class CallTimer(Timer):
         else:
             self.arguments = None
 
-    def _call_method(self):
-        InspectionMethods.call_method(self.method, self.arguments, allow_none = False)
-
-
-class ActionTimer(CallTimer):
-
-    def __init__(self, time, method, arguments=None, global_variables = None):
-        super().__init__(time, method, arguments)
-
     def act(self):
         self._call_method()
         self.unregister()
         self.success()
+
+    def _call_method(self):
+        inspection_methods.InspectionMethods.call_method(self.method, self.arguments, allow_none=False)
 
     def success(self, method=None, arguments=None):
         if method is not None and arguments is None:
@@ -78,28 +86,50 @@ class ActionTimer(CallTimer):
             method(arguments)
 
 
-class LoopActionTimer(CallTimer):
+class LoopActionTimer(ActionTimer):
+    """Calls a method after `time` frames repeatedly until the timer is unregistered.
+    
+    Example:
+        Player moves after 48 frames::
 
-    def __init__(self, time, method, arguments=None):
-        super().__init__(time, method, arguments)
+            miniworldmaker.LoopTimer(48, player.move, 2)
+
+        Same as above with decorator::
+
+            @miniworldmaker.loop(frames = 24)
+            def moving():
+                player.move()
+    """
 
     def act(self):
         self._call_method()
 
 
-"@decorator"
-
-
 def timer(*args, **kwargs):
+    """Used as decorator for timed actions.
+
+    Example::
+
+        @miniworldmaker.timer(frames = 24)
+            def moving():
+                player.move()
+    """
     def inner(method):
         timer = ActionTimer(kwargs["frames"], method)
+        return timer
     return inner
 
 
-"@decorator"
-
-
 def loop(*args, **kwargs):
+    """Used as decorator for looped actions.
+
+    Example::
+
+        @miniworldmaker.loop(frames = 24)
+            def moving():
+                player.move()
+    """
     def inner(method):
         timer = LoopActionTimer(kwargs["frames"], method)
+        return timer
     return inner

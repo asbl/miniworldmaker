@@ -5,7 +5,6 @@ from miniworldmaker.boards import pixel_board as pixel_board_module
 from miniworldmaker.tools import inspection_methods as im
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
 from miniworldmaker.tokens import token
-from miniworldmaker.tools.inspection_methods import InspectionMethods
 
 
 class PhysicsBoard(pixel_board_module.PixelBoard):
@@ -19,10 +18,9 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
                  ):
         super(pixel_board_module.PixelBoard, self).__init__(
             columns, rows, tile_size, tile_margin, background_image)
-        self.gravity_x = 0
-        self.gravity_y = 900
-        self.debug = False
-        self.collision_types = list
+        self.gravity_x: float = 0
+        self.gravity_y: float = 900
+        self.debug: bool = False
         self.accuracy = 1
         self.space = pymunk_engine.Space()
         self.space.gravity = self.gravity_x, self.gravity_y
@@ -63,25 +61,25 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
     def _update_token_subclasses():
         """
         Returns a dict with class_name->class
-  
+
         Returns:
 
         """
-        token_subclasses = InspectionMethods.all_subclasses(token.Token)
+        token_subclasses = im.InspectionMethods.all_subclasses(token.Token)
         for cls in token_subclasses:
-            InspectionMethods.token_classes[cls.__name__] = cls
-            if cls not in InspectionMethods.token_class_ids:
-                cls.class_id = InspectionMethods.token_class_id_counter
-                InspectionMethods.token_class_ids[cls] = InspectionMethods.token_class_id_counter
-                InspectionMethods.token_class_id_counter += 1
-        return InspectionMethods.token_classes
+            im.InspectionMethods.token_classes[cls.__name__] = cls
+            if cls not in im.InspectionMethods.token_class_ids:
+                cls.class_id = im.InspectionMethods.token_class_id_counter
+                im.InspectionMethods.token_class_ids[cls] = im.InspectionMethods.token_class_id_counter
+                im.InspectionMethods.token_class_id_counter += 1
+        return im.InspectionMethods.token_classes
 
     def get_physics_collision_methods_for_token(self, token):
         return [getattr(token, method_name) for method_name in dir(token)
                 if hasattr(token, method_name) and callable(getattr(token, method_name))
                 and method_name.startswith("on_touching_") or method_name.startswith("on_separation_from_")]
 
-    def register_all_physics_collision_handlers_for_token(self, token, new_class = None):
+    def register_all_physics_collision_handlers_for_token(self, token, new_class=None):
         """
         Registers on__touching and on_seperation-Methods to token.
         If new_class is set, only methods with new class (e.g. on_touching_new_class are se.t)
@@ -107,14 +105,14 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
     def _get_touching_method_data(self, method):
         event = "begin"
         other_cls_name = method.__name__[len("on_touching_"):].lower()
-        other_cls = self.find_token_class_for_name(other_cls_name)
+        other_cls = self.find_token_by_parent_class_for_name(other_cls_name)
         method_set = self.touching_methods
         return event, other_cls, method_set
 
     def _get_separation_method_data(self, method):
         event = "separate"
         other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-        other_cls = self.find_token_class_for_name(other_cls_name)
+        other_cls = self.find_token_by_parent_class_for_name(other_cls_name)
         method_set = self.separate_methods
         return event, other_cls, method_set
 
@@ -170,29 +168,28 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         # get touching token_handler for token
         for method in self.touching_methods:
             method_other_cls_name = method.__name__[len("on_touching_"):].lower()
-            method_other_cls = self.find_token_class_for_name(method_other_cls_name)
+            method_other_cls = self.find_token_by_parent_class_for_name(method_other_cls_name)
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
                 im.InspectionMethods.get_and_call_instance_method(
-                    token, method.__name__, [self, collision])
+                    token, method.__name__, [other, collision])
             # Korrekte Methode ist da
             #handler_cls = PhysicsBoard.get_touching_method_other_class(method)
         return True
 
     def pymunk_separation_collision_listener(self, arbiter, space, data):
         # Translate pymunk variables to miniworldmaker variables
-        collision_method_for_token = None
         token = arbiter.shapes[0].token
         other = arbiter.shapes[1].token
         collision = dict()
         # get separation token_handler for token
         for method in self.separation_methods:
             method_other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-            method_other_cls = im.InspectionMethods.get_token_class_by_name(method_other_cls_name)
+            method_other_cls = self.find_token_by_parent_class_for_name(method_other_cls_name)
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
                 im.InspectionMethods.get_and_call_instance_method(
-                    token, method.__name__, [self, collision])
+                    token, method.__name__, [other, collision])
             # Korrekte Methode ist da
             #handler_cls = PhysicsBoard.get_touching_method_other_class(method)
         return True

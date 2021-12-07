@@ -6399,6 +6399,7 @@ miniworldmaker.egg-info/requires.txt
 miniworldmaker.egg-info/top_level.txt
 miniworldmaker/__pycache__/__init__.cpython-37.pyc
 miniworldmaker/__pycache__/__init__.cpython-39.pyc
+miniworldmaker/__pycache__/config.cpython-39.pyc
 miniworldmaker/app/__init__.py
 miniworldmaker/app/app.py
 miniworldmaker/app/container_manager.py

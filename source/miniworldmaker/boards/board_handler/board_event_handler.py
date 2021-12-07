@@ -1,6 +1,9 @@
+from miniworldmaker.tools import inspection_methods
+from miniworldmaker.tokens import token
 from collections import defaultdict
-from inspect import signature
-from miniworldmaker.tools.inspection_methods import InspectionMethods
+from typing import Any
+from miniworldmaker.tools import keys
+import inspect
 
 
 class BoardEventHandler:
@@ -8,84 +11,158 @@ class BoardEventHandler:
     def __init__(self, board):
         self.executed_events: set = set()
         self.board = board
+        self.registered_events = defaultdict(set)
+        self.mouse_events = ["on_mouse_left", "on_mouse_right", "on_mouse_motion"]
+        self.clicked_on_token_events = ["on_clicked", "on_clicked_left", "on_clicked_right"]
+        self.key_events = ["on_key_down", "on_key_pressed", "on_key_up"]
+        self.specific_key_events = []
+        for key, value in keys.KEYS.items():
+            self.specific_key_events.append("on_key_down_"+value.lower())
+            self.specific_key_events.append("on_key_pressed_"+value.lower())
+            self.specific_key_events.append("on_key_up_"+value.lower())
+        self.message_event = ["on_message"]
+        self.act_event = ["act"]
+        self.started_event = ["on_started"]
+        self.setup_events = ["on_setup", "on_board_loaded"]
+        self.border_events = ["on_sensing_borders", "on_sensing_left_border",
+                              "on_sensing_right_border", "on_sensing_top_border", "on_sensing_bottom_border"]
+        self.on_board_events = ["on_sensing_on_board", "on_sensing_not_on_board"]
+        self.events = self.mouse_events + self.specific_key_events + self.key_events + \
+            self.clicked_on_token_events + self.message_event + \
+            self.act_event + self.border_events + self.on_board_events + self.setup_events + self.started_event
+        for event in self.events:
+            self.registered_events[event] = set()
+        self.register_events_for_board()
 
-    def handle_event(self, event: str, data):
-        """ 
-        Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
+    def register_events_for_board(self):
+        self.register_events(self.setup_events, self.board)
+        self.register_events(self.message_event, self.board)
+        self.register_events(self.act_event, self.board)
+        self.register_events(self.started_event, self.board)
+        self.register_events(self.mouse_events, self.board)
+        self.register_events(self.key_events, self.board)
+        self.register_events(self.specific_key_events, self.board)
+        self.register_events(self.specific_key_events, self.board)
+
+    def register_events_for_token(self, token):
+        self.register_events(self.message_event, token)
+        self.register_events(self.act_event, token)
+        self.register_events(self.mouse_events, token)
+        self.register_events(self.key_events, token)
+        self.register_events(self.clicked_on_token_events, token)
+        self.register_events(self.specific_key_events, token)
+        self.register_sensing_token_events(token)
+        self.register_events(self.border_events, token)
+        self.register_events(self.on_board_events, token)
+
+    def register_sensing_token_events(self, instance):
+        members = dir(instance)
+        for member in (member for member in members if member.startswith("on_sensing_") and member not in self.events):
+            method = inspection_methods.InspectionMethods.get_instance_method(instance, member)
+            if method:
+                self.register_class_method("on_sensing_token", instance, method)
+                
+    def register_events(self, events, instance):
+        for event in events:
+            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            if method:
+                self.register_class_method(event, instance, method)
+        
+    def register_event(self, event, instance):
+        if event in self.events:
+            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            if method:
+                self.register_custom_method(event, instance, method)
+        elif event.startswith("on_sensing_"):
+            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            if method:
+                self.registered_events["on_sensing_token"].add(method)
+
+    def register_custom_method(self, event, instance, method): 
+        """Register method for event handling if it was registered.
+
+        Args:
+            event ([str]): The event
+            instance: The instance (e.g. board or token)
+            method ([type]): The method which should registered as handler for event.
+        """
+        if method:
+            self.registered_events[event].add(method)
+        
+    def register_class_method(self, event, instance, method): 
+            """Register method for event handling if it is overwritten
+            
+            Args:
+                event ([str]): The event
+                instance: The instance (e.g. board or token)
+                method ([type]): The method which should registered as handler for event.
+            """
+            overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
+            parents = inspect.getmro(instance.__class__)
+            if instance.__class__.__name__ not in ["Token", "Board"] and method.__name__ in overwritten_methods:
+                self.registered_events[event].add(method)
+            else:
+                parent_overwritten_methods = set()
+                for parent in parents:
+                    if parent.__name__ not in ["object", "Board", "Container", "Sprite", "DirtySprite", "Token", instance.__class__.__name__]:
+                        parent_overwritten_methods = parent_overwritten_methods.union({name for name, method in vars(parent.__class__).items() if callable(method)})
+                parent_overwritten_methods = parent_overwritten_methods - overwritten_methods
+                if method.__name__ in parent_overwritten_methods:
+                    self.registered_events[event].add(method)
+        
+    def handle_event(self, event: str, data: Any):
+        """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
 
         Args:
             event: A string-identifier for the event, e.g. `reset`, `setup`, `switch_board`
             data: Data for the event, e.g. the mouse-position, the pressed key, ...
         """
-        if event not in self.executed_events:  # events shouldn't be called more than once per tick
-            self.executed_events.add(event)
-            tokens = self.board.tokens
-            all_objects = list(tokens) + [self.board]
-            # handle global events
-            if event in ["reset"]:
-                self.handle_reset_event()
-            if event in ["setup"]:
-                self.handle_setup_event()
-            if event in ["switch_board"]:
-                self.handle_switch_board_event(*data)
-            # events which can be received by all objects
-            for a_object in all_objects:
-                if event in ["key_down", "key_pressed", "key_down", "key_up"]:
-                    self.handle_key_event(a_object, event, data)
-                if event in ["mouse_left", "mouse_right", "mouse_motion"]:
-                    self.handle_mouse_event(a_object, event, data)
-                if event in ["clicked_left", "clicked_right"]:
-                    self.handle_mouse_token_event(a_object, event, data)
-                if event in ["message"]:
-                    self.handle_message_event(a_object, event, data)
-                if event in ["button_pressed"]:
-                    self.handle_button_event(a_object, event, data)
+        if event in self.executed_events:
+            return  # events shouldn't be called more than once per tick
+        self.executed_events.add(event)
+        if event in ["mouse_left", "mouse_right", "mouse_motion"]:
+            self.handle_click_on_token_event(event, data)
+        event = "on_" + event
+        if event in self.registered_events:
+            for method in self.registered_events[event].copy():
+                if type(data) in [list, str, tuple]:
+                    data = [data]
+                inspection_methods.InspectionMethods.call_method(method, data, allow_none=False)
+        # handle global events
+        if event in ["reset"]:
+            self.handle_reset_event()
+        if event in ["switch_board"]:
+            self.handle_switch_board_event(*data)
 
-    def handle_key_event(self, receiver, event, data):
-        # any key down?
-        method = InspectionMethods.get_instance_method(receiver, "on_" + str(event))
-        if method:
-            InspectionMethods.call_instance_method(receiver, method, list([data]))
-        # specific key down?
-        for key in data:
-            if key == key.lower():
-                method = InspectionMethods.get_instance_method(receiver, "on_" + event + "_" + key)
-                if method:
-                    InspectionMethods.call_instance_method(receiver, method, None)
+    def unregister_instance(self, instance):
+        awaiting_remove = defaultdict()
+        for event, method_set in self.registered_events.items():
+            for method in method_set:
+                if method.__self__ == instance:
+                    awaiting_remove[event] = method                    
+        for event, method in awaiting_remove.items():
+            self.registered_events[event].remove(method)
 
-    def handle_mouse_event(self, listener_instance, event, data):
-        # any key down?
-        method_name = "on_" + event
-        method = InspectionMethods.get_instance_method(listener_instance, method_name)
-        if method:
-            sig = InspectionMethods.get_signature(method, (data,))
-            if len(sig.parameters) == 1:
-                InspectionMethods.call_instance_method(listener_instance, method, (data,))
+    def act_all(self):
+        # acting
+        for method in self.registered_events["act"].copy():
+            inspection_methods.InspectionMethods.call_method(method, None, False)
 
-    def handle_mouse_token_event(self, instance, event, data):
-        # any key down?
-        token = data[0]
-        position = data[1]
-        method_name = "on_" + event
-        method = InspectionMethods.get_instance_method(token, method_name)
-        if method:
-            sig = InspectionMethods.get_signature(method)
-            if len(sig.parameters) == 1:
-                InspectionMethods.call_instance_method(instance, method, [position])
-        tokens = self.board.get_tokens_by_pixel(position)
-        for token in tokens:
-            method = InspectionMethods.get_instance_method(token, method_name)
-            if method:
-                InspectionMethods.call_instance_method(instance, method, [position])
+    def handle_click_on_token_event(self, event, data):
+        if event == "mouse_left":
+            on_click_methods = self.registered_events["on_clicked_left"].union(
+                self.registered_events["on_clicked"])
+        else:
+            on_click_methods = self.registered_events["on_clicked_right"]
+        for method in on_click_methods.copy():
+            token = method.__self__
+            if token.sensing_point(data):
+                inspection_methods.InspectionMethods.call_method(method, [data])
 
     def handle_setup_event(self):
         if not self.board._is_setup:
-            if hasattr(self.board, "setup") and callable(getattr(self.board, "setup")):
-                self.board.setup()
-                self._is_setup = True
-            if hasattr(self.board, "on_setup") and callable(getattr(self.board, "on_setup")):
-                self.board.on_setup()
-                self.board._is_setup = True
+            self.board.on_setup()
+            self.board._is_setup = True
         return self
 
     def handle_reset_event(self):
@@ -103,23 +180,5 @@ class BoardEventHandler:
         app.event_manager.event_queue.clear()
         app.board = new_board
         new_board.running = True
-        new_board.run()
+        new_board.run(event="board_loaded", )
         return new_board
-
-    def handle_act_event(self, receiver):
-        # any key down?
-        method = InspectionMethods.get_instance_method(receiver, "act")
-        if method:
-            InspectionMethods.call_instance_method(receiver, method, None)
-
-    def handle_button_event(self, receiver, event, data):
-        # any key down?
-        method = InspectionMethods.get_instance_method(receiver, "on_button_pressed")
-        if method:
-            InspectionMethods.call_instance_method(receiver, method, data)
-
-    def handle_message_event(self, receiver, event, data):
-        # any key down?
-        method = InspectionMethods.get_instance_method(receiver, "on_message")
-        if method:
-            InspectionMethods.call_instance_method(receiver, method, (str(data),))

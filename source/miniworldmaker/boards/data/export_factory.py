@@ -1,5 +1,4 @@
 import os
-from miniworldmaker.tokens import token as tkn
 from miniworldmaker.boards.data import db_manager
 
 

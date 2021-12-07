@@ -66,6 +66,7 @@ class Player(Token):
             self.board.torch.remove()
             self.board.console.newline("Du hebst die Fackel auf.")
         self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+        print(self.board.event_handler.registered_events)
 
     def on_sensing_wall(self, wall):
         self.move_back()
@@ -85,13 +86,14 @@ class Wall(Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/wall.png")
+        self.static = True
 
 
 class Grass(Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/grass.png")
-
+        self.static = True
 
 class Torch(Token):
 

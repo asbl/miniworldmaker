@@ -1,6 +1,9 @@
-from miniworldmaker.board_positions.board_position import BoardPosition
+from typing import Tuple
 import pygame
+
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.tokens import token as tk
+
 
 
 class Shape(tk.Token):
@@ -16,7 +19,7 @@ class Shape(tk.Token):
         self.costume.is_upscaled = False
 
     @staticmethod
-    def bounding_box(points) -> pygame.Rect:
+    def bounding_box(points: Tuple) -> pygame.Rect:
         x_coordinates, y_coordinates = zip(*points)
         x = min(x_coordinates)
         y = min(y_coordinates)
@@ -214,7 +217,7 @@ class Rectangle(Shape):
         Creates a red rect with the topleft position (200, 100), the height 10 and the width 10
     """
 
-    def __init__(self, topleft : BoardPosition, width : float, height : float, thickness : int =1, color: tuple = (255, 255, 255, 255)):
+    def __init__(self, topleft : "board_position.BoardPosition", width : float, height : float, thickness : int =1, color: tuple = (255, 255, 255, 255)):
         try:
             if type(topleft) != tuple:
                 raise TypeError("Error: First argument topleft should be a 2-tuple")
@@ -239,7 +242,7 @@ class Rectangle(Shape):
             raise e
 
     @classmethod
-    def from_center(cls, center : BoardPosition, width : float, height : float, thickness : int =1, color: tuple = (255, 255, 255, 255)):
+    def from_center(cls, center: "board_position.BoardPosition", width : float, height : float, thickness : int =1, color: tuple = (255, 255, 255, 255)):
         rect = Rectangle(topleft = center, width = width, height = height, thickness = thickness, color = color)
         rect.center = center
         return rect

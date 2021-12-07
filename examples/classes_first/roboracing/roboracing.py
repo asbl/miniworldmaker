@@ -39,9 +39,7 @@ class Robot(Token):
             if not self.sensing_on_board(self.speed):
                 self.move_back()
         print("scratch style (self.direction)", self.direction)
-        print("unit circle style (dir to unit circle)", Token.dir_to_unit_circle(self.direction))
-        print("scratch style again (unit circle to dir)", Token.unit_circle_to_dir(Token.dir_to_unit_circle(self.direction)))
-
+        
     def on_sensing_wall(self, wall):
         self.move_back()
 

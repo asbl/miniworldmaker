@@ -1,7 +1,7 @@
 import miniworldmaker
 
 board = miniworldmaker.TiledBoard()
-board.add_background((255, 255, 255, 255))
+board.add_background((255, 255, 255, 100))
 board.columns = 5
 board.rows = 5
 board.tile_size = 40

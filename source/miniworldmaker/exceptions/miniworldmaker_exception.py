@@ -116,3 +116,8 @@ class TokenClassNotFound(MiniworldMakerError):
     def __init__(self, name):
         self.message = f"Token class `{name}` not found"
         super().__init__(self.message)
+
+class CantSetAutoFontSize(MiniworldMakerError):
+    def __init__(self):
+        self.message = f"Can't set font-size because auto_font_size is set. Use token.auto_size = False or token.auto_size = 'token'"
+        super().__init__(self.message)

@@ -1,7 +1,7 @@
-from miniworldmaker import *
+import miniworldmaker
 
 
-class MyGrid(PixelBoard):
+class MyGrid(miniworldmaker.PixelBoard):
 
     def __init__(self):
         super().__init__(columns=200, rows=240)
@@ -14,7 +14,7 @@ class MyGrid(PixelBoard):
             self.rocket.started = True
 
 
-class Rocket(Token):
+class Rocket(miniworldmaker.Token):
 
     def __init__(self, position):
         super().__init__(position)
@@ -31,11 +31,11 @@ class Rocket(Token):
         self.remove()
 
 
-class MyToolbar(Toolbar):
+class MyToolbar(miniworldmaker.Toolbar):
 
     def __init__(self):
         super().__init__()
-        button = ToolbarButton("Start Rocket")
+        button = miniworldmaker.ToolbarButton("Start Rocket")
         self.add_widget(button)
 
 

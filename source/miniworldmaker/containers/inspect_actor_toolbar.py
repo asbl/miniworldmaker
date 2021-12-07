@@ -1,7 +1,7 @@
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.board_positions import board_position_factory
-from miniworldmaker.tools import inspection_methods
+
 
 class InspectActorToolbar(toolbar.Toolbar):
 
@@ -90,6 +90,7 @@ class InspectActorToolbar(toolbar.Toolbar):
             for an_actor in self.board.tokens:
                 if self.actor:
                     self.add_widget(TokenButton(token=an_actor))
+
 
 class TokenButton(ToolbarButton):
 

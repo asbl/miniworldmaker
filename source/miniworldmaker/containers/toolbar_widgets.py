@@ -5,7 +5,6 @@ import pygame
 
 
 class ToolbarWidget():
-    log = logging.getLogger("toolbar")
 
     def __init__(self):
         self.myfont = pygame.font.SysFont("monospace", 15)
@@ -81,7 +80,6 @@ class ToolbarWidget():
 
 
 class ToolbarButton(ToolbarWidget):
-    log = logging.getLogger("toolbar-button")
 
     def __init__(self, text, img_path=None):
         super().__init__()
@@ -92,7 +90,6 @@ class ToolbarButton(ToolbarWidget):
         self.data = text
 
     def get_event(self, event, data):
-        self.parent.app.app.event_manager.send_event_to_containers(self.event, self._text)
         self.parent.app.app.event_manager.send_event_to_containers("message", self._text)
 
 
@@ -137,17 +134,13 @@ class SaveButton(ToolbarWidget):
 
 class LoadButton(ToolbarWidget):
 
-    def __init__(self, board, text, filename=None, img_path=None, ):
+    def __init__(self, board, text, filename, img_path=None, ):
         super().__init__()
         if img_path != None:
             self.set_image(img_path)
         self.set_text(text)
         self.file = filename
         self.app = board.app
-        try:
-            self.app.board.load_tokens_from_db(self.file)
-        except Exception as e:
-            print("Import-Error - Tokens where not loaded.")
 
     def get_event(self, event, data):
         if event == "mouse_left":
@@ -156,8 +149,8 @@ class LoadButton(ToolbarWidget):
                 self.file = filedialog.askopenfilename(initialdir="./", title="Select file",
                                                        filetypes=(("db files", "*.db"), ("all files", "*.*")))
             new_board = self.app.board.load_board_from_db(self.file)
-            self.board = new_board
-            self.board.switch_board(new_board,)
+
+
 
 
 class ClearButton(ToolbarWidget):

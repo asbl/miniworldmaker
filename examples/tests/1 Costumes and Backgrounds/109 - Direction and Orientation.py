@@ -20,9 +20,8 @@ token3 = miniworldmaker.Token(position=(0, 3), image="images/player.png")
 token3.costume.orientation = 180
 token4 = miniworldmaker.Token(position=(0, 4), image="images/player.png")
 token4.costume.orientation = 270
-token5 = miniworldmaker.Token(position=(1, 2), image="images/player.png")
-token5.costume.orientation = 90
-token5.direction = 90
+
+
 # Unit circle
 token6 = miniworldmaker.Token(position=(2, 1), image="images/player.png")
 token6.costume.orientation = -90
