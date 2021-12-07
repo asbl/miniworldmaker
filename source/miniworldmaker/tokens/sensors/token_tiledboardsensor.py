@@ -51,44 +51,41 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         return self.token.board.position_handler.get_borders_from_rect(rect)
 
 
-    def sensing_tokens(self, token_type=None, distance: int = 0) -> list:
+    def sensing_tokens(self, token_filter=None, distance: int = 0) -> list:
         """
         Senses tokens at current position
 
         Args:
             distance: If distance > 0, it will be checked, if the token is touching other tokens, if moved two steps forward
-            token_type: Filters by token_type. token_type is a Class of token.
+            token_filter: Filters by token_type. token_type is a Class of token.
 
         Returns: A list of tokens at token position
 
         """
-        if type(token_type) == str:
-            token_type = self.board.find_token_class_for_name(token_type)
-
         target_position = self.get_destination(self.token.position, self.token.direction, distance)
         token_list : list = list()
         if self.board.is_position_on_board(target_position):
             token_list = self.board.sensing_tokens(target_position)
-        if token_list and self.token in token_list:
-            token_list.remove(self.token)
-        # Filter by token type
-        if token_type is not None:
-            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
-        if token_list:
-            return token_list
+        if not token_list:
+            token_list = []
+        token_list = self.remove_self_from_token_list(token_list)
+        token_list = self.filter_token_list(token_list, token_filter)
+        return token_list
 
-    def sensing_token(self, token_type=None, distance: int = 1) -> list:
+    def sensing_token(self, token_filter=None, distance: int = 0) -> list:
         """
         Senses tokens at current position. The method is faster than sensing_tokens.
 
         Args:
             distance: If distance > 0, it will be checked, if the token is touching other tokens, if moved two steps forward
-            token_type: Filters by token_type. token_type is a Class of token.
+            token_filter: Filters by token_type. token_type is a Class of token.
 
         Returns: The first token at current position or None.
 
         """
-        token_list = self.sensing_tokens(token_type, distance)
+        token_list = self.sensing_tokens(token_filter, distance)
+        token_list = self.remove_self_from_token_list(token_list)
+        token_list = self.filter_token_list(token_list, token_filter)
         if token_list:
             return token_list[0]
 

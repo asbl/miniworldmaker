@@ -284,6 +284,11 @@ class TokenPositionManager:
         return self.direction
 
     def flip_x(self) -> int:
+        """Flips actor
+
+        Returns:
+            int: new direction
+        """        
         self.turn_left(180)
         self.token.costume_manager.flip_costume(not self.token.costume.is_flipped)
         return self.direction

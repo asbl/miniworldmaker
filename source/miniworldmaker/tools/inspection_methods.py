@@ -1,11 +1,9 @@
-import inspect
-import sys
 from typing import Union, Optional
+import inspect
 from inspect import signature
 from collections import defaultdict
-from os import stat
 from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
-from miniworldmaker.tokens import token as tkn
+from miniworldmaker.tokens import token
 
 
 class InspectionMethods:
@@ -63,7 +61,7 @@ class InspectionMethods:
     def call_instance_method(instance, method: callable, args: Optional[Union[tuple, list]], allow_none = True):
         # Don't call method if tokens are already removed:
         method = getattr(instance, method.__name__)
-        if issubclass(instance.__class__, tkn.Token) and not instance.board:
+        if issubclass(instance.__class__, token.Token) and not instance.board:
             return
         InspectionMethods.check_signature(method, args, allow_none)
         if args == None:
@@ -101,3 +99,10 @@ class InspectionMethods:
             method()
         else:
             method(*arguments)
+
+    @staticmethod
+    def inherits_from(child, parent):
+        if inspect.isclass(child):
+            if parent.__name__ in [c.__name__ for c in inspect.getmro(child)] or parent.__name__ == child.__name__:
+                return True
+        return False

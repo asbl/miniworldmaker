@@ -4,7 +4,8 @@ import pygame
 from miniworldmaker.board_positions import board_position, board_position_factory
 from miniworldmaker.boards import board
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
-from miniworldmaker.boards.token_connectors.tiled_board_connector import TiledBoardConnector
+from miniworldmaker.boards.token_connectors import tiled_board_connector
+
 
 class TiledBoard(board.Board):
 
@@ -17,18 +18,17 @@ class TiledBoard(board.Board):
             tile_size: The size of a tile
             tile_margin: The margin between tiles
         """
-        self.default_token_speed : int = 1
-        self.dynamic_tokens_dict : defaultdict = defaultdict(list)  # the dict is regularly updated
-        self.dynamic_tokens : list = []  # List with all dynamic actors
-        self.static_tokens_dict : defaultdict = defaultdict(list)
-        if columns * tile_size > 8000 or  rows * tile_size > 8000:
+        self.default_token_speed: int = 1
+        self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
+        self.dynamic_tokens: list = []  # List with all dynamic actors
+        self.static_tokens_dict: defaultdict = defaultdict(list)
+        if columns * tile_size > 8000 or rows * tile_size > 8000:
             raise TiledBoardTooBigError(columns, rows, tile_size)
         super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin,
                          background_image=background_image)
 
-
-    def get_token_connector(self, token):
-        return TiledBoardConnector(self, token)
+    def get_token_connector(self, token) -> "tiled_board_connector.TiledBoardConnector":
+        return tiled_board_connector.TiledBoardConnector(self, token)
 
     @staticmethod
     def get_neighbour_cells(position: tuple) -> list:
@@ -103,4 +103,3 @@ class TiledBoard(board.Board):
             return None
         else:
             return token_list[0]
-        

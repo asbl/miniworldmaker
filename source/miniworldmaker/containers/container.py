@@ -1,11 +1,9 @@
-import logging
 import pygame
 
 class Container:
     """
     Base class for containers
     """
-    clog = logging.getLogger("Container")
 
     def __init__(self):
         self.dirty = 1
@@ -44,7 +42,6 @@ class Container:
             self.container_size = size
         self.docking_position = dock
         self.update_width_and_height()
-        self.clog.info("Added Container {0} with width: {1} and height {2}".format(self, self.width, self.height))
         self._image = pygame.Surface((self.width, self.height))
 
     def update_width_and_height(self):

@@ -1,10 +1,7 @@
-import miniworldmaker.tokens.sensors.token_pixelboardsensor as pixelboardsensor
 import miniworldmaker.tokens.costumes.token_physics_costume_manager as physicsboardcostumemanager
 import miniworldmaker.tokens.positions.token_physics_position_manager as physicspositionmanager
 import miniworldmaker.boards.token_connectors.pixel_board_connector as pixelboard_connector
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens.physics import token_physics
-import sys
 
 
 class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):

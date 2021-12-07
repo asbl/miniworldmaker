@@ -1,6 +1,5 @@
 
 import pygame
-from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.tokens.positions import token_position_manager as token_positionmanager
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError

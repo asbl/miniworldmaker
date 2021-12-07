@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+
 class FileManager:
 
     @staticmethod
@@ -21,6 +22,3 @@ class FileManager:
                 return full_path
         # No file ending found:
         raise FileNotFoundError(path)
-
-        
-

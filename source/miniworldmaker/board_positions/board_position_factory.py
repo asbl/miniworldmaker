@@ -1,4 +1,4 @@
-from miniworldmaker.board_positions.board_position import BoardPosition
+from miniworldmaker.board_positions import board_position
 import pygame
 
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
@@ -12,12 +12,12 @@ class BoardPositionFactory:
         board = self.board
         column = (position[0] - board.tile_margin) // (board.tile_size + board.tile_margin)
         row = (position[1] - board.tile_margin) // (board.tile_size + board.tile_margin)
-        return (column, row)
+        return column, row
 
     def from_float(self, float_position: tuple):
         x = int(float_position[0])
         y = int(float_position[1])
-        return BoardPosition(x,y)
+        return board_position.BoardPosition(x,y)
 
     def from_tuple(self, tpl: tuple):
         """
@@ -29,7 +29,7 @@ class BoardPositionFactory:
         Returns:
 
         """
-        return BoardPosition(tpl[0], tpl[1])
+        return board_position.BoardPosition(tpl[0], tpl[1])
 
     def from_rect_center(self, rect):
         """
@@ -47,8 +47,8 @@ class BoardPositionFactory:
 
     def create(self, value):
         if isinstance(value, tuple):
-            return BoardPosition(value[0], value[1])
-        elif type(value) == BoardPosition:
+            return board_position.BoardPosition(value[0], value[1])
+        elif type(value) == board_position.BoardPosition:
             return value
         elif type(value) == pygame.Rect:
             return value.topleft

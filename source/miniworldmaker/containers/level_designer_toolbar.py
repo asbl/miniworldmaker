@@ -3,14 +3,13 @@ import os
 from miniworldmaker.board_positions import board_position, board_rect_factory, board_position_factory
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import SaveButton, LoadButton, ToolbarWidget, ToolbarLabel, ToolbarButton
-from miniworldmaker.tools.inspection_methods import InspectionMethods
 from miniworldmaker.tokens import token
 from miniworldmaker.containers.toolbar_widgets import ClearButton
 from miniworldmaker.exceptions import miniworldmaker_exception
 
 class LevelDesignerToolbar(toolbar.Toolbar):
 
-    def __init__(self, board, tokens):
+    def __init__(self, board, token_classes, file):
         super().__init__()
         self.default_size = 400
         self.app = board.app
@@ -22,12 +21,12 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
         self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
         self.prototypes = dict()
-        for cls in tokens:
+        for cls in token_classes:
             prototype = cls((-100,-100))
             prototype.export = False
             self.prototypes[cls.__name__] = prototype
             self.add_widget(TokenButton(cls, board, self, self.prototypes[cls.__name__]))
-        db_file = "data.db"
+        db_file = file
         self.add_widget(SaveButton(board=self.app.board, text="Save", filename=db_file))
         if os.path.exists(db_file):
             self.add_widget(LoadButton(board=self.app.board, text="Load", filename=db_file))

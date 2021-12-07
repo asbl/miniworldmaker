@@ -1,29 +1,29 @@
 import pygame
-from miniworldmaker.app.container_manager import ContainerManager
-from miniworldmaker.app.event_manager import EventManager
+from miniworldmaker.app import container_manager
+from miniworldmaker.app import event_manager
 
 import os
 
 
 class Window:
 
-    def __init__(self, title, container_manager: ContainerManager, event_manager: EventManager):
-        self.title = title
-        self.container_manager: ContainerManager = container_manager
-        self.event_manager: EventManager = event_manager
-        self.default_size = 200
-        self.dirty = 1
+    def __init__(self, title, container_manager: "container_manager.ContainerManager", event_manager: "event_manager.EventManager"):
+        self.title: str = title
+        self.container_manager: "container_manager.ContainerManager" = container_manager
+        self.event_manager: "event_manager.EventManager" = event_manager
+        self.default_size: int = 200
+        self.dirty: int = 1
         self.repaint_areas = []
-        self.surface = None
-        self.full_screen = False
+        self.surface: pygame.Surface = None
+        self.full_screen: bool = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
             path = os.path.join(my_path, "../resources/logo_small_32.png")
             surface = pygame.image.load(path)
             pygame.display.set_icon(surface)
-        except:
-            pass
+        except Exception as e:
+            print("Error on creating window: " + str(e))
 
     def update(self):
         if self.dirty:

@@ -1,17 +1,12 @@
-import logging
 import sqlite3
 
 
 class DBManager():
-    log = logging.getLogger("db_manager")
 
     def __init__(self, file):
         self.file = file
-        try:
-            self.connection = sqlite3.connect(self.file)
-            self.cursor = self.connection.cursor()
-        except:
-            raise
+        self.connection = sqlite3.connect(self.file)
+        self.cursor = self.connection.cursor()
 
     def insert(self, table: str, row: dict) -> bool:
         try:
@@ -23,7 +18,6 @@ class DBManager():
                 vals = vals + str(col) + ","
             vals = vals[:-1]  # strip last character
             sql = 'INSERT INTO ' + table + '( ' + str(cols) + ') VALUES (' + str(vals) + ')'
-            logging.info(sql)
             self.connection.execute(sql)
             return True
         except:

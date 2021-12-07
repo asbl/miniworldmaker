@@ -1,23 +1,19 @@
-import logging
 import sys
 
 import pkg_resources
 import pygame
 import __main__
 
-import inspect
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, NoRunError
-from miniworldmaker.app.window import Window
-from miniworldmaker.app.event_manager import EventManager
-from miniworldmaker.app.container_manager import ContainerManager
+from miniworldmaker.app import window
+from miniworldmaker.app import event_manager
+from miniworldmaker.app import container_manager
 from miniworldmaker.app import sound_manager
-
 
 
 class App:
     """The class app contains the game itself. It's created the first time you call board.shbow().
     """
-    log = logging.getLogger("miniworldmaker")
     board = None
     _quit: bool = False
 
@@ -38,13 +34,13 @@ class App:
     def __init__(self, title):
         self._output_start()
         self.check_for_run_method()
-        self.container_manager: ContainerManager = ContainerManager(self)
-        self.mainloop_started = False
-        self.event_manager: EventManager = EventManager(self)
-        self.sound_manager: sound_manager.SoundManager = sound_manager.SoundManager(self)
-        self.window: Window = Window(title, self.container_manager, self.event_manager)
+        self.container_manager: "container_manager.ContainerManager" = container_manager.ContainerManager(self)
+        self.mainloop_started: bool = False
+        self.event_manager: "event_manager.EventManager" = event_manager.EventManager(self)
+        self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
+        self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
         App.app: App = self
-        App.window: Window = self.window
+        App.window: "window.Window" = self.window
         self._exit_code: int = 0
 
     def run(self, image, full_screen: bool = False):
@@ -54,10 +50,8 @@ class App:
         Lines after this statement are not reachable
 
         Args:
-            self:
             image:
             full_screen:
-            log:
         """
         self.image = image
         self.full_screen = full_screen
@@ -104,7 +98,6 @@ class App:
             self.event_manager.handle_event_queue()
             self.container_manager.reload_containers()
             self.window.display_repaint()
-            
 
     def quit(self, exit_code=0):
         self._exit_code = exit_code

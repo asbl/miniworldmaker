@@ -1,14 +1,15 @@
 from miniworldmaker.containers import container as container_file
+from miniworldmaker.app import app
 
 class ContainerManager():
 
-    def __init__(self, app):
+    def __init__(self, miniworldmaker_app: "app.App"):
         self.containers : list = []
         self.containers_right : list = []
         self.containers_bottom : list = []
         self.total_width : int = 0
         self.total_height : int = 0
-        self.app : "App" = app
+        self.app : "app.App" = miniworldmaker_app
 
     def get_container_by_pixel(self, pixel_x: int, pixel_y: int):
         for container in self.containers:

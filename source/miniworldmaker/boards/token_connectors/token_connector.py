@@ -35,4 +35,5 @@ class TokenConnector:
         """
         Implemented in subclasses
         """
-        pass
+        self.board.event_handler.unregister_instance(token)
+        self.board.tokens.remove(token)

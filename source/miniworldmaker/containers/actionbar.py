@@ -1,4 +1,3 @@
-import logging
 import os
 import pygame
 
@@ -92,7 +91,6 @@ class ActionBarWidget():
     Base class of Actionbar-Widgets
 
     """
-    log = logging.getLogger("toolbar")
 
     def __init__(self, board):
         self.myfont = pygame.font.SysFont("monospace", 15)

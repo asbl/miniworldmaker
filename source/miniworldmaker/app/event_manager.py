@@ -3,14 +3,14 @@ from collections import deque
 from inspect import getmembers
 from pprint import pprint
 from miniworldmaker.tools import keys
+from miniworldmaker.app import app
 
 class EventManager:
-    """ Handles the event queue
-    """
-    def __init__(self, app):
-        self.log_events : str = "None"
-        self.event_queue : deque = deque()
-        self.app : "App" = app
+
+    def __init__(self, app : "app.App" ):
+        self.event_queue: deque = deque()
+        self.app: "app.App"  = app
+
 
     def handle_event_queue(self):
         """ Handle the event queue
@@ -28,7 +28,7 @@ class EventManager:
         Sends a event to all containers (usually called in process_pygame_events)
         """
         self.event_queue.appendleft((event, data))
-    
+
     def process_pygame_events(self):
         """
         The function is called in App._update once per tick.
@@ -39,7 +39,9 @@ class EventManager:
             if "STRG" in key_codes and "Q" in key_codes:
                 self.app.quit()
             self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
-            self.key_pressed(keys.key_codes_to_keys(keys_pressed))
+            keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
+            for key in keys_pressed:
+                self.send_event_to_containers("key_pressed_" + key, None)
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -53,10 +55,17 @@ class EventManager:
                 # key-events
             elif event.type == pygame.KEYUP:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
+                #print(event, event.unicode, keys_pressed)
                 self.send_event_to_containers("key_up", keys_pressed)
+                for key in keys_pressed:
+                    if key.islower() and key == pygame.key.name(event.key):
+                        self.send_event_to_containers("key_up_" + key, None)    
             elif event.type == pygame.KEYDOWN:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
                 self.send_event_to_containers("key_down", keys_pressed)
+                for key in keys_pressed:
+                    if key.islower() and key == pygame.key.name(event.key):
+                        self.send_event_to_containers("key_down_" + key, None)  
         return False
 
     def send_mouse_down(self, event):
@@ -72,16 +81,6 @@ class EventManager:
             self.send_event_to_containers("wheel_up", (pos[0], pos[1]))
         if event.button == 5:
             self.send_event_to_containers("wheel_down", (pos[0], pos[1]))
-        for token in self.app.board.tokens:
-            if hasattr(token, "on_clicked_left"):
-                if token.sensing_point(pos):
-                    self.send_event_to_containers("clicked_left", (token, (pos[0], pos[1])))
-
-
-    def key_pressed(self, key):
-        def wrapper_accepting_arguments(key):
-            function(key)
-        return wrapper_accepting_arguments
 
     def get_keys(self):
         key_codes = None

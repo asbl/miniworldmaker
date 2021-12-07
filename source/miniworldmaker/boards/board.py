@@ -1,18 +1,18 @@
-from typing import Union
-from typing import Type
+from __future__ import annotations
+from typing import Union, Type, List
 import pygame
 import inspect
 from miniworldmaker.app import app
-from miniworldmaker.appearances.appearance import Appearance
-from miniworldmaker.appearances.background import Background
+from miniworldmaker.appearances import appearance
+from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.board_positions import board_rect_factory
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.boards.board_handler.board_event_handler import BoardEventHandler
-from miniworldmaker.boards.board_handler.board_collision_handler import BoardCollisionHandler
-from miniworldmaker.boards.board_handler.board_view_handler import BoardViewHandler
-from miniworldmaker.boards.board_handler.board_position_handler import BoardPositionHandler
-from miniworldmaker.boards.token_connectors.token_connector import TokenConnector
+from miniworldmaker.boards.board_handler import board_event_handler
+from miniworldmaker.boards.board_handler import board_collision_handler
+from miniworldmaker.boards.board_handler import board_view_handler 
+from miniworldmaker.boards.board_handler import board_position_handler 
+from miniworldmaker.boards.token_connectors import token_connector 
 from miniworldmaker.containers import container
 from miniworldmaker.exceptions.miniworldmaker_exception import BoardArgumentsError, BoardInstanceError
 from miniworldmaker.tools import timer
@@ -20,44 +20,85 @@ from miniworldmaker.tokens import token as token_module
 from miniworldmaker.tools import inspection_methods
 from miniworldmaker.boards.data import import_factory
 from miniworldmaker.boards.data import export_factory
-from miniworldmaker.tokens.token import Token
+from typing import Tuple
 
 
 class Board(container.Container):
-    """Base Class for Boards.
+    """Board is the Base Class for Boards, e.g. TiledBoard, PixelBoard or PhysicsBoard.
 
-    You can create a custom board by inherit one of Board subclasses or by creating a board-object:
+    You can create a custom board by inherit one of Board subclasses (TiledBoard, PixelBoard or PhysicsBoard) or by creating a board-object:
+
+    **Tiledboard**
+
+    A Board for Games based on Tiles (Like Rogue-Like RPGs).
+
+    * Every token on a TiledBoard has the size of exactly on one Tile. (If your tile_size is 40, every token has the size 40x40. )
+    * The **position** of a token (*mytoken.position*) corresponds to the tile on which it is placed.
+    * Two tokens **collide** when they are on the same tile.
+    
+    .. image:: ../_images/tiled_board.jpg
+        :width: 100%
+        :alt: TiledBoard
+
+    **PixelBoard**
+    
+    A board for pixel accurate games.
+
+    .. image:: ../_images/asteroids.jpg
+        :width: 100%
+        :alt: Asteroids
+
+    * The position of a token on a PixelBoard is the pixel at toplef of token.
+    * New tokens are created with top-left corner of token rect at position. 
+    * Two tokens collide when their sprites overlap.
 
     Examples:
-        Creating a board object:
+
+        Creating a TiledBoard Object:
+    
+        .. code-block:: python
+
+        myboard = miniworldmaker.TiledBoard()
+        myboard.columns = 30
+        myboard.rows = 20
+        myboard.tile_size = 20
+
+
+        Creating a TiledBoard-Subclass as Class:
 
         .. code-block:: python
 
-            board = miniworldmaker.TiledBoard()
-            board.columns=20
-            board.rows=8
-            board.tile_size=40
+            class MyBoard(miniworldmaker.TiledBoard):
 
-        A pixel-board in follow_the_mouse.py:
+                def on_setup(self):
+                    self.columns = 30
+                    self.rows = 20
+                    self.tile_size = 20
 
-        .. code-block:: python
-
-            class MyBoard(PixelBoard):
-
-            def on_setup(self):
-                self.add_background(path="images/stone.jpg")
-                Robot(position=(50, 50))
-
-
-            board = MyBoard(800, 600)
-
-        A tiled-board:
+        Creating a PixelBoard Object:
 
         .. code-block:: python
 
-            board = MyBoard(columns=20, rows=8, tile_size=42, tile_margin=0)
+            myboard = miniworldmaker.PixelBoard()
+            myboard.columns = 300
+            myboard.rows = 200
 
-        > See [Examples](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds)
+        Example: A PixelBoard Subclass
+
+        .. code-block:: python
+
+            class MyBoard(miniworldmaker.PixelBoard):
+
+                def on_setup(self):
+                    self.columns = 300
+                    self.rows = 200
+
+
+    See also:
+
+        * See: :doc:`Board <../api/board>` 
+        * See: :doc:`TiledBoard <../api/board.tiledboard>` 
+    
 
     Args:
         columns: columns of new board (default: 40)
@@ -67,7 +108,7 @@ class Board(container.Container):
     subclasses = None
 
     def __init__(self,
-                 columns: int = 40,
+                 columns: Union[int, Tuple[int]] = 40,
                  rows: int = 40,
                  tile_size: int = 1,
                  tile_margin: int = 0,
@@ -75,21 +116,6 @@ class Board(container.Container):
                  ):
         if self.__class__ == Board:
             raise BoardInstanceError()
-        self._tokens = pygame.sprite.LayeredDirty()
-        self.event_handler = BoardEventHandler(self)
-        super().__init__()
-        self.view_handler = BoardViewHandler(self)
-        self.position_handler = BoardPositionHandler(self)
-        pygame.init()
-        # public
-        self.is_running: bool = True
-        # protected
-        self._is_setup: bool = False
-        if not hasattr(self, "_fps"):
-            self._fps: int = 60  # property speed
-        self._key_pressed: bool = False
-        self._animated: bool = False
-        self._orientation: int = 0
         if type(columns) != int or type(rows) != int:
             if type(columns) == tuple:
                 size = columns
@@ -98,6 +124,18 @@ class Board(container.Container):
             else:
                 raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
+        self._tokens = pygame.sprite.LayeredDirty()
+        self.event_handler : board_event_handler.BoardEventHandler = board_event_handler.BoardEventHandler(self)
+        super().__init__()
+        self.view_handler : "board_view_handler.BoardViewHandler"= board_view_handler.BoardViewHandler(self)
+        self.position_handler: "board_position_handler.BoardPositionHandler" = board_position_handler.BoardPositionHandler(self)
+        pygame.init()
+        self.is_running: bool = True
+        self._is_setup: bool = False
+        self._fps: int = 60
+        self._key_pressed: bool = False
+        self._animated: bool = False
+        self._orientation: int = 0
         self.frame: int = 0
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self.clock: pygame.time.Clock = pygame.time.Clock()
@@ -107,17 +145,15 @@ class Board(container.Container):
         app.App.board = self
         self.view_handler.init_background(background_image)
         self.view_handler.update_background()
-        self.collision_handler = BoardCollisionHandler(self)
+        self.collision_handler : "board_collision_handler.BoardCollisionHandler" = board_collision_handler.BoardCollisionHandler(self)
         self.dirty: int = 1
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.cache = dict()
         self.cache["token_classes"] = self.get_token_classes()  # @todo: No cache implemented yet
-        self.load_from_db = False
-        
 
-    def get_token_connector(self, token):
-        return TokenConnector(self, token)
+    def get_token_connector(self, token) -> token_connector.TokenConnector:
+        return token_connector.TokenConnector(self, token)
 
     def load_board_from_db(self, file: str):
         """
@@ -125,7 +161,16 @@ class Board(container.Container):
         """
         return import_factory.ImportBoardFromDB(file, self.__class__).load()
 
-    def load_tokens_from_db(self, file: str, token_classes: list):
+    def load_tokens_from_db(self, file: str, token_classes: list) -> List["token_module.Token"]:
+        """Loads all tokens from db. Usually you load the tokens in __init__() or in on_setup()
+
+        Args:
+            file (str): reference to db file
+            token_classes (list): a list of all Token Classes which should be imported.
+
+        Returns:
+            [type]: All Tokens
+        """
         return import_factory.ImportTokensFromDB(file, token_classes).load()
 
     def save_to_db(self, file):
@@ -142,9 +187,7 @@ class Board(container.Container):
         export = export_factory.ExportBoardToDBFactory(file, self)
         export.remove_file()
         export.save()
-        print("exported board")
         export_factory.ExportTokensToDBFactory(file, self.tokens).save()
-        print("exported tokens")
 
     @classmethod
     def all_subclasses(cls):
@@ -273,7 +316,7 @@ class Board(container.Container):
         return self._rows
 
     @rows.setter
-    def rows(self, value):
+    def rows(self, value: int):
         self._rows = value
         self.app.window.dirty = 1
         self.view_handler.full_repaint()
@@ -286,7 +329,7 @@ class Board(container.Container):
         return self._columns
 
     @columns.setter
-    def columns(self, value):
+    def columns(self, value: int):
         self._columns = value
         self.app.window.dirty = 1
         self.view_handler.full_repaint()
@@ -310,7 +353,7 @@ class Board(container.Container):
         return self._tile_size
 
     @tile_size.setter
-    def tile_size(self, value):
+    def tile_size(self, value: int):
         self._tile_size = value
         self.app.window.dirty = 1
         self.view_handler.full_repaint()
@@ -323,7 +366,7 @@ class Board(container.Container):
         return self._tile_margin
 
     @tile_margin.setter
-    def tile_margin(self, value):
+    def tile_margin(self, value: int):
         self._tile_margin = value
         self.app.window.dirty = 1
         self.view_handler.full_repaint()
@@ -362,7 +405,7 @@ class Board(container.Container):
         Returns:
 
         """
-        self.get_token_connector(token).remove_from_board(token)
+        self.get_token_connector(token).remove_token_from_board(token)
 
     def remove_background(self, background=None):
         """Removes a background from board
@@ -372,7 +415,7 @@ class Board(container.Container):
         """
         self.view_handler.remove_background()
 
-    def add_background(self, source: Union[str, tuple]) -> Background:
+    def add_background(self, source: Union[str, tuple]) -> "background.Background":
         """
         Adds a new background to the board
 
@@ -451,8 +494,7 @@ class Board(container.Container):
         """
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
 
-    def get_tokens_at_rect(self, rect: pygame.Rect, singleitem=False, exclude=None, token_type=None) -> Union[
-            token_module.Token, list]:
+    def get_tokens_at_rect(self, rect: pygame.Rect) -> Union[token_module.Token, list]:
         """
         Gets all Tokens which are colliding with a given rect.
 
@@ -465,6 +507,21 @@ class Board(container.Container):
         Returns: A single token or a list of tokens at rect
 
         """
+        pass
+    
+        def get_single_token_at_rect(self, rect: pygame.Rect) -> Union[token_module.Token, list]:
+            """
+            Gets the first Token which is colliding with a given rect.
+
+            Args:
+                rect: The rect
+                singleitem: Should the method return a single token (faster) or all tokens at rect (slower)
+                exclude: Exclude a token
+                token_type: Filter return values by token type
+
+            Returns: A single token or a list of tokens at rect
+
+            """
         pass
 
     @property
@@ -537,7 +594,7 @@ class Board(container.Container):
     def repaint(self):
         self.view_handler.repaint()
 
-    def run(self, fullscreen=False):
+    def run(self, fullscreen: bool = False, event = None, data = None):
         """
         The method show() should always called at the end of your program.
         It starts the mainloop.
@@ -547,14 +604,14 @@ class Board(container.Container):
             >>> my_board.show()
 
         """
-        if not self._is_setup:
-            if hasattr(self, "setup") and callable(getattr(self, "setup")):
+        if not self._is_setup and hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
+                self.event_handler.handle_event("setup", None)
                 self.app.event_manager.send_event_to_containers("setup", self)
-            if hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
-                self.app.event_manager.send_event_to_containers("setup", self)
+        if event:
+            self.app.event_manager.send_event_to_containers(event, data)
         self.app.run(self.image, full_screen=fullscreen)
 
-    def switch_background(self, background: Union[int, Type[Appearance]]) -> Background:
+    def switch_background(self, background: Union[int, Type[appearance.Appearance]]) -> background.Background:
         """Switches the background of costume
 
         Args:
@@ -573,8 +630,7 @@ class Board(container.Container):
             # Acting for all actors
             if self.frame > 0 and self.frame % self.speed == 0:
                 self.act_all()
-            if inspection_methods.InspectionMethods.get_instance_method(self, "on_run"):
-                self.handle_on_run_method()
+                self.run_next_line_in_started_method()
             self.collision_handler.handle_all_collisions()
             # run animations
             self.view_handler.update_all_costumes()
@@ -584,24 +640,18 @@ class Board(container.Container):
         self.clock.tick(self.fps)
         self.event_handler.executed_events.clear()
 
-    def handle_on_run_method(self):
-        on_run = inspect.getsourcelines(self.on_run)[0]
-        if self.frame % self.speed == 0 and self.frame != 0:
-            line_number = self.frame // self.speed + 2
-            if line_number < len(on_run):
-                exec(on_run[line_number].strip())
+    def run_next_line_in_started_method(self):
+        for on_started in self.event_handler.registered_events["on_started"]:
+            if on_started:
+                on_started_source = inspect.getsourcelines(on_started)[0]
+                if self.frame % self.speed == 0 and self.frame != 0:
+                    line_number = self.frame // self.speed + 2
+                    if line_number < len(on_started_source):
+                        exec(on_started_source[line_number].strip())
 
     def act_all(self):
-        for token in self.tokens:
-            if token.board:  # is on board
-                self.event_handler.handle_act_event(token)
-        # If board has act method call board.act()
-        method = inspection_methods.InspectionMethods.get_instance_method(
-            self, "act")
-        if method:
-            method = inspection_methods.InspectionMethods.call_instance_method(
-                self, method, None)
-
+        self.event_handler.act_all()
+        
     def _tick_timed_objects(self):
         [obj.tick() for obj in self.timed_objects]
 
@@ -674,6 +724,7 @@ class Board(container.Container):
         """
         bound_method = method.__get__(self, self.__class__)
         setattr(self, method.__name__, bound_method)
+        self.event_handler.register_event(method.__name__, self)
         return bound_method
 
     def send_message(self, message, data=None):
@@ -688,21 +739,32 @@ class Board(container.Container):
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)
 
-    def switch_board(self, new_board):
+    def switch_board(self, new_board : Board):
         self.event_handler.handle_switch_board_event(new_board)
 
-    def get_tokens_by_class_name(self, classname):
+    def get_tokens_by_class_name(self, classname : str):
         return [token for token in self._tokens if token.__class__.__name__ == classname]
 
     def get_token_classes(self):
         return set([token.__class__ for token in self._tokens])
 
-    def get_tokens_by_class(self, classname):
+    def get_tokens_by_class(self, classname : str):
         return [token for token in self._tokens if isinstance(token, classname)]
 
-    def find_token_class_for_name(self, classname):
+    def find_token_class_for_name(self, classname : str):
         classname = classname.lower()
         for token_cls in self.get_token_classes():
             if token_cls.__name__.lower() == classname:
                 return token_cls
+        return None
+
+    def find_token_by_parent_class_for_name(self, classname : str):
+        classname = classname.lower()
+        for token_cls in self.get_token_classes():
+            if token_cls.__name__.lower() == classname:
+                return token_cls
+            parents = inspect.getmro(token_cls)
+            for parent in parents:
+                if parent.__name__.lower() == classname:
+                    return parent
         return None

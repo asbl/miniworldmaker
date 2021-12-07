@@ -1,17 +1,22 @@
+from __future__ import annotations
 import math
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 import pygame
 from miniworldmaker.app import app
-from miniworldmaker.appearances.appearance import Appearance
+from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple
 from miniworldmaker.tokens.physics import token_physics
 from miniworldmaker.tools import inspection_methods
 from miniworldmaker.tools import binding
+from miniworldmaker.tokens.costumes import token_costume_manager
+from miniworldmaker.tokens.sensors import token_boardsensor
+from miniworldmaker.tokens.positions import token_position_manager
+from miniworldmaker.boards import board
 
 T = TypeVar('T')
-appearance_source = Union[str, List[str], Appearance]
+appearance_source = Union[str, List[str], appearance.Appearance]
 
 
 class Meta(type):
@@ -22,7 +27,9 @@ class Meta(type):
             raise TokenArgumentShouldBeTuple()
         if instance.costume:
             instance.costume._reload_all()
-        if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board, "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(app.App.board, "PhysicsBoard"):
+        if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board,
+                                                                     "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(
+                app.App.board, "PhysicsBoard"):
             instance.physics = token_physics.TokenPhysics(
                 instance, app.App.board)
             if hasattr(instance, "set_physics_default_values"):
@@ -31,7 +38,11 @@ class Meta(type):
             instance.on_setup()
         if hasattr(instance, "setup"):
             instance.setup()
-        if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board, "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(app.App.board, "PhysicsBoard"):
+        if not instance.static:
+            instance.board.event_handler.register_events_for_token(instance)
+        if inspection_methods.InspectionMethods.has_parent_with_name(app.App.board,
+                                                                     "PhysicsBoard") or inspection_methods.InspectionMethods.has_class_name(
+                app.App.board, "PhysicsBoard"):
             instance.physics.start()
             instance.board.physics_tokens.append(instance)
             if hasattr(instance, "on_begin_simulation"):
@@ -40,39 +51,82 @@ class Meta(type):
 
 
 class Token(pygame.sprite.DirtySprite, metaclass=Meta):
-    """
-    Token is the basic class for all kinds of players,
-    pieces and obstacles on the playing field
+    """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
+
+    The appearance of a token is determined by its :doc:`Costume <../key_concepts/costumes>`.
+
+    These are the Token Types you can use:
+
+    * Token: Base class for all Kinds of Tokens
+    * TextToken: A TextToken
+    * NumberToken: A NumberToken
+    * Rectangle: A Rectangle
+    * Line: A Line
+    * Circle: A Circle
+
+    Examples:
+
+        Creating a token:
+
+        .. code-block:: python
+
+          board = miniworldmaker.PixelBoard()
+          board.size = (800,300)
+          my_token = miniworldmaker.Token(position=(0, 0))
+
+        Creating a token Class:
+
+        .. code-block:: python
+
+          class MyToken(miniworldmaker.Token):
+              def on_setup(self):
+                  self.add_costume("images/2.png")
+
+          my_token = MyToken(position = (40,130))
+
+        Creating a Circle from Center at mouse position
+
+        .. code-block:: python
+
+          miniworldmaker.Circle.from_center(self.get_mouse_position(), 80, 1, (200,200,200,100))
+
+    See Also:
+
+        * See: :doc:`Token <../api/token>`
+        * See: :doc:`Shapes <../api/token.shape>`
+        * See: :doc:`TextTokens and NumberTokens <../api/token.texttoken>`
+    Args:
+        position: The topleft position of the token as tuple,. e.g. (200,200)
+        image: path to an image which should be used as costume, e.g. ("images/my_costume.png")
 
     Attributes:
-    
+
         collision_type (string):
-            The parameter collision_type specifies how collisions should be checked:
+            The attribute collision_type specifies how collisions should be checked:
 
-                * "default": tile for TiledBoards, 'maask' for PixelBoards
+            * "default": tile for TiledBoards, 'maask' for PixelBoards
 
-                * "tile": Are tokens on the same tile? (only TiledBoard)
+            * "tile": Are tokens on the same tile? (only TiledBoard)
 
-                * "rect": Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
+            * "rect": Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
 
-                * "static-rect": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+            * "static-rect": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
 
-                * "circle": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+            * "circle": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
 
-                * "mask": Are tokens colliding when checkig if their image masks are overlapping.
-        """
-    token_count = 0
-    class_image = None
-    subclasses = None
+            * "mask": Are tokens colliding when checkig if their image masks are overlapping.
+    """
+    token_count: int = 0
+    class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "board_position.BoardPosition"]] = None, image: Optional[str] = None):
-        self._managers = list()
+    def __init__(self, position: Optional[Union[Tuple, "board_position.BoardPosition"]] = None,
+                 image: Optional[str] = None, static = False):
+        self._managers: list = list()
         self.token_id: int = Token.token_count + 1
-        self.costume_manager = None
-        self.board_sensor = None
-        self.position_manager = None
-        self.method_manager = None
-        self.board = app.App.board
+        self.costume_manager: token_costume_manager.TokenCostumeManager = None
+        self.board_sensor: token_boardsensor.TokenBoardSensor = None
+        self.position_manager: token_position_manager.TokenPositionManager = None
+        self.board: board.Board = app.App.board
         _token_connector = self.board.get_token_connector(self)
         _token_connector.add_token_managers(image, position)
         pygame.sprite.DirtySprite.__init__(self)
@@ -81,23 +135,24 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.speed: int = 1
         self.collision_type: str = ""
         self._layer = 0
+        self.static = static
 
-    @property 
-    def layer(self):
+
+    @property
+    def layer(self) -> int:
         return self._layer
 
-    @layer.setter 
-    def layer(self, value):
+    @layer.setter
+    def layer(self, value: int):
         self._layer = value
         self.board._tokens.change_layer(self, value)
 
-
     @property
-    def last_position(self):
+    def last_position(self) -> board_position.BoardPosition:
         return self.position_manager.last_position
 
     @property
-    def last_direction(self):
+    def last_direction(self) -> int:
         return self.position_manager.last_direction
 
     @classmethod
@@ -113,7 +168,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return obj
 
     @property
-    def costume_count(self):
+    def costume_count(self) -> int:
         return self.costume_manager.costume_count
 
     @property
@@ -143,6 +198,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         .. image:: ../_images/flip_x.png
 
+        Returns:
+            int: The new direction
+
         Examples:
 
             flip a token.
@@ -151,12 +209,12 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             >>>    self.move_back()
             >>>    self.flip_x()
         """
-
         return self.position_manager.flip_x()
 
     def __str__(self):
         if self.board:
-            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(self.class_name, self.token_id, self.position, self.size)
+            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(self.class_name, self.token_id, self.position,
+                                                                         self.size)
         else:
             return "**: {0}; ID: {1}".format(self.class_name, self.token_id)
 
@@ -172,7 +230,12 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.costume_manager.image
 
     @property
-    def dirty(self):
+    def dirty(self) -> int:
+        """If token is dirty, it will be repainted.
+
+        Returns:
+            int: 1 if token is dirty/0 otherwise
+        """
         if self.costume_manager:
             return self.costume_manager.dirty
 
@@ -189,17 +252,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.rect
 
-    def get_rect(self):
+    def get_rect(self) -> pygame.Rect:
         return self.position_manager.rect
 
-    def add_costume(self, source: appearance_source = (255, 255, 0, 0)) -> costume.Costume:
-        """    def register(self, method: callable):
-        bound_method = method.__get__(self, self.__class__)
-        setattr(self, method.__name__, bound_method)
-        if method.__name__ == "on_setup":
-            self.on_setup()
-        return bound_method
-        Adds a new costume to token.
+    def add_costume(self, source=(255, 255, 0, 0)) -> costume.Costume:
+        """Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
         Args:
@@ -219,7 +276,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         self.costume_manager.remove_costume(costume)
 
-    def switch_costume(self, costume: Union[int, Type[Appearance]]) -> costume.Costume:
+    def switch_costume(self, costume: Union[int, Type["appearance.Appearance"]]) -> "costume.Costume":
         """Switches the costume of token
 
         Args:
@@ -240,7 +297,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.costume_manager.next_costume()
 
     @property
-    def costume(self):
+    def costume(self) -> costume.Costume:
         return self.costume_manager.costume
 
     @costume.setter
@@ -252,16 +309,35 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.costume_manager.costumes
 
     @property
-    def orientation(self):
+    def orientation(self) -> int:
         return self.costume.orientation
 
     @orientation.setter
-    def orientation(self, value):
+    def orientation(self, value: int):
         self.costume.orientation = value
 
     @property
     def direction(self) -> int:
-        """ Sets direction of the token.
+        """Directions are handled exactly as in the Scratch programming language, 
+        see: `Scratch Wiki <https://en.scratch-wiki.info/wiki/Direction_(value)>`_ 
+
+        The default direction is 0°. All tokens are looking "up"
+
+        .. image:: /_images/movement.jpg
+            :width: 100%
+            :alt: Move on board
+
+        **Values for Direction**
+                
+        * 0° or "up": up
+        * 90° or "right": Move right
+        * -90° or "left": Move left
+        * 180° or "down": Move down
+        * "forward": Current direction
+  
+        
+        
+        Sets direction of the token.
 
         You can use a integer or a string to describe the direction
 
@@ -287,8 +363,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             >>>    elif "D" in keys:
             >>>      self.direction = "right"
             >>>    self.move()
-
-
         """
         return self.position_manager.direction
 
@@ -467,7 +541,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.x
 
     @x.setter
-    def x(self, value) -> float:
+    def x(self, value: float):
         self.position_manager.x = value
 
     @property
@@ -551,16 +625,16 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.move(distance)
 
-    def move_up(self, distance : int = 1):
+    def move_up(self, distance: int = 1):
         return self.position_manager.move_in_direction("up", distance)
 
-    def move_down(self, distance : int = 1):
+    def move_down(self, distance: int = 1):
         return self.position_manager.move_in_direction("down", distance)
 
-    def move_left(self, distance : int = 1):
+    def move_left(self, distance: int = 1):
         return self.position_manager.move_in_direction("left", distance)
 
-    def move_right(self, distance : int = 1):
+    def move_right(self, distance: int = 1):
         return self.position_manager.move_in_direction("right", distance)
 
     def move_back(self):
@@ -643,27 +717,29 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             >>>        self.remove()
             >>>        other.remove()
         """
+        if hasattr(self, "board") and self.board:
+            self.board.remove_from_board(self)
         for manager in self._managers:
             manager.remove()
-            del(manager)
+            del (manager)
         self.kill()
         del (self)
 
     @property
-    def is_rotatable(self):
+    def is_rotatable(self) -> bool:
         return self.costume.is_rotatable
 
     @is_rotatable.setter
-    def is_rotatable(self, value):
-        self.costume.is_rotatable = True
+    def is_rotatable(self, value: bool):
+        self.costume.is_rotatable = value
 
-    def bounce_from_border(self, borders: List):
+    def bounce_from_border(self, borders: List[str]) -> Token:
         """ Bounces the actor from a border.
 
         Args:
             borders: A list of borders as strings e.g. ["left", "right"]
 
-        Returns: The actor
+        Returns: The token
 
         """
         return self.position_manager.bounce_from_border(borders)
@@ -683,14 +759,14 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.sensing_on_board(distance=distance)
 
-    def sensing_tokens(self, token_type: str = None, distance: int = 0, collision_type: str = "default"):
+    def sensing_tokens(self, token_filter: str = None, distance: int = 0, collision_type: str = "default") -> List[Token]:
         """Senses if tokens are on tokens position.
         Returns a list of tokens.
 
         .. image:: ../_images/sensing_tokens.png
 
         Args:
-            token_type: filter by token type. Enter a class_name of tokens to look for here
+            token_filter: filter by token type. Enter a class_name of tokens to look for here
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
             collision_type: The type of collision which should be checked:
 
@@ -698,16 +774,16 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             All tokens found by Sensor
 
         """
-        return self.board_sensor.sensing_tokens(token_type, distance)
+        return self.board_sensor.sensing_tokens(token_filter, distance)
 
-    def sensing_token(self, token_type: str = None, distance: int = 0, collision_type: str = "default"):
+    def sensing_token(self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default") -> List[Token]:
         """Senses if tokens are on tokens position.
         Returns the first found token.
 
         .. image:: ../_images/sensing_token.png
 
         Args:
-            token_type: filter by token type. Enter a class_name of tokens to look for here
+            token_filter: filter by token type or by token instance
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
             collision_type: The type of collision which should be checked:
 
@@ -723,9 +799,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             >>>      self.fireplace.burn()
 
         """
-        return self.board_sensor.sensing_token(token_type, distance)
+        return self.board_sensor.sensing_token(token_filter, distance)
 
-    def sensing_borders(self, distance: int = 0):
+    def sensing_borders(self, distance: int = 0) -> bool:
         """
         Senses borders
 
@@ -740,7 +816,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.sensing_borders(distance)
 
-    def sensing_left_border(self, distance: int = 0):
+    def sensing_left_border(self, distance: int = 0) -> bool:
         """
         Senses borders
         Args:
@@ -751,7 +827,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return "left" in self.board_sensor.sensing_borders(distance)
 
-    def sensing_right_border(self, distance: int = 0):
+    def sensing_right_border(self, distance: int = 0) -> bool:
         """
         Senses borders
         Args:
@@ -762,7 +838,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return "right" in self.board_sensor.sensing_borders(distance)
 
-    def sensing_top_border(self, distance: int = 0):
+    def sensing_top_border(self, distance: int = 0) -> bool:
         """
         Senses borders
         Args:
@@ -773,7 +849,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return "top" in self.board_sensor.sensing_borders(distance)
 
-    def sensing_bottom_border(self, distance: int = 0):
+    def sensing_bottom_border(self, distance: int = 0) -> bool:
         """
         Senses borders
         Args:
@@ -784,7 +860,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return "bottom" in self.board_sensor.sensing_borders(distance)
 
-    def sensing_colors(self, colors: Tuple, distance: int):
+    def sensing_colors(self, colors: Tuple, distance: int) -> tuple:
         """
         Senses colors in board-background at token-position
 
@@ -798,7 +874,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         colors = self.board_sensor.sensing_colors(colors, distance)
         return colors
 
-    def sensing_point(self, board_position: Union["board_position.Boardposition", Tuple]):
+    def sensing_point(self, board_position: Union["board_position.Boardposition", Tuple]) -> bool:
         """
         Is the token colliding with a specific (global) point?
 
@@ -806,14 +882,16 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.rect.collidepoint(board_position)
 
-    """ 
-    This method is used for the @register decorator. It adds a method to an object
-    """
-
     def register(self, method: callable):
+        """This method is used for the @register decorator. It adds a method to an object
+        
+        Args:
+            method (callable): The method which should be added to the token
+        """
         bound_method = binding.bind_method(self, method)
         if method.__name__ == "on_setup":
             self.on_setup()
+        self.board.event_handler.register_event(method.__name__, self)
         return bound_method
 
     def bounce_from_token(self, other: "Token"):
@@ -822,7 +900,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def animate(self, speed: int = 10):
         self.costume_manager.animate(speed)
 
-    def animate_costume(self, costume: "costume.Costume", speed: int = 10):
+    def animate_costume(self, costume: costume.Costume, speed: int = 10):
         self.costume_manager.animate_costume(costume, speed)
 
     def loop_animation(self, speed: int = 10):
@@ -831,3 +909,309 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def send_message(self, message: str):
         self.board.app.event_manager.send_event_to_containers(
             "message", message)
+        
+    def on_key_down(self, key : list):
+        """**on_key_down**  is called one time when a key is pressed down.
+
+        Instead of **on_key_down** you can use **on_key_down_letter**, e.g. **on_key_down_a** or **on_key_down_w**
+        , if you want to handle a on_key_down event for a specific letter.
+        
+        Examples:
+        
+        Register a key_down event:
+
+        .. code-block::
+
+            token1 = miniworldmaker.Token(position = (2, 2) )
+            token1.add_costume((100,0,100,100))
+
+            @token1.register
+            def on_key_down(self, key):
+                print(key)
+                
+        Register on_key_down_a event
+        
+        .. code-block::
+
+            token1 = miniworldmaker.Token(position = (2, 2) )
+            token1.add_costume((100,0,100,100))
+
+            @token1.register
+            def on_key_down_a(self):
+                print("a")
+
+        Args:
+            key (list): The typed key as list (e.g. ['A', 'a']) containing both uppercase and lowercase of typed letter.
+
+        Raises:
+            NotImplementedError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Key down is not implemented")
+    
+    def on_key_pressed(self, key : list):
+        """**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed 
+        is repeatedly called again and again until the key is released.
+    
+        Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`). 
+
+        Examples:
+        
+            Register on_key_pressed event:
+
+            .. code-block::
+
+                token1 = miniworldmaker.Token(position = (2, 2) )
+                token1.add_costume((100,0,100,100))
+
+                @token1.register
+                def on_key_pressed(self, key):
+                    print("pressed", key)
+                    
+                @token1.register
+                def on_key_pressed_s(self):
+                    print("pressed s")
+
+        Args:
+            key (list): The typed key as list (e.g. ['C', 'c', 'D', 'd']) containing both uppercase and lowercase of typed letter.
+
+        Raises:
+            NotImplementedError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Key down is not implemented")
+    
+    def on_key_up(self, key):
+        raise NotImplementedError("Key down is not implemented")
+    
+    def on_mouse_left(self, position : tuple):
+        """Method is called when left mouse button was pressed.
+
+
+        Examples
+            Register mouse event to board
+            
+            .. code-block::
+            
+                @board.register
+                def on_mouse_left(self, position):
+                    print("left" + str(position))
+
+                @board.register
+                def on_mouse_right(self, position):
+                    print("right" + str(position))
+
+                @board.register
+                def on_mouse_middle(self, position):
+                    print("middle" + str(position))
+
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+
+        raise NotImplementedError("Method is not overwritten or registered")
+    
+    def on_mouse_right(self, position: tuple):
+        """on_mouse_right is called when right mouse button was pressed.
+  
+        Examples
+        
+            Register mouse event to board
+
+            .. code-block::
+
+                @board.register
+                def on_mouse_right(self, position):
+                    print("right" + str(position))
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+            
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+        
+    def on_mouse_motion(self, position: tuple):
+        """on_mouse_motion is called when right mouse moves.
+  
+        Examples
+        
+            Register mouse-motion event to board
+
+            .. code-block::
+
+                @board.register
+                def on_mouse_motion(self, position):
+                    print("motion" + str(position))
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+            
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+        
+    def on_message(self, message: str):
+        """Messages are used to allow objects to communicate with each other.
+
+        Send a message:
+
+        * A token and the board can send a message to all tokens and the board with the command: self.send_message(“message_string”)
+
+        Process a message:
+
+        * If your board or your token should react to messages you can use the event on_message:
+
+        Examples:
+            
+            Receive a message
+            
+            .. code-block::
+            
+                @player.register
+                def on_message(self, message):
+                    if message == "Example message":
+                    do_something()
+
+        Args:
+            message (str): The message as string
+            
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+    
+    def on_clicked_left(self, position : tuple):
+        """The mouse is on top of a token and mouse was clicked.
+
+        Examples:
+        
+            Registering a on_click event:
+
+            .. code-block::
+
+                token = miniworldmaker.Token((2,2))
+
+                @token.register
+                def on_clicked_left(self, position):
+                    print("clicked" + str(position))
+                
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+
+        Raises:
+            NotImplementedError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+    
+    def on_clicked_right(self, position):
+        """The mouse is on top of a token and mouse was clicked.
+
+        Examples:
+        
+            Registering a on_click event:
+
+            .. code-block::
+
+                token = miniworldmaker.Token((2,2))
+
+                @token.register
+                def on_clicked_right(self, position):
+                    print("clicked" + str(position))
+                
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+    
+    def on_sensing_on_board(self):
+        """*on_sensing_on_board* is called, when token is on board"
+        
+        Examples:
+        
+            Register on_sensing_on_board method:
+            
+            .. code-block::
+            
+                @player.register
+                    def on_sensing_on_board(self):
+                    print("Player 3: I'm on the board:")
+                    
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+            
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+        
+    def on_sensing_not_on_board(self):
+        """*on_sensing_not_on_board* is called, when token is not on board"
+        
+        Examples:
+        
+            Register on_sensing_not_on_board method:
+            
+            .. code-block::
+            
+                @player.register
+                    def on_sensing_not_on_board(self):
+                    print("Warning: I'm not on the board!!!")
+        
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+    
+    def on_sensing_borders(self, str: List(str)):
+        """*on_sensing_border* is called, when token is near a border
+
+        Args:
+            str (List): A list of strings with found borders, e.g.: ['left', 'top']
+            
+        Examples:
+        
+            Register on_sensing_border_event: 
+        
+            .. code-block::
+            
+                @player.register
+                def on_sensing_borders(self, borders):
+                    print("Player 4: Sensing borders:")
+                    print("Borders are here!", str(borders))
+                    
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")
+    
+
+    def on_sensing_token(self, token: "Token"):
+        """*on_sensing_token* is called, when token is sensing a token on same position
+
+        Args:
+            token (Token): The found token
+            
+        Examples:
+        
+            Register sensing_token event 
+        
+            .. code-block::
+            
+                @player.register
+                def on_sensing_token(self, token):
+                    print("Player 1: Sensing token:")
+                    if token == player2:
+                    print("Am i sensing player2?" + str(token == player2))
+                    
+        Raises:
+            NotImplementedError: he error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedError("Method is not overwritten or registered")

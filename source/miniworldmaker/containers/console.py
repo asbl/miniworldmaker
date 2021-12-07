@@ -28,11 +28,13 @@ class Console(container.Container):
             self.surface.fill((255, 255, 255))
             myfont = pygame.font.SysFont("monospace", 15)
             for i, text in enumerate(self._text_queue):
-                row = pygame.Surface((self.width - (self.margin_left + self.margin_right), self.row_height))
+                row = pygame.Surface(
+                    (self.width - (self.margin_left + self.margin_right), self.row_height))
                 row.fill((200, 200, 200))
                 label = myfont.render(text, 1, (0, 0, 0))
                 row.blit(label, (10, 5))
-                self.surface.blit(row, (self.margin_left, self.margin_first + i * self.row_height + i * self.row_margin))
+                self.surface.blit(row, (self.margin_left, self.margin_first +
+                                  i * self.row_height + i * self.row_margin))
         self._app.window.repaint_areas.append(self.rect)
         self.dirty = 1
 
@@ -44,7 +46,8 @@ class Console(container.Container):
 
     @property
     def lines(self):
-        self._lines = int(self.height - self.margin_first - self.margin_last) / (self.row_height + self.row_margin)
+        self._lines = int(self.height - self.margin_first - self.margin_last) / \
+            (self.row_height + self.row_margin)
         return self._lines
 
     def newline(self, text):

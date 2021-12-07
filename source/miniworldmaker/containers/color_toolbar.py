@@ -1,6 +1,7 @@
 from miniworldmaker.containers import toolbar_widgets
 from miniworldmaker.containers import toolbar
 
+
 class ColorToolbar(toolbar.Toolbar):
     """
     A toolbar to get the background color at a specific pixel
