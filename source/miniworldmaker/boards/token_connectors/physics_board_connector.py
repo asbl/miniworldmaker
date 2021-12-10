@@ -2,7 +2,8 @@ import miniworldmaker.tokens.costumes.token_physics_costume_manager as physicsbo
 import miniworldmaker.tokens.positions.token_physics_position_manager as physicspositionmanager
 import miniworldmaker.boards.token_connectors.pixel_board_connector as pixelboard_connector
 from miniworldmaker.board_positions import board_position
-
+from miniworldmaker.tokens.physics import token_physics
+import miniworldmaker
 
 class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
 
@@ -12,11 +13,18 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         super().__init__(board, token)
 
     def add_token_to_board(self, position: board_position.BoardPosition):
+        self.token.physics = token_physics.TokenPhysics(self.token, miniworldmaker.App.board)
+        if hasattr(self.token, "set_physics_default_values"):
+            self.token.set_physics_default_values()
         super().add_token_to_board(position)
         self.board.register_all_physics_collision_handlers_for_token(self.token)
         for token in self.board.tokens:
             self.board.register_all_physics_collision_handlers_for_token(token, self.token.__class__)
-
+        self.token.physics.start()
+        self.board.physics_tokens.append(self.token)
+        if hasattr(self.token, "on_begin_simulation"):
+            self.token.on_begin_simulation()
+            
     def add_position_manager_to_token(self, token, position):
         token.position_manager = physicspositionmanager.PhysicsBoardPositionManager(
             token, position)

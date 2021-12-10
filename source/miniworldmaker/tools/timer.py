@@ -1,12 +1,12 @@
 from miniworldmaker.app import app
 from miniworldmaker.tools import inspection_methods
-
+import miniworldmaker
 
 class Timed():
     """Base class for all timers
     """
     def __init__(self):
-        self.board = app.App.board
+        self.board = miniworldmaker.App.board
         self.board.timed_objects.append(self)
         self.running = True
 

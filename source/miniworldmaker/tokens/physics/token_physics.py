@@ -101,7 +101,6 @@ class TokenPhysics:
                                   (0, 0),
                                   )
         elif self.shape_type.lower() == "line":
-            try:
                 # pymunk 5.6 values
                 #shift_x = self.token.size[0] / 2 + self.token.position[0]
                 #shift_y = - (self.token.board.size[1] - self.token.size[1] / 2 - self.token.position[1])
@@ -112,9 +111,6 @@ class TokenPhysics:
                 end = pymunk.pygame_util.from_pygame(
                     (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
                 shape = pymunk.Segment(self._body, start, end, self.token.thickness)
-            except AttributeError:
-                if not hasattr(self.token, "board") or not self.token.board:
-                    raise AttributeError("token.board is not set.")
         else:
             raise AttributeError("No shape set!")
         return shape

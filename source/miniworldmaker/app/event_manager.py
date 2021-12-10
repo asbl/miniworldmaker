@@ -4,12 +4,13 @@ from inspect import getmembers
 from pprint import pprint
 from miniworldmaker.tools import keys
 from miniworldmaker.app import app
+import miniworldmaker
 
 class EventManager:
 
     def __init__(self, app : "app.App" ):
         self.event_queue: deque = deque()
-        self.app: "app.App"  = app
+        self.app: "miniworldmaker.App"  = app
 
 
     def handle_event_queue(self):

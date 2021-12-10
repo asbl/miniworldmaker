@@ -22,6 +22,14 @@ class InspectionMethods:
         return False
 
     @staticmethod
+    def has_parent(instance, cls):
+        parents = inspect.getmro(instance.__class__)
+        for parent in parents:
+            if parent == cls:
+                return True
+        return False
+
+    @staticmethod
     def has_class_name(instance, name):
         if instance.__class__.__name__ == name:
             return True

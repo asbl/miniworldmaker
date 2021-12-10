@@ -1,5 +1,5 @@
 from miniworldmaker.tools import inspection_methods
-from miniworldmaker.tokens import token
+import miniworldmaker
 from collections import defaultdict
 from typing import Any
 from miniworldmaker.tools import keys
@@ -99,7 +99,7 @@ class BoardEventHandler:
             """
             overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
             parents = inspect.getmro(instance.__class__)
-            if instance.__class__.__name__ not in ["Token", "Board"] and method.__name__ in overwritten_methods:
+            if instance.__class__ not in [miniworldmaker.Token, miniworldmaker.Board] and method.__name__ in overwritten_methods:
                 self.registered_events[event].add(method)
             else:
                 parent_overwritten_methods = set()
