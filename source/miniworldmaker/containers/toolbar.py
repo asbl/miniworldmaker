@@ -2,7 +2,7 @@ import pygame
 from miniworldmaker.containers import container
 from miniworldmaker.containers import toolbar_widgets
 from miniworldmaker.app import app
-
+import miniworldmaker
 
 class Toolbar(container.Container):
 
@@ -11,7 +11,7 @@ class Toolbar(container.Container):
         Base class for toolbars.
         """
         super().__init__()
-        self.app = app.App
+        self.app = miniworldmaker.App
         self.widgets = []
         self.timed_widgets = []
         self.position = "right"

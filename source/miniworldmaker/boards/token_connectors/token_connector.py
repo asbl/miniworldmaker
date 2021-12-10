@@ -12,6 +12,12 @@ class TokenConnector:
     def add_token_to_board(self, position):
         self.board.tokens.add(self.token)
         self.token.dirty = 1
+        if self.token.costume:
+            self.token.costume._reload_all()
+        if hasattr(self.token, "on_setup"):
+            self.token.on_setup()
+        if not self.token.static:
+            self.token.board.event_handler.register_events_for_token(self.token)
 
     def add_position_manager_to_token(self, token, position):
         """

@@ -25,7 +25,7 @@ class Robot(Token):
 
     def act(self):
         self.move()
-        other = self.sensing_token(distance = 0, token_type=Robot)
+        other = self.sensing_token(distance = 0, token_filter=Robot)
         if other:
             explosion = Explosion(position=self.position)
             self.remove()

@@ -6,7 +6,7 @@ board.add_background((255,255,255))
 line = Line((10, 40), (200, 300), 1, color=(100, 100, 255))
 # y + 28
 circles = []
-for i in range(100):
+for i in range(200):
     circle = Circle((random.randint(40,100), 20), 20, 0,
                      color=(random.randint(0,255),
                             random.randint(0,255),

@@ -20,6 +20,7 @@ from miniworldmaker.tokens import token as token_module
 from miniworldmaker.tools import inspection_methods
 from miniworldmaker.boards.data import import_factory
 from miniworldmaker.boards.data import export_factory
+import miniworldmaker
 from typing import Tuple
 
 
@@ -140,9 +141,9 @@ class Board(container.Container):
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self.clock: pygame.time.Clock = pygame.time.Clock()
         # Init graphics
-        self.app: app.App = app.App("miniworldmaker")
+        self.app: miniworldmaker.App = miniworldmaker.App("miniworldmaker")
         self.app.container_manager.add_container(self, "top_left")
-        app.App.board = self
+        miniworldmaker.App.board = self
         self.view_handler.init_background(background_image)
         self.view_handler.update_background()
         self.collision_handler : "board_collision_handler.BoardCollisionHandler" = board_collision_handler.BoardCollisionHandler(self)
@@ -298,7 +299,7 @@ class Board(container.Container):
         return self.container_height
 
     @property
-    def window(self) -> app.App:
+    def window(self) -> miniworldmaker.App:
         """
         Gets the parent window
 

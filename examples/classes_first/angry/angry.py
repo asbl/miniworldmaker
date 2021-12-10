@@ -113,7 +113,7 @@ class Bird(mwm.Token):
         
     def on_begin_simulation(self):
         direction = self.board.arrow.direction
-        power = 20000
+        power = 10000
         self.impulse(direction, power)
         #self.board.shoots.inc()
 
