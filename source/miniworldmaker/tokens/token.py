@@ -116,7 +116,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self._layer = 0
         self.static = static
         self._position = position
-        # _token_connector.add_token_to_board(self.position)
 
     @property
     def layer(self) -> int:

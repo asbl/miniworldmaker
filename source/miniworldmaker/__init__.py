@@ -4,10 +4,14 @@ from inspect import isclass
 from pkgutil import iter_modules
 from pathlib import Path
 from importlib import import_module
+from miniworldmaker.tokens.token import Token
+
+from pkgutil import extend_path
+__path__ = extend_path(__path__, __name__)
+
 __all__ = []
 for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
     __all__.append(module_name)
-    #print(module_name)
     _module = loader.find_module(module_name).load_module(module_name)
     globals()[module_name] = _module
     for attribute_name in dir(_module):

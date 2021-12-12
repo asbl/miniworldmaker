@@ -151,7 +151,6 @@ class Board(container.Container):
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.cache = dict()
-        self.cache["token_classes"] = self.get_token_classes()  # @todo: No cache implemented yet
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return token_connector.TokenConnector(self, token)
@@ -746,26 +745,5 @@ class Board(container.Container):
     def get_tokens_by_class_name(self, classname : str):
         return [token for token in self._tokens if token.__class__.__name__ == classname]
 
-    def get_token_classes(self):
-        return set([token.__class__ for token in self._tokens])
-
     def get_tokens_by_class(self, classname : str):
         return [token for token in self._tokens if isinstance(token, classname)]
-
-    def find_token_class_for_name(self, classname : str):
-        classname = classname.lower()
-        for token_cls in self.get_token_classes():
-            if token_cls.__name__.lower() == classname:
-                return token_cls
-        return None
-
-    def find_token_by_parent_class_for_name(self, classname : str):
-        classname = classname.lower()
-        for token_cls in self.get_token_classes():
-            if token_cls.__name__.lower() == classname:
-                return token_cls
-            parents = inspect.getmro(token_cls)
-            for parent in parents:
-                if parent.__name__.lower() == classname:
-                    return parent
-        return None

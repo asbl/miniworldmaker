@@ -7,6 +7,11 @@ import inspect
 
 
 class BoardEventHandler:
+    """Processes Board Events
+    
+      * Board Events which can be registered are stored self.events variable.
+      * Board Events which are registered are stored in the dict self.registered_events
+    """
 
     def __init__(self, board):
         self.executed_events: set = set()
@@ -35,6 +40,8 @@ class BoardEventHandler:
         self.register_events_for_board()
 
     def register_events_for_board(self):
+        """Registers all Board events.
+        """
         self.register_events(self.setup_events, self.board)
         self.register_events(self.message_event, self.board)
         self.register_events(self.act_event, self.board)
@@ -44,7 +51,12 @@ class BoardEventHandler:
         self.register_events(self.specific_key_events, self.board)
         self.register_events(self.specific_key_events, self.board)
 
-    def register_events_for_token(self, token):
+    def register_events_for_token(self, token: "miniworldmaker.Token"):
+        """Registers all Token events
+
+        Args:
+            token : The token, events shoudl be registered to.
+        """
         self.register_events(self.message_event, token)
         self.register_events(self.act_event, token)
         self.register_events(self.mouse_events, token)
@@ -77,9 +89,17 @@ class BoardEventHandler:
             method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
             if method:
                 self.registered_events["on_sensing_token"].add(method)
-
+        elif event.startswith("on_touching_"):
+            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            if method:
+                self.board.register_touching_method(method)      
+        elif event.startswith("on_separation_from_"):
+            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            if method:
+                self.board.register_separate_method(method)
+                
     def register_custom_method(self, event, instance, method): 
-        """Register method for event handling if it was registered.
+        """Register method for event handling. (called in register_event)
 
         Args:
             event ([str]): The event
@@ -90,8 +110,8 @@ class BoardEventHandler:
             self.registered_events[event].add(method)
         
     def register_class_method(self, event, instance, method): 
-            """Register method for event handling if it is overwritten
-            
+            """Register method for event handling (called in register_events)
+             
             Args:
                 event ([str]): The event
                 instance: The instance (e.g. board or token)
