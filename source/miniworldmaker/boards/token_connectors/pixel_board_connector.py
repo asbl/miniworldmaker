@@ -1,7 +1,7 @@
-import miniworldmaker.tokens.sensors.token_pixelboardsensor as pixelboardsensor
-import miniworldmaker.tokens.costumes.token_pixel_costume_manager as pixelboardcostumemanager
-import miniworldmaker.tokens.positions.token_pixel_position_manager as pixelpositionmanager
-import miniworldmaker.boards.token_connectors.token_connector as token_connector
+from miniworldmaker.tokens.sensors import token_pixelboardsensor as pixelboardsensor
+from miniworldmaker.tokens.costumes import token_pixel_costume_manager as pixelboardcostumemanager
+from miniworldmaker.tokens.positions import token_pixel_position_manager as pixelpositionmanager
+from  miniworldmaker.boards.token_connectors import token_connector as token_connector
 from miniworldmaker.board_positions import board_position
 
 

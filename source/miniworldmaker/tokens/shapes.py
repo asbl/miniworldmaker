@@ -2,11 +2,10 @@ from typing import Tuple
 import pygame
 
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens import token as tk
+import miniworldmaker
 
 
-
-class Shape(tk.Token):
+class Shape(miniworldmaker.Token):
     """
     Base class for Shapes
     """

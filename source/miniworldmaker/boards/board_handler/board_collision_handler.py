@@ -16,14 +16,14 @@ class BoardCollisionHandler:
     def _handle_collision_with_tokens(self):
         for method in self.board.event_handler.registered_events["on_sensing_token"].copy():
             token = method.__self__
-            searched_token_type = method.__name__[11:]
-            found_tokens_for_token_type = token.sensing_tokens(token_filter=searched_token_type)
+            token_type_of_target = method.__name__[11:]
+            found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
             if found_tokens_for_token_type == None:
                 found_tokens_for_token_type = []
             if token in found_tokens_for_token_type:
                 found_tokens_for_token_type.remove(token)
             for found_token in found_tokens_for_token_type:
-                if found_token.__class__.__name__.lower() == searched_token_type:
+                if found_token.__class__.__name__.lower() == token_type_of_target:
                     inspection_methods.InspectionMethods.call_method(method, [found_token])
 
     def _handle_collision_with_borders(self):

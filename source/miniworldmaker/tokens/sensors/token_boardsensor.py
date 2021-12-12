@@ -68,12 +68,13 @@ class TokenBoardSensor():
             self.filter_tokens_by_instance(token_list, token_filter)
         return token_list
 
-    def filter_tokens_by_classname(self, token_list, token_filter):
-        token_type = self.board.find_token_class_for_name(token_filter)
+    def filter_tokens_by_classname(self, token_list : list, token_filter: str):
+        token_type = inspection_methods.InspectionMethods(self.token).find_token_class_by_classname(token_filter)
         if token_type == None:
             return token_list
         if token_type:
-            token_list = [token for token in token_list if inspection_methods.InspectionMethods.inherits_from(token.__class__, token_type)]
+            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
+            #token_list = [token for token in token_list if inspection_methods.InspectionMethods.inherits_from(token.__class__, token_type)]
             return token_list
         else:
             return token_list

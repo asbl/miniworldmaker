@@ -1,7 +1,7 @@
-import miniworldmaker.tokens.sensors.token_tiledboardsensor as tiledboardsensor
-import miniworldmaker.tokens.costumes.token_tiled_costume_manager as tiledboardcostumemanager
-import miniworldmaker.tokens.positions.token_tiled_position_manager as tiledpositionmanager
-import miniworldmaker.boards.token_connectors.token_connector as token_connector
+from miniworldmaker.tokens.sensors import token_tiledboardsensor as tiledboardsensor
+from miniworldmaker.tokens.costumes import token_tiled_costume_manager as tiledboardcostumemanager
+from miniworldmaker.tokens.positions import token_tiled_position_manager as tiledpositionmanager
+from miniworldmaker.boards.token_connectors import token_connector as token_connector
 from miniworldmaker.board_positions import board_position
 
 
