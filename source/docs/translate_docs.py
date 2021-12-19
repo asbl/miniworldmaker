@@ -21,9 +21,3 @@ for root, dirs, files in os.walk("./source/objectsfirst_german/"):
         output = open(target_file, 'w')
         output.write(str(txt_en))
         output.close()
-        #translator.translate_document_from_filepath(
-        #    file,
-        #    target_file,
-        #    target_lang="EN-US",
-        #)
-        

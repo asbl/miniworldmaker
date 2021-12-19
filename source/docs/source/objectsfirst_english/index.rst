@@ -1,4 +1,4 @@
-Tutorial Deutsch - Objects First
+Tutorial English - Objects First
 ********************************
 
 .. toctree::
