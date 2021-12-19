@@ -8,5 +8,7 @@ source/docs/build
 source/docs/build/*
 source/scripts/*
 source/docs/scripts/*
+source/docs/scripts/*
 source/scripts
 source/docs/scripts/
+source/docs/deepl_key.py

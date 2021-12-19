@@ -1,5 +1,4 @@
-from miniworldmaker.app import app
-from miniworldmaker.tools import inspection_methods
+from miniworldmaker.tools import method_caller
 import miniworldmaker
 
 class Timed():
@@ -65,7 +64,7 @@ class ActionTimer(Timer):
             arguments ([type], optional): Arguments for the method.
         """
         super().__init__(time)
-        self.method = method
+        self.method : callable = method
         if arguments or arguments == 0:
             self.arguments = [arguments]
         else:
@@ -77,7 +76,7 @@ class ActionTimer(Timer):
         self.success()
 
     def _call_method(self):
-        inspection_methods.InspectionMethods.call_method(self.method, self.arguments, allow_none=False)
+        method_caller.call_method(self.method, self.arguments, allow_none=False)
 
     def success(self, method=None, arguments=None):
         if method is not None and arguments is None:

@@ -121,3 +121,7 @@ class CantSetAutoFontSize(MiniworldMakerError):
     def __init__(self):
         self.message = f"Can't set font-size because auto_font_size is set. Use token.auto_size = False or token.auto_size = 'token'"
         super().__init__(self.message)
+
+class NotImplementedOrRegisteredError(MiniworldMakerError):
+    def _init__(self, method):
+        self.message = f"Method {method} is not overwritten or registered"

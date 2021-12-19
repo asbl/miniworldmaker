@@ -1,12 +1,9 @@
-import inspect
 import pymunk as pymunk_engine
 import sys
-import miniworldmaker
-from miniworldmaker.exceptions.miniworldmaker_exception import TokenClassNotFound
 from miniworldmaker.boards import pixel_board as pixel_board_module
-from miniworldmaker.tools import inspection_methods as im
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
-from miniworldmaker.tokens import token
+from miniworldmaker.tools import token_inspection
+from miniworldmaker.tools import token_class_inspection
 
 
 class PhysicsBoard(pixel_board_module.PixelBoard):
@@ -59,23 +56,6 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
     def get_token_connector(self, token):
         return PhysicsBoardConnector(self, token)
 
-    @staticmethod
-    def _update_token_subclasses():
-        """
-        Returns a dict with class_name->class
-
-        Returns:
-
-        """
-        token_subclasses = im.InspectionMethods.all_subclasses(token.Token)
-        for cls in token_subclasses:
-            im.InspectionMethods.token_classes[cls.__name__] = cls
-            if cls not in im.InspectionMethods.token_class_ids:
-                cls.class_id = im.InspectionMethods.token_class_id_counter
-                im.InspectionMethods.token_class_ids[cls] = im.InspectionMethods.token_class_id_counter
-                im.InspectionMethods.token_class_id_counter += 1
-        return im.InspectionMethods.token_classes
-
     def get_physics_collision_methods_for_token(self, token):
         return [getattr(token, method_name) for method_name in dir(token)
                 if hasattr(token, method_name) and callable(getattr(token, method_name))
@@ -86,7 +66,7 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         Registers on__touching and on_seperation-Methods to token.
         If new_class is set, only methods with new class (e.g. on_touching_new_class are se.t)
         """
-        collision_methods = self.get_physics_collision_methods_for_token(token)  
+        collision_methods = self.get_physics_collision_methods_for_token(token)
         for method in collision_methods:
             if method.__name__.startswith("on_touching_"):
                 self.register_touching_method(method)
@@ -98,13 +78,13 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         Registers a physics listener method. (on touching or on_seperation.)
         Called from register_touching_method and register_separate_method
         """
-        token_inspect = im.InspectionMethods(method.__self__)
-        token_inspect.get_subclasses()
-        all_token_classes = token_inspect.get_all_token_classes()
+        token_class_inspect = token_class_inspection.TokenClassInspection(self)
+        all_token_classes = token_class_inspect.get_all_token_classes()
         if other_cls not in all_token_classes:
             return False
         else:
-            subclasses_of_other_token = im.InspectionMethods(other_cls).get_subclasses()
+            subclasses_of_other_token = token_class_inspection.TokenClassInspection(
+                other_cls).get_subclasses()
             for other_subcls in subclasses_of_other_token:
                 # If you register a Collission with a Token, collissions with subclasses of the token
                 # are also registered
@@ -115,16 +95,16 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
     def register_touching_method(self, method):
         event = "begin"
         other_cls_name = method.__name__[len("on_touching_"):].lower()
-        other_cls = im.InspectionMethods(
-            method.__self__).find_token_class_by_classname(other_cls_name)
+        other_cls = token_class_inspection.TokenClassInspection(
+            self).find_token_class_by_classname(other_cls_name)
         if self._register_physics_listener_method(method, event, other_cls):
             self.touching_methods.add(method)
 
     def register_separate_method(self, method):
         event = "separate"
         other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-        other_cls = im.InspectionMethods(
-            method.__self__).find_token_class_by_classname(other_cls_name)
+        other_cls = token_class_inspection.TokenClassInspection(
+            self).find_token_class_by_classname(other_cls_name)
         if self._register_physics_listener_method(method, event, other_cls):
             self.separate_methods.add(method)
 
@@ -180,10 +160,11 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         # get touching token_handler for token
         for method in self.touching_methods:
             method_other_cls_name = method.__name__[len("on_touching_"):].lower()
-            method_other_cls = im.InspectionMethods(token).find_token_class_by_classname(method_other_cls_name)
+            method_other_cls = token_class_inspection.TokenClassInspection(
+                self).find_token_class_by_classname(method_other_cls_name)
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
-                im.InspectionMethods(token).get_and_call_method(
+                token_inspection.TokenInspection(token).get_and_call_method(
                     method.__name__, [other, collision])
         return True
 
@@ -195,10 +176,11 @@ class PhysicsBoard(pixel_board_module.PixelBoard):
         # get separation token_handler for token
         for method in self.separate_methods:
             method_other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-            method_other_cls = im.InspectionMethods(token).find_token_class_by_classname(method_other_cls_name)
+            method_other_cls = token_class_inspection.TokenClassInspection(
+                self).find_token_class_by_classname(method_other_cls_name)
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
-                im.InspectionMethods(token).get_and_call_method(
+                token_inspection.TokenInspection(token).get_and_call_method(
                     method.__name__, [other, collision])
         return True
 

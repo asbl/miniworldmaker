@@ -1,13 +1,18 @@
 import pkgutil
-from miniworldmaker import config
 from inspect import isclass
-from pkgutil import iter_modules
-from pathlib import Path
-from importlib import import_module
+
+# manually import classes which should be accessible in outer scope.
+
 from miniworldmaker.tokens.token import Token
+from miniworldmaker.boards.board import Board
+from miniworldmaker.tools.timer import timer
+from miniworldmaker.tools.timer import loop
+
+# auto import all classes, so that every class is imported
 
 from pkgutil import extend_path
 __path__ = extend_path(__path__, __name__)
+
 
 __all__ = []
 for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
@@ -19,9 +24,8 @@ for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
         if isclass(attribute):  
             globals()[attribute_name] = attribute
             __all__.append(attribute.__name__)
-# needed for decorators:
-from miniworldmaker.tools.timer import timer
-from miniworldmaker.tools.timer import loop
 
+
+print(globals())
 __all__.append(timer.__name__)
 __all__.append(loop.__name__)

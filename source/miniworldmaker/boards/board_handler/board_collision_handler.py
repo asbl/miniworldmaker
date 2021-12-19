@@ -1,6 +1,4 @@
-from collections import defaultdict
-import inspect
-from miniworldmaker.tools import inspection_methods
+from miniworldmaker.tools import method_caller
 
 
 class BoardCollisionHandler:
@@ -24,14 +22,14 @@ class BoardCollisionHandler:
                 found_tokens_for_token_type.remove(token)
             for found_token in found_tokens_for_token_type:
                 if found_token.__class__.__name__.lower() == token_type_of_target:
-                    inspection_methods.InspectionMethods.call_method(method, [found_token])
+                    method_caller.call_method(method, [found_token])
 
     def _handle_collision_with_borders(self):
         for event in self.board.event_handler.border_events:
             for method in self.board.event_handler.registered_events[event]:
                 sensed_borders = method.__self__.sensing_borders()
                 if method.__name__ == "on_sensing_borders" and sensed_borders:
-                    inspection_methods.InspectionMethods.call_method(
+                    method_caller.call_method(
                         method, [sensed_borders])
                 else:
                     self._handle_specific_border(method, sensed_borders)
@@ -39,19 +37,16 @@ class BoardCollisionHandler:
     def _handle_specific_border(self, method, sensed_borders):
         for border in sensed_borders:
             if border in method.__name__:
-                inspection_methods.InspectionMethods.call_method(
-                    method, None)
+                method_caller.call_method(method, None)
 
     def _handle_on_board(self):
         for method in self.board.event_handler.registered_events["on_sensing_on_board"].copy():
             is_on_board = method.__self__.sensing_on_board()
             if is_on_board:
-                inspection_methods.InspectionMethods.call_method(
-                    method, None)
+                method_caller.call_method(method, None)
 
     def _handle_not_on_board(self):
         for method in self.board.event_handler.registered_events["on_sensing_not_on_board"].copy():
             is_not_on_board = not method.__self__.sensing_on_board()
             if is_not_on_board:
-                inspection_methods.InspectionMethods.call_method(
-                    method, None)
+                method_caller.call_method(method, None)
