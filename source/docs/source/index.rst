@@ -50,7 +50,14 @@ Links
   
   objectsfirst_german/index
   classesfirst_german/index
+
+.. toctree::
+  :maxdepth: 1
+  :caption: Tutorial (English)
+  :titlesonly:
+  
   objectsfirst_english/index
+
 .. toctree::
   :maxdepth: 1
   :caption: Key Concepts
