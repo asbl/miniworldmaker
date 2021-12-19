@@ -50,7 +50,7 @@ class App:
         App.window: "window.Window" = self.window
         self._exit_code: int = 0
 
-    def run(self, image, full_screen: bool = False):
+    def run(self, image, fullscreen: bool = False):
         """
         runs the main_loop
 
@@ -58,10 +58,10 @@ class App:
 
         Args:
             image:
-            full_screen:
+            fullscreen:
         """
         self.image = image
-        self.full_screen = full_screen
+        self.window.fullscreen = fullscreen
         # Start the main-loop
         self._prepare_mainloop()
         self.reload_window()

@@ -185,6 +185,3 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
                 token_inspection.TokenInspection(token).get_and_call_method(
                     method.__name__, [other, collision])
         return True
-
-    def run(self):
-        super().run()

@@ -123,7 +123,7 @@ class Bird(mwm.Token):
 
 def main():
     board = MyBoard(1024, 700)
-    board.run()
+    board.run(fullscreen = True)
 
 if __name__ == '__main__':
     main()
