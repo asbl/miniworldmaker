@@ -15,10 +15,10 @@ for i in range(10):
     @circle.register
     def on_touching_line(self, other, info):
         print("Ouch!")
-    
     @circle.register
     def on_separation_from_line(self, other, info):
         print("Yeah!")
+        
 line2 = Line((0, 200), (398, 400), 2, color=(100, 100, 255))
 line2.physics.simulation = "manual"
 board.run()

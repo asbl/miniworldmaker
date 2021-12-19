@@ -49,7 +49,7 @@ class MWMInspection:
     def get_and_call_method(self, name, args, errors=False):
         method = self.get_instance_method(name)
         if method:
-            self.call_instance_method(self.instance, method, args)
+            self.call_instance_method(method, args)
         elif errors:
             raise Exception("Method not found")
 

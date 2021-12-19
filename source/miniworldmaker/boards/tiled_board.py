@@ -5,9 +5,10 @@ from miniworldmaker.board_positions import board_position, board_position_factor
 from miniworldmaker.boards import board
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
 from miniworldmaker.boards.token_connectors import tiled_board_connector
+import miniworldmaker
 
 
-class TiledBoard(board.Board):
+class TiledBoard(miniworldmaker.Board):
 
     def __init__(self, columns: int = 20, rows: int = 16, tile_size=42, tile_margin=0, background_image=None):
         """Initializes the TiledBoard
