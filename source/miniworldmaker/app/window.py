@@ -15,7 +15,7 @@ class Window:
         self.dirty: int = 1
         self.repaint_areas = []
         self.surface: pygame.Surface = None
-        self.full_screen: bool = False
+        self.fullscreen: bool = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
@@ -39,7 +39,7 @@ class Window:
         self.repaint_areas = []
 
     def display_update(self):
-        if self.full_screen:
+        if self.fullscreen:
             self.surface = pygame.display.set_mode((self.width, self.height, ), pygame.FULLSCREEN)
         else:
             self.surface = pygame.display.set_mode((self.width, self.height))

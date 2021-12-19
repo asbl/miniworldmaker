@@ -601,7 +601,7 @@ class Board(container.Container):
             self.app.event_manager.send_event_to_containers("setup", self)
         if event:
             self.app.event_manager.send_event_to_containers(event, data)
-        self.app.run(self.image, full_screen=fullscreen)
+        self.app.run(self.image, fullscreen=fullscreen)
 
     def switch_background(self, background: Union[int, Type[appearance.Appearance]]) -> background.Background:
         """Switches the background of costume
