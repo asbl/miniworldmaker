@@ -2,7 +2,6 @@ from __future__ import annotations
 from typing import Union, Type, List
 import pygame
 import inspect
-from miniworldmaker.app import app
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position_factory
@@ -10,16 +9,16 @@ from miniworldmaker.board_positions import board_rect_factory
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.boards.board_handler import board_event_handler
 from miniworldmaker.boards.board_handler import board_collision_handler
-from miniworldmaker.boards.board_handler import board_view_handler 
-from miniworldmaker.boards.board_handler import board_position_handler 
-from miniworldmaker.boards.token_connectors import token_connector 
+from miniworldmaker.boards.board_handler import board_view_handler
+from miniworldmaker.boards.board_handler import board_position_handler
+from miniworldmaker.boards.token_connectors import token_connector
 from miniworldmaker.containers import container
-from miniworldmaker.exceptions.miniworldmaker_exception import BoardArgumentsError, BoardInstanceError
+from miniworldmaker.exceptions.miniworldmaker_exception import BoardArgumentsError, BoardInstanceError, NotImplementedOrRegisteredError
 from miniworldmaker.tools import timer
 from miniworldmaker.tokens import token as token_module
-from miniworldmaker.tools import inspection_methods
 from miniworldmaker.boards.data import import_factory
 from miniworldmaker.boards.data import export_factory
+from miniworldmaker.tools import board_inspection
 import miniworldmaker
 from typing import Tuple
 
@@ -36,13 +35,13 @@ class Board(container.Container):
     * Every token on a TiledBoard has the size of exactly on one Tile. (If your tile_size is 40, every token has the size 40x40. )
     * The **position** of a token (*mytoken.position*) corresponds to the tile on which it is placed.
     * Two tokens **collide** when they are on the same tile.
-    
+
     .. image:: ../_images/tiled_board.jpg
         :width: 100%
         :alt: TiledBoard
 
     **PixelBoard**
-    
+
     A board for pixel accurate games.
 
     .. image:: ../_images/asteroids.jpg
@@ -56,7 +55,7 @@ class Board(container.Container):
     Examples:
 
         Creating a TiledBoard Object:
-    
+
         .. code-block:: python
 
         myboard = miniworldmaker.TiledBoard()
@@ -99,7 +98,7 @@ class Board(container.Container):
 
         * See: :doc:`Board <../api/board>` 
         * See: :doc:`TiledBoard <../api/board.tiledboard>` 
-    
+
 
     Args:
         columns: columns of new board (default: 40)
@@ -126,10 +125,13 @@ class Board(container.Container):
                 raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
         self._tokens = pygame.sprite.LayeredDirty()
-        self.event_handler : board_event_handler.BoardEventHandler = board_event_handler.BoardEventHandler(self)
+        self.event_handler: board_event_handler.BoardEventHandler = board_event_handler.BoardEventHandler(
+            self)
         super().__init__()
-        self.view_handler : "board_view_handler.BoardViewHandler"= board_view_handler.BoardViewHandler(self)
-        self.position_handler: "board_position_handler.BoardPositionHandler" = board_position_handler.BoardPositionHandler(self)
+        self.view_handler: "board_view_handler.BoardViewHandler" = board_view_handler.BoardViewHandler(
+            self)
+        self.position_handler: "board_position_handler.BoardPositionHandler" = board_position_handler.BoardPositionHandler(
+            self)
         pygame.init()
         self.is_running: bool = True
         self._is_setup: bool = False
@@ -146,7 +148,8 @@ class Board(container.Container):
         miniworldmaker.App.board = self
         self.view_handler.init_background(background_image)
         self.view_handler.update_background()
-        self.collision_handler : "board_collision_handler.BoardCollisionHandler" = board_collision_handler.BoardCollisionHandler(self)
+        self.collision_handler: "board_collision_handler.BoardCollisionHandler" = board_collision_handler.BoardCollisionHandler(
+            self)
         self.dirty: int = 1
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
@@ -188,17 +191,6 @@ class Board(container.Container):
         export.remove_file()
         export.save()
         export_factory.ExportTokensToDBFactory(file, self.tokens).save()
-
-    @classmethod
-    def all_subclasses(cls):
-        def rec_all_subs(base_cls) -> set:
-            if cls.subclasses is None:
-                return set(base_cls.__subclasses__()).union(
-                    [s for c in base_cls.__subclasses__() for s in rec_all_subs(c)])
-            else:
-                return cls.subclasses
-
-        return rec_all_subs(cls)
 
     def __str__(self):
         return "{0} with {1} columns and {2} rows" \
@@ -388,7 +380,7 @@ class Board(container.Container):
 
     @registered_events.setter
     def registered_events(self, value):
-        return  # @TODO setter is used so that board_event_handler is not overwritten by board parent class container
+        return  # setter is defined so that board_event_handler is not overwritten by board parent class container
 
     @property
     def background(self):
@@ -508,7 +500,7 @@ class Board(container.Container):
 
         """
         pass
-    
+
         def get_single_token_at_rect(self, rect: pygame.Rect) -> Union[token_module.Token, list]:
             """
             Gets the first Token which is colliding with a given rect.
@@ -594,7 +586,7 @@ class Board(container.Container):
     def repaint(self):
         self.view_handler.repaint()
 
-    def run(self, fullscreen: bool = False, event = None, data = None):
+    def run(self, fullscreen: bool = False, event=None, data=None):
         """
         The method show() should always called at the end of your program.
         It starts the mainloop.
@@ -605,8 +597,8 @@ class Board(container.Container):
 
         """
         if not self._is_setup and hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
-                self.event_handler.handle_event("setup", None)
-                self.app.event_manager.send_event_to_containers("setup", self)
+            self.event_handler.handle_event("setup", None)
+            self.app.event_manager.send_event_to_containers("setup", self)
         if event:
             self.app.event_manager.send_event_to_containers(event, data)
         self.app.run(self.image, full_screen=fullscreen)
@@ -630,7 +622,7 @@ class Board(container.Container):
             # Acting for all actors
             if self.frame > 0 and self.frame % self.speed == 0:
                 self.act_all()
-                self.run_next_line_in_started_method()
+                self._run_next_line_in_started_method()
             self.collision_handler.handle_all_collisions()
             # run animations
             self.view_handler.update_all_costumes()
@@ -640,18 +632,20 @@ class Board(container.Container):
         self.clock.tick(self.fps)
         self.event_handler.executed_events.clear()
 
-    def run_next_line_in_started_method(self):
-        for on_started in self.event_handler.registered_events["on_started"]:
-            if on_started:
-                on_started_source = inspect.getsourcelines(on_started)[0]
-                if self.frame % self.speed == 0 and self.frame != 0:
-                    line_number = self.frame // self.speed + 2
-                    if line_number < len(on_started_source):
-                        exec(on_started_source[line_number].strip())
+    def _run_next_line_in_started_method(self):
+        for on_started_method in self.event_handler.registered_events["on_started"]:
+            line_number = self.frame // self.speed + 2
+            if on_started_method and self.frame % self.speed == 0 and self.frame != 0:
+                self._run_line(on_started_method, line_number)
+
+    def _run_line(self, method: callable, line_number: int):
+        method_source = inspect.getsourcelines(method)[0]
+        if line_number < len(method_source):
+            exec(method_source[line_number].strip())
 
     def act_all(self):
         self.event_handler.act_all()
-        
+
     def _tick_timed_objects(self):
         [obj.tick() for obj in self.timed_objects]
 
@@ -715,15 +709,14 @@ class Board(container.Container):
     def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
         return self.position_handler.is_position_on_board(position)
 
-    def register(self, method):
+    def register(self, method: callable) -> callable:
         """
         Used as decorator
         e.g.
         @register
         def method...
         """
-        bound_method = method.__get__(self, self.__class__)
-        setattr(self, method.__name__, bound_method)
+        bound_method = board_inspection.BoardInspection(self).bind_method(method)
         self.event_handler.register_event(method.__name__, self)
         return bound_method
 
@@ -739,11 +732,32 @@ class Board(container.Container):
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)
 
-    def switch_board(self, new_board : Board):
+    def switch_board(self, new_board: Board):
         self.event_handler.handle_switch_board_event(new_board)
 
-    def get_tokens_by_class_name(self, classname : str):
+    def get_tokens_by_class_name(self, classname: str):
         return [token for token in self._tokens if token.__class__.__name__ == classname]
 
-    def get_tokens_by_class(self, classname : str):
+    def get_tokens_by_class(self, classname: str):
         return [token for token in self._tokens if isinstance(token, classname)]
+
+    def on_started(self):
+        """The on_started method is executed after starting the board. 
+        Afterwards the individual lines are executed step by step with some delay (depending on board.speed).
+
+        Examples:
+        
+        Registering a on_started-Method
+
+        .. code-block:: python
+
+            @karaboard.register    
+            def on_started(self):
+                self.kara.move_right()
+                self.kara.move_right()
+
+
+        Raises:
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedOrRegisteredError()

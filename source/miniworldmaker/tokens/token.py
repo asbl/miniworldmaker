@@ -2,22 +2,12 @@ from __future__ import annotations
 import math
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 import pygame
-from miniworldmaker.app import app
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple
-from miniworldmaker.tokens.physics import token_physics
-from miniworldmaker.tools import inspection_methods
-from miniworldmaker.tools import binding
-from miniworldmaker.tokens.costumes import token_costume_manager
-from miniworldmaker.tokens.sensors import token_boardsensor
-from miniworldmaker.tokens.positions import token_position_manager
-from miniworldmaker.boards import board
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple, NotImplementedOrRegisteredError
 import miniworldmaker
-T = TypeVar('T')
-appearance_source = Union[str, List[str], appearance.Appearance]
-
+from miniworldmaker.tools import token_inspection
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
@@ -113,9 +103,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Token.token_count += 1
         self.speed: int = 1
         self.collision_type: str = ""
-        self._layer = 0
-        self.static = static
-        self._position = position
+        self._layer : int = 0
+        self.static : bool = static
+        self._position: "board_position.BoardPosition"= position
 
     @property
     def layer(self) -> int:
@@ -127,7 +117,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.board._tokens.change_layer(self, value)
 
     @property
-    def last_position(self) -> board_position.BoardPosition:
+    def last_position(self) -> "board_position.BoardPosition":
         return self.position_manager.last_position
 
     @property
@@ -135,7 +125,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.last_direction
 
     @classmethod
-    def from_center(cls, center_position: board_position.BoardPosition):
+    def from_center(cls, center_position: "board_position.BoardPosition"):
         """
         Creates a token with center at center_position
 
@@ -867,7 +857,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Args:
             method (callable): The method which should be added to the token
         """
-        bound_method = binding.bind_method(self, method)
+        bound_method = token_inspection.TokenInspection(self).bind_method(method)
         if method.__name__ == "on_setup":
             self.on_setup()
         self.board.event_handler.register_event(method.__name__, self)
@@ -923,9 +913,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             key (list): The typed key as list (e.g. ['A', 'a']) containing both uppercase and lowercase of typed letter.
 
         Raises:
-            NotImplementedError: The error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Key down is not implemented")
+        raise NotImplementedOrRegisteredError()
 
     def on_key_pressed(self, key: list):
         """**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed 
@@ -954,12 +944,12 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             key (list): The typed key as list (e.g. ['C', 'c', 'D', 'd']) containing both uppercase and lowercase of typed letter.
 
         Raises:
-            NotImplementedError: The error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Key down is not implemented")
+        raise NotImplementedOrRegisteredError()
 
     def on_key_up(self, key):
-        raise NotImplementedError("Key down is not implemented")
+        raise NotImplementedOrRegisteredError()
 
     def on_mouse_left(self, position: tuple):
         """Method is called when left mouse button was pressed.
@@ -987,10 +977,10 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             position (tuple): Actual mouse position as tuple (x,y)
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
 
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_mouse_right(self, position: tuple):
         """on_mouse_right is called when right mouse button was pressed.
@@ -1009,9 +999,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             position (tuple): Actual mouse position as tuple (x,y)
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_mouse_motion(self, position: tuple):
         """on_mouse_motion is called when right mouse moves.
@@ -1030,9 +1020,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             position (tuple): Actual mouse position as tuple (x,y)
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_message(self, message: str):
         """Messages are used to allow objects to communicate with each other.
@@ -1060,9 +1050,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             message (str): The message as string
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_clicked_left(self, position: tuple):
         """The mouse is on top of a token and mouse was clicked.
@@ -1084,9 +1074,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             position (tuple): Actual mouse position as tuple (x,y)
 
         Raises:
-            NotImplementedError: The error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_clicked_right(self, position):
         """The mouse is on top of a token and mouse was clicked.
@@ -1108,9 +1098,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             position (tuple): Actual mouse position as tuple (x,y)
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_sensing_on_board(self):
         """*on_sensing_on_board* is called, when token is on board"
@@ -1126,10 +1116,10 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                     print("Player 3: I'm on the board:")
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
 
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_sensing_not_on_board(self):
         """*on_sensing_not_on_board* is called, when token is not on board"
@@ -1145,9 +1135,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                     print("Warning: I'm not on the board!!!")
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_sensing_borders(self, str: List(str)):
         """*on_sensing_border* is called, when token is near a border
@@ -1167,9 +1157,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                     print("Borders are here!", str(borders))
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()
 
     def on_sensing_token(self, token: "Token"):
         """*on_sensing_token* is called, when token is sensing a token on same position
@@ -1190,6 +1180,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                     print("Am i sensing player2?" + str(token == player2))
 
         Raises:
-            NotImplementedError: he error is raised when method is not overwritten or registered.
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedError("Method is not overwritten or registered")
+        raise NotImplementedOrRegisteredError()

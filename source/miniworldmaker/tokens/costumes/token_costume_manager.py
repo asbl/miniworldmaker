@@ -1,10 +1,8 @@
 from typing import Union, Type, TypeVar, List
 from miniworldmaker.appearances import appearances
-from miniworldmaker.appearances.appearance import Appearance
+from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeIsNoneError, CostumeOutOfBoundsError
-
-appearance_source = Union[str, List[str], Appearance]
 
 
 class TokenCostumeManager:
@@ -39,7 +37,7 @@ class TokenCostumeManager:
         if hasattr(self.token, "board") and self.token.board:
             self.token.board.dirty = 1
 
-    def add_costume(self, source: appearance_source = (255, 255, 0, 0)) -> costume.Costume:
+    def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = (255, 255, 0, 0)) -> costume.Costume:
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
@@ -84,7 +82,7 @@ class TokenCostumeManager:
         else:
             self.costumes.remove(-1)
 
-    def switch_costume(self, costume: Union[int, Type[Appearance]]) -> costume.Costume:
+    def switch_costume(self, costume: Union[int, "appearance.Appearance"]) -> costume.Costume:
         """Switches the costume of token
 
         Args:
@@ -134,7 +132,7 @@ class TokenCostumeManager:
     def animate(self, speed):
         self.costume.animation_speed = speed
         self.costume.animate()
-    
+
     def animate_costume(self, costume, speed):
         if costume is None:
             raise CostumeIsNoneError()

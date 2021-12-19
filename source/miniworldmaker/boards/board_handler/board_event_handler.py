@@ -1,4 +1,5 @@
-from miniworldmaker.tools import inspection_methods
+from miniworldmaker.tools import mwminspection
+from miniworldmaker.tools import method_caller
 import miniworldmaker
 from collections import defaultdict
 from typing import Any
@@ -8,7 +9,7 @@ import inspect
 
 class BoardEventHandler:
     """Processes Board Events
-    
+
       * Board Events which can be registered are stored self.events variable.
       * Board Events which are registered are stored in the dict self.registered_events
     """
@@ -70,35 +71,35 @@ class BoardEventHandler:
     def register_sensing_token_events(self, instance):
         members = dir(instance)
         for member in (member for member in members if member.startswith("on_sensing_") and member not in self.events):
-            method = inspection_methods.InspectionMethods.get_instance_method(instance, member)
+            method = mwminspection.MWMInspection(instance).get_instance_method(member)
             if method:
                 self.register_class_method("on_sensing_token", instance, method)
-                
+
     def register_events(self, events, instance):
         for event in events:
-            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
                 self.register_class_method(event, instance, method)
-        
+
     def register_event(self, event, instance):
         if event in self.events:
-            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
                 self.register_custom_method(event, instance, method)
         elif event.startswith("on_sensing_"):
-            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
                 self.registered_events["on_sensing_token"].add(method)
         elif event.startswith("on_touching_"):
-            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
-                self.board.register_touching_method(method)      
+                self.board.register_touching_method(method)
         elif event.startswith("on_separation_from_"):
-            method = inspection_methods.InspectionMethods.get_instance_method(instance, event)
+            method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
                 self.board.register_separate_method(method)
-                
-    def register_custom_method(self, event, instance, method): 
+
+    def register_custom_method(self, event, instance, method):
         """Register method for event handling. (called in register_event)
 
         Args:
@@ -108,28 +109,30 @@ class BoardEventHandler:
         """
         if method:
             self.registered_events[event].add(method)
-        
-    def register_class_method(self, event, instance, method): 
-            """Register method for event handling (called in register_events)
-             
-            Args:
-                event ([str]): The event
-                instance: The instance (e.g. board or token)
-                method ([type]): The method which should registered as handler for event.
-            """
-            overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
-            parents = inspect.getmro(instance.__class__)
-            if instance.__class__ not in [miniworldmaker.Token, miniworldmaker.Board] and method.__name__ in overwritten_methods:
+
+    def register_class_method(self, event, instance, method):
+        """Register method for event handling (called in register_events)
+
+        Args:
+            event ([str]): The event
+            instance: The instance (e.g. board or token)
+            method ([type]): The method which should registered as handler for event.
+        """
+        overwritten_methods = {name for name, method in vars(
+            instance.__class__).items() if callable(method)}
+        parents = inspect.getmro(instance.__class__)
+        if instance.__class__ not in [miniworldmaker.Token, miniworldmaker.Board] and method.__name__ in overwritten_methods:
+            self.registered_events[event].add(method)
+        else:
+            parent_overwritten_methods = set()
+            for parent in parents:
+                if parent.__name__ not in ["object", "Board", "Container", "Sprite", "DirtySprite", "Token", instance.__class__.__name__]:
+                    parent_overwritten_methods = parent_overwritten_methods.union(
+                        {name for name, method in vars(parent.__class__).items() if callable(method)})
+            parent_overwritten_methods = parent_overwritten_methods - overwritten_methods
+            if method.__name__ in parent_overwritten_methods:
                 self.registered_events[event].add(method)
-            else:
-                parent_overwritten_methods = set()
-                for parent in parents:
-                    if parent.__name__ not in ["object", "Board", "Container", "Sprite", "DirtySprite", "Token", instance.__class__.__name__]:
-                        parent_overwritten_methods = parent_overwritten_methods.union({name for name, method in vars(parent.__class__).items() if callable(method)})
-                parent_overwritten_methods = parent_overwritten_methods - overwritten_methods
-                if method.__name__ in parent_overwritten_methods:
-                    self.registered_events[event].add(method)
-        
+
     def handle_event(self, event: str, data: Any):
         """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
 
@@ -147,7 +150,7 @@ class BoardEventHandler:
             for method in self.registered_events[event].copy():
                 if type(data) in [list, str, tuple]:
                     data = [data]
-                inspection_methods.InspectionMethods.call_method(method, data, allow_none=False)
+                method_caller.call_method(method, data, allow_none=False)
         # handle global events
         if event in ["reset"]:
             self.handle_reset_event()
@@ -159,14 +162,14 @@ class BoardEventHandler:
         for event, method_set in self.registered_events.items():
             for method in method_set:
                 if method.__self__ == instance:
-                    awaiting_remove[event] = method                    
+                    awaiting_remove[event] = method
         for event, method in awaiting_remove.items():
             self.registered_events[event].remove(method)
 
     def act_all(self):
         # acting
         for method in self.registered_events["act"].copy():
-            inspection_methods.InspectionMethods.call_method(method, None, False)
+            method_caller.call_method(method, None, False)
 
     def handle_click_on_token_event(self, event, data):
         if event == "mouse_left":
@@ -177,7 +180,7 @@ class BoardEventHandler:
         for method in on_click_methods.copy():
             token = method.__self__
             if token.sensing_point(data):
-                inspection_methods.InspectionMethods.call_method(method, [data])
+                method_caller.call_method(method, [data])
 
     def handle_setup_event(self):
         if not self.board._is_setup:
