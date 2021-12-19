@@ -2,7 +2,7 @@ import inspect
 from typing import Optional, Union
 from miniworldmaker.tokens import token
 from miniworldmaker.tools.mwminspection import MWMInspection
-
+from miniworldmaker.tools import method_caller
 
 class TokenInspection(MWMInspection):
 
@@ -12,7 +12,7 @@ class TokenInspection(MWMInspection):
         method = getattr(self.instance, method.__name__)
         if issubclass(self.instance.__class__, token.Token) and not self.instance.board:
             return
-        self.instance.check_signature(method, args, allow_none)
+        method_caller.check_signature(method, args, allow_none)
         if args == None:
             method()
         else:

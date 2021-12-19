@@ -73,7 +73,7 @@ class TokenBoardSensor():
         return token_list
 
     def filter_tokens_by_classname(self, token_list : List["miniworldmaker.Token"], token_filter: str) -> List["miniworldmaker.Token"]:
-        token_type = token_inspection.TokenInspection(self.token).find_token_class_by_classname(token_filter)
+        token_type = token_class_inspection.TokenClassInspection(self.token).find_token_class_by_classname(token_filter)
         if token_type == None:
             return token_list
         if token_type:

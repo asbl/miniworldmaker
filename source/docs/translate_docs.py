@@ -1,8 +1,9 @@
 import deepl
 import os
-import ../../../deepl_key.py as deepl_key
-
-translator = deepl.Translator(os.getenv(deepl_key.KEY))
+from pathlib import Path
+import deepl_key
+print(deepl_key.KEY)
+translator = deepl.Translator(deepl_key.KEY)
 
 path = os.getcwd()
 print(path)
@@ -13,9 +14,16 @@ for root, dirs, files in os.walk("./source/objectsfirst_german/"):
         print(file)
         print(os.path.join(root, name))
         target_file = os.path.join(root, name).replace("german", "english")
-        Translate a formal document from English to German 
-        translator.translate_document_from_filepath(
-            file,
-            target_file,
-            target_lang="EN-US",
-        )
+        
+        txt_de = Path(file).read_text()
+        txt_en = translator.translate_text(txt_de, target_lang="EN-US")
+        print(txt_de)
+        output = open(target_file, 'w')
+        output.write(str(txt_en))
+        output.close()
+        #translator.translate_document_from_filepath(
+        #    file,
+        #    target_file,
+        #    target_lang="EN-US",
+        #)
+        

@@ -50,6 +50,7 @@ Links
   
   objectsfirst_german/index
   classesfirst_german/index
+  objectsfirst_english/index
 .. toctree::
   :maxdepth: 1
   :caption: Key Concepts

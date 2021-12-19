@@ -56,7 +56,6 @@ class EventManager:
                 # key-events
             elif event.type == pygame.KEYUP:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
-                #print(event, event.unicode, keys_pressed)
                 self.send_event_to_containers("key_up", keys_pressed)
                 for key in keys_pressed:
                     if key.islower() and key == pygame.key.name(event.key):

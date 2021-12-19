@@ -5,6 +5,7 @@ from inspect import isclass
 
 from miniworldmaker.tokens.token import Token
 from miniworldmaker.boards.board import Board
+from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.tools.timer import timer
 from miniworldmaker.tools.timer import loop
 
@@ -26,6 +27,5 @@ for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
             __all__.append(attribute.__name__)
 
 
-print(globals())
 __all__.append(timer.__name__)
 __all__.append(loop.__name__)
