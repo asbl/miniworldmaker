@@ -24,7 +24,7 @@ class App:
     def check_for_run_method(self):
         try:
             with open(__main__.__file__) as f:
-                if ".run()" not in f.read():
+                if ".run(" not in f.read():
                     raise NoRunError()
         except AttributeError:
             print("can't check if run() is present (This can happen if you are using jupyter notebooks. Resuming)")
