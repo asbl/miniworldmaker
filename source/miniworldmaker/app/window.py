@@ -16,6 +16,7 @@ class Window:
         self.repaint_areas = []
         self.surface: pygame.Surface = None
         self._fullscreen: bool = False
+        self._fit_desktop = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
@@ -32,37 +33,47 @@ class Window:
     @fullscreen.setter
     def fullscreen(self, value):
         self._fullscreen = value
-        self.display_update()
         self.dirty = 1
-
-    def update(self):
-        if self.dirty:
-            self.display_update()
-            self.dirty = False
-        self.reload_repaint_areas()
-        self.event_manager.handle_event_queue()
-        self.container_manager.reload_containers()
-        self.dirty = False
+        self.display_update()
+        
+    @property
+    def fit_desktop(self):
+        return self._fit_desktop
+        
+    @fit_desktop.setter
+    def fit_desktop(self, value):
+        print("set fit_desktop", value)
+        self._fit_desktop = value
+        self.dirty = 1
+        self.display_update()
 
     def display_repaint(self):
         pygame.display.update(self.repaint_areas)
-        self.repaint_areas = []
+        self.reset_repaint_areas()
 
     def display_update(self):
         if self.fullscreen:
-            self.surface = pygame.display.set_mode((self.width,self.height), pygame.FULLSCREEN )
-            self.dirty = 1
-            self.reload_repaint_areas()
+            self.surface = pygame.display.set_mode((self.width,self.height), pygame.SCALED)
+            pygame.display.toggle_fullscreen()
+            self.add_display_to_repaint_areas()
             pygame.display.flip()
+        elif self.fit_desktop:
+            infoObject = pygame.display.Info()
+            self.surface = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.SCALED)
         else:
             self.surface = pygame.display.set_mode((self.width, self.height))
+
+            
+        if self.dirty:
+            self.add_display_to_repaint_areas()
+            self.dirty = 0
         self.surface.set_alpha(None)
 
-    def reload_repaint_areas(self):
+    def reset_repaint_areas(self):
         self.repaint_areas = []
-        if self.dirty:
-            self.repaint_areas.append(pygame.Rect(0, 0, self.width, self.height))
-            self.dirty = 0
+
+    def add_display_to_repaint_areas(self):
+        self.repaint_areas.append(pygame.Rect(0, 0, self.width, self.height))
 
     def recalculate_dimensions(self):
         self.container_manager.update_containers()

@@ -66,7 +66,6 @@ class Player(Token):
             self.board.torch.remove()
             self.board.console.newline("Du hebst die Fackel auf.")
         self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
-        print(self.board.event_handler.registered_events)
 
     def on_sensing_wall(self, wall):
         self.move_back()
@@ -130,4 +129,4 @@ class Door(Token):
 
 
 my_grid = MyBoard()
-my_grid.run()
+my_grid.run(fit_desktop = True)
