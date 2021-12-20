@@ -586,7 +586,7 @@ class Board(container.Container):
     def repaint(self):
         self.view_handler.repaint()
 
-    def run(self, fullscreen: bool = False, event=None, data=None):
+    def run(self, fullscreen: bool = False, fit_desktop: bool = False, event=None, data=None):
         """
         The method show() should always called at the end of your program.
         It starts the mainloop.
@@ -601,7 +601,7 @@ class Board(container.Container):
             self.app.event_manager.send_event_to_containers("setup", self)
         if event:
             self.app.event_manager.send_event_to_containers(event, data)
-        self.app.run(self.image, fullscreen=fullscreen)
+        self.app.run(self.image, fullscreen=fullscreen, fit_desktop = fit_desktop)
 
     def switch_background(self, background: Union[int, Type[appearance.Appearance]]) -> background.Background:
         """Switches the background of costume

@@ -57,9 +57,9 @@ class ContainerManager():
         if self.board:
             for token in self.board._tokens:
                 token.dirty = 1
-        self.updatecontainers()
-        self.app.window.update()
-
+        self.update_containers()
+        self.app.window.dirty = 1
+        
     def update_containers(self):
         top_left = 0
         for ct in self.containers_right:

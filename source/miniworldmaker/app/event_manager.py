@@ -66,6 +66,9 @@ class EventManager:
                 for key in keys_pressed:
                     if key.islower() and key == pygame.key.name(event.key):
                         self.send_event_to_containers("key_down_" + key, None)  
+            if event.type == pygame.VIDEORESIZE:
+                self.app.window.add_display_to_repaint_areas()
+                
         return False
 
     def send_mouse_down(self, event):

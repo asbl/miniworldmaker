@@ -50,7 +50,7 @@ class App:
         App.window: "window.Window" = self.window
         self._exit_code: int = 0
 
-    def run(self, image, fullscreen: bool = False):
+    def run(self, image, fullscreen: bool = False, fit_desktop = False):
         """
         runs the main_loop
 
@@ -62,6 +62,7 @@ class App:
         """
         self.image = image
         self.window.fullscreen = fullscreen
+        self.window.fit_desktop = fit_desktop
         # Start the main-loop
         self._prepare_mainloop()
         self.reload_window()
@@ -99,7 +100,7 @@ class App:
         self.event_manager.process_pygame_events()
         if self.window.dirty:
             self.window.recalculate_dimensions()
-            self.window.reload_repaint_areas()
+            self.window.add_display_to_repaint_areas()
             self.window.display_update()
         if not self._quit:
             self.event_manager.handle_event_queue()
