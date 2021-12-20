@@ -70,11 +70,13 @@ class BoardEventHandler:
 
     def register_sensing_token_events(self, instance):
         members = dir(instance)
-        for member in (member for member in members if member.startswith("on_sensing_") and member not in self.events):
+        for member in (member for member in members if (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events):
             method = mwminspection.MWMInspection(instance).get_instance_method(member)
-            if method:
+            if method and member.startswith("on_sensing_"):
                 self.register_class_method("on_sensing_token", instance, method)
-
+            if method and member.startswith("on_not_sensing_"):
+                self.register_class_method("on_not_sensing_token", instance, method)
+            
     def register_events(self, events, instance):
         for event in events:
             method = mwminspection.MWMInspection(instance).get_instance_method(event)

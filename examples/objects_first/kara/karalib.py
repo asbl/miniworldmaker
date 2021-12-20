@@ -14,7 +14,8 @@ class KaraBoard(miniworldmaker.TiledBoard):
                     
     def on_setup(self):
         self.speed = 30
-        self.layer = 5
+        self.storages = []
+        self.boxes = []
         lines, max_length = self.read_file("level01.lvl")
         # create board
         player = '@'
@@ -39,6 +40,17 @@ class KaraBoard(miniworldmaker.TiledBoard):
                 if char == player_on_storage:
                     Storage((row_number, column_number))
                     self.kara = Kara((row_number, column_number))
+                    
+    def act(self):
+        all_boxes_on_storage = True
+        for box in self.boxes:
+            if not box.on_storage:
+                all_boxes_on_storage = False
+        for box in self.boxes:
+            print(box, box.on_storage)
+        if all_boxes_on_storage:
+            print("All boxes are on storage")
+            
     
 class Kara(miniworldmaker.Token):
     def on_setup(self):
@@ -52,46 +64,59 @@ class Kara(miniworldmaker.Token):
                 if isinstance(token, Box):
                     box = token
                     getattr(box, method)()
-                    tokens = box.sensing_tokens() 
+                    tokens = box.sensing_tokens()
                     for next_token in tokens:
                         obstacle = next_token
                         if isinstance(obstacle, Wall) or (isinstance(obstacle, Box) and obstacle != box):
                             self.move_back()
                             box.move_back()
                             return 
-        
+    
+    def check_for_wall(self):
+         tokens = self.sensing_tokens()
+         for next_token in tokens:
+             if isinstance(next_token, Wall):
+                 self.move_back()
+                 print("Can't move - There is a wall!")
+    
     def move_right(self):
         super().move_right(1)
         self.push("move_right")
 
-    def move_top(self):
-        super().move_right(1)
-        self.push("move_top")
+    def move_up(self):
+        super().move_up(1)
+        self.push("move_up")
 
     def move_left(self):
-        super().move_right(1)
+        super().move_left(1)
         self.push("move_left")
 
     def move_down(self):
         super().move_down(1)
-        self.push("move_right")
+        self.push("move_down")
         
         
 class Storage(miniworldmaker.Token):
     def on_setup(self):
-        self.add_costume("images/storage.png")
+        self.add_costume("images/leaf.png")
+        self.board.storages.append(self)
+        self.filled = False
+        
 
 class Box(miniworldmaker.Token):
     def on_setup(self):
         self.add_costume("images/mushroom.png")
+        self.board.boxes.append(self)
         self.costume.is_rotatable = False
         self.layer = 5
-              
+        self.on_storage = False
+    
+    def on_sensing_storage(self, storage):
+        self.on_storage = True
+        
+    def on_not_sensing_storage(self):
+        self.on_storage = False
+
 class Wall(miniworldmaker.Token):
     def on_setup(self):
         self.add_costume("images/tree.png")
-
-class Storage(miniworldmaker.Token):
-    def on_setup(self):
-        self.add_costume("images/leaf.png")
-        self.layer = 3
