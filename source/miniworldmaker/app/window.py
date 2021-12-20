@@ -15,7 +15,7 @@ class Window:
         self.dirty: int = 1
         self.repaint_areas = []
         self.surface: pygame.Surface = None
-        self.fullscreen: bool = False
+        self._fullscreen: bool = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
@@ -24,6 +24,16 @@ class Window:
             pygame.display.set_icon(surface)
         except Exception as e:
             print("Error on creating window: " + str(e))
+    
+    @property
+    def fullscreen(self):
+        return self._fullscreen
+        
+    @fullscreen.setter
+    def fullscreen(self, value):
+        self._fullscreen = value
+        self.display_update()
+        self.dirty = 1
 
     def update(self):
         if self.dirty:
@@ -40,7 +50,10 @@ class Window:
 
     def display_update(self):
         if self.fullscreen:
-            self.surface = pygame.display.set_mode((self.width, self.height, ), pygame.FULLSCREEN)
+            self.surface = pygame.display.set_mode((self.width,self.height), pygame.FULLSCREEN )
+            self.dirty = 1
+            self.reload_repaint_areas()
+            pygame.display.flip()
         else:
             self.surface = pygame.display.set_mode((self.width, self.height))
         self.surface.set_alpha(None)
