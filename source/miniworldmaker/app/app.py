@@ -50,7 +50,7 @@ class App:
         App.window: "window.Window" = self.window
         self._exit_code: int = 0
 
-    def run(self, image, fullscreen: bool = False, fit_desktop = False):
+    def run(self, image, fullscreen: bool = False, fit_desktop : bool = False, replit : bool = False):
         """
         runs the main_loop
 
@@ -63,6 +63,7 @@ class App:
         self.image = image
         self.window.fullscreen = fullscreen
         self.window.fit_desktop = fit_desktop
+        self.window.replit = replit
         # Start the main-loop
         self._prepare_mainloop()
         self.reload_window()
