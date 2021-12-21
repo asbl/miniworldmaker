@@ -26,8 +26,8 @@ class MyBoard(TiledBoard):
         self.door = Door((6, 2))
         self.player = Player((8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
-        self.toolbar = self.add_container(Toolbar(), "right")
-        self.console = self.add_container(Console(), "bottom")
+        self.toolbar = self.add_container(Toolbar(), "right", size = 200)
+        self.console = self.add_container(Console(), "bottom", size = 200)
         print("setup finished")
 
     def on_message(self, data):
@@ -129,4 +129,4 @@ class Door(Token):
 
 
 my_grid = MyBoard()
-my_grid.run(fit_desktop = True)
+my_grid.run(replit = True)

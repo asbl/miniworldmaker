@@ -17,6 +17,7 @@ class Window:
         self.surface: pygame.Surface = None
         self._fullscreen: bool = False
         self._fit_desktop = False
+        self._replit = False
         pygame.display.set_caption(title)
         my_path = os.path.abspath(os.path.dirname(__file__))
         try:
@@ -42,8 +43,17 @@ class Window:
         
     @fit_desktop.setter
     def fit_desktop(self, value):
-        print("set fit_desktop", value)
         self._fit_desktop = value
+        self.dirty = 1
+        self.display_update()
+
+    @property
+    def replit(self):
+        return self._replit
+        
+    @replit.setter
+    def replit(self, value):
+        self._replit = value
         self.dirty = 1
         self.display_update()
 
@@ -60,6 +70,8 @@ class Window:
         elif self.fit_desktop:
             infoObject = pygame.display.Info()
             self.surface = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.SCALED)
+        elif self.replit:
+            self.surface = pygame.display.set_mode((800, 600), pygame.SCALED)
         else:
             self.surface = pygame.display.set_mode((self.width, self.height))
 
