@@ -11,7 +11,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
     def __init__(self, token, board):
         super().__init__(token, board)
-        if hasattr(self, "is_static") and self.is_static is True:
+        if hasattr(self, "static") and self.static is True:
             self.board.static_tokens_dict[token.position].append(token)
         else:
             self.board.dynamic_tokens.append(token)

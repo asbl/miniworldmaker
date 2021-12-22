@@ -58,9 +58,7 @@ class Player(Token):
         self.move_right()
 
     def on_sensing_torch(self, torch):
-        message = "Du findest eine Fackel. Möchtest du sie aufheben?"
-        choices = ["Ja", "Nein"]
-        reply = easygui.buttonbox(message, "RPG", choices)
+        reply = self.ask.choices("Du findest eine Fackel. Möchtest du sie aufheben?",["Ja", "Nein"])
         if reply == "Ja":
             self.inventory.append("Torch")
             self.board.torch.remove()
@@ -129,4 +127,4 @@ class Door(Token):
 
 
 my_grid = MyBoard()
-my_grid.run(replit = True)
+my_grid.run()
