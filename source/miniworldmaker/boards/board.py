@@ -10,6 +10,7 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.boards.board_handler import board_event_handler
 from miniworldmaker.boards.board_handler import board_collision_handler
 from miniworldmaker.boards.board_handler import board_view_handler
+from miniworldmaker.dialogs import ask
 from miniworldmaker.boards.board_handler import board_position_handler
 from miniworldmaker.boards.token_connectors import token_connector
 from miniworldmaker.containers import container
@@ -132,6 +133,7 @@ class Board(container.Container):
             self)
         self.position_handler: "board_position_handler.BoardPositionHandler" = board_position_handler.BoardPositionHandler(
             self)
+        self.ask: "ask.Ask" = ask.Ask(self)
         pygame.init()
         self.is_running: bool = True
         self._is_setup: bool = False
@@ -140,6 +142,7 @@ class Board(container.Container):
         self._animated: bool = False
         self._orientation: int = 0
         self.frame: int = 0
+        self.title = "miniworldmaker"
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self.clock: pygame.time.Clock = pygame.time.Clock()
         # Init graphics

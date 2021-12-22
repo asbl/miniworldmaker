@@ -6,8 +6,10 @@ from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple, NotImplementedOrRegisteredError
-import miniworldmaker
 from miniworldmaker.tools import token_inspection
+from miniworldmaker.dialogs import ask
+import miniworldmaker
+
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
@@ -106,6 +108,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self._layer : int = 0
         self.static : bool = static
         self._position: "board_position.BoardPosition"= position
+        self.ask: "ask.Ask" = ask.Ask(self.board)
 
     @property
     def layer(self) -> int:

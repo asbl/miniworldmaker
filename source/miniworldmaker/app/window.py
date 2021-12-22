@@ -69,7 +69,7 @@ class Window:
             pygame.display.flip()
         elif self.fit_desktop:
             infoObject = pygame.display.Info()
-            self.surface = pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.SCALED)
+            self.surface = pygame.display.set_mode((0, 0))
         elif self.replit:
             self.surface = pygame.display.set_mode((800, 600), pygame.SCALED)
         else:
