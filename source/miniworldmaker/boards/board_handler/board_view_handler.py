@@ -12,6 +12,7 @@ class BoardViewHandler:
         self.surface: pygame.Surface = pygame.Surface((1, 1))
         self.has_background = False
         self.backgrounds: appearances.Backgrounds = appearances.Backgrounds(self.background)
+        self.reload_costumes_queue = []
 
     def init_background(self, background_image):
         if background_image is not None:
@@ -88,4 +89,8 @@ class BoardViewHandler:
         return pygame.Surface((1, 1))
 
     def update_all_costumes(self):
-        [token.costume.update() for token in self.board.tokens]
+        [token.costume.update() for token in self.reload_costumes_queue]
+        self.reload_costumes_queue = []
+        if hasattr(self.board, "dynamic_tokens"):
+            [token.costume.update() for token in self.board.dynamic_tokens]
+        

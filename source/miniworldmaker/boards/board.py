@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Union, Type, List
 import pygame
 import inspect
+from collections import defaultdict
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position_factory
@@ -153,10 +154,11 @@ class Board(container.Container):
         self.view_handler.update_background()
         self.collision_handler: "board_collision_handler.BoardCollisionHandler" = board_collision_handler.BoardCollisionHandler(
             self)
-        self.dirty: int = 1
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.cache = dict()
+        self.dynamic_tokens: set = set()  # Set with all dynamic actors
+        self.static_tokens_dict: defaultdict = defaultdict(list)
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return token_connector.TokenConnector(self, token)

@@ -11,12 +11,8 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
     def __init__(self, token, board):
         super().__init__(token, board)
-        if hasattr(self, "static") and self.static is True:
-            self.board.static_tokens_dict[token.position].append(token)
-        else:
-            self.board.dynamic_tokens.append(token)
         self.token.fps = token.board.default_token_speed
-
+        
     def get_destination(self, start, direction, distance) -> board_position.BoardPosition:
         x = start[0] + round(math.sin(math.radians(direction)) * distance)
         y = start[1] - round(math.cos(math.radians(direction)) * distance)
@@ -101,12 +97,3 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
     def remove(self):
         self.remove_from_board()
-
-    def update_token(self, attribute, value):
-        if attribute == "is_static" and value is True:
-            self.board.static_tokens_dict[(self.token.x(), self.token.y())].append(token)
-            if token in self.board.dynamic_tokens_dict:
-                self.board.dynamic_tokens_dict.pop(token)
-        else:
-            self.board.dynamic_tokens.append(token)
-

@@ -22,14 +22,9 @@ for pipe in pipes:
     
     @pipe.register
     def act(self):
-        pass
-        # print(pipe.physics._body.position)
-        
-#self.move_in_direction("left")
-#self.direction = 0
-#        if self.position.x < 75 and self.passed is False:
-#            self.passed = True
-#            score.inc()
+        if self.position.x < 75 and self.passed is False:
+            self.passed = True
+            score.inc()
             
     @pipe.register
     def on_sensing_left_border(self):
@@ -54,8 +49,6 @@ bird.physics.simulation = "simulated"
 bird.is_flipped = True
 bird.physics.size = (0.8, 0.8)
 bird.physics.shape_type = "circle"
-#bird.costume.orientation = 90
-#bird.flip_x()
 bird.is_rotatable = False
 
 @bird.register
@@ -69,13 +62,12 @@ def on_sensing_borders(self, borders):
 
 @bird.register
 def on_touching_token(self, other, info):
-    print("I'm touching something")
-    #end=mwm.TextToken()
-    #end.set_text("Game over!")
-    #end.size = (400,400)
-    #end.position = (400,200)
-    #board.game_over = True
-    #board.stop()
+    end=mwm.TextToken()
+    end.set_text("Game over!")
+    end.size = (400,400)
+    end.position = (400,200)
+    board.game_over = True
+    board.stop()
 
 @bird.register
 def on_key_pressed_space(self):
@@ -86,7 +78,6 @@ def on_key_pressed_space(self):
 @bird.register
 def act(self):
     pass
-    #print(bird.physics._body.position)
 
 board.run()
 

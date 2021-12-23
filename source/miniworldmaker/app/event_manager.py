@@ -1,7 +1,5 @@
 import pygame
 from collections import deque
-from inspect import getmembers
-from pprint import pprint
 from miniworldmaker.tools import keys
 from miniworldmaker.app import app
 import miniworldmaker
@@ -68,7 +66,6 @@ class EventManager:
                         self.send_event_to_containers("key_down_" + key, None)  
             if event.type == pygame.VIDEORESIZE:
                 self.app.window.add_display_to_repaint_areas()
-                
         return False
 
     def send_mouse_down(self, event):

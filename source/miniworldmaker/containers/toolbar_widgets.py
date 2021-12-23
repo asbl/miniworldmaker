@@ -6,7 +6,7 @@ import pygame
 
 class ToolbarWidget():
 
-    def __init__(self):
+    def __init__(self, name):
         self.myfont = pygame.font.SysFont("monospace", 15)
         self.background_color = (200, 220, 220)
         self.event = "no event"
@@ -24,6 +24,7 @@ class ToolbarWidget():
         self.surface = None
         self.timed = False
         self._dirty = 1
+        self.name = name
 
     def get_event(self, event, data):
         self.parent.board.app.event_manager.send_event_to_containers(self.event, 0)
@@ -82,7 +83,7 @@ class ToolbarWidget():
 class ToolbarButton(ToolbarWidget):
 
     def __init__(self, text, img_path=None):
-        super().__init__()
+        super().__init__(text)
         self.set_text(text)
         self.event = "button_pressed"
         if img_path != None:
@@ -96,7 +97,7 @@ class ToolbarButton(ToolbarWidget):
 class ToolbarLabel(ToolbarWidget):
 
     def __init__(self, text, img_path=None):
-        super().__init__()
+        super().__init__(text)
         if img_path != None:
             self.set_image(img_path)
         self.set_text(text)
@@ -108,7 +109,7 @@ class ToolbarLabel(ToolbarWidget):
 class SaveButton(ToolbarWidget):
 
     def __init__(self, board, text, filename: str = None, img_path: str = None, ):
-        super().__init__()
+        super().__init__(text)
         if img_path != None:
             self.set_image(img_path)
         self.set_text(text)
@@ -135,7 +136,7 @@ class SaveButton(ToolbarWidget):
 class LoadButton(ToolbarWidget):
 
     def __init__(self, board, text, filename, img_path=None, ):
-        super().__init__()
+        super().__init__(text)
         if img_path != None:
             self.set_image(img_path)
         self.set_text(text)
@@ -151,12 +152,10 @@ class LoadButton(ToolbarWidget):
             new_board = self.app.board.load_board_from_db(self.file)
 
 
-
-
 class ClearButton(ToolbarWidget):
 
     def __init__(self, board, text,  img_path=None, ):
-        super().__init__()
+        super().__init__(text)
         self.set_text(text)
         self.app = board.app
 
@@ -168,7 +167,7 @@ class ClearButton(ToolbarWidget):
 class CounterLabel(ToolbarWidget):
 
     def __init__(self, text, img_path=None):
-        super().__init__()
+        super().__init__(text)
         if img_path != None:
             self.set_image(img_path)
         self.value = 0
@@ -184,7 +183,7 @@ class CounterLabel(ToolbarWidget):
 class TimeLabel(ToolbarWidget):
 
     def __init__(self, board, text, img_path=None):
-        super().__init__()
+        super().__init__(text)
         if img_path != None:
             self.set_image(img_path)
         self.board = board
@@ -202,7 +201,7 @@ class TimeLabel(ToolbarWidget):
 class FPSLabel(ToolbarWidget):
 
     def __init__(self, board, text, img_path=None):
-        super().__init__()
+        super().__init__(text)
         if img_path != None:
             self.set_image(img_path)
         self.board = board

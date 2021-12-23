@@ -46,8 +46,6 @@ class KaraBoard(miniworldmaker.TiledBoard):
         for box in self.boxes:
             if not box.on_storage:
                 all_boxes_on_storage = False
-        for box in self.boxes:
-            print(box, box.on_storage)
         if all_boxes_on_storage:
             print("All boxes are on storage")
             

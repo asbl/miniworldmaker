@@ -92,7 +92,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     class_image: str = ""
 
     def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None,
-                 image: Optional[str] = None, static=False):
+                 image: Optional[str] = None):
         self._managers: list = list()
         self.token_id: int = Token.token_count + 1
         self.costume_manager: miniworldmaker.TokenCostumeManager = None
@@ -105,9 +105,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Token.token_count += 1
         self.speed: int = 1
         self.collision_type: str = ""
-        self._layer : int = 0
-        self.static : bool = static
-        self._position: "board_position.BoardPosition"= position
+        self._layer: int = 0
+        self.static: bool = False
+        self._position: "board_position.BoardPosition" = position
         self.ask: "ask.Ask" = ask.Ask(self.board)
 
     @property
@@ -184,7 +184,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.flip_x()
 
     def __str__(self):
-        if self.board:
+        if self.board and hasattr(self.board, "position_manager"):
             return "{0}-Object, ID: {1} at pos {2} with size {3}".format(self.class_name, self.token_id, self.position,
                                                                          self.size)
         else:
@@ -454,7 +454,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.board_sensor.point_towards_position(destination)
 
     def point_towards_token(self, other: "Token") -> int:
-        """
+        """def s
         Token points towards another token.
 
         Args:
@@ -1186,3 +1186,19 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
         raise NotImplementedOrRegisteredError()
+
+    @property
+    def static(self):
+        return self._static
+
+    @static.setter
+    def static(self, value):
+        self._static = value
+        if self._static:
+            _token_connector = self.board.get_token_connector(self)
+            _token_connector.add_static_token()
+            _token_connector.remove_dynamic_token()
+        else:
+            _token_connector = self.board.get_token_connector(self)
+            _token_connector.add_dynamic_token()
+            _token_connector.remove_static_token()

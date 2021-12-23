@@ -55,5 +55,5 @@ token8.size = (40,40)
 token8.center=(200,0)
 
 
-board.run(fullscreen = True)
+board.run()
 

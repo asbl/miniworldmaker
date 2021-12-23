@@ -1,11 +1,10 @@
-import easygui
-from miniworldmaker import *
+import miniworldmaker
 
-class MyBoard(TiledBoard):
+class MyBoard(miniworldmaker.TiledBoard):
 
     def on_setup(self):
-        self.columns = 30
-        self.rows = 20
+        self.columns = 24
+        self.rows = 14
         self.tile_size = 20
         self.add_background((255,255,255,0))
         for i in range(self.rows):
@@ -22,13 +21,12 @@ class MyBoard(TiledBoard):
         Wall((6, 1))
         Wall((6, 3))
         self.torch = Torch((10, 4))
-        self.fireplace = Fireplace((10, 14))
+        self.fireplace = Fireplace((10, 12))
         self.door = Door((6, 2))
         self.player = Player((8, 2))
         self.play_music("rpgsounds/bensound-betterdays.mp3")
-        self.toolbar = self.add_container(Toolbar(), "right", size = 200)
-        self.console = self.add_container(Console(), "bottom", size = 200)
-        print("setup finished")
+        self.toolbar = self.add_container(miniworldmaker.Toolbar(), "right", size = 200)
+        self.console = self.add_container(miniworldmaker.Console(), "bottom", size = 100)
 
     def on_message(self, data):
         if data == "Fackel":
@@ -36,9 +34,10 @@ class MyBoard(TiledBoard):
             if fireplace:
                 self.console.newline("Du zündest die Feuerstelle an.")
                 self.fireplace.burn()
+                self.toolbar.remove_widget("Fackel")
 
 
-class Player(Token):
+class Player(miniworldmaker.Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/knight.png")
@@ -63,42 +62,42 @@ class Player(Token):
             self.inventory.append("Torch")
             self.board.torch.remove()
             self.board.console.newline("Du hebst die Fackel auf.")
-        self.board.toolbar.add_widget(ToolbarButton("Fackel", "rpgimages/torch.png"))
+        self.board.toolbar.add_widget(miniworldmaker.ToolbarButton("Fackel", "rpgimages/torch.png"))
 
     def on_sensing_wall(self, wall):
         self.move_back()
 
     def on_sensing_door(self, door):
         if door.closed:
-            self.move_back()
+            self.move_back()           
             message = "Die Tür ist geschlossen... möchtest du sie öffnen"
-            choices = ["Ja", "Nein"]
-            reply = easygui.buttonbox(message, "RPG", choices)
+            reply = self.ask.choices(message, ["Ja", "Nein"])
             if reply == "Ja":
                 self.board.door.open()
                 self.board.console.newline("Du hast das Tor geöffnet.")
+        else:
+            self.board.console.newline("Du gehst durch das Tor...")
 
-
-class Wall(Token):
+class Wall(miniworldmaker.Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/wall.png")
         self.static = True
 
 
-class Grass(Token):
+class Grass(miniworldmaker.Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/grass.png")
         self.static = True
 
-class Torch(Token):
+class Torch(miniworldmaker.Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/torch.png")
 
 
-class Fireplace(Token):
+class Fireplace(miniworldmaker.Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/fireplace_0.png")
@@ -112,7 +111,7 @@ class Fireplace(Token):
             self.costume.is_animated = True
 
 
-class Door(Token):
+class Door(miniworldmaker.Token):
 
     def on_setup(self):
         self.add_costume("rpgimages/door_closed.png")
@@ -126,5 +125,5 @@ class Door(Token):
             self.closed = False
 
 
-my_grid = MyBoard()
-my_grid.run()
+myboard = MyBoard()
+myboard.run()

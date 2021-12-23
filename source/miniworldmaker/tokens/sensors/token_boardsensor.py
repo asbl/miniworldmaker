@@ -98,3 +98,4 @@ class TokenBoardSensor():
 
     def sensing_tokens(self, token_filter=None, distance: int = 0) -> Union["token.Token", None]:
         raise NotImplementedOrRegisteredError()
+

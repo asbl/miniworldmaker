@@ -19,6 +19,7 @@ class MyBoard(mwm.PhysicsBoard):
         self.score = mwm.NumberToken(position=(10, 10))
         self.score.size = (40, 40)
         self.score.physics.simulation = None
+        self.debug = True
         self.stop()
 
 
@@ -41,7 +42,7 @@ class Pipe(mwm.Token):
             self.board.score.inc()
 
     def on_sensing_left_border(self):
-        self.move_right(random.randint(750, 800))
+        self.move_to((random.randint(750, 800), self.center_y))
         #self.move_right(800)
         self.passed = False
 
@@ -58,7 +59,7 @@ class Bird(mwm.Token):
         self.physics.shape_type = "circle"
 
     def on_sensing_borders(self, borders):
-        if "bottom" in borders or "top" in borders:
+        if "bottom" in borders or "left" in borders:
             self.board.is_running = False
             self.board.reset()
 
