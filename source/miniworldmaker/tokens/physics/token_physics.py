@@ -46,11 +46,10 @@ class TokenPhysics:
         self.board = board
         self.token: token.Token = token
         self.simulation: str = "simulated"
-        self._mass: float = 1
         self._gravity: bool = False
         self._stable: bool = False
         self._can_move: bool = True
-        self.density: float = 10
+        self._density: float = 10
         self._friction: float = 10
         self._velocity_x: float = 0
         self._velocity_y: float = 0
@@ -101,9 +100,6 @@ class TokenPhysics:
                                   (0, 0),
                                   )
         elif self.shape_type.lower() == "line":
-                # pymunk 5.6 values
-                #shift_x = self.token.size[0] / 2 + self.token.position[0]
-                #shift_y = - (self.token.board.size[1] - self.token.size[1] / 2 - self.token.position[1])
                 shift_x = self.token.size[0] / 2 + self.token.position[0]
                 shift_y = self.token.size[1] / 2 + self.token.position[1]
                 start = pymunk.pygame_util.from_pygame(
@@ -255,18 +251,14 @@ class TokenPhysics:
         self._elasticity = value
         self.dirty = 1
         self.reload()
-
+        
     @property
-    def mass(self):
-        return self._mass
+    def density(self):
+        return self._density
 
-    @mass.setter
-    def mass(self, value: Union[float, str]):
-        # mass
-        if value != "inf":
-            self._mass = value
-        else:
-            self._mass = float("inf")
+    @density.setter
+    def density(self, value: float):
+        self._density = value
         self.dirty = 1
         self.reload()
 
