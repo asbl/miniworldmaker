@@ -1,4 +1,5 @@
 from math import radians, degrees
+from typing import Union
 from miniworldmaker.tokens.positions import token_pixel_position_manager as pixel_position_manager
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
@@ -35,8 +36,8 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
 
     def move_to(self, position: board_position.BoardPosition):
         self.center = position
-        if hasattr(self.token, "physics"):
-            self.token.physics.reload()
+        #if hasattr(self.token, "physics"):
+        #    self.token.physics.reload()     
 
     def get_direction(self):
             return self._direction

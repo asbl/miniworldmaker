@@ -90,7 +90,6 @@ class TokenPositionManager:
         return board_position_factory.BoardPositionFactory(self.token.board).create(self._position)
 
     def set_position(self, value):
-        self.token.dirty = 1
         self.last_position = self.position
         self.last_direction = self.direction
         self._position = value
@@ -169,7 +168,7 @@ class TokenPositionManager:
 
     def move_in_direction(self, direction: Union[int, str], distance=1):
         direction = self._value_to_direction(direction)
-        self.direction = direction
+        self.set_direction(direction)
         self.move(distance)
         return self
 

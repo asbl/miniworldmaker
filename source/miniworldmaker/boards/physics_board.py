@@ -80,7 +80,6 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         """
         token_class_inspect = token_class_inspection.TokenClassInspection(self)
         all_token_classes = token_class_inspect.get_all_token_classes()
-        print("i will register...", method, other_cls, all_token_classes)
         if other_cls not in all_token_classes:
             return False
         else:
@@ -91,7 +90,6 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
                 # are also registered
                 self._pymunk_register_collision_handler(
                     method.__self__, other_subcls, event, method)
-                print("Registered...", method)
                 return True
 
     def register_touching_method(self, method):

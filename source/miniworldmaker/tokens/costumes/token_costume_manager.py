@@ -11,8 +11,8 @@ class TokenCostumeManager:
         self._rect = None
         self.costume = None
         self.costumes = appearances.Costumes(self.costume)
-        self._dirty = 1
         self.has_costume = False
+        self._dirty = 1
         if image is not None:
             self.add_costume(image)
             self.has_costume = True
@@ -35,7 +35,9 @@ class TokenCostumeManager:
     def dirty(self, value):
         self._dirty = value
         if hasattr(self.token, "board") and self.token.board:
-            self.token.board.dirty = 1
+            self.costume.dirty = 1
+            if self._dirty:
+                self.token.board.view_handler.reload_costumes_queue.append(self.token)
 
     def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = (255, 255, 0, 0)) -> costume.Costume:
         """
@@ -115,7 +117,7 @@ class TokenCostumeManager:
             index = 0
 
     def rotate_costume(self):
-        self.dirty = 1
+        self.costume.dirty = 1
         if self.costume:
             self.costume.call_action("rotate")
         if self.token.board:
