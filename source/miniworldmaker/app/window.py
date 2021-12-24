@@ -14,7 +14,7 @@ class Window:
         self.default_size: int = 200
         self.dirty: int = 1
         self.repaint_areas = []
-        self.surface: pygame.Surface = None
+        self._surface: pygame.Surface = None
         self._fullscreen: bool = False
         self._fit_desktop = False
         self._replit = False
@@ -26,58 +26,67 @@ class Window:
             pygame.display.set_icon(surface)
         except Exception as e:
             print("Error on creating window: " + str(e))
-    
+
     @property
     def fullscreen(self):
         return self._fullscreen
-        
+
     @fullscreen.setter
     def fullscreen(self, value):
         self._fullscreen = value
         self.dirty = 1
-        self.display_update()
-        
+        # self.display_update()
+
     @property
     def fit_desktop(self):
         return self._fit_desktop
-        
+
     @fit_desktop.setter
     def fit_desktop(self, value):
         self._fit_desktop = value
         self.dirty = 1
-        self.display_update()
+        # self.display_update()
 
     @property
     def replit(self):
         return self._replit
-        
+
     @replit.setter
     def replit(self, value):
         self._replit = value
         self.dirty = 1
-        self.display_update()
+        # self.display_update()
 
     def display_repaint(self):
         pygame.display.update(self.repaint_areas)
         self.reset_repaint_areas()
 
-    def display_update(self):
+    @property
+    def surface(self):
+        if self.dirty or self._surface == None:
+            self.update_surface()
+        return self._surface
+
+    def update_surface(self):
         if self.fullscreen:
-            self.surface = pygame.display.set_mode((self.width,self.height), pygame.SCALED)
-            pygame.display.toggle_fullscreen()
-            self.add_display_to_repaint_areas()
-            pygame.display.flip()
+            self._surface = pygame.display.set_mode((self.width, self.height), pygame.SCALED)
         elif self.fit_desktop:
             infoObject = pygame.display.Info()
-            self.surface = pygame.display.set_mode((0, 0))
+            self._surface = pygame.display.set_mode((0, 0))
         elif self.replit:
-            self.surface = pygame.display.set_mode((800, 600), pygame.SCALED)
+            self._surface = pygame.display.set_mode((800, 600), pygame.SCALED)
         else:
-            self.surface = pygame.display.set_mode((self.width, self.height))
+            self._surface = pygame.display.set_mode((self.width, self.height))
+        self._surface.set_alpha(None)
+
+    def display_update(self):
         if self.dirty:
+            self.update_surface()
+            if self.fullscreen:
+                pygame.display.toggle_fullscreen()
             self.add_display_to_repaint_areas()
-            self.dirty = 0
-        self.surface.set_alpha(None)
+            pygame.display.flip()
+        self.dirty = 0
 
     def reset_repaint_areas(self):
         self.repaint_areas = []

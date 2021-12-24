@@ -32,4 +32,4 @@ Links
 
   * [Codeberg](https://codeberg.org/a_siebel/miniworldmaker)
 
-  * [Examples](https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples)
+  * [Examples](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples)

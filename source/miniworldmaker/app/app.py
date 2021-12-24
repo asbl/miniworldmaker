@@ -66,12 +66,14 @@ class App:
         self.window.replit = replit
         # Start the main-loop
         self._prepare_mainloop()
-        self.reload_window()
         if not self._mainloop_started:
             self.start_mainloop()
 
     def _prepare_mainloop(self):
+        self.window.recalculate_dimensions()
+        self.window.display_update()
         self._setup_images()
+        
 
     def _setup_images(self):
         from pathlib import Path
@@ -90,9 +92,7 @@ class App:
         pygame.display.quit()
         sys.exit(self._exit_code)
 
-    def reload_window(self):
-        self.window.recalculate_dimensions()
-        self.window.dirty = 1
+
 
     def _update(self):
         """
