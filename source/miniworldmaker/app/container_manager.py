@@ -35,7 +35,7 @@ class ContainerManager():
             size = container.default_size
         container._add_to_window(self.app, dock, size)
         self.app.window.recalculate_dimensions()
-        self.app.window.display_update()
+        self.app.window.update_surface()
         self.app.window.dirty = 1
         for ct in self.containers:
             ct.dirty = 1
