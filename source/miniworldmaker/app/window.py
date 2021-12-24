@@ -74,8 +74,6 @@ class Window:
             self.surface = pygame.display.set_mode((800, 600), pygame.SCALED)
         else:
             self.surface = pygame.display.set_mode((self.width, self.height))
-
-            
         if self.dirty:
             self.add_display_to_repaint_areas()
             self.dirty = 0

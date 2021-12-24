@@ -1,14 +1,14 @@
 Kollisionen und Sensoren II
 ****************************
 
-Ein typischer Anwendungsfall ist es herauszufinden, welche Art von **Token** berührt wurde. 
+Ein typischer Anwendungsfall ist es herauszufinden, *welche Art* von **Token** berührt wurde. 
 
 Es gibt für dieses Problem mehrere Lösungen:
 
 Attribut token_type
 ===================
 
-Du kannst all deinen Objekten ein Objekt ein Attribut `token_type` hinzufügen:
+Du kannst all deinen Objekten ein Objekt ein Attribut ``token_type`` hinzufügen:
 
 .. code-block:: python
 
@@ -24,18 +24,18 @@ Du kannst all deinen Objekten ein Objekt ein Attribut `token_type` hinzufügen:
         elif other_token.token_type == "wall":
             pass # tue etwas anders
 
-**Wichtig!**
-
-Bei diesem Zugang musst du **jedem** Objekt ein Attribut `token_type` geben. 
+.. warning::
+  Bei diesem Zugang musst du **jedem** Objekt ein Attribut ``token_type`` geben. 
   
-Ansonsten musst du auch überprüfen, ob dieses überhaupt vorhanden ist, wenn du nicht möchtest, dass ansonsten dein komplettes Programm abstürzt.
+  Ansonsten musst du auch überprüfen, ob dieses überhaupt vorhanden ist, wenn du nicht möchtest, dass ansonsten dein komplettes Programm abstürzt.
 
-Dies kann man machen mit:
-.. code-block:: python
+  Dies kann man machen mit:
+
+  .. code-block:: python
 
     if  other_token.token_type and other_token.token_type == "actor":
 
-Wenn jedes token über das Attribut `token_type` verfügt, dann kannst du diese Abfrage auch weglassen.
+  Wenn jedes token über das Attribut ``token_type`` verfügt, dann kannst du diese Abfrage auch weglassen.
   
 
 Listen
@@ -56,10 +56,11 @@ Du kannst Objekte zu einer Liste hinzufügen um zu überprüfen, ob das berührt
             pass # tue etwas
 
 
-**Wichtig!**
+.. warning::
 
-Bei diesem Zugang musst du darauf achten, dass gelöschte Objekte auch aus der Liste entfernt werden z.B. auf folgende Art und weise:
-.. code-block:: python 
+  Bei diesem Zugang musst du darauf achten, dass gelöschte Objekte auch aus der Liste entfernt werden z.B. auf folgende Art und Weise:
+
+  .. code-block:: python 
 
     walls.remove(wall)
     wall.remove()
@@ -68,7 +69,7 @@ Bei diesem Zugang musst du darauf achten, dass gelöschte Objekte auch aus der L
 Klassen
 ========
 
-Wenn du mit Klassen arbeitest, nimmt dir der **miniworldmaker** etwas Arbeit ab, weil er nun selbst erkennen kann, um welche **Kindklasse** von `Token` es sich bei einem Objekt handelt.
+Wenn du mit Klassen arbeitest, nimmt dir der **miniworldmaker** etwas Arbeit ab, weil er nun selbst erkennen kann, um welche **Kindklasse** von ``Token`` es sich bei einem Objekt handelt.
 
 Hier kannst du zu deiner Klasse folgende Methode hinzufügen:
 
@@ -89,5 +90,5 @@ Beispiel
 Ausblick
 ========
 
-* `Vollständiges Beispiel <https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tutorial/07%20-%20sensors_2.py)>`_
+* `Vollständiges Beispiel <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/07%20-%20sensors_2.py)>`_
 

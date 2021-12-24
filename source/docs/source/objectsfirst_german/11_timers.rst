@@ -1,10 +1,11 @@
 Timer
 *****
 
-Mit **Timern** kannst du Ereignisse **zeitgesteuert** ausführen. Wenn du z.B. möchtest dass eine Aktion nicht sofort, sondern mit einigen Millisekunden oder Sekunden Verzögerung eintritt, dann kannst du einen Timer verwenden.
+Mit **Timern** kannst du Ereignisse **zeitgesteuert** ausführen. Wenn du z.B. möchtest dass eine Aktion nicht sofort, 
+sondern mit einigen Millisekunden oder Sekunden Verzögerung eintritt, dann kannst du einen Timer verwenden.
 
 ..  note::
-  Python bietet auch in der library `time` die Funktion `time.sleep(...)` an. 
+  Python bietet auch in der library ``time`` die Funktion ``time.sleep(...)`` an. 
 
   Diese solltest du allerdings **nicht** benutzen, da die globale Verzögerung zu Seiteneffekten führen kann.
 
@@ -12,7 +13,6 @@ Einen Timer starten
 ===================
 
 Einen Timer kannst du z.B. so starten:
-
 
 .. code-block:: python
 
@@ -25,8 +25,8 @@ Einen Timer kannst du z.B. so starten:
 
 Die Funktion erhält 2 Argumente: 
 
-* Nach `24` Frames (1)
-* ... wird die Funktion `player.move` ausgeführt (2).
+* Nach **24** Frames (1)
+* ... wird die Funktion ``player.move`` ausgeführt (2).
 
 Die verschiedenen Timer
 =======================

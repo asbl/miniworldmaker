@@ -36,8 +36,8 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
 
     def move_to(self, position: board_position.BoardPosition):
         self.center = position
-        #if hasattr(self.token, "physics"):
-        #    self.token.physics.reload()     
+        if hasattr(self.token, "physics"):
+            self.token.physics.reload()     
 
     def get_direction(self):
             return self._direction

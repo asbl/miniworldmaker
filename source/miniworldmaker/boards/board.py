@@ -766,3 +766,5 @@ class Board(container.Container):
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
         raise NotImplementedOrRegisteredError()
+    
+    

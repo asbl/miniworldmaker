@@ -17,7 +17,7 @@ Wenn du mehrere Bilder zu einem Kostüm hinzufügst, kannst du diese mit
 
 animieren.
 
-Mit dem Parameter `loop` kannst du festlegen, ob die Animation wiederholt werden soll:
+Mit dem Parameter ``loop`` kannst du festlegen, ob die Animation wiederholt werden soll:
 
 .. code-block:: python
     
@@ -42,7 +42,7 @@ Oft benötigt ein Token mehrere Animationen, die auch aufgerufen werden können,
 
     @player.register
     def on_key_pressed_w(self):
-    self.animate(costume_c)
+        self.animate(costume_c)
 
 Vollständiges Beispiel
 ======================
@@ -71,4 +71,4 @@ Vollständiges Beispiel
 Beispiele
 =========
 
-* `Weitere Beispiele <https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/animations>`_
+* `Weitere Beispiele <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/animations>`_
