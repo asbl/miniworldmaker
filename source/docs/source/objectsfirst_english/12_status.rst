@@ -11,11 +11,11 @@ The following are typical end-of-game/level change actions:
 
 The following commands are available for this:
 
-* `board.stop()`: Stops the game board. No more actions are executed and no more events are queried.
-* `board.start()`: This cancels a stop command.
-* `board.is_running`: With this variable you can query the state of the board.
-* `board.clear()`: This function removes all pieces from the board.
-* `board.reset()`: The function clears the current board and creates a new board with all the pieces as they were created in `board.on_setup()`.
+* ``board.stop()``: Stops the game board. No more actions are executed and no more events are queried.
+* ``board.start()``: This cancels a stop command.
+* ``board.is_running``: With this variable you can query the state of the board.
+* ``board.clear()``: This function removes all pieces from the board.
+* ``board.reset()``: The function clears the current board and creates a new board with all the pieces as they were created in `board.on_setup()`.
 
 
 Status/Score
