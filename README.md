@@ -7,23 +7,11 @@ It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
 ### Examples
 
-#### Angry Birds 
+  * [Angry Birds](https://replit.com/@a_siebel/miniworldmaker-Angry-birds): This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
 
-This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
-
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/miniworldmaker-Angry-birds?v=1"></iframe>
-
-#### Kara
-
-Prototype for Kara in miniworldmaker
-
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/Kara-in-miniworldmaker"></iframe>
-
-#### RPG Framework
-
-Framework for simple RPGs and Adventures
-
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker"></iframe>
+  * [Kara](https://replit.com/@a_siebel/Kara-in-miniworldmaker"): Kara Prototype
+ 
+  * [RPG Framework](https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker): Framework for simple RPGs and Textadventures
 
 
 ### Features
