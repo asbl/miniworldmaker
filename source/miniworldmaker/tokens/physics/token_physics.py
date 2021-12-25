@@ -33,9 +33,7 @@ class TokenPhysics:
             fluid layers, and material elements sliding against each other.
             Friction has a value > 0
         elasticity (int): continuum mechanics of bodies that deform reversibly under stress
-        mass: The mass of an object. Default: 1
-        is_rotatable: If True, the Object has no moment and can't be rotated by an impulse
-        can_move: Defines if the object can move
+        density: The density of an object. Default: 10
         gravity: Defines if the object affected by gravity
         shape_type: line, circle or rect
     """
@@ -83,7 +81,6 @@ class TokenPhysics:
         """
         if self.started == False:
             self.started = True
-            # self.count_tokens += 1
             self.setup_physics_model()  # After on_setup
 
     def get_pymunk_shape(self):

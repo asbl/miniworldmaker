@@ -34,6 +34,7 @@ Links
 =====
 
 * `Codeberg Repository <https://codeberg.org/a_siebel/miniworldmaker>`_  
+* `Miniworldmaker Cookbook - Examples and Snippets <https://codeberg.org/a_siebel/miniworldmaker_cookbook>`_  
 
 
 .. toctree::

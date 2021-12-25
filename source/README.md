@@ -1,9 +1,29 @@
 MiniWorldMaker
 ---------
 
-<img align="right" src="miniworldmaker/resources/logo_big.png" alt="logo"/>
-MiniWorldMaker allows you to create 2D mini worlds and games.
+MiniWorldMaker allows you to create 2D mini worlds and games. 
 
+It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
+
+### Examples
+
+#### Angry Birds 
+
+This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
+
+<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/miniworldmaker-Angry-birds?v=1"></iframe>
+
+#### Kara
+
+Prototype for Kara in miniworldmaker
+
+<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/Kara-in-miniworldmaker"></iframe>
+
+#### RPG Framework
+
+Framework for simple RPGs and Adventures
+
+<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker"></iframe>
 
 
 ### Features
@@ -19,10 +39,12 @@ MiniWorldMaker allows you to create 2D mini worlds and games.
     
   * Load and Save to SQLite Databases
   
-  * EXPERIMENTAL: Integrated Physics-Engine based on Pymunk
+  * Integrated Physics-Engine based on Pymunk
   
   * Open Source
   
-  * Miniworldmaker is a 2D Engine based on Python 3 and pygame.
+  * Miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
-  * [Github](https://github.com/asbl/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/)
+### Links
+
+[Codeberg](https://codeberg.org/a_siebel/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) | [Cookbook](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/)
