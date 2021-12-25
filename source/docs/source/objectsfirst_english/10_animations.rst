@@ -7,7 +7,7 @@ In the last chapter you were introduced to animations. Here you will be introduc
 Basic animations
 =========================
 
-If you add multiple images to a costume, you can animate them with
+If you add several images to a costume, you can animate them with
 
 .. code block :: python
     
@@ -17,7 +17,7 @@ If you add multiple images to a costume, you can animate them with
 
 animate.
 
-With the parameter `loop` you can define if the animation should be repeated:
+With the parameter ``loop`` you can specify if the animation should be repeated:
 
 .. code block:: python
     
@@ -42,7 +42,7 @@ Often a token needs several animations, which can also be called while another a
 
     @player.register
     def on_key_pressed_w(self):
-    self.animate(costume_c)
+        self.animate(costume_c)
 
 Complete example
 ======================
@@ -71,4 +71,4 @@ Complete example
 Examples
 =========
 
-* `More examples <https://codeberg.org/a_siebel/miniworldmaker/src/branch/main/examples/tests/animations>`_
+* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/animations>`_

@@ -6,7 +6,7 @@ In addition to reacting to events, tokens can also use **sensors** to check whet
 Detect an object
 ====================
 
-A `token` can track down another `token` at the same location as follows:
+A ``token`` can track down another ``token`` in the same location as follows:
 
 .. code block:: python
 
@@ -18,8 +18,8 @@ A `token` can track down another `token` at the same location as follows:
 What happens here?
 ------------------
 
-* The function `on_sensing_token` is called when the token detects another object at the same location.
-* The parameter `other` is a reference to the found object, so you can directly access attributes and methods of this object (e.g. with `other.move()`)
+* The function ``on_sensing_token`` is called when the token detects another object at the same location.
+* The parameter ``other`` is a reference to the found object, so you can directly access attributes and methods of this object (e.g. with ``other.move()``).
 
 Compare with found object
 ==================================
@@ -41,17 +41,17 @@ This goes like this, for example:
         print("I found you, player2!")
 
 
-The comparison in line 6 checks if the object is **the same** object as `player2`.
+The comparison in line 6 checks if the object is **the same** object as ``player2``.
 
 ... note::
-   **Excursus Global Variables**: Normally variables are only known within a method, so that e.g. it is prevented
+   **excursion: global variables**: Normally variables are only known within a method, to prevent e.g,
    to avoid side effects when accessing the same variable in different places.
    
    The approach with which variables from other program parts are accessed here is simple and intuitive.
    But later one will try to avoid this.
 
 Check boundaries of the playing field
----------------------------------
+=================================
 
 You can also check if a piece is at the borders of the playing field (or beyond):
 
@@ -77,28 +77,30 @@ If a character is at position (0,0) the following is printed: `Borders are here!
 
 FAQ
 ====
-  * My collisions are not recognized, what can I do?
-    * First test if the method is called at all, e.g. with:
 
-    .. code-block:: python
+* My collisions are not detected, what can I do?
+  
+  First test if the method is called at all, e.g. with:
+
+  .. code-block:: python
+  
+    @player.register
+    def on_sensing_token(self, token):
+      print(token)
+      ...
     
-      @player.register
-      def on_sensing_token(self, token):
-        print(token)
-        ...
-    
 
-    If the `print` statement is not called, then the sensor does not work.
+  If the ``print`` statement is not called, then the sensor does not work.
 
 
-Outlook
+View
 =========
 
 
-* --> More information. See :doc:`Key Concepts: Sensors <../key_concepts/sensors>`.
+* More information. See :doc:`Key Concepts: Sensors <../key_concepts/sensors>`.
 * The objects can be tracked in different ways.
-  This can be set via the `collision_type` property of the object being tracked,
-  e.g. 'mask' for a pixel-exact comparison or 'rect' if only the enclosing rectangles are compared.
+  This can be set via the ``collision_type`` property of the object being tracked,
+  e.g. "mask" for a pixel-exact comparison or 'rect' if only the enclosing rectangles are compared.
   
 
 
