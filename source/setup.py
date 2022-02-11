@@ -10,11 +10,11 @@ with open(path.join(here, 'README.md'), encoding='utf-8') \
         as f: long_description = f.read()
 
 setup(name='miniworldmaker',
-      version='1.9.6.1',
+      version='1.9.6.2',
       description='Create 2D Miniworlds and Games',
       long_description=long_description,
       long_description_content_type='text/markdown',
-      keywords=['games', 'education', 'mini-worlds'],  # arbitrary keywords
+      keywords=['games', 'education', 'mini-worlds', 'pygame'],  # arbitrary keywords
       author='Andreas Siebel',
       author_email='andreas.siebel@it-teaching.de',
       url='https://github.com/asbl/miniworldmaker',

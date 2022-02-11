@@ -639,7 +639,7 @@ class Board(container.Container):
 
     def _run_next_line_in_started_method(self):
         for on_started_method in self.event_handler.registered_events["on_started"]:
-            line_number = self.frame // self.speed + 2
+            line_number = self.frame // self.speed + 1
             if on_started_method and self.frame % self.speed == 0 and self.frame != 0:
                 self._run_line(on_started_method, line_number)
 
