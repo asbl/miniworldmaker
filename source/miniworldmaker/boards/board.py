@@ -8,14 +8,18 @@ from miniworldmaker.appearances import background
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.board_positions import board_rect_factory
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.boards.board_handler import board_event_handler
-from miniworldmaker.boards.board_handler import board_collision_handler
-from miniworldmaker.boards.board_handler import board_view_handler
+from miniworldmaker.boards.board_handler import board_event_handler as event_handler
+from miniworldmaker.boards.board_handler import board_collision_handler as coll_handler
+from miniworldmaker.boards.board_handler import board_view_handler as view_handler
+from miniworldmaker.boards.board_handler import board_position_handler as pos_handler
 from miniworldmaker.dialogs import ask
-from miniworldmaker.boards.board_handler import board_position_handler
 from miniworldmaker.boards.token_connectors import token_connector
 from miniworldmaker.containers import container
-from miniworldmaker.exceptions.miniworldmaker_exception import BoardArgumentsError, BoardInstanceError, NotImplementedOrRegisteredError
+from miniworldmaker.exceptions.miniworldmaker_exception import (
+    BoardArgumentsError,
+    BoardInstanceError,
+    NotImplementedOrRegisteredError,
+)
 from miniworldmaker.tools import timer
 from miniworldmaker.tokens import token as token_module
 from miniworldmaker.boards.data import import_factory
@@ -51,7 +55,7 @@ class Board(container.Container):
         :alt: Asteroids
 
     * The position of a token on a PixelBoard is the pixel at toplef of token.
-    * New tokens are created with top-left corner of token rect at position. 
+    * New tokens are created with top-left corner of token rect at position.
     * Two tokens collide when their sprites overlap.
 
     Examples:
@@ -98,8 +102,8 @@ class Board(container.Container):
 
     See also:
 
-        * See: :doc:`Board <../api/board>` 
-        * See: :doc:`TiledBoard <../api/board.tiledboard>` 
+        * See: :doc:`Board <../api/board>`
+        * See: :doc:`TiledBoard <../api/board.tiledboard>`
 
 
     Args:
@@ -109,13 +113,14 @@ class Board(container.Container):
 
     subclasses = None
 
-    def __init__(self,
-                 columns: Union[int, Tuple[int]] = 40,
-                 rows: int = 40,
-                 tile_size: int = 1,
-                 tile_margin: int = 0,
-                 background_image=None
-                 ):
+    def __init__(
+        self,
+        columns: Union[int, Tuple[int]] = 40,
+        rows: int = 40,
+        tile_size: int = 1,
+        tile_margin: int = 0,
+        background_image=None,
+    ):
         if self.__class__ == Board:
             raise BoardInstanceError()
         if type(columns) != int or type(rows) != int:
@@ -127,24 +132,20 @@ class Board(container.Container):
                 raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
         self._tokens = pygame.sprite.LayeredDirty()
-        self.event_handler: board_event_handler.BoardEventHandler = board_event_handler.BoardEventHandler(
-            self)
+        self.event_handler: event_handler.BoardEventHandler = event_handler.BoardEventHandler(self)
         super().__init__()
-        self.view_handler: "board_view_handler.BoardViewHandler" = board_view_handler.BoardViewHandler(
-            self)
-        self.position_handler: "board_position_handler.BoardPositionHandler" = board_position_handler.BoardPositionHandler(
-            self)
+        self.view_handler: "view_handler.BoardViewHandler" = view_handler.BoardViewHandler(self)
+        self.position_handler: "pos_handler.BoardPositionHandler" = pos_handler.BoardPositionHandler(self)
         self.ask: "ask.Ask" = ask.Ask(self)
         pygame.init()
-        self.is_running: bool = True
         self._is_setup: bool = False
         self._fps: int = 60
         self._key_pressed: bool = False
         self._animated: bool = False
         self._orientation: int = 0
-        self.frame: int = 0
-        self.title = "miniworldmaker"
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
+        self.is_running: bool = True
+        self.frame: int = 0
         self.clock: pygame.time.Clock = pygame.time.Clock()
         # Init graphics
         self.app: miniworldmaker.App = miniworldmaker.App("miniworldmaker")
@@ -152,13 +153,9 @@ class Board(container.Container):
         miniworldmaker.App.board = self
         self.view_handler.init_background(background_image)
         self.view_handler.update_background()
-        self.collision_handler: "board_collision_handler.BoardCollisionHandler" = board_collision_handler.BoardCollisionHandler(
-            self)
+        self.collision_handler: "coll_handler.BoardCollisionHandler" = coll_handler.BoardCollisionHandler(self)
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
-        self.cache = dict()
-        self.dynamic_tokens: set = set()  # Set with all dynamic actors
-        self.static_tokens_dict: defaultdict = defaultdict(list)
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return token_connector.TokenConnector(self, token)
@@ -198,8 +195,7 @@ class Board(container.Container):
         export_factory.ExportTokensToDBFactory(file, self.tokens).save()
 
     def __str__(self):
-        return "{0} with {1} columns and {2} rows" \
-            .format(self.__class__.__name__, self.columns, self.rows)
+        return "{0} with {1} columns and {2} rows".format(self.__class__.__name__, self.columns, self.rows)
 
     @property
     def container_width(self) -> int:
@@ -207,8 +203,7 @@ class Board(container.Container):
         The width of the container
         """
         if self.view_handler.repaint_all:
-            self._container_width = self.columns * self.tile_size + \
-                (self.columns + 1) * self.tile_margin
+            self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
         return self._container_width
 
     @property
@@ -217,8 +212,7 @@ class Board(container.Container):
         The height of the container
         """
         if self.view_handler.repaint_all:
-            self._container_height = self.rows * \
-                self.tile_size + (self.rows + 1) * self.tile_margin
+            self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
         return self._container_height
 
     @property
@@ -257,7 +251,7 @@ class Board(container.Container):
         """
         Frames per second shown on the screen.
 
-        This controls how often the screen is redrawn. However, the game logic 
+        This controls how often the screen is redrawn. However, the game logic
         can be called more often or less often independently of this with board.speed.
 
         Examples:
@@ -430,7 +424,7 @@ class Board(container.Container):
                 board.add_background("images/soccer_green.jpg")
                 board.add_background("images/space.jpg")
 
-        Returns: 
+        Returns:
             The new created background.
         """
         self.view_handler.add_background(source)
@@ -460,7 +454,7 @@ class Board(container.Container):
         Args:
             line: the line
 
-        Returns: 
+        Returns:
             A list of all colors found at the line
 
         """
@@ -519,6 +513,7 @@ class Board(container.Container):
             Returns: A single token or a list of tokens at rect
 
             """
+
         pass
 
     @property
@@ -591,7 +586,7 @@ class Board(container.Container):
     def repaint(self):
         self.view_handler.repaint()
 
-    def run(self, fullscreen: bool = False, fit_desktop: bool = False, replit : bool = False, event=None, data=None):
+    def run(self, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False, event=None, data=None):
         """
         The method show() should always called at the end of your program.
         It starts the mainloop.
@@ -606,7 +601,7 @@ class Board(container.Container):
             self.app.event_manager.send_event_to_containers("setup", self)
         if event:
             self.app.event_manager.send_event_to_containers(event, data)
-        self.app.run(self.image, fullscreen=fullscreen, fit_desktop = fit_desktop, replit = replit)
+        self.app.run(self.image, fullscreen=fullscreen, fit_desktop=fit_desktop, replit=replit)
 
     def switch_background(self, background: Union[int, Type[appearance.Appearance]]) -> background.Background:
         """Switches the background of costume
@@ -614,7 +609,7 @@ class Board(container.Container):
         Args:
             index: The index of the new costume. If index=-1, the next costume will be selected
 
-        Returns: 
+        Returns:
             The new costume
 
         """
@@ -747,16 +742,16 @@ class Board(container.Container):
         return [token for token in self._tokens if isinstance(token, classname)]
 
     def on_started(self):
-        """The on_started method is executed after starting the board. 
+        """The on_started method is executed after starting the board.
         Afterwards the individual lines are executed step by step with some delay (depending on board.speed).
 
         Examples:
-        
+
         Registering a on_started-Method
 
         .. code-block:: python
 
-            @karaboard.register    
+            @karaboard.register
             def on_started(self):
                 self.kara.move_right()
                 self.kara.move_right()
@@ -766,5 +761,3 @@ class Board(container.Container):
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
         raise NotImplementedOrRegisteredError()
-    
-    

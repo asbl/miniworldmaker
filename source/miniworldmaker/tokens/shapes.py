@@ -138,6 +138,40 @@ class Circle(Shape):
         self.costume.draw_shape_set(*self.draw_shape)
 
 
+class Ellipse(Shape):
+    def __init__(self, position=None, width: int = 10, height: int = 10, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
+        self._thickness = thickness
+        self.color = color
+        super().__init__(position, color)
+        self.size = (width * 2, height * 2)
+        self.costume.draw_shape_set(*self.draw_shape)
+        rect = pygame.Rect(0, 0, width, height)
+        rect.center = (self.position[0], self.position[1])
+        self.position = rect.center
+
+    @classmethod
+    def from_center(cls, position=None, width: int = 10, thickness: int = 1, color: tuple = (255, 255, 255, 255)):
+        circle = Circle(position=position, width=width, thickness=thickness, color=color)
+        circle.center = position
+        return circle
+
+    @property
+    def draw_shape(self):
+        print(pygame.Rect(int(self.position[0]), int(self.position[1]),
+                                                int(self.size[0]), int(self.size[1])))
+        return pygame.draw.ellipse, [self.color,
+                                    pygame.Rect((0,0),
+                                               (int(self.size[0]), int(self.size[1]))),
+                                    self.thickness]
+
+    @property
+    def thickness(self):
+        return self._thickness
+
+    @thickness.setter
+    def thickness(self, value):
+        self._thickness = value
+        #self.costume.draw_shape_set(*self.draw_shape)
 class Line(Shape):
     """
     A Line-Shape.

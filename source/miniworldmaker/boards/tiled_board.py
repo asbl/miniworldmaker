@@ -26,7 +26,9 @@ class TiledBoard(miniworldmaker.Board):
                          background_image=background_image)
         self.dynamic_tokens = set()
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
-        
+        self.dynamic_tokens: set = set()  # Set with all dynamic actors
+        self.static_tokens_dict: defaultdict = defaultdict(list)
+
     def get_token_connector(self, token) -> "tiled_board_connector.TiledBoardConnector":
         return tiled_board_connector.TiledBoardConnector(self, token)
 
