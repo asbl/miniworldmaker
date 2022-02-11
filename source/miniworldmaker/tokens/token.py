@@ -5,7 +5,11 @@ import pygame
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError, TokenArgumentShouldBeTuple, NotImplementedOrRegisteredError
+from miniworldmaker.exceptions.miniworldmaker_exception import (
+    NoValidBoardPositionError,
+    TokenArgumentShouldBeTuple,
+    NotImplementedOrRegisteredError,
+)
 from miniworldmaker.tools import token_inspection
 from miniworldmaker.dialogs import ask
 import miniworldmaker
@@ -88,11 +92,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             * "mask": Are tokens colliding when checkig if their image masks are overlapping.
     """
+
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None,
-                 image: Optional[str] = None):
+    def __init__(
+        self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None, image: Optional[str] = None
+    ):
         self._managers: list = list()
         self.token_id: int = Token.token_count + 1
         self.costume_manager: miniworldmaker.TokenCostumeManager = None
@@ -185,8 +191,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def __str__(self):
         if self.board and hasattr(self.board, "position_manager"):
-            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(self.class_name, self.token_id, self.position,
-                                                                         self.size)
+            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
+                self.class_name, self.token_id, self.position, self.size
+            )
         else:
             return "**: {0}; ID: {1}".format(self.class_name, self.token_id)
 
@@ -196,7 +203,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         The image of the token:
 
         > Warning: You should not directly draw on the image
-        > as the image will be reloaded during animations 
+        > as the image will be reloaded during animations
 
         """
         return self.costume_manager.image
@@ -290,8 +297,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def direction(self) -> int:
-        """Directions are handled exactly as in the Scratch programming language, 
-        see: `Scratch Wiki <https://en.scratch-wiki.info/wiki/Direction_(value)>`_ 
+        """Directions are handled exactly as in the Scratch programming language,
+        see: `Scratch Wiki <https://en.scratch-wiki.info/wiki/Direction_(value)>`_
 
         The default direction is 0°. All tokens are looking "up"
 
@@ -429,7 +436,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return math.sin(math.radians(self.direction)) * distance
 
     def delta_y(self, distance: int) -> int:
-        return - math.cos(math.radians(self.direction)) * distance
+        return -math.cos(math.radians(self.direction)) * distance
 
     def point_towards_position(self, destination: int) -> int:
         """
@@ -469,9 +476,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def size(self) -> tuple:
-        """Size of the token
-
-        """
+        """Size of the token"""
         return self.position_manager.size
 
     @size.setter
@@ -508,8 +513,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def x(self) -> float:
-        """int: The x-value of an token
-        """
+        """int: The x-value of an token"""
         return self.position_manager.x
 
     @x.setter
@@ -518,8 +522,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def y(self) -> float:
-        """int: The x-value of an token
-        """
+        """int: The x-value of an token"""
         return self.position_manager.y
 
     @y.setter
@@ -693,9 +696,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             self.board.remove_from_board(self)
         for manager in self._managers:
             manager.remove()
-            del (manager)
+            del manager
         self.kill()
-        del (self)
+        del self
 
     @property
     def is_rotatable(self) -> bool:
@@ -706,7 +709,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.costume.is_rotatable = value
 
     def bounce_from_border(self, borders: List[str]) -> Token:
-        """ Bounces the actor from a border.
+        """Bounces the actor from a border.
 
         Args:
             borders: A list of borders as strings e.g. ["left", "right"]
@@ -731,7 +734,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.sensing_on_board(distance=distance)
 
-    def sensing_tokens(self, token_filter: str = None, distance: int = 0, collision_type: str = "default") -> List[Token]:
+    def sensing_tokens(
+        self, token_filter: str = None, distance: int = 0, collision_type: str = "default"
+    ) -> List[Token]:
         """Senses if tokens are on tokens position.
         Returns a list of tokens.
 
@@ -748,7 +753,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.board_sensor.sensing_tokens(token_filter, distance)
 
-    def sensing_token(self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default") -> List[Token]:
+    def sensing_token(
+        self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default"
+    ) -> List[Token]:
         """Senses if tokens are on tokens position.
         Returns the first found token.
 
@@ -879,8 +886,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.costume_manager.loop_animation(speed)
 
     def send_message(self, message: str):
-        self.board.app.event_manager.send_event_to_containers(
-            "message", message)
+        self.board.app.event_manager.send_event_to_containers("message", message)
 
     def on_key_down(self, key: list):
         """**on_key_down**  is called one time when a key is pressed down.
@@ -921,10 +927,10 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         raise NotImplementedOrRegisteredError()
 
     def on_key_pressed(self, key: list):
-        """**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed 
+        """**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed
         is repeatedly called again and again until the key is released.
 
-        Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`). 
+        Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`).
 
         Examples:
 
@@ -1150,7 +1156,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Examples:
 
-            Register on_sensing_border_event: 
+            Register on_sensing_border_event:
 
             .. code-block::
 
@@ -1172,7 +1178,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Examples:
 
-            Register sensing_token event 
+            Register sensing_token event
 
             .. code-block::
 
@@ -1193,12 +1199,5 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @static.setter
     def static(self, value):
-        self._static = value
-        if self._static:
-            _token_connector = self.board.get_token_connector(self)
-            _token_connector.add_static_token()
-            _token_connector.remove_dynamic_token()
-        else:
-            _token_connector = self.board.get_token_connector(self)
-            _token_connector.add_dynamic_token()
-            _token_connector.remove_static_token()
+        _token_connector = self.board.get_token_connector(self)
+        _token_connector.set_static(value)

@@ -605,7 +605,10 @@ class Appearance(metaclass=MetaAppearance):
 
     def image_action_draw_shapes(self, image: pygame.Surface, parent) -> pygame.Surface:
         for draw_action in self.draw_shapes:
-            draw_action[0](image, *draw_action[1])
+            rvalue = draw_action[0](image, *draw_action[1])
+            #pygame.draw.ellipse(image,(255,255,255,255),pygame.Rect((200,200),(40,80)),1)
+            print(rvalue, self.token, draw_action[0], *draw_action[1])
+            print((image, *draw_action[1]))
         return image
 
     def image_action_texture(self, image, parent):

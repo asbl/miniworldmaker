@@ -42,24 +42,10 @@ class TokenConnector:
         Implemented in subclasses
         """
         self.board.event_handler.unregister_instance(token)
-        self.remove_static_token()
-        self.remove_dynamic_token()
         if self in self.board.view_handler.reload_costumes_queue:
             self.board.view_handler.reload_costumes_queue.remove(self)
         self.board.tokens.remove(token)
         
-    def add_static_token(self):
-        if self.token not in self.board.static_tokens_dict[self.token.position]:
-            self.board.static_tokens_dict[self.token.position].append(self.token)
-            self.board.view_handler.reload_costumes_queue.append(self.token)
+    def set_static(self, value):
+        self.token._static = value
 
-    def remove_static_token(self):
-        if self.token.position in self.board.static_tokens_dict and self.token in self.board.static_tokens_dict[self.token.position]:
-            self.board.static_tokens_dict[self.token.position].remove(self.token)
-
-    def add_dynamic_token(self):
-        self.board.dynamic_tokens.add(self.token)
-
-    def remove_dynamic_token(self):
-        if self.token in self.board.dynamic_tokens:
-            self.board.dynamic_tokens.remove(self.token)

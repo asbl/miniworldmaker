@@ -33,7 +33,7 @@ class BoardViewHandler:
         if not self.has_background and self.background != None:
             self.remove_background()
         if source is None:
-            source = (255, 0, 255, 100)
+            source = (0, 0, 0, 255)
         new_background = background.Background(self.board)
         if type(source) == str:
             new_background.add_image(source)
