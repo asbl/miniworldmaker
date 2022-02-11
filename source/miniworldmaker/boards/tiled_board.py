@@ -24,6 +24,7 @@ class TiledBoard(miniworldmaker.Board):
             raise TiledBoardTooBigError(columns, rows, tile_size)
         super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin,
                          background_image=background_image)
+        self.dynamic_tokens = set()
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
         
     def get_token_connector(self, token) -> "tiled_board_connector.TiledBoardConnector":
