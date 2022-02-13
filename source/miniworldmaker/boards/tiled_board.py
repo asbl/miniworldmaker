@@ -9,8 +9,7 @@ import miniworldmaker
 
 
 class TiledBoard(miniworldmaker.Board):
-
-    def __init__(self, columns: int = 20, rows: int = 16, tile_size=42, tile_margin=0, background_image=None):
+    def __init__(self, columns: int = 20, rows: int = 16):
         """Initializes the TiledBoard
 
         Args:
@@ -20,11 +19,11 @@ class TiledBoard(miniworldmaker.Board):
             tile_margin: The margin between tiles
         """
         self.default_token_speed: int = 1
-        if columns * tile_size > 8000 or rows * tile_size > 8000:
-            raise TiledBoardTooBigError(columns, rows, tile_size)
-        super().__init__(columns=columns, rows=rows, tile_size=tile_size, tile_margin=tile_margin,
-                         background_image=background_image)
-        self.dynamic_tokens = set()
+        if columns  > 1000 or rows > 1000:
+            raise TiledBoardTooBigError(columns, rows, 40)
+        super().__init__(columns=columns, rows=rows)
+        self.tile_size = 40
+        self.tile_margin = 0
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens: set = set()  # Set with all dynamic actors
         self.static_tokens_dict: defaultdict = defaultdict(list)
@@ -82,7 +81,7 @@ class TiledBoard(miniworldmaker.Board):
         return self.position_handler.get_borders_from_position(position)
 
     def _update_token_positions(self):
-        """ Updates the dynamic_tokens_dict.
+        """Updates the dynamic_tokens_dict.
 
         All positions of dynamic_tokens_dict are updated by reading the dynamic_tokens list.
 
@@ -97,7 +96,7 @@ class TiledBoard(miniworldmaker.Board):
     def sensing_tokens(self, position):
         if type(position) == tuple:
             position = board_position.BoardPosition(position[0], position[1])
-        self._update_token_positions() # This method can be a bottleneck!
+        self._update_token_positions()  # This method can be a bottleneck!
         token_list = []
         if self.dynamic_tokens_dict[position[0], position[1]]:
             token_list.extend(self.dynamic_tokens_dict[(position[0], position[1])])

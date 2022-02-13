@@ -31,13 +31,6 @@ class TiledBoardConnector(token_connector.TokenConnector):
         self.remove_dynamic_token()
         super().remove_token_from_board(token)
 
-    def add_dynamic_token(self):
-        self.board.dynamic_tokens.add(self.token)
-
-    def remove_dynamic_token(self):
-        if self.token in self.board.dynamic_tokens:
-            self.board.dynamic_tokens.remove(self.token)
-
     def add_static_token(self):
         if self.token not in self.board.static_tokens_dict[self.token.position]:
             self.board.static_tokens_dict[self.token.position].append(self.token)
@@ -50,10 +43,8 @@ class TiledBoardConnector(token_connector.TokenConnector):
     def set_static(self, value):
         super().set_static(value)
         if self.token._static:
-            _token_connector = self.board.get_token_connector(self)
+            _token_connector = self.board.get_token_connector(self.token)
             _token_connector.add_static_token()
-            _token_connector.remove_dynamic_token()
         else:
-            _token_connector = self.board.get_token_connector(self)
-            _token_connector.add_dynamic_token()
+            _token_connector = self.board.get_token_connector(self.token)
             _token_connector.remove_static_token()

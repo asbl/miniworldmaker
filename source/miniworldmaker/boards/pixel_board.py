@@ -7,16 +7,16 @@ from miniworldmaker.boards.token_connectors.pixel_board_connector import PixelBo
 from miniworldmaker.tokens import token as token_module
 import miniworldmaker
 
-class PixelBoard(miniworldmaker.Board):
 
-    def __init__(self,
-                 columns: int = 40,
-                 rows: int = 40,
-                 tile_size: int = 1,
-                 tile_margin: int = 0,
-                 background_image=None
-                 ):
-        super().__init__(columns, rows, tile_size, tile_margin, background_image)
+class PixelBoard(miniworldmaker.Board):
+    def __init__(
+        self,
+        columns: int = 40,
+        rows: int = 40,
+    ):
+        self._tile_size = 1
+        self._tile_margin = 0
+        super().__init__(columns, rows)
 
     def get_token_connector(self, token):
         return PixelBoardConnector(self, token)
@@ -43,8 +43,11 @@ class PixelBoard(miniworldmaker.Board):
             token_list = [token_type]
         # filter
         if token_type:
-            filtered_tokens = [token for token in token_list if
-                               (issubclass(token.__class__, token_type) or token.__class__ == token_type)]
+            filtered_tokens = [
+                token
+                for token in token_list
+                if (issubclass(token.__class__, token_type) or token.__class__ == token_type)
+            ]
         return filtered_tokens
 
     def get_tokens_at_rect(self, rect: pygame.Rect) -> list:
@@ -62,7 +65,6 @@ class PixelBoard(miniworldmaker.Board):
 
         """
         return [token for token in self.tokens if token.rect.colliderect(rect)]
-    
 
     def get_single_token_at_rect(self, rect: pygame.Rect) -> token_module.Token:
         # Get first colliding token

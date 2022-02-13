@@ -39,6 +39,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     * Rectangle: A Rectangle
     * Line: A Line
     * Circle: A Circle
+    * Ellipse: A Ellipse
 
     Examples:
 
@@ -64,7 +65,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         .. code-block:: python
 
-          miniworldmaker.Circle.from_center(self.get_mouse_position(), 80, 1, (200,200,200,100))
+          circle = miniworldmaker.Circle(self.get_mouse_position(), 80, 1)
+          circle.center = circle.position
 
     See Also:
 
@@ -73,7 +75,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         * See: :doc:`TextTokens and NumberTokens <../api/token.texttoken>`
     Args:
         position: The topleft position of the token as tuple,. e.g. (200,200)
-        image: path to an image which should be used as costume, e.g. ("images/my_costume.png")
 
     Attributes:
 
@@ -96,9 +97,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(
-        self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None, image: Optional[str] = None
-    ):
+    def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None):
         self._managers: list = list()
         self.token_id: int = Token.token_count + 1
         self.costume_manager: miniworldmaker.TokenCostumeManager = None
@@ -106,7 +105,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.position_manager: miniworldmaker.TokenPositionManager = None
         self.board: miniworldmaker.Board = miniworldmaker.App.board
         _token_connector = self.board.get_token_connector(self)
-        _token_connector.add_token_managers(image, position)
+        _token_connector.add_token_managers(None, position)
         pygame.sprite.DirtySprite.__init__(self)
         Token.token_count += 1
         self.speed: int = 1

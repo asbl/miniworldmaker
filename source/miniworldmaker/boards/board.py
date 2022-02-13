@@ -20,6 +20,7 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardInstanceError,
     NotImplementedOrRegisteredError,
 )
+from miniworldmaker.tools import color
 from miniworldmaker.tools import timer
 from miniworldmaker.tokens import token as token_module
 from miniworldmaker.boards.data import import_factory
@@ -119,7 +120,6 @@ class Board(container.Container):
         rows: int = 40,
         tile_size: int = 1,
         tile_margin: int = 0,
-        background_image=None,
     ):
         if self.__class__ == Board:
             raise BoardInstanceError()
@@ -143,7 +143,9 @@ class Board(container.Container):
         self._key_pressed: bool = False
         self._animated: bool = False
         self._orientation: int = 0
+        self._static : bool = False
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
+        self._fill_color = (255, 255, 255, 255)
         self.is_running: bool = True
         self.frame: int = 0
         self.clock: pygame.time.Clock = pygame.time.Clock()
@@ -151,11 +153,12 @@ class Board(container.Container):
         self.app: miniworldmaker.App = miniworldmaker.App("miniworldmaker")
         self.app.container_manager.add_container(self, "top_left")
         miniworldmaker.App.board = self
-        self.view_handler.init_background(background_image)
+        self.view_handler.init_background(None)
         self.view_handler.update_background()
         self.collision_handler: "coll_handler.BoardCollisionHandler" = coll_handler.BoardCollisionHandler(self)
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
+        self.dynamic_tokens = set()
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return token_connector.TokenConnector(self, token)
@@ -233,7 +236,10 @@ class Board(container.Container):
                 i = i + 1
                 print(board.frame, i)
                 if board.frame == 120:
-                    test_instance.assertEqual(i, 13)
+       
+    def remove_dynamic_token(self):
+        if self.token in self.board.dynamic_tokens:
+            self.board.dynamic_tokens.remove(self.token)             test_instance.assertEqual(i, 13)
                     test_instance.assertEqual(board.frame, 120)
         """
         return self._speed
@@ -335,6 +341,14 @@ class Board(container.Container):
         self.rows = value[1]
         self.view_handler.full_repaint()
         self.app.window.dirty = 1
+
+    @property
+    def fill_color(self):
+        return self._fill_color
+
+    @fill_color.setter
+    def fill_color(self, value):
+        self._fill_color = color.Color(value).get()
 
     @property
     def tile_size(self) -> int:
@@ -513,7 +527,6 @@ class Board(container.Container):
             Returns: A single token or a list of tokens at rect
 
             """
-
         pass
 
     @property
@@ -682,7 +695,7 @@ class Board(container.Container):
         Gets the current mouse_position
 
         Returns:
-            Returns the mouse position if mouse is on board. Returns "None" otherwise
+            Returns the mouse position if mouse is on board. Returns None otherwise
 
         Examples:
             This example shows you how to use the mouse_position
@@ -691,7 +704,6 @@ class Board(container.Container):
             >>>     mouse = self.board.get_mouse_position()
             >>>     if mouse:
             >>>         self.point_towards_position(mouse)
-
         """
         pos = board_position_factory.BoardPositionFactory(self).from_pixel(pygame.mouse.get_pos())
         clicked_container = self.app.container_manager.get_container_by_pixel(pos[0], pos[1])
@@ -699,6 +711,13 @@ class Board(container.Container):
             return pos
         else:
             return None
+
+    def is_mouse_pressed(self) -> bool:
+        if pygame.mouse.get_pressed()[0]:
+            return True
+        else:
+            return False
+            
 
     def get_board_position_from_pixel(self, pixel):
         return board_position_factory.BoardPositionFactory(self).from_pixel(pixel)
