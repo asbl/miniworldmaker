@@ -29,10 +29,11 @@ class NumberToken(text_token.TextToken):
         
     """
 
-    def __init__(self, position=(0, 0), number=0, font_size=80, color=(255, 255, 255, 255)):
-        super().__init__(position, str(number), font_size, color)
-        self.set_number(number)
+    def __init__(self, position=(0, 0)):
+        super().__init__(position)
+        self.set_number(0)
         self.is_static = True
+        self.set_number(self.number)
 
     def inc(self):
         """

@@ -123,5 +123,35 @@ class CantSetAutoFontSize(MiniworldMakerError):
         super().__init__(self.message)
 
 class NotImplementedOrRegisteredError(MiniworldMakerError):
-    def _init__(self, method):
+    def __init__(self, method):
         self.message = f"Method {method} is not overwritten or registered"
+
+class EllipseWrongArgumentsError(MiniworldMakerError):
+    def __init__(self):
+        self.message = f"Wrong arguments for Ellipse (position: tuple, width: int, height: int, thickness: int"
+        super().__init__(self.message)
+
+class RectFirstArgumentError(MiniworldMakerError):
+    def __init__(self, start_position):
+        self.message = f"Error: First argument `position` of Rectangle should be tuple or BoardPosition, value. Found {start_position}, type: {type(start_position)}"
+        super().__init__(self.message)
+
+class RectSecondArgumentError(MiniworldMakerError):
+    def __init__(self, width):
+        self.message = f"Error: Second argument `width` of Rectangle should be int, value. Found {width}, type: {type(width)}"
+        super().__init__(self.message)
+
+class RectThirdArgumentError(MiniworldMakerError):
+    def __init__(self, height):
+        self.message = f"Error: Third argument `height` of Rectangle should be int, value. Found {height}, type: {type(height)}"
+        super().__init__(self.message)
+
+class LineFirstArgumentError(MiniworldMakerError):
+    def __init__(self, start_position):
+        self.message = f"Error: First argument `start_position` of Line should be tuple , value. Found {start_position}, type: {type(start_position)}"
+        super().__init__(self.message)
+
+class LineSecondArgumentError(MiniworldMakerError):
+    def __init__(self, end_position):
+        self.message = f"Error: Second argument 'end_position' of Line should be tuple, value. Found {end_position}, type: {type(end_position)}"
+        super().__init__(self.message)

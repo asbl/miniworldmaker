@@ -18,7 +18,10 @@ class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
 
     @property
     def size(self):
-        return (self.token.board.tile_size,self.token.board.tile_size)
+        if self.token.board:
+            return (self.token.board.tile_size, self.token.board.tile_size)
+        else:
+            return 0
 
     @size.setter
     def size(self, value):

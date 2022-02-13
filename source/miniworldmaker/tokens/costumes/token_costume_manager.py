@@ -36,8 +36,7 @@ class TokenCostumeManager:
         self._dirty = value
         if hasattr(self.token, "board") and self.token.board:
             self.costume.dirty = 1
-            if self._dirty:
-                self.token.board.view_handler.reload_costumes_queue.append(self.token)
+
 
     def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = (255, 255, 0, 0)) -> costume.Costume:
         """

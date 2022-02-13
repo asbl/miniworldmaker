@@ -6,17 +6,16 @@ from miniworldmaker.tools import token_inspection
 from miniworldmaker.tools import token_class_inspection
 import miniworldmaker
 
-class PhysicsBoard(miniworldmaker.PixelBoard):
 
-    def __init__(self,
-                 columns: int = 40,
-                 rows: int = 40,
-                 tile_size: int = 1,
-                 tile_margin: int = 0,
-                 background_image=None
-                 ):
-        super(pixel_board_module.PixelBoard, self).__init__(
-            columns, rows, tile_size, tile_margin, background_image)
+class PhysicsBoard(miniworldmaker.PixelBoard):
+    def __init__(
+        self,
+        columns: int = 40,
+        rows: int = 40,
+        tile_size: int = 1,
+        tile_margin: int = 0,
+    ):
+        super(pixel_board_module.PixelBoard, self).__init__(columns, rows, tile_size, tile_margin)
         self.gravity_x: float = 0
         self.gravity_y: float = 900
         self.debug: bool = False
@@ -39,7 +38,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
             token: The token
             other_class: The class which should be detected by collision handler
             event: The pymunk-event  (begin or separate)
-            method: The method, e.g. on_touching_token or on_separation_from_token. Last part is a class name       
+            method: The method, e.g. on_touching_token or on_separation_from_token. Last part is a class name
         """
 
         space = self.space
@@ -57,9 +56,14 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         return PhysicsBoardConnector(self, token)
 
     def get_physics_collision_methods_for_token(self, token):
-        return [getattr(token, method_name) for method_name in dir(token)
-                if hasattr(token, method_name) and callable(getattr(token, method_name))
-                and method_name.startswith("on_touching_") or method_name.startswith("on_separation_from_")]
+        return [
+            getattr(token, method_name)
+            for method_name in dir(token)
+            if hasattr(token, method_name)
+            and callable(getattr(token, method_name))
+            and method_name.startswith("on_touching_")
+            or method_name.startswith("on_separation_from_")
+        ]
 
     def register_all_physics_collision_handlers_for_token(self, token):
         """
@@ -74,7 +78,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
                 self.register_separate_method(method)
 
     def _register_physics_listener_method(self, method, event, other_cls):
-        """"
+        """ "
         Registers a physics listener method. (on touching or on_seperation.)
         Called from register_touching_method and register_separate_method
         """
@@ -83,28 +87,24 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         if other_cls not in all_token_classes:
             return False
         else:
-            subclasses_of_other_token = token_class_inspection.TokenClassInspection(
-                other_cls).get_subclasses_for_cls()
+            subclasses_of_other_token = token_class_inspection.TokenClassInspection(other_cls).get_subclasses_for_cls()
             for other_subcls in subclasses_of_other_token:
                 # If you register a Collission with a Token, collissions with subclasses of the token
                 # are also registered
-                self._pymunk_register_collision_handler(
-                    method.__self__, other_subcls, event, method)
+                self._pymunk_register_collision_handler(method.__self__, other_subcls, event, method)
                 return True
 
     def register_touching_method(self, method):
         event = "begin"
-        other_cls_name = method.__name__[len("on_touching_"):].lower()
-        other_cls = token_class_inspection.TokenClassInspection(
-            self).find_token_class_by_classname(other_cls_name)
+        other_cls_name = method.__name__[len("on_touching_") :].lower()
+        other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(other_cls_name)
         if self._register_physics_listener_method(method, event, other_cls):
             self.touching_methods.add(method)
 
     def register_separate_method(self, method):
         event = "separate"
-        other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-        other_cls = token_class_inspection.TokenClassInspection(
-            self).find_token_class_by_classname(other_cls_name)
+        other_cls_name = method.__name__[len("on_separation_from_") :].lower()
+        other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(other_cls_name)
         if self._register_physics_listener_method(method, event, other_cls):
             self.separate_methods.add(method)
 
@@ -119,16 +119,14 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
     def simulate_all_physics_tokens(self):
         if len(self.physics_tokens) > 0:
             # preprocess
-            [token.physics.simulation_preprocess_token()
-             for token in self.physics_tokens]
+            [token.physics.simulation_preprocess_token() for token in self.physics_tokens]
             # simulate
             steps = self.accuracy
             for _ in range(steps):
                 # if self.physics.space is not None: - can be removed
                 self.space.step(1 / (60 * steps))
             # postprocess
-            [token.physics.simulation_postprocess_token()
-             for token in self.physics_tokens]
+            [token.physics.simulation_postprocess_token() for token in self.physics_tokens]
 
     @property
     def gravity(self):
@@ -159,13 +157,13 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         collision = dict()
         # get touching token_handler for token
         for method in self.touching_methods:
-            method_other_cls_name = method.__name__[len("on_touching_"):].lower()
-            method_other_cls = token_class_inspection.TokenClassInspection(
-                self).find_token_class_by_classname(method_other_cls_name)
+            method_other_cls_name = method.__name__[len("on_touching_") :].lower()
+            method_other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
+                method_other_cls_name
+            )
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
-                token_inspection.TokenInspection(token).get_and_call_method(
-                    method.__name__, [other, collision])
+                token_inspection.TokenInspection(token).get_and_call_method(method.__name__, [other, collision])
         return True
 
     def pymunk_separation_collision_listener(self, arbiter, space, data):
@@ -175,11 +173,11 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         collision = dict()
         # get separation token_handler for token
         for method in self.separate_methods:
-            method_other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-            method_other_cls = token_class_inspection.TokenClassInspection(
-                self).find_token_class_by_classname(method_other_cls_name)
+            method_other_cls_name = method.__name__[len("on_separation_from_") :].lower()
+            method_other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
+                method_other_cls_name
+            )
             # is other an instance of method_other_cls
             if isinstance(other, method_other_cls):
-                token_inspection.TokenInspection(token).get_and_call_method(
-                    method.__name__, [other, collision])
+                token_inspection.TokenInspection(token).get_and_call_method(method.__name__, [other, collision])
         return True

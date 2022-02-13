@@ -27,17 +27,16 @@ class TextToken(token.Token):
 
     """
 
-    def __init__(self, position=None, text: str = "", font_size: int = 80, color: Tuple[int, int, int, int] = (255, 255, 255, 255)):
-        super().__init__(position, None)
+    def __init__(self, position=None):
+        super().__init__(position)
         self.add_costume((0, 0, 0, 0))
         self.costume.fill_color = (0, 0, 0, 0)
-        self.costume.font_size = font_size
-        self.costume.color = color
+        self.costume.font_size = 80
         self.costume.is_scaled = True
-        self.costume.text = text
+        self.costume.text = ""
         self._auto_size: str = "font"
         self.is_static: bool = True
-        self.set_text(text)
+        self.set_text("")
         
     @property 
     def auto_size(self):
