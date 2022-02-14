@@ -24,6 +24,8 @@ class Shape(miniworldmaker.Token):
         self.costumes.add(self.costume)
         self._color = (255, 255, 255, 255)
         self.costume.is_upscaled = False
+        self._fill_color = self.board.fill_color
+        self._border_color = self.board.stroke_color
 
     @staticmethod
     def bounding_box(points: Tuple) -> pygame.Rect:
@@ -34,23 +36,55 @@ class Shape(miniworldmaker.Token):
         height = max(y_coordinates) - y
         return pygame.Rect(x, y, width, height)
 
-    @classmethod
-    def from_center(cls, position: tuple, color: tuple):
-        shape = Shape(position=position, color=color)
-        shape.center = position
-        return shape
+
+    def inner_shape(self):
+        pass
 
     @property
     def color(self):
-        return self._color
+        return self._fill_color
 
     @color.setter
     def color(self, value):
-        self._color = value
-        self.update()
+        self._fill_color = value
+        self.update_shape()
 
-    def update(self):
-        self.costume.draw_shape_set(*self.draw_shape)
+    @property
+    def fill_color(self):
+        return self._fill_color
+
+    @fill_color.setter
+    def fill_color(self, value):
+        self._fill_color = value
+        self.update_shape()
+
+    @property
+    def border_color(self):
+        return self._border_color
+
+    @border_color.setter
+    def border_color(self, value):
+        self._border_color = value
+        self.update_shape()
+
+    def update_shape(self):
+        self.costume.draw_shapes = []
+        inner_shape = self.inner_shape()[0]
+        inner_shape_arguments =  [self.fill_color,] + self.inner_shape()[1] + [0,]
+        print("arguments, ", inner_shape_arguments)
+        outer_shape_arguments =  [self.border_color,] + self.inner_shape()[1] + [self.border,]
+        self.costume.draw_shape_append(inner_shape, inner_shape_arguments)
+        if self.border != 0:
+            self.costume.draw_shape_append(inner_shape, outer_shape_arguments)
+        
+    @property
+    def border(self):
+        return self._border
+
+    @border.setter
+    def border(self, value):
+        self._border = value
+        self.update_shape()
 
 
 class Point(Shape):
@@ -58,7 +92,7 @@ class Point(Shape):
 
     Args:
         position: The position as 2-tuple
-        thickness: The thickness of the point (1: pixel, >1: The point is rendered as circle)
+        border: The border of the point (1: pixel, >1: The point is rendered as circle)
 
     Examples:
         Creates a red point at position (200,100):
@@ -67,23 +101,21 @@ class Point(Shape):
 
     """
 
-    def __init__(self, position=(0, 0), thickness: int = 1):
+    def __init__(self, position=(0, 0), border: int = 1):
         try:
-            super().__init__(rect.topleft)
-            rect = pygame.Rect(0, 0, thickness, thickness)
+            super().__init__(position)
+            rect = pygame.Rect(0, 0, border, border)
             rect.center = (position[0], position[1])
-            self.radius = thickness
-            self.thickness = thickness
-            self.size = (thickness, thickness)
-            self.costume.draw_shape_append(
-                pygame.draw.circle,
-                [self.color, (int(self.radius), int(self.radius)), int(self.radius), self.thickness],
-            )
+            self.radius = border
+            self.border = border
+            self.size = (border, border)
             self.costume.load_surface()
         except TypeError:
             print("Shape not created because mouse position not in screen")
             self.remove()
 
+    def inner_shape(self):
+        return pygame.draw.circle, [(int(self.radius), int(self.radius)), int(self.radius)]
 
 class Circle(Shape):
     """
@@ -92,7 +124,7 @@ class Circle(Shape):
     Args:
         position: The position as 2-tuple. The circle is created with its center at the position
         radius: The radius of the circle
-        thickness: The thickness of the bounding line (0: The object is filled)
+        border: The border of the bounding line (0: The object is filled)
 
     Examples:
         Example Creation of a circle
@@ -106,19 +138,15 @@ class Circle(Shape):
         Creates a red circle at position (200,100) with radius 20. The circle is filled
     """
 
-    def __init__(self, position=(0, 0), radius: int = 10, thickness: int = 1):
+    def __init__(self, position=(0, 0), radius: int = 10, border: int = 1):
+        self._radius = radius
+        self._border = border
         super().__init__(position)
-        self._thickness = thickness
-        self.size = (radius * 2, radius * 2)
-        self.costume.draw_shape_set(*self.draw_shape)
-        rect = pygame.Rect(0, 0, radius, radius)
-        rect.center = (self.position[0], self.position[1])
-        self.position = rect.center
         self.center = position
+        
 
-    @property
-    def draw_shape(self):
-        return pygame.draw.circle, [self.color, (int(self.radius), int(self.radius)), int(self.radius), self.thickness]
+    def inner_shape(self):
+        return pygame.draw.circle, [(int(self.radius), int(self.radius)), int(self.radius)]
 
     @property
     def radius(self):
@@ -137,13 +165,19 @@ class Circle(Shape):
         self.physics.stable = False
 
     @property
-    def thickness(self):
-        return self._thickness
+    def radius(self):
+        return self._radius
 
-    @thickness.setter
-    def thickness(self, value):
-        self._thickness = value
-        self.costume.draw_shape_set(*self.draw_shape)
+    @radius.setter
+    def radius(self, value):
+        self._radius = value
+        self.update_shape()
+
+    def update_shape(self):
+        self.size = (self.radius * 2, self.radius * 2)
+        rect = pygame.Rect(0, 0, self.radius, self.radius)
+        rect.center = (self.position[0], self.position[1])
+        super().update_shape()
 
 
 class Ellipse(Shape):
@@ -152,38 +186,28 @@ class Ellipse(Shape):
         position=(0, 0),
         width: int = 10,
         height: int = 10,
-        thickness: int = 1,
+        border: int = 1,
     ):
-        self.check_arguments(position, width, height, thickness)
+        self.check_arguments(position, width, height, border)
         super().__init__(position)
-        self._thickness = thickness
+        self._border = border
         self._width, self._height = width, height
         self.size = (width, height)
-        self.costume.draw_shape_set(*self.draw_shape)
-        rect = pygame.Rect(0, 0, width, height)
-        rect.center = (self.position[0], self.position[1])
-        self.position = rect.center
 
-    def check_arguments(self, position, width, height, thickness):
-        if type(position) not in [tuple, None] or type(width) != int or type(height) != int or type(thickness) != int:
+    def check_arguments(self, position, width, height, border):
+        if type(position) not in [tuple, None] or type(width) != int or type(height) != int or type(border) != int:
             raise EllipseWrongArgumentsError()
 
-    @property
-    def draw_shape(self):
+    def inner_shape(self):
+        print(pygame.Rect(0, 0, int(self.size[0]), int(self.size[1])))
         return pygame.draw.ellipse, [
-            self.color,
-            pygame.Rect((0, 0), (int(self.size[0]), int(self.size[1]))),
-            self.thickness,
+            pygame.Rect(0, 0, int(self.size[0]), int(self.size[1])),
         ]
 
-    @property
-    def thickness(self):
-        return self._thickness
-
-    @thickness.setter
-    def thickness(self, value):
-        self._thickness = value
-        self.costume.draw_shape_set(*self.draw_shape)
+    def update_shape(self):
+        rect = pygame.Rect(0, 0, self.width, self.height)
+        rect.center = (self.position[0], self.position[1])
+        super().update_shape()
 
     @property
     def width(self):
@@ -193,7 +217,7 @@ class Ellipse(Shape):
     def width(self, value: int):
         self._width = value
         self.size = (self._width, self._height)
-        self.update()
+        self.update_shape()
 
     @property
     def height(self):
@@ -203,18 +227,18 @@ class Ellipse(Shape):
     def height(self, value: int):
         self._height = value
         self.size = (self._width, self._height)
-        self.update()
+        self.update_shape()
 
 
 class Line(Shape):
     """A Line-Shape.
-    
+
     Args:
 
         start_position: The start_position as 2-tuple.
         end_position: The end_position as 2-tuple.
-        thickness: The thickness of the bounding line
-    
+        border: The border of the bounding line
+
 
     Examples:
 
@@ -223,19 +247,19 @@ class Line(Shape):
         Creates a line from (200, 100) to (400, 100)
     """
 
-    def __init__(self, start_position: tuple, end_position: tuple, thickness: int = 1):
-        self.check_arguments(start_position, end_position, thickness)
+    def __init__(self, start_position: tuple, end_position: tuple, border: int = 1):
+        self.check_arguments(start_position, end_position, border)
         self._start_position = start_position
         self._end_position = end_position
-        self.thickness = thickness
+        self._border = border
         super().__init__(start_position)
         box = self.get_bounding_box()
         width, height = box[2], box[3]
         self.size = (width, height)
         self.position = start_position
-        self.update()
+        self.update_shape()
 
-    def check_arguments(self, start_position, end_position, thickness):
+    def check_arguments(self, start_position, end_position, border):
         if type(start_position) != tuple:
             raise LineFirstArgumentError(start_position)
         if type(end_position) != tuple:
@@ -246,17 +270,17 @@ class Line(Shape):
         self.physics.simulation = "static"
 
     def get_bounding_box(self):
-        width = abs(self.start_position[0] - self.end_position[0]) + 2 * self.thickness
-        height = abs(self.start_position[1] - self.end_position[1]) + 2 * self.thickness
+        width = abs(self.start_position[0] - self.end_position[0]) + 2 * self.border
+        height = abs(self.start_position[1] - self.end_position[1]) + 2 * self.border
         box = pygame.Rect(
-            min(self.start_position[0], self.end_position[0]) - self.thickness,
-            min(self.start_position[1], self.end_position[1]) - self.thickness,
+            min(self.start_position[0], self.end_position[0]) - self.border,
+            min(self.start_position[1], self.end_position[1]) - self.border,
             width,
             height,
         )
         return box
 
-    def update(self):
+    def update_shape(self):
         box = self.get_bounding_box()
         # mod_start: Start of line
         _x_start = self.start_position[0] - box.topleft[0]
@@ -266,14 +290,12 @@ class Line(Shape):
         _x_end = self.end_position[0] - box.topleft[0]
         _y_end = self.end_position[1] - box.topleft[1]
         self.local_end_position = (_x_end, _y_end)
-        self.costume.draw_shape_set(*self.draw_shape)
+        super().update_shape()
         # self.costume.load_surface()
         self.position = self.start_position
-        self.costume.dirty = 1
 
-    @property
-    def draw_shape(self):
-        return pygame.draw.line, [self.color, self.local_start_position, self.local_end_position, self.thickness]
+    def inner_shape(self):
+        return pygame.draw.line, [self.local_start_position, self.local_end_position]
 
     @property
     def start_position(self):
@@ -282,7 +304,7 @@ class Line(Shape):
     @start_position.setter
     def start_position(self, value: int):
         self._start_position = value
-        self.update()
+        self.update_shape()
 
     @property
     def end_position(self):
@@ -301,7 +323,7 @@ class Rectangle(Shape):
         topleft: Topleft Position of Rect
         height: The height of the rect
         width: The width of the rect
-        thickness: The thickness of the bounding line
+        border: The border of the bounding line
 
     Examples:
         Example Creation of a polygon
@@ -315,16 +337,16 @@ class Rectangle(Shape):
         topleft=(0, 0),
         width: int = 10,
         height: int = 10,
-        thickness: int = 1,
+        border: int = 1,
     ):
-        self.check_arguments(topleft, width, height, thickness)
+        self.check_arguments(topleft, width, height, border)
         super().__init__(topleft)
-        self.thickness = thickness
+        self._border = border
         self._width, self._height = (width, height)
         self.size = (self._width, self._height)
-        self.update()
+        self.update_shape()
 
-    def check_arguments(self, topleft, width, height, thickness):
+    def check_arguments(self, topleft, width, height, border):
         if type(topleft) != tuple and type(topleft) != board_position.BoardPosition:
             raise RectFirstArgumentError(topleft)
         if type(width) != int:
@@ -332,17 +354,14 @@ class Rectangle(Shape):
         if type(height) != int:
             raise RectThirdArgumentError(height)
 
-    def update(self):
+    def update_shape(self):
         rect = pygame.Rect(0, 0, self.width, self.height)
         rect.center = (self.position[0], self.position[1])
-        self.costume.draw_shape_set(*self.draw_shape)
+        super().update_shape()
 
-    @property
-    def draw_shape(self):
+    def inner_shape(self):
         return pygame.draw.rect, [
-            self.color,
-            pygame.Rect((0, 0), (int(self.size[0]), int(self.size[1]))),
-            self.thickness,
+            pygame.Rect((0, 0), (int(self.size[0]), int(self.size[1])))
         ]
 
     def set_physics_default_values(self):
@@ -358,7 +377,7 @@ class Rectangle(Shape):
     def width(self, value: int):
         self._width = value
         self.size = (self._width, self._height)
-        self.update()
+        self.update_shape()
 
     @property
     def height(self):
@@ -368,7 +387,7 @@ class Rectangle(Shape):
     def height(self, value: int):
         self._height = value
         self.size = (self._width, self._height)
-        self.update()
+        self.update_shape()
 
 
 class Polygon(Shape):
@@ -377,7 +396,7 @@ class Polygon(Shape):
 
     Args:
         point-list: A list of points
-        thickness: The thickness of the bounding line
+        border: The border of the bounding line
 
     Examples:
         Example Creation of a polygon
@@ -391,33 +410,29 @@ class Polygon(Shape):
         Creates a red polygon with the vertices (200, 100) , (400, 100) and (0, 0)
     """
 
-    def __init__(self, pointlist, thickness=1):
-
-        super().__init__((0, 0))
-        self.thickness = thickness
+    def __init__(self, pointlist, border=1):
+        self._border = border
         self._pointlist = pointlist
+        super().__init__((0, 0))
 
-    def update(self):
+
+    def update_shape(self):
         min_x = min([p[0] for p in self.pointlist])
         min_y = min([p[1] for p in self.pointlist])
-        width = max([p[0] - min_x for p in self.pointlist]) + self.thickness
-        height = max([p[1] - min_y for p in self.pointlist]) + self.thickness
+        width = max([p[0] - min_x for p in self.pointlist]) + self.border
+        height = max([p[1] - min_y for p in self.pointlist]) + self.border
         self.size = (width, height)
         self.mod_pointlist = []
         for point in self.pointlist:
             x = point[0] - min_x
             y = point[1] - min_y
             self.mod_pointlist.append((x, y))
-        self.costume.draw_shape_set(*self.draw_shape)
         self.position = min_x, min_y
+        super().update_shape()
 
-    @property
-    def draw_shape(self):
-        return pygame.draw.polygon, [
-            self.color,
-            self.mod_pointlist,
-            self.thickness,
-        ]
+    def inner_shape(self):
+        return pygame.draw.polygon, [self.mod_pointlist]
+        
 
     @property
     def pointlist(self):
@@ -426,4 +441,4 @@ class Polygon(Shape):
     @pointlist.setter
     def pointlist(self, value: int):
         self._pointlist = value
-        self.update()
+        self.update_shape()

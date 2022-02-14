@@ -146,6 +146,7 @@ class Board(container.Container):
         self._static : bool = False
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self._fill_color = (255, 255, 255, 255)
+        self._stroke_color = (0, 0, 0, 255)
         self.is_running: bool = True
         self.frame: int = 0
         self.clock: pygame.time.Clock = pygame.time.Clock()
@@ -349,6 +350,14 @@ class Board(container.Container):
     @fill_color.setter
     def fill_color(self, value):
         self._fill_color = color.Color(value).get()
+
+    @property
+    def stroke_color(self):
+        return self._stroke_color
+
+    @stroke_color.setter
+    def stroke_color(self, value):
+        self._stroke_color = color.Color(value).get()
 
     @property
     def tile_size(self) -> int:
