@@ -79,9 +79,12 @@ class Appearance(metaclass=MetaAppearance):
             ("write_text", self.image_action_write_text, "text", False),
             ("flip", self.image_action_flip, "is_flipped", False),
             ("coloring", self.image_action_coloring, "coloring", False),
+            ("transparency", self.image_action_transparency, "transparency", False),
             ("rotate", self.image_action_rotate, "is_rotatable", False),
             ("flip_vertical", self.image_action_flip_vertical, "flip_vertical", False),
         ]
+        self._transparency = False
+        self._alpha = 255
         self.fill_color = (0, 0, 255, 255)  #: background_color if actor has no background image
         self.color = (255, 255, 255, 255)  #: color for overlays
         self._font_size = 0  #: font_size if token-text != ""
@@ -96,7 +99,6 @@ class Appearance(metaclass=MetaAppearance):
 
     def after_init(self):
         self._reload_all()
-        # self.update()
         self.initialized = True
 
     def _reload_all(self):
@@ -278,6 +280,33 @@ class Appearance(metaclass=MetaAppearance):
         self.dirty = 1
 
     @property
+    def transparency(self):
+        """
+        Defines a transparency. Coloring is True or false. The color is defined by the attribute appearance.alpha
+
+        """
+        return self._transparency
+
+    @transparency.setter
+    def transparency(self, value):
+        self._transparency = value
+        self.call_action("transparency")
+        self.dirty = 1
+
+    @property
+    def alpha(self):
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, value):
+        self._alpha = value
+        if value == 255:
+            self.transparency = False
+        else:
+            self.transparency = True
+        
+
+    @property
     def text(self):
         """
         Examples:
@@ -424,7 +453,8 @@ class Appearance(metaclass=MetaAppearance):
         return self.raw_image
 
     def _reset_image_index(self):
-        if self._current_animation_images:
+        if self._current_animation_images:            
+            _rect = self.token.costume.image.get_rect()
             self._image_index = len(self.images_list) - 1
 
 
@@ -690,6 +720,12 @@ class Appearance(metaclass=MetaAppearance):
         image.fill(new_color, None, pygame.BLEND_RGBA_ADD)  # Add color
         new_color = (255, 255, 255) + (self.color[3],)
         image.fill(new_color, None, pygame.BLEND_RGBA_MULT)  # Multiply transparency
+        return image
+
+    def image_action_transparency(self, image: pygame.Surface, parent) -> pygame.Surface:
+        """
+        """
+        image.set_alpha(self.alpha)
         return image
 
     @staticmethod
