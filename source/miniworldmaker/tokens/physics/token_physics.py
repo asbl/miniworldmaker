@@ -103,7 +103,7 @@ class TokenPhysics:
                     (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y), self.token.board.image)
                 end = pymunk.pygame_util.from_pygame(
                     (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
-                shape = pymunk.Segment(self._body, start, end, self.token.thickness)
+                shape = pymunk.Segment(self._body, start, end, self.token.border)
         else:
             raise AttributeError("No shape set!")
         return shape
