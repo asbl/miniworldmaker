@@ -71,7 +71,6 @@ class Shape(miniworldmaker.Token):
         self.costume.draw_shapes = []
         inner_shape = self.inner_shape()[0]
         inner_shape_arguments =  [self.fill_color,] + self.inner_shape()[1] + [0,]
-        print("arguments, ", inner_shape_arguments)
         outer_shape_arguments =  [self.border_color,] + self.inner_shape()[1] + [self.border,]
         self.costume.draw_shape_append(inner_shape, inner_shape_arguments)
         if self.border != 0:
@@ -87,35 +86,8 @@ class Shape(miniworldmaker.Token):
         self.update_shape()
 
 
-class Point(Shape):
-    """A Point-Shape
 
-    Args:
-        position: The position as 2-tuple
-        border: The border of the point (1: pixel, >1: The point is rendered as circle)
 
-    Examples:
-        Creates a red point at position (200,100):
-
-        >>> Point((200, 100), 1)
-
-    """
-
-    def __init__(self, position=(0, 0), border: int = 1):
-        try:
-            super().__init__(position)
-            rect = pygame.Rect(0, 0, border, border)
-            rect.center = (position[0], position[1])
-            self.radius = border
-            self.border = border
-            self.size = (border, border)
-            self.costume.load_surface()
-        except TypeError:
-            print("Shape not created because mouse position not in screen")
-            self.remove()
-
-    def inner_shape(self):
-        return pygame.draw.circle, [(int(self.radius), int(self.radius)), int(self.radius)]
 
 class Circle(Shape):
     """
@@ -138,9 +110,9 @@ class Circle(Shape):
         Creates a red circle at position (200,100) with radius 20. The circle is filled
     """
 
-    def __init__(self, position=(0, 0), radius: int = 10, border: int = 1):
+    def __init__(self, position=(0, 0), radius: int = 10):
         self._radius = radius
-        self._border = border
+        self._border = 1
         super().__init__(position)
         self.center = position
         
@@ -179,6 +151,10 @@ class Circle(Shape):
         rect.center = (self.position[0], self.position[1])
         super().update_shape()
 
+class Point(Circle):
+    def __init__(self, position):
+        super().__init__(position, 1)
+
 
 class Ellipse(Shape):
     def __init__(
@@ -188,18 +164,17 @@ class Ellipse(Shape):
         height: int = 10,
         border: int = 1,
     ):
-        self.check_arguments(position, width, height, border)
+        self.check_arguments(position, width, height)
         super().__init__(position)
-        self._border = border
+        self._border = 1
         self._width, self._height = width, height
         self.size = (width, height)
 
-    def check_arguments(self, position, width, height, border):
-        if type(position) not in [tuple, None] or type(width) != int or type(height) != int or type(border) != int:
+    def check_arguments(self, position, width, height):
+        if type(position) not in [tuple, None] or type(width) != int or type(height) != int:
             raise EllipseWrongArgumentsError()
 
     def inner_shape(self):
-        print(pygame.Rect(0, 0, int(self.size[0]), int(self.size[1])))
         return pygame.draw.ellipse, [
             pygame.Rect(0, 0, int(self.size[0]), int(self.size[1])),
         ]
@@ -247,11 +222,11 @@ class Line(Shape):
         Creates a line from (200, 100) to (400, 100)
     """
 
-    def __init__(self, start_position: tuple, end_position: tuple, border: int = 1):
-        self.check_arguments(start_position, end_position, border)
+    def __init__(self, start_position: tuple, end_position: tuple):
+        self.check_arguments(start_position, end_position, 1)
         self._start_position = start_position
         self._end_position = end_position
-        self._border = border
+        self._border = 1
         super().__init__(start_position)
         box = self.get_bounding_box()
         width, height = box[2], box[3]
@@ -337,16 +312,15 @@ class Rectangle(Shape):
         topleft=(0, 0),
         width: int = 10,
         height: int = 10,
-        border: int = 1,
     ):
-        self.check_arguments(topleft, width, height, border)
+        self.check_arguments(topleft, width, height)
         super().__init__(topleft)
-        self._border = border
+        self._border = 1
         self._width, self._height = (width, height)
         self.size = (self._width, self._height)
         self.update_shape()
 
-    def check_arguments(self, topleft, width, height, border):
+    def check_arguments(self, topleft, width, height):
         if type(topleft) != tuple and type(topleft) != board_position.BoardPosition:
             raise RectFirstArgumentError(topleft)
         if type(width) != int:
@@ -410,8 +384,8 @@ class Polygon(Shape):
         Creates a red polygon with the vertices (200, 100) , (400, 100) and (0, 0)
     """
 
-    def __init__(self, pointlist, border=1):
-        self._border = border
+    def __init__(self, pointlist):
+        self._border = 1
         self._pointlist = pointlist
         super().__init__((0, 0))
 

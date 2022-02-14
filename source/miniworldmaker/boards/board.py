@@ -752,7 +752,7 @@ class Board(container.Container):
         self.app.event_manager.send_event_to_containers("message", message)
 
     def screenshot(self, filename="screenshot.jpg"):
-        pygame.image.save(self.surface, filename)
+        pygame.image.save(self.app.window.surface, filename)
 
     def quit(self, exit_code=0):
         self.app.quit(exit_code)
