@@ -22,6 +22,11 @@ Circle
 .. autoclass:: miniworldmaker.tokens.shapes.Circle
    :members:
 
+Ellipse
+=======
+
+.. autoclass:: miniworldmaker.tokens.shapes.Ellipse
+   :members:
 
 Line
 ====

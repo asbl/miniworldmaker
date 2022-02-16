@@ -31,33 +31,49 @@ from typing import Tuple
 
 
 class Board(container.Container):
-    """Board is the Base Class for Boards, e.g. TiledBoard, PixelBoard or PhysicsBoard.
+    """`Board` is the Base Class for Boards, e.g. TiledBoard, PixelBoard or PhysicsBoard.
 
     You can create a custom board by inherit one of Board subclasses (TiledBoard, PixelBoard or PhysicsBoard) or by creating a board-object:
 
-    **Tiledboard**
+    *Tiledboard*
 
     A Board for Games based on Tiles (Like Rogue-Like RPGs).
 
     * Every token on a TiledBoard has the size of exactly on one Tile. (If your tile_size is 40, every token has the size 40x40. )
-    * The **position** of a token (*mytoken.position*) corresponds to the tile on which it is placed.
+    
+    * The `position` of a token (*mytoken.position*) corresponds to the tile on which it is placed.
+    
     * Two tokens **collide** when they are on the same tile.
 
     .. image:: ../_images/tiled_board.jpg
         :width: 100%
         :alt: TiledBoard
 
-    **PixelBoard**
+    Creating a TiledBoard:
+
+    .. code-block:: python
+
+        myboard = miniworldmaker.TiledBoard()
+
+    *PixelBoard*
 
     A board for pixel accurate games.
+
+    * The position of a token on a PixelBoard is the pixel at toplef of token.
+
+    * New tokens are created with top-left corner of token rect at position.
+
+    * Two tokens collide when their sprites overlap.
 
     .. image:: ../_images/asteroids.jpg
         :width: 100%
         :alt: Asteroids
 
-    * The position of a token on a PixelBoard is the pixel at toplef of token.
-    * New tokens are created with top-left corner of token rect at position.
-    * Two tokens collide when their sprites overlap.
+    Creating a PixelBoard:
+
+    .. code-block:: python
+
+        myboard = miniworldmaker.PixelBoard()
 
     Examples:
 
@@ -65,10 +81,10 @@ class Board(container.Container):
 
         .. code-block:: python
 
-        myboard = miniworldmaker.TiledBoard()
-        myboard.columns = 30
-        myboard.rows = 20
-        myboard.tile_size = 20
+            myboard = miniworldmaker.TiledBoard()
+            myboard.columns = 30
+            myboard.rows = 20
+            myboard.tile_size = 20
 
 
         Creating a TiledBoard-Subclass as Class:

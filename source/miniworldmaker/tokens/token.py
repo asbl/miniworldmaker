@@ -75,30 +75,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         * See: :doc:`TextTokens and NumberTokens <../api/token.texttoken>`
     Args:
         position: The topleft position of the token as tuple,. e.g. (200,200)
-
-    Attributes:
-
-        collision_type (string):
-            The attribute collision_type specifies how collisions should be checked:
-
-            * "default": tile for TiledBoards, 'maask' for PixelBoards
-
-            * "tile": Are tokens on the same tile? (only TiledBoard)
-
-            * "rect": Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
-
-            * "static-rect": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
-
-            * "circle": Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
-
-            * "mask": Are tokens colliding when checkig if their image masks are overlapping.
     """
 
     token_count: int = 0
     class_image: str = ""
 
     def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None):
-        self.collision_type: str = ""
+        self._collision_type: str = ""
         self._layer: int = 0
         self._border = 0
         self._fill = False
@@ -118,6 +101,29 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.speed: int = 1
         self._position: "board_position.BoardPosition" = position
         self.ask: "ask.Ask" = ask.Ask(self.board)
+
+
+    @property
+    def collision_type(self) -> str:
+        """collision_type specifies how collisions should be checked:
+
+            * `default`: tile for TiledBoards, 'mask' for PixelBoards
+
+            * `tile`: Are tokens on the same tile? (only TiledBoard)
+
+            * `rect`: Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
+
+            * `static-rect`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+
+            * `circle`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+
+            * `mask`: Are tokens colliding when checkig if their image masks are overlapping.
+        """
+        return self._collision_type
+
+    @collision_type.setter
+    def collision_type(self, value : str):
+        self._collision_type = value
 
     @property
     def layer(self) -> int:
@@ -165,9 +171,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             flip a token in Example flipthefish.py
 
             .. code-block:: python
+
               def on_sensing_not_on_board(self):
                   self.move_back()
                   self.flip_x()
+                  print(self.is_flipped()) # true
         """
         return self.costume.is_flipped
 
@@ -208,8 +216,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         The image of the token:
 
-        > Warning: You should not directly draw on the image
-        > as the image will be reloaded during animations
+        .. warning::
+          Warning: You should not directly draw on the image
+          as the image will be reloaded during animations
 
         """
         return self.costume_manager.image
@@ -268,7 +277,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Args:
             next: If next is True, the next costume will be selected
 
-        Returns: The new costume
+        Returns: 
+            The new costume
         """
         self.costume_manager.switch_costume(costume)
 
@@ -278,7 +288,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Args:
             next: If next is True, the next costume will be selected
 
-        Returns: The new costume
+        Returns: 
+            The new costume
         """
         self.costume_manager.next_costume()
 
@@ -533,7 +544,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def x(self) -> float:
-        """int: The x-value of an token"""
+        """The x-value of an token"""
         return self.position_manager.x
 
     @x.setter
@@ -542,7 +553,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def y(self) -> float:
-        """int: The x-value of an token"""
+        """The y-value of an token"""
         return self.position_manager.y
 
     @y.setter
@@ -611,12 +622,15 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Examples:
 
-            if sensing_on_board, move forward:
+            if token is on the board, move forward:
+            
+            .. code-block:: python
+            
+                class Robot(Token):
 
-            >>> class Robot(Token):
-            >>>    def act(self):
-            >>>         if self.sensing_on_board():
-            >>>             self.move()
+                    def act(self):
+                        if self.sensing_on_board():
+                            self.move()
         """
         return self.position_manager.move(distance)
 
@@ -644,9 +658,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Examples:
 
             move_back when field is blocked:
+            
+            .. code-block:: python
 
-            >>>  def on_sensing_wall(self, wall):
-            >>>    self.move_back()
+                def on_sensing_wall(self, wall):
+                    self.move_back()
 
         """
         return self.position_manager.move_back()
@@ -687,10 +703,12 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Examples:
 
-        move to (3, 2) on mouse_click
+            move to (3, 2) on mouse_click
 
-        >>> def on_clicked_left(self, position):
-        >>>   self.move_to((3,2))
+            .. code-block:: python
+                
+                def on_clicked_left(self, position):
+                    self.move_to((3,2))
 
 
         """
@@ -704,13 +722,15 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             Removes robots in thecrash.py :
 
-            >>>    def act(self):
-            >>>        self.move()
-            >>>        other = self.sensing_token(distance = 0, token_type=Robot)
-            >>>    if other:
-            >>>        explosion = Explosion(position=self.position)
-            >>>        self.remove()
-            >>>        other.remove()
+            .. code-block:: python
+
+               def act(self):
+                   self.move()
+                   other = self.sensing_token(distance = 0, token_type=Robot)
+               if other:
+                   explosion = Explosion(position=self.position)
+                   self.remove()
+                   other.remove()
         """
         if hasattr(self, "board") and self.board:
             self.board.remove_from_board(self)
@@ -782,20 +802,25 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         .. image:: ../_images/sensing_token.png
 
         Args:
+
             token_filter: filter by token type or by token instance
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
             collision_type: The type of collision which should be checked:
 
         Returns:
+
             First token found by Sensor
 
         Examples:
+
             Sensing a fireplace in rpg.py:
 
-            >>>  fireplace =  self.player.sensing_token(Fireplace)
-            >>>    if fireplace:
-            >>>      self.console.newline("Du zündest die Feuerstelle an.")
-            >>>      self.fireplace.burn()
+            .. code-block:: python
+                
+                fireplace =  self.player.sensing_token(Fireplace)
+                if fireplace:
+                    self.console.newline("Du zündest die Feuerstelle an.")
+                    self.fireplace.burn()
 
         """
         return self.board_sensor.sensing_token(token_filter, distance)
@@ -807,77 +832,83 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         .. image:: ../_images/sensing_borders.png
 
         Args:
+
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
         Returns:
+
             True if border was found.
 
         """
         return self.board_sensor.sensing_borders(distance)
 
     def sensing_left_border(self, distance: int = 0) -> bool:
-        """
-        Senses borders
+        """Senses borders
+        
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: True if border was found.
+        Returns: 
+            True if border was found.
 
         """
         return "left" in self.board_sensor.sensing_borders(distance)
 
     def sensing_right_border(self, distance: int = 0) -> bool:
-        """
-        Senses borders
+        """Senses borders
+        
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: True if border was found.
+        Returns: 
+            True if border was found.
 
         """
         return "right" in self.board_sensor.sensing_borders(distance)
 
     def sensing_top_border(self, distance: int = 0) -> bool:
-        """
-        Senses borders
+        """Senses borders
+        
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: True if border was found.
+        Returns: 
+            True if border was found.
 
         """
         return "top" in self.board_sensor.sensing_borders(distance)
 
     def sensing_bottom_border(self, distance: int = 0) -> bool:
-        """
-        Senses borders
+        """Senses borders
+        
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: True if border was found.
+        Returns: 
+            True if border was found.
 
         """
         return "bottom" in self.board_sensor.sensing_borders(distance)
 
     def sensing_colors(self, colors: Tuple, distance: int) -> tuple:
-        """
-        Senses colors in board-background at token-position
+        """Senses colors in board-background at token-position
 
         Args:
-            colors:
+            colors: colors as tuple
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: All colors found by Sensor
+        Returns: 
+            All colors found by Sensor
 
         """
         colors = self.board_sensor.sensing_colors(colors, distance)
         return colors
 
     def sensing_point(self, board_position: Union["board_position.Boardposition", Tuple]) -> bool:
-        """
-        Is the token colliding with a specific (global) point?
+        """Is the token colliding with a specific (global) point?
 
-        Returns: True if point is below token
+        Returns: 
+            True if point is below token
         """
         return self.rect.collidepoint(board_position)
 
@@ -911,32 +942,33 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def on_key_down(self, key: list):
         """**on_key_down**  is called one time when a key is pressed down.
 
-        Instead of **on_key_down** you can use **on_key_down_letter**, e.g. **on_key_down_a** or **on_key_down_w**
-        , if you want to handle a on_key_down event for a specific letter.
+        .. note::
+            Instead of **on_key_down** you can use **on_key_down_letter**, e.g. **on_key_down_a** or **on_key_down_w**
+            , if you want to handle a on_key_down event for a specific letter.
 
         Examples:
 
-        Register a key_down event:
+            Register a key_down event:
 
-        .. code-block::
+            .. code-block::
 
-            token1 = miniworldmaker.Token(position = (2, 2) )
-            token1.add_costume((100,0,100,100))
+                token1 = miniworldmaker.Token(position = (2, 2) )
+                token1.add_costume((100,0,100,100))
 
-            @token1.register
-            def on_key_down(self, key):
-                print(key)
+                @token1.register
+                def on_key_down(self, key):
+                    print(key)
 
-        Register on_key_down_a event
+            Register on_key_down_a event
 
-        .. code-block::
+            .. code-block::
 
-            token1 = miniworldmaker.Token(position = (2, 2) )
-            token1.add_costume((100,0,100,100))
+                token1 = miniworldmaker.Token(position = (2, 2) )
+                token1.add_costume((100,0,100,100))
 
-            @token1.register
-            def on_key_down_a(self):
-                print("a")
+                @token1.register
+                def on_key_down_a(self):
+                    print("a")
 
         Args:
             key (list): The typed key as list (e.g. ['A', 'a']) containing both uppercase and lowercase of typed letter.
@@ -950,7 +982,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed
         is repeatedly called again and again until the key is released.
 
-        Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`).
+        .. note::
+            
+            Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`).
 
         Examples:
 
@@ -983,7 +1017,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def on_mouse_left(self, position: tuple):
         """Method is called when left mouse button was pressed.
 
-
         Examples
             Register mouse event to board
 
@@ -1014,7 +1047,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def on_mouse_right(self, position: tuple):
         """on_mouse_right is called when right mouse button was pressed.
 
-        Examples
+        Examples:
 
             Register mouse event to board
 
@@ -1277,7 +1310,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def border(self):
-        """Border of token (0: no border"""
+        """The border-size of token.
+
+        The value is 0, if token has no border
+
+        Returns:
+            _type_: int
+        """
         return self._border
 
     @border.setter
@@ -1291,7 +1330,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             inner_shape = self._inner_shape()[0]
             if self.fill:
                 inner_shape_arguments =  [self.fill_color,] + self._inner_shape()[1] + [0,]
-                self.costume.draw_shape_append(inner_shape, inner_shape_arguments        self._border_color = (0,0,0,0)  )
+                self.costume.draw_shape_append(inner_shape, inner_shape_arguments)
             if self.border:
                 outer_shape_arguments =  [self.border_color,] + self._inner_shape()[1] + [self.border,]
                 self.costume.draw_shape_append(inner_shape, outer_shape_arguments)

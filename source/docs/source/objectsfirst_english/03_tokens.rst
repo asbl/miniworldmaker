@@ -37,7 +37,7 @@ What happens here?
 * Line 10 assigns a costume to the player object.
 
 The costume
-==========
+===========
 
 Every ``board`` has a ``background``, every ``token`` has a ``costume``. To make your tokens look different, you can *put* a costume on your token.
 

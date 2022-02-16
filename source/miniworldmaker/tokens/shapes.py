@@ -8,13 +8,23 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     LineFirstArgumentError,
     LineSecondArgumentError,
     RectFirstArgumentError,
-    RectSecondArgumentError,
-    RectThirdArgumentError,
 )
 
 
 class Shape(miniworldmaker.Token):
-    """Base class for Shapes"""
+    """Shape is the parent class for various geometric objects that can be created.
+
+    Each geometric object has the following properties:
+
+    * border: The border thickness of the object.
+    * fill: True/False if the object should be filled.
+    * fill_color: The fill color of the object
+    * border_color: The border color of the object.
+
+    .. image:: ../_images/shapes.png
+        :width: 60%
+        :alt: Shapes
+    """
 
     def __init__(self, position: tuple = None):
         if position == None:
@@ -30,27 +40,55 @@ class Shape(miniworldmaker.Token):
 
 class Circle(Shape):
     """
-    A circular shape.
+    A circular shape, definied by position and radius
+
+
+    .. image:: ../_images/circle.png
+        :width: 120px
+        :alt: Circle
 
     Args:
         position: The position as 2-tuple. The circle is created with its center at the position
         radius: The radius of the circle
 
-    Examples:
-        Example Creation of a circle
 
-        >>> Circle((200, 100), 20)
-        Creates a red circle at position (200,100) with radius 20.
+    Examples:
+        Create a circle at center position (200,100) with radius 20:
+
+        .. code-block:: python
+            
+            Circle((200, 100), 20)
+        
+        Create a circle at topleft position
+        
+        .. code-block:: python
+
+            miniworldmaker.Circle.from_topleft((100,100),50)    
     """
 
-    def __init__(self, position=(0, 0), radius: int = 10):
+    def __init__(self, position=(0, 0), radius: float = 10):
         self._radius = radius
         self._border = 1
         super().__init__(position)
         self.center = position
 
     def _inner_shape(self):
-        return pygame.draw.circle, [(int(self.radius), int(self.radius)), int(self.radius)]
+        return pygame.draw.circle, [self.radius, self.radius, self.radius]
+
+    @classmethod
+    def from_topleft(cls, position : tuple, radius : int):
+        """Creates a circle with topleft at position
+        """
+        circle = cls(position, radius)
+        circle.topleft = circle.center
+        return circle
+
+    @classmethod
+    def from_center(cls, position : tuple, radius: float):
+        """Creates a circle with center at position
+        """
+        circle = cls(position, radius)
+        return circle
 
     @property
     def radius(self):
@@ -77,35 +115,54 @@ class Circle(Shape):
 
 
 class Point(Circle):
-    """A Point.
-
-    A point is a circle with radius 1.
+    """A point is a Circle with Radius 1
     """
 
-    def __init__(self, position):
+    def __init__(self, position : tuple):
+        """Init a Point at specified position
+        """
         super().__init__(position, 1)
 
 
 class Ellipse(Shape):
     """An elliptic shape.
 
+    .. image:: ../_images/ellipse.png
+        :width: 120px
+        :alt: Ellipse
+
     Args:
-        position: The position as 2-tuple. The circle is created with its center at the position
+        position: The position as 2-tuple. The ellipse is created at topleft position
         width: The width of the ellipse
         height: The height of the ellipse
 
     Examples:
-        Example Creation of a circle
+        
+        Create an ellipse at topleft position (200,100) with width 20 and height 30
+        
+        .. code-block:: python
+        
+            Ellipse((200, 100), 20, 30)
 
-        >>> Circle((200, 100), 20, 30)
-        Creates a red circle at position (200,100) with width 20 and height 30
+        Create an ellipse at center-position (200,100) width width 10 and height 10
+
+        .. code-block:: python
+        
+            miniworldmaker.Ellipse.from_center((100,100),10, 10)
+            
+        (Alternative) Create an ellipse at center-position (200,100) with width 10 and height 10
+        
+        .. code-block:: python
+        
+            e = miniworldmaker.Ellipse((100,100),10, 10)
+            e.center = e.position
     """
 
     def __init__(
         self,
         position=(0, 0),
-        width: int = 10,
-        height: int = 10,
+        width: float = 10,
+        height: float = 10,
     ):
         self.check_arguments(position, width, height)
         super().__init__(position)
@@ -114,12 +171,12 @@ class Ellipse(Shape):
         self._update_draw_shape()
 
     def check_arguments(self, position, width, height):
-        if type(position) not in [tuple, None] or type(width) != int or type(height) != int:
+        if type(position) not in [tuple, None]:
             raise EllipseWrongArgumentsError()
 
     def _inner_shape(self):
         return pygame.draw.ellipse, [
-            pygame.Rect(0, 0, int(self.size[0]), int(self.size[1])),
+            pygame.Rect(0, 0, self.size[0], self.size[1]),
         ]
 
     def _update_draw_shape(self):
@@ -127,9 +184,28 @@ class Ellipse(Shape):
         rect.center = (self.position[0], self.position[1])
         super()._update_draw_shape()
 
+    @classmethod
+    def from_topleft(cls, position : tuple, width : float, height: float):
+        """Creates an ellipse with topleft at position
+        """
+        circle = cls(position, width, height)
+        circle.topleft = circle.center
+        return circle
+
+    @classmethod
+    def from_center(cls, position : tuple, width: float, height: float):
+        """Creates an ellipse with center at position
+        """
+        circle = cls(position, width, height)
+        return circle
+
 
 class Line(Shape):
-    """A Line-Shape.
+    """A Line-Shape defined by start_position and end_position.
+
+    .. image:: ../_images/ellipse.png
+        :width: 120px
+        :alt: Line
 
     Args:
 
@@ -138,26 +214,34 @@ class Line(Shape):
 
     Examples:
 
-        Example Creation of a line
-        >>> Line((200, 100), (400,100))
-        Creates a line from (200, 100) to (400, 100)
+        Create a line from (200, 100) to (400, 100)
+
+        .. code-block:: python
+        
+            Line((200, 100), (400,100))
+
+        Create a line from (200, 100) to (400, 100) with thickness 2
+
+        .. code-block:: python
+        
+            l = Line((200, 100), (400,100))
+            l.thickness = 2
+        
     """
 
     def __init__(self, start_position: tuple, end_position: tuple):
-        self.check_arguments(start_position, end_position, 1)
+        self.check_arguments(start_position, end_position)
         self._start_position = start_position
         self._end_position = end_position
         super().__init__(start_position)
         self._border = 1
         self._fill = True
-        box = self.get_bounding_box()
-        width, height = box[2], box[3]
-        self.size = (width, height)
         self.position = start_position
         self._update_draw_shape()
-        self.position = self.start_position
+        box = self.get_bounding_box()
+        self.position = box.topleft
 
-    def check_arguments(self, start_position, end_position, border):
+    def check_arguments(self, start_position, end_position):
         if type(start_position) != tuple:
             raise LineFirstArgumentError(start_position)
         if type(end_position) != tuple:
@@ -180,14 +264,17 @@ class Line(Shape):
 
     def _update_draw_shape(self):
         box = self.get_bounding_box()
+        width, height = box[2], box[3]
+        self.size = (width, height)
         # mod_start: Start of line
-        _x_start = self.start_position[0] - box.topleft[0]
-        _y_start = self.start_position[1] - box.topleft[1]
+        _x_start = self.start_position[0] - box.topleft[0] - self.border
+        _y_start = self.start_position[1] - box.topleft[1] - self.border
         self.local_start_position = (_x_start, _y_start)
         # mod end: End of line
-        _x_end = self.end_position[0] - box.topleft[0]
-        _y_end = self.end_position[1] - box.topleft[1]
+        _x_end = self.end_position[0] - box.topleft[0] - self.border
+        _y_end = self.end_position[1] - box.topleft[1] - self.border
         self.local_end_position = (_x_end, _y_end)
+        print(self.local_start_position, self.local_end_position, box, self.size, self.position)
         super()._update_draw_shape()
         # self.costume.load_surface()
         
@@ -213,9 +300,22 @@ class Line(Shape):
         self._end_position = value
         self.costume_manager.reload_costume()
 
+    @property
+    def thickness(self):
+        """-> see border"""
+        return self.border
+
+    @thickness.setter
+    def thickness(self, value):
+        self.border = value
+
 class Rectangle(Shape):
     """
-    A Rect-Shape.
+    A rectangular shape defined by position, width and height
+
+    .. image:: ../_images/ellipse.png
+        :width: 120px
+        :alt: Line
 
     Args:
         topleft: Topleft Position of Rect
@@ -223,17 +323,20 @@ class Rectangle(Shape):
         width: The width of the rect
 
     Examples:
-        Example Creation of a polygon
+        
+        Create a rect with the topleft position (200, 100), the width 20 and the height 10
 
-        >>> Rectangle((200, 100), 20, 10)
-        Creates a red rect with the topleft position (200, 100), the width 20 and the height 10
+        .. code-block:: python
+
+            Rectangle((200, 100), 20, 10)
+        
     """
 
     def __init__(
         self,
         topleft=(0, 0),
-        width: int = 10,
-        height: int = 10,
+        width: float = 10,
+        height: float = 10,
     ):
         self.check_arguments(topleft, width, height)
         super().__init__(topleft)
@@ -244,10 +347,6 @@ class Rectangle(Shape):
     def check_arguments(self, topleft, width, height):
         if type(topleft) != tuple and type(topleft) != board_position.BoardPosition:
             raise RectFirstArgumentError(topleft)
-        if type(width) != int:
-            raise RectSecondArgumentError(width)
-        if type(height) != int:
-            raise RectThirdArgumentError(height)
 
     def _update_draw_shape(self):
         rect = pygame.Rect(0, 0, self.width, self.height)
@@ -255,13 +354,27 @@ class Rectangle(Shape):
         super()._update_draw_shape()
 
     def _inner_shape(self):
-        return pygame.draw.rect, [pygame.Rect((0, 0), (int(self.size[0]), int(self.size[1])))]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1])]
 
     def set_physics_default_values(self):
         self.physics.shape_type = "rect"
         self.physics.stable = False
         self.physics.correct_angle = 90
 
+    @classmethod
+    def from_topleft(cls, position : tuple, width : float, height: float):
+        """Creates a rectangle with topleft at position
+        """
+        circle = cls(position, width, height)
+        circle.topleft = circle.center
+        return circle
+
+    @classmethod
+    def from_center(cls, position : tuple, width: float, height: float):
+        """Creates a rectangle with center at position
+        """
+        circle = cls(position, width, height)
+        return circle
 
 class Polygon(Shape):
     """
