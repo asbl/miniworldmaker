@@ -68,6 +68,7 @@ class TokenCostumeManager:
             self.costume = new_costume
             self.has_costume = True
         self.costumes.add(new_costume)
+        self.update_shape()
         self.dirty = 1
         return new_costume
 
@@ -160,4 +161,9 @@ class TokenCostumeManager:
             return self._rect
 
     def reload_costume(self):
+        self.update_shape()
         self.costume._reload_all()
+
+    def update_shape(self):
+        if self.token.position_manager:
+            self.token._update_draw_shape()

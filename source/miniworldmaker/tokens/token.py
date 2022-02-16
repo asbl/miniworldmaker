@@ -98,6 +98,12 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     class_image: str = ""
 
     def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None):
+        self.collision_type: str = ""
+        self._layer: int = 0
+        self._border = 0
+        self._fill = False
+        self._fill_color = (0,0,0,0)      
+        self._stroke_color = (0,0,0,0)    
         self._managers: list = list()
         self.token_id: int = Token.token_count + 1
         self.costume_manager: miniworldmaker.TokenCostumeManager = None
@@ -108,10 +114,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         _token_connector.add_token_managers(None, position)
         pygame.sprite.DirtySprite.__init__(self)
         Token.token_count += 1
-        self.speed: int = 1
-        self.collision_type: str = ""
-        self._layer: int = 0
         self.static: bool = False
+        self.speed: int = 1
         self._position: "board_position.BoardPosition" = position
         self.ask: "ask.Ask" = ask.Ask(self.board)
 
@@ -160,9 +164,10 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             flip a token in Example flipthefish.py
 
-            >>>  def on_sensing_not_on_board(self):
-            >>>    self.move_back()
-            >>>    self.flip_x()
+            .. code-block:: python
+              def on_sensing_not_on_board(self):
+                  self.move_back()
+                  self.flip_x()
         """
         return self.costume.is_flipped
 
@@ -182,9 +187,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             flip a token.
 
-            >>>  def on_sensing_not_on_board(self):
-            >>>    self.move_back()
-            >>>    self.flip_x()
+            .. code-block:: python
+
+              def on_sensing_not_on_board(self):
+                  self.move_back()
+                  self.flip_x()
         """
         return self.position_manager.flip_x()
 
@@ -212,6 +219,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """If token is dirty, it will be repainted.
 
         Returns:
+
             int: 1 if token is dirty/0 otherwise
         """
         if self.costume_manager:
@@ -313,8 +321,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         * 180° or "down": Move down
         * "forward": Current direction
 
-
-
         Sets direction of the token.
 
         You can use a integer or a string to describe the direction
@@ -331,16 +337,18 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             Move in a direction with WASD-Keys
 
-            >>> def on_key_down(self, keys):
-            >>>    if "W" in keys:
-            >>>      self.direction = "up"
-            >>>    elif "S" in keys:
-            >>>      self.direction = "down"
-            >>>    elif "A" in keys:
-            >>>      self.direction = "left"
-            >>>    elif "D" in keys:
-            >>>      self.direction = "right"
-            >>>    self.move()
+            .. code-block:: python
+
+              def on_key_down(self, keys):
+                  if "W" in keys:
+                      self.direction = "up"
+                  elif "S" in keys:
+                      self.direction = "down"
+                  elif "A" in keys:
+                      self.direction = "left"
+                  elif "D" in keys:
+                      self.direction = "right"
+                  self.move()
         """
         return self.position_manager.direction
 
@@ -418,16 +426,18 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             Move in a direction with WASD-Keys
 
-            >>> def on_key_down(self, keys):
-            >>>    if "W" in keys:
-            >>>      self.direction = "up"
-            >>>    elif "S" in keys:
-            >>>      self.direction = "down"
-            >>>    elif "A" in keys:
-            >>>      self.direction = "left"
-            >>>    elif "D" in keys:
-            >>>      self.direction = "right"
-            >>>    self.move()
+            .. code-block:: python
+
+              def on_key_down(self, keys):
+                  if "W" in keys:
+                      self.direction = "up"
+                  elif "S" in keys:
+                      self.direction = "down"
+                  elif "A" in keys:
+                      self.direction = "left"
+                  elif "D" in keys:
+                      self.direction = "right"
+                  self.move()
         """
         return self.position_manager.point_in_direction(direction)
 
@@ -451,11 +461,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             Point towards mouse_position:
 
-            >>>  def act(self):
-            >>>  mouse = self.board.get_mouse_position()
-            >>>  if mouse:
-            >>>    self.point_towards_position(mouse)
-            >>>  self.move()
+            .. code-block:: python
+            
+                def act(self):
+                    mouse = self.board.get_mouse_position()
+                if mouse:
+                    self.point_towards_position(mouse)
+                self.move()
         """
         return self.board_sensor.point_towards_position(destination)
 
@@ -492,12 +504,21 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.size[0]
 
+    @width.setter
+    def width(self, value):
+        self.size = (value, self.size[1])
+
     @property
     def height(self):
         """
         The height of the token in pixels
         """
         return self.size[1]
+
+    @height.setter
+    def height(self, value):
+        self.size = (self.size[0], value)
+
 
     @property
     def position(self) -> board_position.BoardPosition:
@@ -1194,9 +1215,86 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def static(self):
+        """Should token react to events?
+        You can turn this option off for additional performance boost.
+        """
         return self._static
 
     @static.setter
     def static(self, value):
         _token_connector = self.board.get_token_connector(self)
         _token_connector.set_static(value)
+
+    @property
+    def color(self):
+        """->See fill color"""
+        return self._fill_color
+
+    @color.setter
+    def color(self, value):
+        self._fill_color = value
+        self.costume_manager.reload_costume()
+
+    @property
+    def fill_color(self):
+        return self._fill_color
+
+    @fill_color.setter
+    def fill_color(self, value):
+        """fill color of token"""
+        self._fill_color = value
+        self.costume_manager.reload_costume()
+
+    @property
+    def stroke_color(self):
+        """see border color"""
+        return self._stroke_color
+
+
+    @stroke_color.setter
+    def stroke_color(self, value):
+        self.border_color = value
+
+    @property
+    def border_color(self):
+        """border color of token"""
+        return self._stroke_color
+
+    @border_color.setter
+    def border_color(self, value):
+        self._stroke_color = value
+        self.costume_manager.reload_costume()
+
+    @property
+    def fill(self):
+        """Is token filled with color?"""
+        return self._fill
+
+    @fill.setter
+    def fill(self, value):
+        self._fill = value
+        self.costume_manager.reload_costume()
+
+    @property
+    def border(self):
+        """Border of token (0: no border"""
+        return self._border
+
+    @border.setter
+    def border(self, value):
+        self._border = value
+        self.costume_manager.reload_costume()
+
+    def _update_draw_shape(self):
+        self.costume.draw_shapes = []
+        if self._inner_shape():
+            inner_shape = self._inner_shape()[0]
+            if self.fill:
+                inner_shape_arguments =  [self.fill_color,] + self._inner_shape()[1] + [0,]
+                self.costume.draw_shape_append(inner_shape, inner_shape_arguments        self._border_color = (0,0,0,0)  )
+            if self.border:
+                outer_shape_arguments =  [self.border_color,] + self._inner_shape()[1] + [self.border,]
+                self.costume.draw_shape_append(inner_shape, outer_shape_arguments)
+
+    def _inner_shape(self):
+        return pygame.draw.rect, [pygame.Rect((0, 0), (int(self.costume.image.get_width()), int(self.costume.image.get_height())))]
