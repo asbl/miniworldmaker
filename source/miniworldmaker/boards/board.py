@@ -360,6 +360,14 @@ class Board(container.Container):
         self._stroke_color = color.Color(value).get()
 
     @property
+    def border_color(self):
+        return self.border_color
+
+    @stroke_color.setter
+    def border_color(self, value):
+        self.stroke_color = value
+
+    @property
     def tile_size(self) -> int:
         """
         The number of columns

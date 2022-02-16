@@ -71,7 +71,7 @@ class Costume(appear.Appearance):
         if self.parent.costume_manager and self.parent.position_manager:
             super().reload_image()
         else:
-            return self._image
+            return self.image
 
     def reset(self):
         self._image_index = 0

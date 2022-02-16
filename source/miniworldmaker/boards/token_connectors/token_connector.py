@@ -10,6 +10,9 @@ class TokenConnector:
 
     def add_token_to_board(self, position):
         self.board.tokens.add(self.token)
+        self.token.fill_color = self.board.fill_color
+        self.token.border_color = self.board.stroke_color
+        self.token.costume_manager.reload_costume()
         self.token.dirty = 1
         if self.token.costume:
             self.token.costume._reload_all()
@@ -19,7 +22,6 @@ class TokenConnector:
         if not self.token.static:
             self.token.board.event_handler.register_events_for_token(self.token)
         self.token.color = self.board.fill_color
-
 
     def add_position_manager_to_token(self, token, position):
         """

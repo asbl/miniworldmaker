@@ -46,9 +46,9 @@ class Appearance(metaclass=MetaAppearance):
         Appearance.counter += 1
         self.image_paths = []  # list with all images
         # properties
-        self.raw_image = pygame.Surface((1, 1))  # size set in image()-method
-        self._image = pygame.Surface((1, 1))  # size set in image()-method
-        self.cached_image = pygame.Surface((1, 1))
+        self.raw_image = pygame.Surface((0, 0))  # size set in image()-method
+        self._image = pygame.Surface((0, 0))  # size set in image()-method
+        self.cached_image = pygame.Surface((0, 0))
         self.call_image_actions = {}
         self.animation_speed = 100  #: The animation speed for animations
         self._is_animated = False
@@ -70,7 +70,6 @@ class Appearance(metaclass=MetaAppearance):
         # "Action name", image_action_method, "Attribute", enabled)
         self.image_actions_pipeline = [
             ("orientation", self.image_action_set_orientation, "orientation", False),
-            ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
             ("texture", self.image_action_texture, "is_textured", False),
             ("scale", self.image_action_scale, "is_scaled", False),
             ("scale_to_width", self.image_action_scale_to_width, "is_scaled_to_width", False),
@@ -80,6 +79,7 @@ class Appearance(metaclass=MetaAppearance):
             ("flip", self.image_action_flip, "is_flipped", False),
             ("coloring", self.image_action_coloring, "coloring", False),
             ("transparency", self.image_action_transparency, "transparency", False),
+            ("draw_shapes", self.image_action_draw_shapes, "draw_shapes", False),
             ("rotate", self.image_action_rotate, "is_rotatable", False),
             ("flip_vertical", self.image_action_flip_vertical, "flip_vertical", False),
         ]
@@ -441,6 +441,8 @@ class Appearance(metaclass=MetaAppearance):
 
     @property
     def image(self) -> pygame.Surface:
+        if self._image.get_width() == 0 and self._image.get_height() == 0:
+            self.reload_image()
         return self._image
 
     def load_surface(self) -> pygame.Surface:
@@ -761,7 +763,6 @@ class Appearance(metaclass=MetaAppearance):
         the method is overwritten in subclasses costume and appearance
         """
         pass
-
 
     def register(self, method: callable):
         """ 
