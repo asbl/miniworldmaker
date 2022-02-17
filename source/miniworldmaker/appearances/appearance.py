@@ -492,7 +492,6 @@ class Appearance(metaclass=MetaAppearance):
 
         return image
 
-
     def reload_image(self):
         """ Performs all actions in image pipeline"""
         if self.dirty == 1:
