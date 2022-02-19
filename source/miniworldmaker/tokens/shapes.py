@@ -73,14 +73,17 @@ class Circle(Shape):
         self.center = position
 
     def _inner_shape(self):
-        return pygame.draw.circle, [self.radius, self.radius, self.radius]
+        return pygame.draw.circle, [(self.position[0],self.position[1]), self.radius]
 
     @classmethod
     def from_topleft(cls, position : tuple, radius : int):
         """Creates a circle with topleft at position
         """
         circle = cls(position, radius)
-        circle.topleft = circle.center
+        #print(circle)
+        #print(circle.topleft)
+        #print(circle.topleft, circle.center[0], circle.center[1])
+        #circle.topleft = circle.center[0], circle.center[1]
         return circle
 
     @classmethod
