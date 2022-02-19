@@ -1,7 +1,7 @@
-MiniWorldMaker
+miniworldmaker
 ---------
 
-MiniWorldMaker allows you to create 2D mini worlds and games. 
+miniworldmaker allows you to create 2D mini worlds and games. 
 
 It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
@@ -11,7 +11,7 @@ It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
 ### Tutorial
 
-[German](https://miniworldmaker.de/objectsfirst_german/01_installation.html) | [English](https://miniworldmaker.de/objectsfirst_english/01_installation.html)
+[English](https://miniworldmaker.de/objectsfirst_english/01_installation.html) | [German](https://miniworldmaker.de/objectsfirst_german/01_installation.html) 
 
 
 ### Examples
@@ -25,7 +25,7 @@ It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
 ### Features
 
-  * MiniWorldMaker supports pixel-based games as well as games with 
+  * miniworldmaker supports pixel-based games as well as games with 
   tiles (e.g. Rogue-Likes)
   
   * Easy creation of animations
@@ -40,7 +40,7 @@ It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
   
   * Open Source
   
-  * Miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
+  * miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
 ### Links
 

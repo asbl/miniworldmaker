@@ -1,7 +1,7 @@
-MiniWorldMaker
+miniworldmaker
 ##############
 
-MiniWorldMaker is a game-engine written in python and pygame designed for pupils to create 2D mini worlds and games.
+miniworldmaker is a game-engine written in python and pygame designed for pupils to create 2D mini worlds and games.
 
 * **Objects First** programming: Object oriented programming without classes.
 * **Tiles and Pixel-Games**: For different types of games.
@@ -20,7 +20,7 @@ Credits
 
 * `Greenfoot <https://www.greenfoot.org/)>`_ 
 
-Miniworldmaker is strongly inspired by the high-level abstraction approach to object orientation in Greenfoot. Miniworldmaker extends the approach with its own ideas.
+miniworldmaker is strongly inspired by the high-level abstraction approach to object orientation in Greenfoot. miniworldmaker extends the approach with its own ideas.
 
 * `Deepl <https://www.deepl.com/)>`_   
   
@@ -34,7 +34,7 @@ Links
 =====
 
 * `Codeberg Repository <https://codeberg.org/a_siebel/miniworldmaker>`_  
-* `Miniworldmaker Cookbook - Examples and Snippets <https://codeberg.org/a_siebel/miniworldmaker_cookbook>`_  
+* `miniworldmaker cookbook - Examples and Snippets <https://codeberg.org/a_siebel/miniworldmaker_cookbook>`_  
 
 
 .. toctree::

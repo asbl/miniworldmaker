@@ -1,34 +1,31 @@
-MiniWorldMaker
+miniworldmaker
 ---------
 
-MiniWorldMaker allows you to create 2D mini worlds and games. 
+miniworldmaker allows you to create 2D mini worlds and games. 
 
 It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
+<kbd>
+<img src="example.png" alt="example"></img>
+</kbd>
+
+### Tutorial
+
+[English](https://miniworldmaker.de/objectsfirst_english/01_installation.html) | [German](https://miniworldmaker.de/objectsfirst_german/01_installation.html) 
+
+
 ### Examples
 
-#### Angry Birds 
+  * [Angry Birds](https://replit.com/@a_siebel/miniworldmaker-Angry-birds): This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
 
-This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
-
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/miniworldmaker-Angry-birds?v=1"></iframe>
-
-#### Kara
-
-Prototype for Kara in miniworldmaker
-
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/Kara-in-miniworldmaker"></iframe>
-
-#### RPG Framework
-
-Framework for simple RPGs and Adventures
-
-<iframe frameborder="0" width="100%" height="500px" src="https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker"></iframe>
+  * [Kara](https://replit.com/@a_siebel/Kara-in-miniworldmaker"): Kara Prototype
+ 
+  * [RPG Framework](https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker): Framework for simple RPGs and Textadventures
 
 
 ### Features
 
-  * MiniWorldMaker supports pixel-based games as well as games with 
+  * miniworldmaker supports pixel-based games as well as games with 
   tiles (e.g. Rogue-Likes)
   
   * Easy creation of animations
@@ -43,7 +40,7 @@ Framework for simple RPGs and Adventures
   
   * Open Source
   
-  * Miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
+  * miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
 ### Links
 
