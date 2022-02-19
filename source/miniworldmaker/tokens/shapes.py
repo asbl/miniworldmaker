@@ -70,10 +70,11 @@ class Circle(Shape):
         self._radius = radius
         self._border = 1
         super().__init__(position)
+        self.size = (radius *2 , radius * 2)
         self.center = position
 
     def _inner_shape(self):
-        return pygame.draw.circle, [(self.position[0],self.position[1]), self.radius]
+        return pygame.draw.circle, [(self.size[0]/2,self.size[0]/2), self.radius]
 
     @classmethod
     def from_topleft(cls, position : tuple, radius : int):
