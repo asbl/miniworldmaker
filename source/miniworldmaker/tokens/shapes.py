@@ -80,10 +80,10 @@ class Circle(Shape):
         """Creates a circle with topleft at position
         """
         circle = cls(position, radius)
-        #print(circle)
-        #print(circle.topleft)
-        #print(circle.topleft, circle.center[0], circle.center[1])
-        #circle.topleft = circle.center[0], circle.center[1]
+        print(circle)
+        print(circle.topleft)
+        print(circle.topleft, circle.center[0], circle.center[1])
+        circle.topleft = circle.center[0], circle.center[1]
         return circle
 
     @classmethod
