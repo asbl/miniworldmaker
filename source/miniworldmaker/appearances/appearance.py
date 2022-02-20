@@ -1,10 +1,9 @@
+import nest_asyncio
 import asyncio
 import inspect
 import os
 from pathlib import Path
 from collections import defaultdict
-
-import nest_asyncio
 import pygame
 from miniworldmaker.board_positions import board_position, board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import ColorException

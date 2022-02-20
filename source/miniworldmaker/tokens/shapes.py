@@ -192,16 +192,17 @@ class Ellipse(Shape):
     def from_topleft(cls, position : tuple, width : float, height: float):
         """Creates an ellipse with topleft at position
         """
-        circle = cls(position, width, height)
-        circle.topleft = circle.center
-        return circle
+        ellipse = cls(position, width, height)
+        
+        return ellipse
 
     @classmethod
     def from_center(cls, position : tuple, width: float, height: float):
         """Creates an ellipse with center at position
         """
-        circle = cls(position, width, height)
-        return circle
+        ellipse = cls(position, width, height)
+        ellipse.center = ellipse.position
+        return ellipse
 
 
 class Line(Shape):
@@ -369,16 +370,16 @@ class Rectangle(Shape):
     def from_topleft(cls, position : tuple, width : float, height: float):
         """Creates a rectangle with topleft at position
         """
-        circle = cls(position, width, height)
-        circle.topleft = circle.center
-        return circle
+        rectangle = cls(position, width, height).center
+        return rectangle
 
     @classmethod
     def from_center(cls, position : tuple, width: float, height: float):
         """Creates a rectangle with center at position
         """
-        circle = cls(position, width, height)
-        return circle
+        rectangle = cls(position, width, height)
+        rectangle.center = rectangle.position
+        return rectangle
 
 class Polygon(Shape):
     """
