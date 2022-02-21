@@ -1,0 +1,1071 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>miniworldmaker.appearances.appearance - miniworldmaker 2021 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">miniworldmaker 2021 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">miniworldmaker 2021 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../impressum.html">Impressum</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (Deutsch)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../objectsfirst_german/index.html">Tutorial Deutsch - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/02_board.html">Das Spielfeld (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/03_tokens.html">Spielfiguren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/04_actions.html">Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/05_movement.html">Bewegung und Ausrichtung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/06_events.html">Ereignisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/07_collisions.html">Kollisionen und Sensoren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/08_collisions2.html">Kollisionen und Sensoren II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/09_costumes.html">Kostüme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/10_animations.html">Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/12_status.html">Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/13_physics.html">Physik</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../classesfirst_german/index.html">Tutorial Deutsch - Classes First</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../classesfirst_german/classes.html">Klassen</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../processing_german/index.html">Processing</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../processing_german/01_first_steps.html">Zeichnen mit dem Miniworldmaker - Grundlagen</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (English)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../objectsfirst_english/index.html">Tutorial English - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/02_board.html">The playing field (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/03_tokens.html">Game Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/04_actions.html">Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/05_movement.html">Movement and alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/06_events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/07_collisions.html">Collisions and sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/08_collisions2.html">Collisions and sensors II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/09_costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/10_animations.html">Animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/12_status.html">Status: Game state/end of game/levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/13_physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Key Concepts</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../key_concepts/index.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/tokens.html">Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.html">Appearance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.background.html">Appearance: Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.costume.html">Appearance: Costume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board.html">Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board.pixelboard.html">Board: PixelBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board.tiledboard.html">Board: TiledBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board_position.html">BoardPositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/timer.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/timer.html#actiontimer">ActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/timer.html#loopactiontimer">LoopActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/token.html">Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/token.shape.html">Token: Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/token.texttoken.html">Token.Texts and Numbers</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for miniworldmaker.appearances.appearance</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">nest_asyncio</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.board_positions</span> <span class="kn">import</span> <span class="n">board_position</span><span class="p">,</span> <span class="n">board_position_factory</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.exceptions.miniworldmaker_exception</span> <span class="kn">import</span> <span class="n">ColorException</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.app</span> <span class="kn">import</span> <span class="n">file_manager</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.tools</span> <span class="kn">import</span> <span class="n">binding</span>
+
+<span class="k">class</span> <span class="nc">MetaAppearance</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"Wrong number of arguments for </span><span class="si">{0}</span><span class="s2">-constructor. See method-signature: </span><span class="si">{0}{1}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                                                                                                     <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span>
+                                                                                                         <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)))</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">after_init</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">instance</span>
+
+
+<div class="viewcode-block" id="Appearance"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance">[docs]</a><span class="k">class</span> <span class="nc">Appearance</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">MetaAppearance</span><span class="p">):</span>
+    <span class="sd">""" Base class of token costumes and board backgrounds</span>
+
+<span class="sd">    The class contains all methods and attributes to display and animate images of the objects, render text on the images or display overlays.</span>
+
+<span class="sd">    """</span>
+
+    <span class="n">_images_dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict with key: image_path, value: loaded image</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blit_images</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Images which are blitted on the background</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images_list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Original images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># current_image index (for animations)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">Appearance</span><span class="o">.</span><span class="n">counter</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">Appearance</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_paths</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list with all images</span>
+        <span class="c1"># properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>  <span class="c1"># size set in image()-method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>  <span class="c1"># size set in image()-method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_image_actions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_speed</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1">#: The animation speed for animations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_animated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_flipped</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_animation_images</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_animation</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_textured</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_upscaled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled_to_width</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled_to_height</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_rotatable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flip_vertical</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coloring</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Color for colorize operation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># "Action name", image_action_method, "Attribute", enabled)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_actions_pipeline</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">"orientation"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_set_orientation</span><span class="p">,</span> <span class="s2">"orientation"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"texture"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_texture</span><span class="p">,</span> <span class="s2">"is_textured"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"scale"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_scale</span><span class="p">,</span> <span class="s2">"is_scaled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"scale_to_width"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_scale_to_width</span><span class="p">,</span> <span class="s2">"is_scaled_to_width"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"scale_to_height"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_scale_to_height</span><span class="p">,</span> <span class="s2">"is_scaled_to_height"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"upscale"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_upscale</span><span class="p">,</span> <span class="s2">"is_upscaled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"write_text"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_write_text</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"flip"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_flip</span><span class="p">,</span> <span class="s2">"is_flipped"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"coloring"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_coloring</span><span class="p">,</span> <span class="s2">"coloring"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"transparency"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_transparency</span><span class="p">,</span> <span class="s2">"transparency"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"draw_shapes"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_draw_shapes</span><span class="p">,</span> <span class="s2">"draw_shapes"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"rotate"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_rotate</span><span class="p">,</span> <span class="s2">"is_rotatable"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">"flip_vertical"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_action_flip_vertical</span><span class="p">,</span> <span class="s2">"flip_vertical"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transparency</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span> <span class="o">=</span> <span class="mi">255</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>  <span class="c1">#: background_color if actor has no background image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>  <span class="c1">#: color for overlays</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_font_size</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1">#: font_size if token-text != ""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1">#: Position of text relative to the top-left pixel of token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_path</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1">#: Path to font-file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reload_actions</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_image</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_images</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_length</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">after_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialized</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_reload_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"all"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">font_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_font_size</span>
+
+    <span class="nd">@font_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">font_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_font_size</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"write_text"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_animation_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_speed</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_textured</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        bool: If True, the image is tiled over the background.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Defines a textured board</span>
+
+<span class="sd">            &gt;&gt;&gt; class MyBoard(TiledBoard):</span>
+<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
+<span class="sd">            &gt;&gt;&gt;         self.add_image(path="images/stone.png")</span>
+<span class="sd">            &gt;&gt;&gt;         self.background.is_textured = True</span>
+<span class="sd">            &gt;&gt;&gt;         self.background.is_scaled_to_tile = True</span>
+<span class="sd">            &gt;&gt;&gt;         self.player = Player(position=(3, 4))</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_textured</span>
+
+    <span class="nd">@is_textured</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_textured</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_textured</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"texture"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_upscaled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        bool: If True, the image will be upscaled remaining aspect-ratio.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; class Player(Token):</span>
+<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
+<span class="sd">            &gt;&gt;&gt;         self.add_image("background_image.jpg")</span>
+<span class="sd">            &gt;&gt;&gt;         self.costume.is_upscaled = True</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_upscaled</span>
+
+    <span class="nd">@is_upscaled</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_upscaled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_upscaled</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"upscale"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_rotatable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            If True, the image will be rotated by parent direction</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; class Player(Token):</span>
+<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
+<span class="sd">            &gt;&gt;&gt;         self.add_image("background_image.jpg")</span>
+<span class="sd">            &gt;&gt;&gt;         self.costume.is_rotatable = True</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rotatable</span>
+
+    <span class="nd">@is_rotatable</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_rotatable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_rotatable</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">flip_vertical</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Flips image vertical</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            If True, the image will be flipped l/r (e.g. for fighters in a street-fighter like game.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; class Player(Token):</span>
+<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
+<span class="sd">            &gt;&gt;&gt;         self.add_image("background_image.jpg")</span>
+<span class="sd">            &gt;&gt;&gt;         self.costume.flip_vertical = True</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip_vertical</span>
+
+    <span class="nd">@flip_vertical</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">flip_vertical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_flip_vertical</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flip_vertical</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_rotatable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""bool: If True, the image will be rotated by parent orientation before it is rotated.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; class Player(Token):</span>
+<span class="sd">            &gt;&gt;&gt;    def on_setup(self):</span>
+<span class="sd">            &gt;&gt;&gt;         self.add_image("background_image.jpg")</span>
+<span class="sd">            &gt;&gt;&gt;         self.costume.orientation = -90</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span>
+
+    <span class="nd">@orientation</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"orientation"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""bool: Flips the token by 180° degrees.</span>
+
+<span class="sd">        This can be used e.g. for bouncing actor at border"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_flipped</span>
+
+    <span class="nd">@is_flipped</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_flipped</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"flip"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_scaled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">""" bool: Scales the actor to parent-size withour remaining aspect-ratio."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled</span>
+
+    <span class="nd">@is_scaled</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_scaled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"scale"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_scaled_to_width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled_to_width</span>
+
+    <span class="nd">@is_scaled_to_width</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_scaled_to_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_scaled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled_to_width</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"scale_to_width"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_scaled_to_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled_to_height</span>
+
+    <span class="nd">@is_scaled_to_height</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_scaled_to_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_scaled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_scaled_to_height</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"scale_to_height"</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coloring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Defines a colored layer. Coloring is True or false. The color is defined by the attribute appearance.color</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coloring</span>
+
+    <span class="nd">@coloring</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">coloring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_coloring</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"coloring"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">transparency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Defines a transparency. Coloring is True or false. The color is defined by the attribute appearance.alpha</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transparency</span>
+
+    <span class="nd">@transparency</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">transparency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_transparency</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"transparency"</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span>
+
+    <span class="nd">@alpha</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="mi">255</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transparency</span> <span class="o">=</span> <span class="kc">True</span>
+        
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; explosion = Explosion(position=other.position.up(40).left(40))</span>
+<span class="sd">            &gt;&gt;&gt; explosion.costume.is_animated = True</span>
+<span class="sd">            &gt;&gt;&gt; explosion.costume.text_position = (100, 100)</span>
+<span class="sd">            &gt;&gt;&gt; explosion.costume.text = "100"</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
+
+    <span class="nd">@text</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># self.call_action("write_text") #@todo: Write text should be sufficient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fill_color</span> <span class="o">=</span> <span class="n">color</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">surface_loaded</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ColorException</span><span class="p">(</span><span class="s2">"ERROR: color should be a 4-tuple (r, g, b, alpha)"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw_shape_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">arguments</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">shape</span><span class="p">,</span> <span class="n">arguments</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"draw_shapes"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw_shape_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">arguments</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">draw_shapes</span> <span class="o">=</span> <span class="p">[(</span><span class="n">shape</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"draw_shapes"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove_last_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Appearance.find_image_file"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.find_image_file">[docs]</a>    <span class="k">def</span> <span class="nf">find_image_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""Finds a file by a given relative path (e.g. images/myimage.jpg)</span>
+<span class="sd">        </span>
+<span class="sd">        The method tries to correct a path if file ending is missing but image is present.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): path to image, e.g. images/myimage.jpg.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: the corrected path</span>
+<span class="sd">        """</span>        
+        <span class="n">canonicalized_path</span> <span class="o">=</span> <span class="n">file_manager</span><span class="o">.</span><span class="n">FileManager</span><span class="o">.</span><span class="n">relative_to_absolute_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">canonicalized_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">canonicalized_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">file_manager</span><span class="o">.</span><span class="n">FileManager</span><span class="o">.</span><span class="n">has_ending</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">file_manager</span><span class="o">.</span><span class="n">FileManager</span><span class="o">.</span><span class="n">get_path_with_file_ending</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="p">[</span><span class="s2">"jpg"</span><span class="p">,</span> <span class="s2">"jpeg"</span><span class="p">,</span> <span class="s2">"png"</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">file_manager</span><span class="o">.</span><span class="n">FileManager</span><span class="o">.</span><span class="n">get_path_with_file_ending</span><span class="p">(</span><span class="n">canonicalized_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="s2">"jpg"</span><span class="p">,</span> <span class="s2">"jpeg"</span><span class="p">,</span> <span class="s2">"png"</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Appearance.load_image"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.load_image">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">load_image</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Loads an image from an path.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: The path to image</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            The image loaded</span>
+
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">canonicalized_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\\</span><span class="s1">'</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">canonicalized_path</span> <span class="ow">in</span> <span class="n">Appearance</span><span class="o">.</span><span class="n">_images_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># load image from img_dict</span>
+                <span class="n">_image</span> <span class="o">=</span> <span class="n">Appearance</span><span class="o">.</span><span class="n">_images_dict</span><span class="p">[</span><span class="n">canonicalized_path</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">canonicalized_path</span><span class="p">)</span><span class="o">.</span><span class="n">convert_alpha</span><span class="p">()</span>
+                    <span class="n">Appearance</span><span class="o">.</span><span class="n">_images_dict</span><span class="p">[</span><span class="n">canonicalized_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">_image</span>
+                <span class="k">except</span> <span class="n">pygame</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                        <span class="s2">"File '</span><span class="si">{0}</span><span class="s2">' does not exist. Check your path to the image."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">_image</span>
+        <span class="k">except</span> <span class="ne">FileExistsError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span>
+                <span class="s2">"File '</span><span class="si">{0}</span><span class="s2">' does not exist. Check your path to the image."</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Appearance.add_image"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.add_image">[docs]</a>    <span class="k">def</span> <span class="nf">add_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""Adds an image to the appearance</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (str): Path to the image relative to actual directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Index of the created image.</span>
+<span class="sd">        """</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_image_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="c1"># set image by path</span>
+        <span class="n">_image</span> <span class="o">=</span> <span class="n">Appearance</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_image</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+    <span class="k">def</span> <span class="nf">add_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">list_of_paths</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_image</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Appearance.blit"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.blit">[docs]</a>    <span class="k">def</span> <span class="nf">blit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Blits an image to the background</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: Path to the image</span>
+<span class="sd">            position: Top left position</span>
+<span class="sd">            size: Size of blitted image</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">        """</span>
+        <span class="n">_blit_image</span> <span class="o">=</span> <span class="n">Appearance</span><span class="o">.</span><span class="n">load_image</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">_blit_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">_blit_image</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">_blit_image</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blit_images</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">_blit_image</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reload_image</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span>
+
+    <span class="k">def</span> <span class="nf">load_surface</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_loaded</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">height</span><span class="p">),</span> <span class="n">pygame</span><span class="o">.</span><span class="n">SRCALPHA</span><span class="p">)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_color</span><span class="p">)</span>
+            <span class="n">image</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw_image</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_image</span>
+
+    <span class="k">def</span> <span class="nf">_reset_image_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_animation_images</span><span class="p">:</span>            
+            <span class="n">_rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+
+    <span class="k">def</span> <span class="nf">_load_image_by_image_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_list</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span><span class="p">]:</span>
+            <span class="c1"># if there is a image list load image by index</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># no image files - Render raw surface</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_surface</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">_perform_action_pipeline_on_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">img_action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions_pipeline</span><span class="p">:</span>
+                <span class="c1"># If an image action is to be executed again,</span>
+                <span class="c1"># load the last cached image from the pipeline and execute</span>
+                <span class="c1"># all subsequent image actions.</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reload_actions</span><span class="p">[</span><span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="ow">is</span> <span class="kc">False</span> \
+                        <span class="ow">and</span> <span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_images</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> \
+                        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_images</span><span class="p">[</span><span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]]:</span>
+                    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_action</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_images</span><span class="p">[</span><span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>  <span class="c1"># Reload image from cache</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># reload_actions is true</span>
+                    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_action</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+                            <span class="c1"># perform image action</span>
+                            <span class="n">image</span> <span class="o">=</span> <span class="n">img_action</span><span class="p">[</span><span class="mi">1</span><span class="p">](</span><span class="n">image</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cached_images</span><span class="p">[</span><span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">image</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">_blit_on_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">blit_image</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blit_images</span><span class="p">:</span>
+                <span class="n">image</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">blit_image</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">blit_image</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">image</span>
+
+<div class="viewcode-block" id="Appearance.reload_image"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.reload_image">[docs]</a>    <span class="k">def</span> <span class="nf">reload_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">""" Performs all actions in image pipeline"""</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reset_image_index</span><span class="p">()</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_image_by_image_index</span><span class="p">()</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perform_action_pipeline_on_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blit_on_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reload_actions</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reload_actions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span></div>
+
+<div class="viewcode-block" id="Appearance.next_image"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.next_image">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">next_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Switches to the next image of the appearance.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">after_animation</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Appearance.first_image"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.first_image">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">first_image</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Switches to the first image of the appearance.</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">set_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">images_list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_image_index</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reload_all</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">())</span>
+        <span class="n">nest_asyncio</span><span class="o">.</span><span class="n">apply</span><span class="p">()</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">""" </span>
+<span class="sd">        method is overwritten in subclasses costume and background.</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_animated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""bool: If True, the image will be animated.</span>
+<span class="sd">        Depends on appearance.animation_speed</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            &gt;&gt;&gt; class Robot(Token):</span>
+<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; def __init__(self, position):</span>
+<span class="sd">            &gt;&gt;&gt;     super().__init__(position)</span>
+<span class="sd">            &gt;&gt;&gt;     self.add_image("images/robot_blue1.png")</span>
+<span class="sd">            &gt;&gt;&gt;     self.add_image("images/robot_blue2.png")</span>
+<span class="sd">            &gt;&gt;&gt;     self.size = (99, 99)</span>
+<span class="sd">            &gt;&gt;&gt;     self.costume.animation_speed = 30</span>
+<span class="sd">            &gt;&gt;&gt;     self.costume.is_animated = True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_animated</span>
+
+    <span class="nd">@is_animated</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_animated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_animated</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Appearance.count_pixels_by_color"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.count_pixels_by_color">[docs]</a>    <span class="k">def</span> <span class="nf">count_pixels_by_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rect</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)):</span>
+        <span class="sd">""" Counts the number of pixels of a color under the appearance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            color: The color</span>
+<span class="sd">            threshold: The allowed deviation from the color splitted into r,g,b and alpha values.</span>
+
+<span class="sd">        Returns: The number of matching pixes</span>
+
+<span class="sd">        """</span>
+        <span class="n">surf</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="n">surf</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">rect</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">dest_surf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                          <span class="n">set_behavior</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                          <span class="n">surf</span><span class="o">=</span><span class="n">surf</span><span class="p">,</span>
+                                          <span class="n">search_color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                                          <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Appearance.get_color_from_pixel"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.get_color_from_pixel">[docs]</a>    <span class="k">def</span> <span class="nf">get_color_from_pixel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the color at a specific position</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position: The position to search for</span>
+
+<span class="sd">        Returns: The color</span>
+
+<span class="sd">        """</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">board_position_factory</span><span class="o">.</span><span class="n">BoardPositionFactory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image</span><span class="o">.</span><span class="n">get_at</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">to_int</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">call_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="n">reload</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">img_action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions_pipeline</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">action</span> <span class="ow">or</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">"all"</span><span class="p">:</span>
+                <span class="n">reload</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># reload image action</span>
+            <span class="k">if</span> <span class="n">reload</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reload_actions</span><span class="p">[</span><span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># reload all actions after image action</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># self.update()</span>
+
+    <span class="k">def</span> <span class="nf">call_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+        <span class="n">reload</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">img_action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_actions_pipeline</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
+                <span class="n">reload</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">reload</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reload_actions</span><span class="p">[</span><span class="n">img_action</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">call_all_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">call_action</span><span class="p">(</span><span class="s2">"all"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">image_action_draw_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">draw_action</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">draw_shapes</span><span class="p">:</span>
+            <span class="n">draw_action</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">image</span><span class="p">,</span> <span class="o">*</span><span class="n">draw_action</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_texture</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="n">background</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="n">background</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+        <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">width</span> <span class="o">&lt;</span> <span class="n">parent</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">height</span> <span class="o">&lt;</span> <span class="n">parent</span><span class="o">.</span><span class="n">height</span><span class="p">:</span>
+                <span class="n">width</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+                <span class="n">height</span> <span class="o">=</span> <span class="n">j</span> <span class="o">*</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">background</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+            <span class="n">j</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">background</span>
+
+    <span class="k">def</span> <span class="nf">image_action_upscale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">scale_factor_x</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+            <span class="n">scale_factor_y</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+            <span class="n">scale_factor</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">scale_factor_x</span><span class="p">,</span> <span class="n">scale_factor_y</span><span class="p">)</span>
+            <span class="n">new_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">)</span>
+            <span class="n">new_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">new_width</span><span class="p">,</span> <span class="n">new_height</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_scale_to_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">height</span> <span class="o">/</span> <span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span>
+        <span class="n">new_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">)</span>
+        <span class="n">new_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">new_width</span><span class="p">,</span> <span class="n">new_height</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_scale_to_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+        <span class="n">new_width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">)</span>
+        <span class="n">new_height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">*</span> <span class="n">scale_factor</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="n">new_width</span><span class="p">,</span> <span class="n">new_height</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">direction</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">rotated_image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotozoom</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">direction</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="c1">#image.blit(rotated_image, new_rect)</span>
+            <span class="k">return</span> <span class="n">rotated_image</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_flip_vertical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">direction</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_set_orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orientation</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">orientation</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">image_action_flip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_flipped</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Appearance.image_action_coloring"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.image_action_coloring">[docs]</a>    <span class="k">def</span> <span class="nf">image_action_coloring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Create a "colorized" copy of a surface (replaces RGB values with the given color, preserving the per-pixel alphas of</span>
+<span class="sd">        original).</span>
+
+<span class="sd">        :param image: Surface to create a colorized copy of</span>
+<span class="sd">        :param newColor: RGB color to use (original alpha values are preserved)</span>
+<span class="sd">        :return: New colorized Surface instance</span>
+<span class="sd">        """</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># zero out RGB values</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">BLEND_RGBA_MULT</span><span class="p">)</span>  <span class="c1"># Fill black</span>
+        <span class="c1"># add in new RGB values</span>
+        <span class="n">new_color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">0</span><span class="p">,)</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">new_color</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">BLEND_RGBA_ADD</span><span class="p">)</span>  <span class="c1"># Add color</span>
+        <span class="n">new_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">[</span><span class="mi">3</span><span class="p">],)</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">new_color</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pygame</span><span class="o">.</span><span class="n">BLEND_RGBA_MULT</span><span class="p">)</span>  <span class="c1"># Multiply transparency</span>
+        <span class="k">return</span> <span class="n">image</span></div>
+
+<div class="viewcode-block" id="Appearance.image_action_transparency"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.image_action_transparency">[docs]</a>    <span class="k">def</span> <span class="nf">image_action_transparency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        """</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">crop_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="n">cropped_surface</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+        <span class="n">cropped_surface</span><span class="o">.</span><span class="n">fill</span><span class="p">((</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span>
+        <span class="n">cropped_surface</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">height</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">cropped_surface</span>
+
+    <span class="k">def</span> <span class="nf">image_action_write_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="n">font_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">font_size</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">width</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">font_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">my_font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">SysFont</span><span class="p">(</span><span class="s2">"monospace"</span><span class="p">,</span> <span class="n">font_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">my_font</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">font</span><span class="o">.</span><span class="n">Font</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">font_path</span><span class="p">,</span> <span class="n">font_size</span><span class="p">)</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">my_font</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">blit</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_position</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">image</span>
+
+    <span class="k">def</span> <span class="nf">set_font</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">,</span> <span class="n">font_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_path</span> <span class="o">=</span> <span class="n">font</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">font_size</span> <span class="o">=</span> <span class="n">font_size</span>
+
+    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_animated</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Appearance.after_animation"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.after_animation">[docs]</a>    <span class="k">def</span> <span class="nf">after_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        the method is overwritten in subclasses costume and appearance</span>
+<span class="sd">        """</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Appearance.register"><a class="viewcode-back" href="../../../api/appearance.html#miniworldmaker.appearances.appearance.Appearance.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">callable</span><span class="p">):</span>
+        <span class="sd">""" </span>
+<span class="sd">        Register method for decorator. Registers method to token or background.</span>
+<span class="sd">        """</span>        
+        <span class="n">bound_method</span> <span class="o">=</span> <span class="n">binding</span><span class="o">.</span><span class="n">bind_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bound_method</span></div></div>
+        
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Andreas Siebel |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/scripts/furo.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>

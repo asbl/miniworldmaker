@@ -1,0 +1,42 @@
+****************
+Advanced Drawing
+****************
+
+Komplexere geometrische Grundformen
+###################################
+
+Arc
+***
+
+Kreisbögen und Kreisausschnitte zeichnest du mit folgendem Befehl:
+
+.. code-block:: python
+
+  Arc(position, width, height, start_angle, end_angle)
+
+Bedeutung der Parameter:
+
+* ``position``: Die Position als 2-Tupel
+* ``width``, ``height``: Breite und Höhe bei Erstellung einer Ellipse. Wähle beide gleich, damit sich der Radius für einen Kreisbogen ergibt oder wähle unterschiedle Werte, damit sich der Bogen und Ausschnitt einer Ellipse ergibt.
+* ``start_angle``, ``end_angle``: Die Winkel des Ausschnitts. Die Winkel werden von einer gedachten Linie *gegen den Uhrzeigersinn* gemessen.
+
+
+.. image:: ../_images/processing/arc.png
+  :width: 60%
+  :alt: Arc: Start und End-Angle
+
+Beispiel:
+
+.. code-block:: python
+  :lineno-start: 1
+
+  from miniworldmaker import *
+
+  board = PixelBoard(800, 600)
+  a1 = Arc.from_center((200, 200), 200, 200, 30, 242)
+  a1.border = 4
+  board.run()
+  
+Triangle
+********
+

@@ -1,0 +1,587 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Costumes" href="costumes.html" /><link rel="prev" title="Events" href="events.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>Sensors - miniworldmaker 2021 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">miniworldmaker 2021 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">miniworldmaker 2021 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../impressum.html">Impressum</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (Deutsch)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../objectsfirst_german/index.html">Tutorial Deutsch - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/02_board.html">Das Spielfeld (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/03_tokens.html">Spielfiguren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/04_actions.html">Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/05_movement.html">Bewegung und Ausrichtung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/06_events.html">Ereignisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/07_collisions.html">Kollisionen und Sensoren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/08_collisions2.html">Kollisionen und Sensoren II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/09_costumes.html">Kostüme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/10_animations.html">Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/12_status.html">Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_german/13_physics.html">Physik</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../classesfirst_german/index.html">Tutorial Deutsch - Classes First</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../classesfirst_german/classes.html">Klassen</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../processing_german/index.html">Processing</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../processing_german/01_first_steps.html">Zeichnen mit dem Miniworldmaker - Grundlagen</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (English)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../objectsfirst_english/index.html">Tutorial English - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/02_board.html">The playing field (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/03_tokens.html">Game Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/04_actions.html">Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/05_movement.html">Movement and alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/06_events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/07_collisions.html">Collisions and sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/08_collisions2.html">Collisions and sensors II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/09_costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/10_animations.html">Animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/12_status.html">Status: Game state/end of game/levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/13_physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Key Concepts</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Key Concepts</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tokens.html">Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="events.html">Events</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.html">Appearance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.background.html">Appearance: Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.costume.html">Appearance: Costume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.html">Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.pixelboard.html">Board: PixelBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.tiledboard.html">Board: TiledBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board_position.html">BoardPositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timer.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timer.html#actiontimer">ActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timer.html#loopactiontimer">LoopActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.html">Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.shape.html">Token: Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.texttoken.html">Token.Texts and Numbers</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="sensors">
+<h1>Sensors<a class="headerlink" href="#sensors" title="Permalink to this headline">¶</a></h1>
+<p>With sensors, tokens can sense their environment.</p>
+<div class="section" id="listeners">
+<h2>Listeners<a class="headerlink" href="#listeners" title="Permalink to this headline">¶</a></h2>
+<p>Register any of these listener methods, to catch a sensor-event:</p>
+<div class="section" id="sensing-on-board">
+<h3>sensing_on_board<a class="headerlink" href="#sensing-on-board" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">on_sensing_on_board</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.on_sensing_on_board"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p><em>on_sensing_on_board</em> is called, when token is on board”</p>
+<p class="rubric">Examples</p>
+<p>Register on_sensing_on_board method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player</span><span class="o">.</span><span class="n">register</span>
+    <span class="k">def</span> <span class="nf">on_sensing_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Player 3: I'm on the board:"</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedOrRegisteredError</strong> – The error is raised when method is not overwritten or registered.</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="sensing-not-on-board">
+<h3>sensing_not_on_board<a class="headerlink" href="#sensing-not-on-board" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">on_sensing_not_on_board</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.on_sensing_not_on_board"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p><em>on_sensing_not_on_board</em> is called, when token is not on board”</p>
+<p class="rubric">Examples</p>
+<p>Register on_sensing_not_on_board method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player</span><span class="o">.</span><span class="n">register</span>
+    <span class="k">def</span> <span class="nf">on_sensing_not_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Warning: I'm not on the board!!!"</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedOrRegisteredError</strong> – The error is raised when method is not overwritten or registered.</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="sensing-borders">
+<h3>sensing_borders<a class="headerlink" href="#sensing-borders" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">on_sensing_borders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.on_sensing_borders"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p><em>on_sensing_border</em> is called, when token is near a border</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>str</strong> (<em>List</em>) – A list of strings with found borders, e.g.: [‘left’, ‘top’]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Register on_sensing_border_event:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">on_sensing_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">borders</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Player 4: Sensing borders:"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Borders are here!"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">borders</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedOrRegisteredError</strong> – The error is raised when method is not overwritten or registered.</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="token">
+<h3>token<a class="headerlink" href="#token" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">on_sensing_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.on_sensing_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p><em>on_sensing_token</em> is called, when token is sensing a token on same position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>token</strong> (<a class="reference internal" href="../api/token.html#miniworldmaker.tokens.token.Token" title="miniworldmaker.tokens.token.Token"><em>Token</em></a>) – The found token</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Register sensing_token event</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@player</span><span class="o">.</span><span class="n">register</span>
+<span class="k">def</span> <span class="nf">on_sensing_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Player 1: Sensing token:"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">token</span> <span class="o">==</span> <span class="n">player2</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Am i sensing player2?"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">token</span> <span class="o">==</span> <span class="n">player2</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NotImplementedOrRegisteredError</strong> – The error is raised when method is not overwritten or registered.</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+</div>
+<div class="section" id="active-sensors">
+<h2>Active Sensors<a class="headerlink" href="#active-sensors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sensing-token">
+<h3>sensing_token<a class="headerlink" href="#sensing-token" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">sensing_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collision_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.sensing_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Senses if tokens are on tokens position.
+Returns the first found token.</p>
+<img alt="../_images/sensing_token.png" src="../_images/sensing_token.png"/>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token_filter</strong> – filter by token type or by token instance</p></li>
+<li><p><strong>distance</strong> – Specifies the distance in front of the actuator to which the sensor reacts.</p></li>
+<li><p><strong>collision_type</strong> – The type of collision which should be checked:</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>First token found by Sensor</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Sensing a fireplace in rpg.py:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fireplace</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">sensing_token</span><span class="p">(</span><span class="n">Fireplace</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">fireplace</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">console</span><span class="o">.</span><span class="n">newline</span><span class="p">(</span><span class="s2">"Du zündest die Feuerstelle an."</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">fireplace</span><span class="o">.</span><span class="n">burn</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="../api/token.html#miniworldmaker.tokens.token.Token" title="miniworldmaker.tokens.token.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="sensing-tokens">
+<h3>sensing_tokens<a class="headerlink" href="#sensing-tokens" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">sensing_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collision_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.sensing_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Senses if tokens are on tokens position.
+Returns a list of tokens.</p>
+<img alt="../_images/sensing_tokens.png" src="../_images/sensing_tokens.png"/>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token_filter</strong> – filter by token type. Enter a class_name of tokens to look for here</p></li>
+<li><p><strong>distance</strong> – Specifies the distance in front of the actuator to which the sensor reacts.</p></li>
+<li><p><strong>collision_type</strong> – The type of collision which should be checked:</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>All tokens found by Sensor</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference internal" href="../api/token.html#miniworldmaker.tokens.token.Token" title="miniworldmaker.tokens.token.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="id1">
+<h3>sensing_borders<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">sensing_borders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.sensing_borders"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Senses borders</p>
+<img alt="../_images/sensing_borders.png" src="../_images/sensing_borders.png"/>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>distance</strong> – Specifies the distance in front of the actuator to which the sensor reacts.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if border was found.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="sensing-specific-border">
+<h3>sensing specific border<a class="headerlink" href="#sensing-specific-border" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul>
+<li><p><strong>sensing_left_border(distance)</strong>,</p></li>
+<li><p><strong>sensing_right_border(distance)</strong>,</p></li>
+<li><p><strong>sensing_top_border(distance)</strong>,</p></li>
+<li><p><strong>sensing_bottom_border(distance)</strong></p>
+<p>Returns True if token is sensing the border (when moving distance steps forward)</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="sensing-colors">
+<h3>sensing_colors<a class="headerlink" href="#sensing-colors" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">sensing_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.sensing_colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Senses colors in board-background at token-position</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>colors</strong> – colors as tuple</p></li>
+<li><p><strong>distance</strong> – Specifies the distance in front of the actuator to which the sensor reacts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>All colors found by Sensor</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+<div class="section" id="sensing-point">
+<h3>sensing_point<a class="headerlink" href="#sensing-point" title="Permalink to this headline">¶</a></h3>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">Token.</span></span><span class="sig-name descname"><span class="pre">sensing_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">board_position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/miniworldmaker/tokens/token.html#Token.sensing_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Is the token colliding with a specific (global) point?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if point is below token</p>
+</dd>
+</dl>
+</dd></dl>
+</div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="costumes.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Costumes</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="events.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Events</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Andreas Siebel |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/key_concepts/sensors.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Sensors</a><ul>
+<li><a class="reference internal" href="#listeners">Listeners</a><ul>
+<li><a class="reference internal" href="#sensing-on-board">sensing_on_board</a></li>
+<li><a class="reference internal" href="#sensing-not-on-board">sensing_not_on_board</a></li>
+<li><a class="reference internal" href="#sensing-borders">sensing_borders</a></li>
+<li><a class="reference internal" href="#token">token</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#active-sensors">Active Sensors</a><ul>
+<li><a class="reference internal" href="#sensing-token">sensing_token</a></li>
+<li><a class="reference internal" href="#sensing-tokens">sensing_tokens</a></li>
+<li><a class="reference internal" href="#id1">sensing_borders</a></li>
+<li><a class="reference internal" href="#sensing-specific-border">sensing specific border</a></li>
+<li><a class="reference internal" href="#sensing-colors">sensing_colors</a></li>
+<li><a class="reference internal" href="#sensing-point">sensing_point</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>

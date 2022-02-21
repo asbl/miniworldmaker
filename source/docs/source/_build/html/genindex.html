@@ -1,0 +1,917 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/><title>Index - miniworldmaker 2021 documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">miniworldmaker 2021 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">miniworldmaker 2021 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="impressum.html">Impressum</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (Deutsch)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="objectsfirst_german/index.html">Tutorial Deutsch - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/02_board.html">Das Spielfeld (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/03_tokens.html">Spielfiguren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/04_actions.html">Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/05_movement.html">Bewegung und Ausrichtung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/06_events.html">Ereignisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/07_collisions.html">Kollisionen und Sensoren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/08_collisions2.html">Kollisionen und Sensoren II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/09_costumes.html">Kostüme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/10_animations.html">Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/12_status.html">Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_german/13_physics.html">Physik</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="classesfirst_german/index.html">Tutorial Deutsch - Classes First</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="classesfirst_german/classes.html">Klassen</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="processing_german/index.html">Processing</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="processing_german/01_first_steps.html">Zeichnen mit dem Miniworldmaker - Grundlagen</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (English)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="objectsfirst_english/index.html">Tutorial English - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/02_board.html">The playing field (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/03_tokens.html">Game Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/04_actions.html">Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/05_movement.html">Movement and alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/06_events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/07_collisions.html">Collisions and sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/08_collisions2.html">Collisions and sensors II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/09_costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/10_animations.html">Animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/12_status.html">Status: Game state/end of game/levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="objectsfirst_english/13_physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Key Concepts</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="key_concepts/index.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/tokens.html">Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="key_concepts/physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/appearance.html">Appearance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/appearance.background.html">Appearance: Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/appearance.costume.html">Appearance: Costume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/board.html">Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/board.pixelboard.html">Board: PixelBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/board.tiledboard.html">Board: TiledBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/board_position.html">BoardPositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timer.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timer.html#actiontimer">ActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/timer.html#loopactiontimer">LoopActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/token.html">Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/token.shape.html">Token: Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/token.texttoken.html">Token.Texts and Numbers</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#X"><strong>X</strong></a> | <a href="#Y"><strong>Y</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.tiledboard.html#miniworldmaker.boards.tiled_board.TiledBoard.__init__">__init__() (miniworldmaker.boards.tiled_board.TiledBoard method)</a>
+
+        <ul>
+          <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Point.__init__">(miniworldmaker.tokens.shapes.Point method)</a>
+</li>
+          <li><a href="api/timer.html#miniworldmaker.tools.timer.ActionTimer.__init__">(miniworldmaker.tools.timer.ActionTimer method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/timer.html#miniworldmaker.tools.timer.ActionTimer.act">act() (miniworldmaker.tools.timer.ActionTimer method)</a>
+
+        <ul>
+          <li><a href="api/timer.html#miniworldmaker.tools.timer.LoopActionTimer.act">(miniworldmaker.tools.timer.LoopActionTimer method)</a>
+</li>
+          <li><a href="api/timer.html#miniworldmaker.tools.timer.Timer.act">(miniworldmaker.tools.timer.Timer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/timer.html#miniworldmaker.tools.timer.ActionTimer">ActionTimer (class in miniworldmaker.tools.timer)</a>
+</li>
+        <li><a href="api/board_position.html#miniworldmaker.board_positions.board_position.BoardPosition.add">add() (miniworldmaker.board_positions.board_position.BoardPosition method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.add_background">add_background() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.add_costume">add_costume() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.add_image">add_image() (miniworldmaker.appearances.appearance.Appearance method)</a>
+
+        <ul>
+          <li><a href="api/appearance.background.html#miniworldmaker.appearances.background.Background.add_image">(miniworldmaker.appearances.background.Background method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.after_animation">after_animation() (miniworldmaker.appearances.appearance.Appearance method)</a>
+
+        <ul>
+          <li><a href="api/appearance.costume.html#miniworldmaker.appearances.costume.Costume.after_animation">(miniworldmaker.appearances.costume.Costume method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.animation_speed">animation_speed (miniworldmaker.appearances.appearance.Appearance attribute)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance">Appearance (class in miniworldmaker.appearances.appearance)</a>
+</li>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.text_token.TextToken.auto_size">auto_size (miniworldmaker.tokens.text_token.TextToken property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/appearance.background.html#miniworldmaker.appearances.background.Background">Background (class in miniworldmaker.appearances.background)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.blit">blit() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board">Board (class in miniworldmaker.boards.board)</a>
+</li>
+        <li><a href="api/board_position.html#miniworldmaker.board_positions.board_position.BoardPosition">BoardPosition (class in miniworldmaker.board_positions.board_position)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.border">border (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.border_color">border_color (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/board.pixelboard.html#miniworldmaker.boards.pixel_board.PixelBoard.borders">borders() (miniworldmaker.boards.pixel_board.PixelBoard method)</a>
+
+        <ul>
+          <li><a href="api/board.tiledboard.html#miniworldmaker.boards.tiled_board.TiledBoard.borders">(miniworldmaker.boards.tiled_board.TiledBoard method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.bounce_from_border">bounce_from_border() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.center_x">center_x (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.center_y">center_y (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Circle">Circle (class in miniworldmaker.tokens.shapes)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.collision_type">collision_type (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.color">color (miniworldmaker.appearances.appearance.Appearance attribute)</a>
+
+        <ul>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.color">(miniworldmaker.tokens.token.Token property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.coloring">coloring (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.columns">columns (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.container_height">container_height (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.container_width">container_width (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/appearance.costume.html#miniworldmaker.appearances.costume.Costume">Costume (class in miniworldmaker.appearances.costume)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.count_pixels_by_color">count_pixels_by_color() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.direction">direction (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.direction_at_unit_circle">direction_at_unit_circle (miniworldmaker.tokens.token.Token property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.dirty">dirty (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/board_position.html#miniworldmaker.board_positions.board_position.BoardPosition.down">down() (miniworldmaker.board_positions.board_position.BoardPosition method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Ellipse">Ellipse (class in miniworldmaker.tokens.shapes)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.fill">fill (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.fill_color">fill_color (miniworldmaker.appearances.appearance.Appearance attribute)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.find_image_file">find_image_file() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.first_image">first_image() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.flip_vertical">flip_vertical (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.flip_x">flip_x() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.font_path">font_path (miniworldmaker.appearances.appearance.Appearance attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.fps">fps (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Circle.from_center">from_center() (miniworldmaker.tokens.shapes.Circle class method)</a>
+
+        <ul>
+          <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Ellipse.from_center">(miniworldmaker.tokens.shapes.Ellipse class method)</a>
+</li>
+          <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Rectangle.from_center">(miniworldmaker.tokens.shapes.Rectangle class method)</a>
+</li>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.from_center">(miniworldmaker.tokens.token.Token class method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Circle.from_topleft">from_topleft() (miniworldmaker.tokens.shapes.Circle class method)</a>
+
+        <ul>
+          <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Ellipse.from_topleft">(miniworldmaker.tokens.shapes.Ellipse class method)</a>
+</li>
+          <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Rectangle.from_topleft">(miniworldmaker.tokens.shapes.Rectangle class method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.get_color_from_pixel">get_color_from_pixel() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.get_colors_at_line">get_colors_at_line() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.get_mouse_position">get_mouse_position() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/board.tiledboard.html#miniworldmaker.boards.tiled_board.TiledBoard.get_neighbour_cells">get_neighbour_cells() (miniworldmaker.boards.tiled_board.TiledBoard static method)</a>
+</li>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.number_token.NumberToken.get_number">get_number() (miniworldmaker.tokens.number_token.NumberToken method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.text_token.TextToken.get_text">get_text() (miniworldmaker.tokens.text_token.TextToken method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.get_tokens_at_rect">get_tokens_at_rect() (miniworldmaker.boards.board.Board method)</a>
+
+        <ul>
+          <li><a href="api/board.pixelboard.html#miniworldmaker.boards.pixel_board.PixelBoard.get_tokens_at_rect">(miniworldmaker.boards.pixel_board.PixelBoard method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.get_tokens_by_pixel">get_tokens_by_pixel() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/appearance.background.html#miniworldmaker.appearances.background.Background.grid_overlay">grid_overlay (miniworldmaker.appearances.background.Background property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.height">height (miniworldmaker.boards.board.Board property)</a>
+
+        <ul>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.height">(miniworldmaker.tokens.token.Token property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.image">image (miniworldmaker.boards.board.Board property)</a>
+
+        <ul>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.image">(miniworldmaker.tokens.token.Token property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.image_action_coloring">image_action_coloring() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.image_action_transparency">image_action_transparency() (miniworldmaker.appearances.appearance.Appearance method)</a>
+</li>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.number_token.NumberToken.inc">inc() (miniworldmaker.tokens.number_token.NumberToken method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.is_animated">is_animated (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.is_flipped">is_flipped (miniworldmaker.appearances.appearance.Appearance property)</a>
+
+        <ul>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.is_flipped">(miniworldmaker.tokens.token.Token property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.tiledboard.html#miniworldmaker.boards.tiled_board.TiledBoard.is_position_on_board">is_position_on_board() (miniworldmaker.boards.tiled_board.TiledBoard method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.is_rotatable">is_rotatable (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.is_scaled">is_scaled (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/appearance.background.html#miniworldmaker.appearances.background.Background.is_scaled_to_tile">is_scaled_to_tile (miniworldmaker.appearances.background.Background property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.is_textured">is_textured (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.is_upscaled">is_upscaled (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.layer">layer (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/board_position.html#miniworldmaker.board_positions.board_position.BoardPosition.left">left() (miniworldmaker.board_positions.board_position.BoardPosition method)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Line">Line (class in miniworldmaker.tokens.shapes)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.load_board_from_db">load_board_from_db() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.load_image">load_image() (miniworldmaker.appearances.appearance.Appearance static method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.load_tokens_from_db">load_tokens_from_db() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/timer.html#miniworldmaker.tools.timer.LoopActionTimer">LoopActionTimer (class in miniworldmaker.tools.timer)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.move">move() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.move_back">move_back() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.move_in_direction">move_in_direction() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.move_to">move_to() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.next_costume">next_costume() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.next_image">next_image() (miniworldmaker.appearances.appearance.Appearance method)</a>
+
+        <ul>
+          <li><a href="api/appearance.background.html#miniworldmaker.appearances.background.Background.next_image">(miniworldmaker.appearances.background.Background method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.number_token.NumberToken">NumberToken (class in miniworldmaker.tokens.number_token)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_clicked_left">on_clicked_left() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_clicked_right">on_clicked_right() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_key_down">on_key_down() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_key_pressed">on_key_pressed() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_message">on_message() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_mouse_left">on_mouse_left() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_mouse_motion">on_mouse_motion() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_mouse_right">on_mouse_right() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_sensing_borders">on_sensing_borders() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_sensing_not_on_board">on_sensing_not_on_board() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_sensing_on_board">on_sensing_on_board() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.on_sensing_token">on_sensing_token() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.on_started">on_started() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.orientation">orientation (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/appearance.background.html#miniworldmaker.appearances.background.Background.parent">parent (miniworldmaker.appearances.background.Background attribute)</a>
+
+        <ul>
+          <li><a href="api/appearance.costume.html#miniworldmaker.appearances.costume.Costume.parent">(miniworldmaker.appearances.costume.Costume attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/board.pixelboard.html#miniworldmaker.boards.pixel_board.PixelBoard">PixelBoard (class in miniworldmaker.boards.pixel_board)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.play_music">play_music() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Point">Point (class in miniworldmaker.tokens.shapes)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.point_in_direction">point_in_direction() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.point_towards_position">point_towards_position() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.point_towards_token">point_towards_token() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Polygon">Polygon (class in miniworldmaker.tokens.shapes)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.position">position (miniworldmaker.tokens.token.Token property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Circle.radius">radius (miniworldmaker.tokens.shapes.Circle property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.rect">rect (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Rectangle">Rectangle (class in miniworldmaker.tokens.shapes)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.register">register() (miniworldmaker.appearances.appearance.Appearance method)</a>
+
+        <ul>
+          <li><a href="api/board.html#miniworldmaker.boards.board.Board.register">(miniworldmaker.boards.board.Board method)</a>
+</li>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.register">(miniworldmaker.tokens.token.Token method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.reload_image">reload_image() (miniworldmaker.appearances.appearance.Appearance method)</a>
+
+        <ul>
+          <li><a href="api/appearance.costume.html#miniworldmaker.appearances.costume.Costume.reload_image">(miniworldmaker.appearances.costume.Costume method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.remove">remove() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.remove_background">remove_background() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.remove_costume">remove_costume() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.remove_from_board">remove_from_board() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.remove_tokens_from_rect">remove_tokens_from_rect() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.repaint">repaint() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.reset">reset() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/board_position.html#miniworldmaker.board_positions.board_position.BoardPosition.right">right() (miniworldmaker.board_positions.board_position.BoardPosition method)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.rows">rows (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.run">run() (miniworldmaker.boards.board.Board method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.save_to_db">save_to_db() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_borders">sensing_borders() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_bottom_border">sensing_bottom_border() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_colors">sensing_colors() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_left_border">sensing_left_border() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_on_board">sensing_on_board() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_point">sensing_point() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_right_border">sensing_right_border() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_token">sensing_token() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_tokens">sensing_tokens() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.sensing_top_border">sensing_top_border() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.text_token.TextToken.set_auto_size">set_auto_size() (miniworldmaker.tokens.text_token.TextToken method)</a>
+</li>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.number_token.NumberToken.set_number">set_number() (miniworldmaker.tokens.number_token.NumberToken method)</a>
+</li>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.text_token.TextToken.set_text">set_text() (miniworldmaker.tokens.text_token.TextToken method)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Shape">Shape (class in miniworldmaker.tokens.shapes)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.size">size (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.speed">speed (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.static">static (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.stop">stop() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.stroke_color">stroke_color (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.switch_background">switch_background() (miniworldmaker.boards.board.Board method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.switch_costume">switch_costume() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.text">text (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.text_position">text_position (miniworldmaker.appearances.appearance.Appearance attribute)</a>
+</li>
+        <li><a href="api/token.texttoken.html#miniworldmaker.tokens.text_token.TextToken">TextToken (class in miniworldmaker.tokens.text_token)</a>
+</li>
+        <li><a href="api/token.shape.html#miniworldmaker.tokens.shapes.Line.thickness">thickness (miniworldmaker.tokens.shapes.Line property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.tile_margin">tile_margin (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.tile_size">tile_size (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/board.tiledboard.html#miniworldmaker.boards.tiled_board.TiledBoard">TiledBoard (class in miniworldmaker.boards.tiled_board)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/timer.html#miniworldmaker.tools.timer.Timer">Timer (class in miniworldmaker.tools.timer)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token">Token (class in miniworldmaker.tokens.token)</a>
+</li>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.tokens">tokens (miniworldmaker.boards.board.Board property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.topleft_x">topleft_x (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.topleft_y">topleft_y (miniworldmaker.tokens.token.Token property)</a>
+</li>
+        <li><a href="api/appearance.html#miniworldmaker.appearances.appearance.Appearance.transparency">transparency (miniworldmaker.appearances.appearance.Appearance property)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.turn_left">turn_left() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.turn_right">turn_right() (miniworldmaker.tokens.token.Token method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board_position.html#miniworldmaker.board_positions.board_position.BoardPosition.up">up() (miniworldmaker.board_positions.board_position.BoardPosition method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.update">update() (miniworldmaker.boards.board.Board method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.width">width (miniworldmaker.boards.board.Board property)</a>
+
+        <ul>
+          <li><a href="api/token.html#miniworldmaker.tokens.token.Token.width">(miniworldmaker.tokens.token.Token property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/board.html#miniworldmaker.boards.board.Board.window">window (miniworldmaker.boards.board.Board property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="X" class="genindex-section">
+  <h2>X</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.x">x (miniworldmaker.tokens.token.Token property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Y" class="genindex-section">
+  <h2>Y</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/token.html#miniworldmaker.tokens.token.Token.y">y (miniworldmaker.tokens.token.Token property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Andreas Siebel |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>

@@ -1,0 +1,1647 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>miniworldmaker.tokens.token - miniworldmaker 2021 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">miniworldmaker 2021 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">miniworldmaker 2021 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../impressum.html">Impressum</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (Deutsch)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../objectsfirst_german/index.html">Tutorial Deutsch - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/02_board.html">Das Spielfeld (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/03_tokens.html">Spielfiguren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/04_actions.html">Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/05_movement.html">Bewegung und Ausrichtung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/06_events.html">Ereignisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/07_collisions.html">Kollisionen und Sensoren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/08_collisions2.html">Kollisionen und Sensoren II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/09_costumes.html">Kostüme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/10_animations.html">Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/12_status.html">Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_german/13_physics.html">Physik</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../classesfirst_german/index.html">Tutorial Deutsch - Classes First</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../classesfirst_german/classes.html">Klassen</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../processing_german/index.html">Processing</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../processing_german/01_first_steps.html">Zeichnen mit dem Miniworldmaker - Grundlagen</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (English)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../objectsfirst_english/index.html">Tutorial English - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/02_board.html">The playing field (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/03_tokens.html">Game Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/04_actions.html">Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/05_movement.html">Movement and alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/06_events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/07_collisions.html">Collisions and sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/08_collisions2.html">Collisions and sensors II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/09_costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/10_animations.html">Animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/12_status.html">Status: Game state/end of game/levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../objectsfirst_english/13_physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Key Concepts</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../key_concepts/index.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/tokens.html">Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../key_concepts/physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.html">Appearance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.background.html">Appearance: Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/appearance.costume.html">Appearance: Costume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board.html">Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board.pixelboard.html">Board: PixelBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board.tiledboard.html">Board: TiledBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/board_position.html">BoardPositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/timer.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/timer.html#actiontimer">ActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/timer.html#loopactiontimer">LoopActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/token.html">Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/token.shape.html">Token: Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/token.texttoken.html">Token.Texts and Numbers</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <h1>Source code for miniworldmaker.tokens.token</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">import</span> <span class="nn">pygame.gfxdraw</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.appearances</span> <span class="kn">import</span> <span class="n">appearance</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.appearances</span> <span class="kn">import</span> <span class="n">costume</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.board_positions</span> <span class="kn">import</span> <span class="n">board_position</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.exceptions.miniworldmaker_exception</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">NoValidBoardPositionError</span><span class="p">,</span>
+    <span class="n">TokenArgumentShouldBeTuple</span><span class="p">,</span>
+    <span class="n">NotImplementedOrRegisteredError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.tools</span> <span class="kn">import</span> <span class="n">token_inspection</span>
+<span class="kn">from</span> <span class="nn">miniworldmaker.dialogs</span> <span class="kn">import</span> <span class="n">ask</span>
+<span class="kn">import</span> <span class="nn">miniworldmaker</span>
+
+
+<span class="k">class</span> <span class="nc">Meta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">NoValidBoardPositionError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TokenArgumentShouldBeTuple</span><span class="p">()</span>
+        <span class="n">_token_connector</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">get_token_connector</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="n">_token_connector</span><span class="o">.</span><span class="n">add_token_to_board</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">_position</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span>
+
+
+<div class="viewcode-block" id="Token"><a class="viewcode-back" href="../../../key_concepts/tokens.html#miniworldmaker.tokens.token.Token">[docs]</a><span class="k">class</span> <span class="nc">Token</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">DirtySprite</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">Meta</span><span class="p">):</span>
+    <span class="sd">"""Tokens are objects on your board. Tokens can :doc:`move &lt;../key_concepts/movement&gt;` around the board and have :doc:`sensors &lt;../key_concepts/sensors&gt;` to detect other tokens.</span>
+
+<span class="sd">    The appearance of a token is determined by its :doc:`Costume &lt;../key_concepts/costumes&gt;`.</span>
+
+<span class="sd">    These are the Token Types you can use:</span>
+
+<span class="sd">    * Token: Base class for all Kinds of Tokens</span>
+<span class="sd">    * TextToken: A TextToken</span>
+<span class="sd">    * NumberToken: A NumberToken</span>
+<span class="sd">    * Rectangle: A Rectangle</span>
+<span class="sd">    * Line: A Line</span>
+<span class="sd">    * Circle: A Circle</span>
+<span class="sd">    * Ellipse: A Ellipse</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        Creating a token:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">          board = miniworldmaker.PixelBoard()</span>
+<span class="sd">          board.size = (800,300)</span>
+<span class="sd">          my_token = miniworldmaker.Token(position=(0, 0))</span>
+
+<span class="sd">        Creating a token Class:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">          class MyToken(miniworldmaker.Token):</span>
+<span class="sd">              def on_setup(self):</span>
+<span class="sd">                  self.add_costume("images/2.png")</span>
+
+<span class="sd">          my_token = MyToken(position = (40,130))</span>
+
+<span class="sd">        Creating a Circle from Center at mouse position</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">          circle = miniworldmaker.Circle(self.get_mouse_position(), 80, 1)</span>
+<span class="sd">          circle.center = circle.position</span>
+
+<span class="sd">    See Also:</span>
+
+<span class="sd">        * See: :doc:`Token &lt;../api/token&gt;`</span>
+<span class="sd">        * See: :doc:`Shapes &lt;../api/token.shape&gt;`</span>
+<span class="sd">        * See: :doc:`TextTokens and NumberTokens &lt;../api/token.texttoken&gt;`</span>
+<span class="sd">    Args:</span>
+<span class="sd">        position: The topleft position of the token as tuple,. e.g. (200,200)</span>
+<span class="sd">    """</span>
+
+    <span class="n">token_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">class_image</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="s2">"miniworldmaker.BoardPosition"</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collision_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fill_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>      
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stroke_color</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inner</span> <span class="o">=</span> <span class="mi">0</span>   
+        <span class="bp">self</span><span class="o">.</span><span class="n">_managers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Token</span><span class="o">.</span><span class="n">token_count</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="p">:</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TokenCostumeManager</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="p">:</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TokenBoardSensor</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="p">:</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TokenPositionManager</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="p">:</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">Board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">App</span><span class="o">.</span><span class="n">board</span>
+        <span class="n">_token_connector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">get_token_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_token_connector</span><span class="o">.</span><span class="n">add_token_managers</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+        <span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">DirtySprite</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">Token</span><span class="o">.</span><span class="n">token_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position</span><span class="p">:</span> <span class="s2">"board_position.BoardPosition"</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ask</span><span class="p">:</span> <span class="s2">"ask.Ask"</span> <span class="o">=</span> <span class="n">ask</span><span class="o">.</span><span class="n">Ask</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">collision_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">"""collision_type specifies how collisions should be checked:</span>
+
+<span class="sd">            * `default`: tile for TiledBoards, 'mask' for PixelBoards</span>
+
+<span class="sd">            * `tile`: Are tokens on the same tile? (only TiledBoard)</span>
+
+<span class="sd">            * `rect`: Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)</span>
+
+<span class="sd">            * `static-rect`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)</span>
+
+<span class="sd">            * `circle`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)</span>
+
+<span class="sd">            * `mask`: Are tokens colliding when checkig if their image masks are overlapping.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collision_type</span>
+
+    <span class="nd">@collision_type</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">collision_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span> <span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collision_type</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span>
+
+    <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">_tokens</span><span class="o">.</span><span class="n">change_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"board_position.BoardPosition"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">last_position</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">last_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">last_direction</span>
+
+<div class="viewcode-block" id="Token.from_center"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.from_center">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_center</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">center_position</span><span class="p">:</span> <span class="s2">"board_position.BoardPosition"</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Creates a token with center at center_position</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            center_position: Center of token</span>
+<span class="sd">        """</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>  <span class="c1"># temp positition</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center_position</span>  <span class="c1"># pos set to center</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">costume_count</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">costume_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        If a token is flipped, it is mirrored via the y-axis.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True, if token is flipped</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            flip a token in Example flipthefish.py</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">              def on_sensing_not_on_board(self):</span>
+<span class="sd">                  self.move_back()</span>
+<span class="sd">                  self.flip_x()</span>
+<span class="sd">                  print(self.is_flipped()) # true</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">is_flipped</span>
+
+    <span class="nd">@is_flipped</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_flipped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">flip_costume</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Token.flip_x"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.flip_x">[docs]</a>    <span class="k">def</span> <span class="nf">flip_x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""Flips the actor by 180° degrees</span>
+
+<span class="sd">        .. image:: ../_images/flip_x.png</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The new direction</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            flip a token.</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">              def on_sensing_not_on_board(self):</span>
+<span class="sd">                  self.move_back()</span>
+<span class="sd">                  self.flip_x()</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">flip_x</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="p">,</span> <span class="s2">"position_manager"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="si">{0}</span><span class="s2">-Object, ID: </span><span class="si">{1}</span><span class="s2"> at pos </span><span class="si">{2}</span><span class="s2"> with size </span><span class="si">{3}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">class_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"**: </span><span class="si">{0}</span><span class="s2">; ID: </span><span class="si">{1}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">token_id</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        The image of the token:</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">          Warning: You should not directly draw on the image</span>
+<span class="sd">          as the image will be reloaded during animations</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">image</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dirty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""If token is dirty, it will be repainted.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            int: 1 if token is dirty/0 otherwise</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">dirty</span>
+
+    <span class="nd">@dirty</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dirty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">dirty</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        The surrounding Rectangle as pygame.Rect.</span>
+<span class="sd">        Warning: If the token is rotated, the rect vertices are not the vertices of the token image.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">rect</span>
+
+    <span class="k">def</span> <span class="nf">get_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">rect</span>
+
+<div class="viewcode-block" id="Token.add_costume"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.add_costume">[docs]</a>    <span class="k">def</span> <span class="nf">add_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="n">costume</span><span class="o">.</span><span class="n">Costume</span><span class="p">:</span>
+        <span class="sd">"""Adds a new costume to token.</span>
+<span class="sd">        The costume can be switched with self.switch_costume(index)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: Path to the first image of new costume</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new costume.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">add_costume</span><span class="p">(</span><span class="n">source</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.remove_costume"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.remove_costume">[docs]</a>    <span class="k">def</span> <span class="nf">remove_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">costume</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""Removes a costume from token</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index: The index of the new costume. Defaults to -1 (last costume)</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">remove_costume</span><span class="p">(</span><span class="n">costume</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.switch_costume"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.switch_costume">[docs]</a>    <span class="k">def</span> <span class="nf">switch_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">costume</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="s2">"appearance.Appearance"</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s2">"costume.Costume"</span><span class="p">:</span>
+        <span class="sd">"""Switches the costume of token</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            next: If next is True, the next costume will be selected</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            The new costume</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">switch_costume</span><span class="p">(</span><span class="n">costume</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.next_costume"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.next_costume">[docs]</a>    <span class="k">def</span> <span class="nf">next_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Switches to the next costume of token</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            next: If next is True, the next costume will be selected</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            The new costume</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">next_costume</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">costume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">costume</span><span class="o">.</span><span class="n">Costume</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">costume</span>
+
+    <span class="nd">@costume</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">costume</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">costumes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">costumes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">orientation</span>
+
+    <span class="nd">@orientation</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">orientation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""Directions are handled exactly as in the Scratch programming language,</span>
+<span class="sd">        see: `Scratch Wiki &lt;https://en.scratch-wiki.info/wiki/Direction_(value)&gt;`_</span>
+
+<span class="sd">        The default direction is 0°. All tokens are looking "up"</span>
+
+<span class="sd">        .. image:: /_images/movement.jpg</span>
+<span class="sd">            :width: 100%</span>
+<span class="sd">            :alt: Move on board</span>
+
+<span class="sd">        **Values for Direction**</span>
+
+<span class="sd">        * 0° or "up": up</span>
+<span class="sd">        * 90° or "right": Move right</span>
+<span class="sd">        * -90° or "left": Move left</span>
+<span class="sd">        * 180° or "down": Move down</span>
+<span class="sd">        * "forward": Current direction</span>
+
+<span class="sd">        Sets direction of the token.</span>
+
+<span class="sd">        You can use a integer or a string to describe the direction</span>
+
+<span class="sd">        Options</span>
+<span class="sd">            * 0, "up" - Look up</span>
+<span class="sd">            * 90, "right", - Look right</span>
+<span class="sd">            * -90, "left", - Look left</span>
+<span class="sd">            * -180, 180, "down" - Look down</span>
+
+<span class="sd">        .. image:: ../_images/direction.png</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Move in a direction with WASD-Keys</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">              def on_key_down(self, keys):</span>
+<span class="sd">                  if "W" in keys:</span>
+<span class="sd">                      self.direction = "up"</span>
+<span class="sd">                  elif "S" in keys:</span>
+<span class="sd">                      self.direction = "down"</span>
+<span class="sd">                  elif "A" in keys:</span>
+<span class="sd">                      self.direction = "left"</span>
+<span class="sd">                  elif "D" in keys:</span>
+<span class="sd">                      self.direction = "right"</span>
+<span class="sd">                  self.move()</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">direction</span>
+
+    <span class="nd">@direction</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">direction_at_unit_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Gets the direction as value in unit circle (0° right, 90° top, 180° left...</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">dir_to_unit_circle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
+
+    <span class="nd">@direction_at_unit_circle</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">direction_at_unit_circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Sets the direction from unit circle</span>
+<span class="sd">        Args:</span>
+<span class="sd">            value: An angle in the unit circle, e.g. 0°: right, 90° top, ...</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">unit_circle_to_dir</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Token.turn_left"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.turn_left">[docs]</a>    <span class="k">def</span> <span class="nf">turn_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""Turns actor by *degrees* degrees left</span>
+
+<span class="sd">        .. image:: ../_images/turn_left.png</span>
+
+<span class="sd">        Options:</span>
+<span class="sd">          * You can set the value token.is_rotatable = False if you don't want the token to be rotated.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            degrees: degrees in left direction</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            New direction</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">turn_left</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.turn_right"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.turn_right">[docs]</a>    <span class="k">def</span> <span class="nf">turn_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">degrees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">90</span><span class="p">):</span>
+        <span class="sd">"""Turns token by *degrees* degrees right</span>
+
+<span class="sd">        .. image:: ../_images/turn_right.png</span>
+
+<span class="sd">        Options:</span>
+<span class="sd">          * You can set the value token.is_rotatable = False if you don't want the token to be rotated.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            degrees: degrees in left direction</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            New direction</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">turn_right</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.point_in_direction"><a class="viewcode-back" href="../../../key_concepts/directions.html#miniworldmaker.tokens.token.Token.point_in_direction">[docs]</a>    <span class="k">def</span> <span class="nf">point_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""Token points in given direction.</span>
+
+<span class="sd">        You can use a integer or a string to describe the direction</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            The direction as integer or string (see options)</span>
+
+<span class="sd">        Options</span>
+<span class="sd">            * 0, "up" - Look up</span>
+<span class="sd">            * 90, "right", - Look right</span>
+<span class="sd">            * -90, "left", - Look left</span>
+<span class="sd">            * -180, 180, "down" - Look down</span>
+
+<span class="sd">        .. image:: ../_images/direction.png</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Move in a direction with WASD-Keys</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">              def on_key_down(self, keys):</span>
+<span class="sd">                  if "W" in keys:</span>
+<span class="sd">                      self.direction = "up"</span>
+<span class="sd">                  elif "S" in keys:</span>
+<span class="sd">                      self.direction = "down"</span>
+<span class="sd">                  elif "A" in keys:</span>
+<span class="sd">                      self.direction = "left"</span>
+<span class="sd">                  elif "D" in keys:</span>
+<span class="sd">                      self.direction = "right"</span>
+<span class="sd">                  self.move()</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">point_in_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">delta_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">))</span> <span class="o">*</span> <span class="n">distance</span>
+
+    <span class="k">def</span> <span class="nf">delta_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">))</span> <span class="o">*</span> <span class="n">distance</span>
+
+<div class="viewcode-block" id="Token.point_towards_position"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.point_towards_position">[docs]</a>    <span class="k">def</span> <span class="nf">point_towards_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Token points towards a given position</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            destination: The position to which the actor should pointing</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new direction</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Point towards mouse_position:</span>
+
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">            </span>
+<span class="sd">                def act(self):</span>
+<span class="sd">                    mouse = self.board.get_mouse_position()</span>
+<span class="sd">                if mouse:</span>
+<span class="sd">                    self.point_towards_position(mouse)</span>
+<span class="sd">                self.move()</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">point_towards_position</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.point_towards_token"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.point_towards_token">[docs]</a>    <span class="k">def</span> <span class="nf">point_towards_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"Token"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">"""def s</span>
+<span class="sd">        Token points towards another token.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other: The other token</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The new direction</span>
+
+<span class="sd">        """</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">center</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_towards_position</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">"""Size of the token"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="nd">@size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_size</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        The width of the token in pixels</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@width</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        The height of the token in pixels</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@height</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        The position of the token as BoardPosition (x, y)</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">position</span>
+
+    <span class="nd">@position</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">"""The x-value of an token"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">x</span>
+
+    <span class="nd">@x</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">"""The y-value of an token"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">y</span>
+
+    <span class="nd">@y</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">class_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">center_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""x-value of token center-position"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">center_x</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">topleft_x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""x-value of token topleft-position"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">topleft</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">topleft_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""x-value of token topleft-position"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">topleft</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">topleft</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">topleft</span>
+
+    <span class="nd">@topleft</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">topleft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">topleft</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">center_y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""y-value of token center-position"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">center_y</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">center</span>
+
+    <span class="nd">@center_x</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">center_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">center_x</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@center_y</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">center_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">center_y</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@center</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Token.move"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">"""Moves actor *distance* steps in current direction</span>
+
+<span class="sd">        .. image:: ../_images/move.png</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            distance: Number of steps to move.</span>
+<span class="sd">              If distance = 0, the actor speed will be used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The moved token</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            if token is on the board, move forward:</span>
+<span class="sd">            </span>
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">            </span>
+<span class="sd">                class Robot(Token):</span>
+
+<span class="sd">                    def act(self):</span>
+<span class="sd">                        if self.sensing_on_board():</span>
+<span class="sd">                            self.move()</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">move_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_in_direction</span><span class="p">(</span><span class="s2">"up"</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_in_direction</span><span class="p">(</span><span class="s2">"down"</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_in_direction</span><span class="p">(</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">move_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_in_direction</span><span class="p">(</span><span class="s2">"right"</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Token.move_back"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move_back">[docs]</a>    <span class="k">def</span> <span class="nf">move_back</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        "Undo" the last move. Moves the actor to the last position and resets direction.</span>
+
+<span class="sd">        .. image:: ../_images/move_back.png</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The moved token</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            move_back when field is blocked:</span>
+<span class="sd">            </span>
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">                def on_sensing_wall(self, wall):</span>
+<span class="sd">                    self.move_back()</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_back</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.move_in_direction"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move_in_direction">[docs]</a>    <span class="k">def</span> <span class="nf">move_in_direction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">distance</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">"""Moves token *distance* steps into a *direction*.</span>
+
+<span class="sd">        .. image:: ../_images/move_in_direction.png</span>
+
+<span class="sd">        Options</span>
+<span class="sd">            * 0, "up" - Look up</span>
+<span class="sd">            * 90, "right", - Look right</span>
+<span class="sd">            * -90, "left", - Look left</span>
+<span class="sd">            * -180, 180, "down" - Look down</span>
+
+<span class="sd">        .. image:: ../_images/direction.png</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            direction: Direction as angle</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The token itself</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_in_direction</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.move_to"><a class="viewcode-back" href="../../../key_concepts/movement.html#miniworldmaker.tokens.token.Token.move_to">[docs]</a>    <span class="k">def</span> <span class="nf">move_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="n">board_position</span><span class="o">.</span><span class="n">BoardPosition</span><span class="p">):</span>
+        <span class="sd">"""Moves token *distance* to a specific board_posiition</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position: The position to which the actor should move. The position can be a 2-tuple (x, y)</span>
+<span class="sd">            which will be converted to a board_position</span>
+
+<span class="sd">        .. image:: ../_images/move_to.png</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The token itself</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            move to (3, 2) on mouse_click</span>
+
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                </span>
+<span class="sd">                def on_clicked_left(self, position):</span>
+<span class="sd">                    self.move_to((3,2))</span>
+
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">move_to</span><span class="p">(</span><span class="n">position</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.remove"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Removes this token from board</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Removes robots in thecrash.py :</span>
+
+<span class="sd">            .. code-block:: python</span>
+
+<span class="sd">               def act(self):</span>
+<span class="sd">                   self.move()</span>
+<span class="sd">                   other = self.sensing_token(distance = 0, token_type=Robot)</span>
+<span class="sd">               if other:</span>
+<span class="sd">                   explosion = Explosion(position=self.position)</span>
+<span class="sd">                   self.remove()</span>
+<span class="sd">                   other.remove()</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"board"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">remove_from_board</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">manager</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_managers</span><span class="p">:</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="k">del</span> <span class="n">manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_rotatable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">is_rotatable</span>
+
+    <span class="nd">@is_rotatable</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_rotatable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">is_rotatable</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Token.bounce_from_border"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.bounce_from_border">[docs]</a>    <span class="k">def</span> <span class="nf">bounce_from_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">borders</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Token</span><span class="p">:</span>
+        <span class="sd">"""Bounces the actor from a border.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            borders: A list of borders as strings e.g. ["left", "right"]</span>
+
+<span class="sd">        Returns: The token</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">bounce_from_border</span><span class="p">(</span><span class="n">borders</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_on_board"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_on_board">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Is the token on board if it is moving distance steps forward?</span>
+
+<span class="sd">        .. image:: ../_images/sensing_on_board.png</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if token is on board</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_on_board</span><span class="p">(</span><span class="n">distance</span><span class="o">=</span><span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_tokens"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_tokens">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_tokens</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">token_filter</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">collision_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Token</span><span class="p">]:</span>
+        <span class="sd">"""Senses if tokens are on tokens position.</span>
+<span class="sd">        Returns a list of tokens.</span>
+
+<span class="sd">        .. image:: ../_images/sensing_tokens.png</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token_filter: filter by token type. Enter a class_name of tokens to look for here</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+<span class="sd">            collision_type: The type of collision which should be checked:</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            All tokens found by Sensor</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_tokens</span><span class="p">(</span><span class="n">token_filter</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_token"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_token">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_token</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">token_filter</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">"Token"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">collision_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Token</span><span class="p">]:</span>
+        <span class="sd">"""Senses if tokens are on tokens position.</span>
+<span class="sd">        Returns the first found token.</span>
+
+<span class="sd">        .. image:: ../_images/sensing_token.png</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">            token_filter: filter by token type or by token instance</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+<span class="sd">            collision_type: The type of collision which should be checked:</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            First token found by Sensor</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Sensing a fireplace in rpg.py:</span>
+
+<span class="sd">            .. code-block:: python</span>
+<span class="sd">                </span>
+<span class="sd">                fireplace =  self.player.sensing_token(Fireplace)</span>
+<span class="sd">                if fireplace:</span>
+<span class="sd">                    self.console.newline("Du zündest die Feuerstelle an.")</span>
+<span class="sd">                    self.fireplace.burn()</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_token</span><span class="p">(</span><span class="n">token_filter</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_borders"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_borders">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""</span>
+<span class="sd">        Senses borders</span>
+
+<span class="sd">        .. image:: ../_images/sensing_borders.png</span>
+
+<span class="sd">        Args:</span>
+
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            True if border was found.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_borders</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_left_border"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_left_border">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_left_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""Senses borders</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            True if border was found.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"left"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_borders</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_right_border"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_right_border">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_right_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""Senses borders</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            True if border was found.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"right"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_borders</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_top_border"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_top_border">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_top_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""Senses borders</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            True if border was found.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"top"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_borders</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_bottom_border"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.sensing_bottom_border">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_bottom_border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""Senses borders</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            True if border was found.</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"bottom"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_borders</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.sensing_colors"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_colors">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_colors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">distance</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="sd">"""Senses colors in board-background at token-position</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            colors: colors as tuple</span>
+<span class="sd">            distance: Specifies the distance in front of the actuator to which the sensor reacts.</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            All colors found by Sensor</span>
+
+<span class="sd">        """</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">board_sensor</span><span class="o">.</span><span class="n">sensing_colors</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">colors</span></div>
+
+<div class="viewcode-block" id="Token.sensing_point"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.sensing_point">[docs]</a>    <span class="k">def</span> <span class="nf">sensing_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">board_position</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">"board_position.Boardposition"</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">"""Is the token colliding with a specific (global) point?</span>
+
+<span class="sd">        Returns: </span>
+<span class="sd">            True if point is below token</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">collidepoint</span><span class="p">(</span><span class="n">board_position</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Token.register"><a class="viewcode-back" href="../../../api/token.html#miniworldmaker.tokens.token.Token.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="n">callable</span><span class="p">):</span>
+        <span class="sd">"""This method is used for the @register decorator. It adds a method to an object</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            method (callable): The method which should be added to the token</span>
+<span class="sd">        """</span>
+        <span class="n">bound_method</span> <span class="o">=</span> <span class="n">token_inspection</span><span class="o">.</span><span class="n">TokenInspection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">bind_method</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"on_setup"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">event_handler</span><span class="o">.</span><span class="n">register_event</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bound_method</span></div>
+
+    <span class="k">def</span> <span class="nf">bounce_from_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">"Token"</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position_manager</span><span class="o">.</span><span class="n">bounce_from_token</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">animate</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">animate_costume</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">costume</span><span class="p">:</span> <span class="n">costume</span><span class="o">.</span><span class="n">Costume</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">animate_costume</span><span class="p">(</span><span class="n">costume</span><span class="p">,</span> <span class="n">speed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">loop_animation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">loop_animation</span><span class="p">(</span><span class="n">speed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">event_manager</span><span class="o">.</span><span class="n">send_event_to_containers</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Token.on_key_down"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_key_down">[docs]</a>    <span class="k">def</span> <span class="nf">on_key_down</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="sd">"""**on_key_down**  is called one time when a key is pressed down.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Instead of **on_key_down** you can use **on_key_down_letter**, e.g. **on_key_down_a** or **on_key_down_w**</span>
+<span class="sd">            , if you want to handle a on_key_down event for a specific letter.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register a key_down event:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                token1 = miniworldmaker.Token(position = (2, 2) )</span>
+<span class="sd">                token1.add_costume((100,0,100,100))</span>
+
+<span class="sd">                @token1.register</span>
+<span class="sd">                def on_key_down(self, key):</span>
+<span class="sd">                    print(key)</span>
+
+<span class="sd">            Register on_key_down_a event</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                token1 = miniworldmaker.Token(position = (2, 2) )</span>
+<span class="sd">                token1.add_costume((100,0,100,100))</span>
+
+<span class="sd">                @token1.register</span>
+<span class="sd">                def on_key_down_a(self):</span>
+<span class="sd">                    print("a")</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (list): The typed key as list (e.g. ['A', 'a']) containing both uppercase and lowercase of typed letter.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_key_pressed"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_key_pressed">[docs]</a>    <span class="k">def</span> <span class="nf">on_key_pressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="sd">"""**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed</span>
+<span class="sd">        is repeatedly called again and again until the key is released.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            </span>
+<span class="sd">            Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`).</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register on_key_pressed event:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                token1 = miniworldmaker.Token(position = (2, 2) )</span>
+<span class="sd">                token1.add_costume((100,0,100,100))</span>
+
+<span class="sd">                @token1.register</span>
+<span class="sd">                def on_key_pressed(self, key):</span>
+<span class="sd">                    print("pressed", key)</span>
+
+<span class="sd">                @token1.register</span>
+<span class="sd">                def on_key_pressed_s(self):</span>
+<span class="sd">                    print("pressed s")</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            key (list): The typed key as list (e.g. ['C', 'c', 'D', 'd']) containing both uppercase and lowercase of typed letter.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">on_key_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Token.on_mouse_left"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_mouse_left">[docs]</a>    <span class="k">def</span> <span class="nf">on_mouse_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">"""Method is called when left mouse button was pressed.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">            Register mouse event to board</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @board.register</span>
+<span class="sd">                def on_mouse_left(self, position):</span>
+<span class="sd">                    print("left" + str(position))</span>
+
+<span class="sd">                @board.register</span>
+<span class="sd">                def on_mouse_right(self, position):</span>
+<span class="sd">                    print("right" + str(position))</span>
+
+<span class="sd">                @board.register</span>
+<span class="sd">                def on_mouse_middle(self, position):</span>
+<span class="sd">                    print("middle" + str(position))</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            position (tuple): Actual mouse position as tuple (x,y)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_mouse_right"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_mouse_right">[docs]</a>    <span class="k">def</span> <span class="nf">on_mouse_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">"""on_mouse_right is called when right mouse button was pressed.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register mouse event to board</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @board.register</span>
+<span class="sd">                def on_mouse_right(self, position):</span>
+<span class="sd">                    print("right" + str(position))</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position (tuple): Actual mouse position as tuple (x,y)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_mouse_motion"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_mouse_motion">[docs]</a>    <span class="k">def</span> <span class="nf">on_mouse_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">"""on_mouse_motion is called when right mouse moves.</span>
+
+<span class="sd">        Examples</span>
+
+<span class="sd">            Register mouse-motion event to board</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @board.register</span>
+<span class="sd">                def on_mouse_motion(self, position):</span>
+<span class="sd">                    print("motion" + str(position))</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position (tuple): Actual mouse position as tuple (x,y)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_message"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_message">[docs]</a>    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">"""Messages are used to allow objects to communicate with each other.</span>
+
+<span class="sd">        Send a message:</span>
+
+<span class="sd">        * A token and the board can send a message to all tokens and the board with the command: self.send_message(“message_string”)</span>
+
+<span class="sd">        Process a message:</span>
+
+<span class="sd">        * If your board or your token should react to messages you can use the event on_message:</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Receive a message</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @player.register</span>
+<span class="sd">                def on_message(self, message):</span>
+<span class="sd">                    if message == "Example message":</span>
+<span class="sd">                    do_something()</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            message (str): The message as string</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_clicked_left"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_clicked_left">[docs]</a>    <span class="k">def</span> <span class="nf">on_clicked_left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="sd">"""The mouse is on top of a token and mouse was clicked.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Registering a on_click event:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                token = miniworldmaker.Token((2,2))</span>
+
+<span class="sd">                @token.register</span>
+<span class="sd">                def on_clicked_left(self, position):</span>
+<span class="sd">                    print("clicked" + str(position))</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            position (tuple): Actual mouse position as tuple (x,y)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_clicked_right"><a class="viewcode-back" href="../../../key_concepts/events.html#miniworldmaker.tokens.token.Token.on_clicked_right">[docs]</a>    <span class="k">def</span> <span class="nf">on_clicked_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="sd">"""The mouse is on top of a token and mouse was clicked.</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Registering a on_click event:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                token = miniworldmaker.Token((2,2))</span>
+
+<span class="sd">                @token.register</span>
+<span class="sd">                def on_clicked_right(self, position):</span>
+<span class="sd">                    print("clicked" + str(position))</span>
+
+
+<span class="sd">        Args:</span>
+<span class="sd">            position (tuple): Actual mouse position as tuple (x,y)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_sensing_on_board"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.on_sensing_on_board">[docs]</a>    <span class="k">def</span> <span class="nf">on_sensing_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""*on_sensing_on_board* is called, when token is on board"</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register on_sensing_on_board method:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @player.register</span>
+<span class="sd">                    def on_sensing_on_board(self):</span>
+<span class="sd">                    print("Player 3: I'm on the board:")</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_sensing_not_on_board"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.on_sensing_not_on_board">[docs]</a>    <span class="k">def</span> <span class="nf">on_sensing_not_on_board</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""*on_sensing_not_on_board* is called, when token is not on board"</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register on_sensing_not_on_board method:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @player.register</span>
+<span class="sd">                    def on_sensing_not_on_board(self):</span>
+<span class="sd">                    print("Warning: I'm not on the board!!!")</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_sensing_borders"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.on_sensing_borders">[docs]</a>    <span class="k">def</span> <span class="nf">on_sensing_borders</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">str</span><span class="p">:</span> <span class="n">List</span><span class="p">(</span><span class="nb">str</span><span class="p">)):</span>
+        <span class="sd">"""*on_sensing_border* is called, when token is near a border</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            str (List): A list of strings with found borders, e.g.: ['left', 'top']</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register on_sensing_border_event:</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @player.register</span>
+<span class="sd">                def on_sensing_borders(self, borders):</span>
+<span class="sd">                    print("Player 4: Sensing borders:")</span>
+<span class="sd">                    print("Borders are here!", str(borders))</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Token.on_sensing_token"><a class="viewcode-back" href="../../../key_concepts/sensors.html#miniworldmaker.tokens.token.Token.on_sensing_token">[docs]</a>    <span class="k">def</span> <span class="nf">on_sensing_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="s2">"Token"</span><span class="p">):</span>
+        <span class="sd">"""*on_sensing_token* is called, when token is sensing a token on same position</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (Token): The found token</span>
+
+<span class="sd">        Examples:</span>
+
+<span class="sd">            Register sensing_token event</span>
+
+<span class="sd">            .. code-block::</span>
+
+<span class="sd">                @player.register</span>
+<span class="sd">                def on_sensing_token(self, token):</span>
+<span class="sd">                    print("Player 1: Sensing token:")</span>
+<span class="sd">                    if token == player2:</span>
+<span class="sd">                    print("Am i sensing player2?" + str(token == player2))</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="n">NotImplementedOrRegisteredError</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">static</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Should token react to events?</span>
+<span class="sd">        You can turn this option off for additional performance boost.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span>
+
+    <span class="nd">@static</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">_token_connector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">board</span><span class="o">.</span><span class="n">get_token_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_token_connector</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""-&gt;See fill color"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_color</span>
+
+    <span class="nd">@color</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fill_color</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">reload_costume</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fill_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_color</span>
+
+    <span class="nd">@fill_color</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">fill_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">"""fill color of token"""</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fill_color</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">reload_costume</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""see border color"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stroke_color</span>
+
+
+    <span class="nd">@stroke_color</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">stroke_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">border_color</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">border_color</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""border color of token"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stroke_color</span>
+
+    <span class="nd">@border_color</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">border_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stroke_color</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">reload_costume</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""Is token filled with color?"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span>
+
+    <span class="nd">@fill</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">reload_costume</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">border</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""The border-size of token.</span>
+
+<span class="sd">        The value is 0, if token has no border</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            _type_: int</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_border</span>
+
+    <span class="nd">@border</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">border</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_border</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume_manager</span><span class="o">.</span><span class="n">reload_costume</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_update_draw_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">draw_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_shape</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_shape</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">draw_shape_append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_inner_shape</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inner_shape_arguments</span><span class="p">())</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">draw_shape_append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_outer_shape</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_shape_arguments</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_inner_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">,</span> <span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()),</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_outer_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">draw</span><span class="o">.</span><span class="n">rect</span><span class="p">,</span> <span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">Rect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_width</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">costume</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_height</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">border</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_inner_shape_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fill_color</span><span class="p">,]</span> <span class="o">+</span>  <span class="bp">self</span><span class="o">.</span><span class="n">_inner_shape</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> 
+
+    <span class="k">def</span> <span class="nf">_outer_shape_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">border_color</span><span class="p">,]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_shape</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> </div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Andreas Siebel |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/scripts/furo.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>

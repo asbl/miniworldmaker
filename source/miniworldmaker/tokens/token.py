@@ -2,6 +2,7 @@ from __future__ import annotations
 import math
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 import pygame
+import pygame.gfxdraw
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
 from miniworldmaker.board_positions import board_position
@@ -86,7 +87,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self._border = 0
         self._fill = False
         self._fill_color = (0,0,0,0)      
-        self._stroke_color = (0,0,0,0)    
+        self._stroke_color = (0,0,0,0) 
+        self._inner = 0   
         self._managers: list = list()
         self.token_id: int = Token.token_count + 1
         self.costume_manager: miniworldmaker.TokenCostumeManager = None
@@ -1326,14 +1328,20 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def _update_draw_shape(self):
         self.costume.draw_shapes = []
-        if self._inner_shape():
-            inner_shape = self._inner_shape()[0]
+        if self._inner_shape() and self._outer_shape():
             if self.fill:
-                inner_shape_arguments =  [self.fill_color,] + self._inner_shape()[1] + [0,]
-                self.costume.draw_shape_append(inner_shape, inner_shape_arguments)
+                self.costume.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
             if self.border:
-                outer_shape_arguments =  [self.border_color,] + self._inner_shape()[1] + [self.border,]
-                self.costume.draw_shape_append(inner_shape, outer_shape_arguments)
+                self.costume.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
 
     def _inner_shape(self):
-        return pygame.draw.rect, [pygame.Rect((0, 0), (int(self.costume.image.get_width()), int(self.costume.image.get_height())))]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.costume.image.get_width(), self.costume.image.get_height()), 0]
+
+    def _outer_shape(self):
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.costume.image.get_width(), self.costume.image.get_height()), self.border]
+
+    def _inner_shape_arguments(self):
+        return  [self.fill_color,] +  self._inner_shape()[1] 
+
+    def _outer_shape_arguments(self):
+        return  [self.border_color,] + self._outer_shape()[1] 

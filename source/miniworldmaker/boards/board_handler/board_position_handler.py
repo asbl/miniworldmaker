@@ -1,6 +1,6 @@
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.board_positions import board_rect_factory
-
+import pygame
 
 class BoardPositionHandler:
 
@@ -8,6 +8,28 @@ class BoardPositionHandler:
         self.board = board
         self._position_factory: board_position_factory.BoardPositionFactory = board_position_factory.BoardPositionFactory(
             self.board)
+        self._mouse_position = None
+        self._prev_mouse_position = None
+
+    def update_positions(self):
+        self._prev_mouse_position = self._mouse_position
+        self._mouse_position = self.get_mouse_position()
+
+    def get_mouse_position(self):
+        pos = board_position_factory.BoardPositionFactory(self.board).from_pixel(pygame.mouse.get_pos())
+        clicked_container = self.board.app.container_manager.get_container_by_pixel(pos[0], pos[1])
+        if clicked_container == self.board:
+            return pos
+        else:
+            return None
+
+    @property
+    def mouse_position(self):
+        return self._mouse_position
+
+    @property
+    def prev_mouse_position(self):
+        return self._prev_mouse_position
 
     def get_color(self, position):
         """

@@ -1,5 +1,8 @@
 from typing import Tuple
 import pygame
+import math
+import pygame.gfxdraw
+import math
 
 from miniworldmaker.board_positions import board_position
 import miniworldmaker
@@ -34,9 +37,11 @@ class Shape(miniworldmaker.Token):
         self.costume.is_upscaled = False
         self._fill = True
         self._border = 1
+        self._inner = 0
 
     def _update_draw_shape(self):
         super()._update_draw_shape()
+
 
 class Circle(Shape):
     """
@@ -56,30 +61,32 @@ class Circle(Shape):
         Create a circle at center position (200,100) with radius 20:
 
         .. code-block:: python
-            
+
             Circle((200, 100), 20)
-        
+
         Create a circle at topleft position
-        
+
         .. code-block:: python
 
-            miniworldmaker.Circle.from_topleft((100,100),50)    
+            miniworldmaker.Circle.from_topleft((100,100),50)
     """
 
     def __init__(self, position=(0, 0), radius: float = 10):
         self._radius = radius
         self._border = 1
         super().__init__(position)
-        self.size = (radius *2 , radius * 2)
+        self.size = (radius * 2, radius * 2)
         self.center = position
 
     def _inner_shape(self):
-        return pygame.draw.circle, [(self.size[0]/2,self.size[0]/2), self.radius]
+        return pygame.draw.circle, [(self.size[0] / 2, self.size[0] / 2), self.radius, 0]
+
+    def _outer_shape(self):
+        return pygame.draw.circle, [(self.size[0] / 2, self.size[0] / 2), self.radius, self.border]
 
     @classmethod
-    def from_topleft(cls, position : tuple, radius : int):
-        """Creates a circle with topleft at position
-        """
+    def from_topleft(cls, position: tuple, radius: int):
+        """Creates a circle with topleft at position"""
         circle = cls(position, radius)
         print(circle)
         print(circle.topleft)
@@ -88,9 +95,8 @@ class Circle(Shape):
         return circle
 
     @classmethod
-    def from_center(cls, position : tuple, radius: float):
-        """Creates a circle with center at position
-        """
+    def from_center(cls, position: tuple, radius: float):
+        """Creates a circle with center at position"""
         circle = cls(position, radius)
         return circle
 
@@ -104,7 +110,7 @@ class Circle(Shape):
     @radius.setter
     def radius(self, value):
         self._radius = value
-        self.update_shape()
+        self._update_draw_shape()
 
     def set_physics_default_values(self):
         self.physics.shape_type = "circle"
@@ -119,12 +125,10 @@ class Circle(Shape):
 
 
 class Point(Circle):
-    """A point is a Circle with Radius 1
-    """
+    """A point is a Circle with Radius 1"""
 
-    def __init__(self, position : tuple):
-        """Init a Point at specified position
-        """
+    def __init__(self, position: tuple):
+        """Init a Point at specified position"""
         super().__init__(position, 1)
 
 
@@ -141,23 +145,23 @@ class Ellipse(Shape):
         height: The height of the ellipse
 
     Examples:
-        
+
         Create an ellipse at topleft position (200,100) with width 20 and height 30
-        
+
         .. code-block:: python
-        
+
             Ellipse((200, 100), 20, 30)
 
         Create an ellipse at center-position (200,100) width width 10 and height 10
 
         .. code-block:: python
-        
+
             miniworldmaker.Ellipse.from_center((100,100),10, 10)
-            
+
         (Alternative) Create an ellipse at center-position (200,100) with width 10 and height 10
-        
+
         .. code-block:: python
-        
+
             e = miniworldmaker.Ellipse((100,100),10, 10)
             e.center = e.position
     """
@@ -175,13 +179,14 @@ class Ellipse(Shape):
         self._update_draw_shape()
 
     def check_arguments(self, position, width, height):
-        if type(position) not in [tuple, None]:
+        if type(position) not in [tuple, board_position.BoardPosition, None]:
             raise EllipseWrongArgumentsError()
 
     def _inner_shape(self):
-        return pygame.draw.ellipse, [
-            pygame.Rect(0, 0, self.size[0], self.size[1]),
-        ]
+        return pygame.draw.ellipse, [pygame.Rect(0, 0, self.size[0], self.size[1]), 0]
+
+    def _outer_shape(self):
+        return pygame.draw.ellipse, [pygame.Rect(0, 0, self.size[0], self.size[1]), self.border]
 
     def _update_draw_shape(self):
         rect = pygame.Rect(0, 0, self.size[0], self.size[1])
@@ -189,20 +194,74 @@ class Ellipse(Shape):
         super()._update_draw_shape()
 
     @classmethod
-    def from_topleft(cls, position : tuple, width : float, height: float):
-        """Creates an ellipse with topleft at position
-        """
+    def from_topleft(cls, position: tuple, width: float, height: float):
+        """Creates an ellipse with topleft at position"""
         ellipse = cls(position, width, height)
-        
         return ellipse
 
     @classmethod
-    def from_center(cls, position : tuple, width: float, height: float):
-        """Creates an ellipse with center at position
-        """
+    def from_center(cls, position: tuple, width: float, height: float):
+        """Creates an ellipse with center at position"""
         ellipse = cls(position, width, height)
         ellipse.center = ellipse.position
         return ellipse
+
+
+class Arc(Ellipse):
+    def __init__(
+        self, position=(0, 0), width: float = 10, height: float = 10, start_angle: float = 0, end_angle: float = 0
+    ):
+        self._start_angle = start_angle
+        self._end_angle = end_angle
+        super().__init__(position, width, height)
+
+    @property
+    def start_angle(self):
+        return self._start_angle
+
+    @start_angle.setter
+    def start_angle(self, value):
+        self._start_angle = value
+        self._update_draw_shape()
+
+    @property
+    def end_angle(self):
+        return self._end_angle
+
+    @end_angle.setter
+    def end_angle(self, value):
+        self._end_angle = value
+        self._update_draw_shape()
+
+    def _inner_shape(self):
+        p = []
+        for n in range(int(self.start_angle), int(self.end_angle), 1):
+            x = int(self.size[0] / 2 + self.width / 2 * math.cos(n * math.pi / 180))
+            y = int(self.size[1] / 2 - self.height / 2 * math.sin(n * math.pi / 180))
+            p.append((x, y))
+        p.append((self.size[0] / 2, self.size[1] / 2))
+        return pygame.draw.polygon, [p, 0]
+
+    def _outer_shape(self):
+        return pygame.draw.arc, [
+            pygame.Rect(0, 0, self.size[0], self.size[1]),
+            math.radians(self.start_angle),
+            math.radians(self.end_angle),
+            1,
+        ]
+
+    @classmethod
+    def from_topleft(cls, position: tuple, width: float, height: float, start_angle, end_angle):
+        """Creates a rectangle with topleft at position"""
+        rectangle = cls(position, width, height, start_angle, end_angle).center
+        return rectangle
+
+    @classmethod
+    def from_center(cls, position: tuple, width: float, height: float, start_angle, end_angle):
+        """Creates a rectangle with center at position"""
+        rectangle = cls(position, width, height, start_angle, end_angle)
+        rectangle.center = rectangle.position
+        return rectangle
 
 
 class Line(Shape):
@@ -222,19 +281,23 @@ class Line(Shape):
         Create a line from (200, 100) to (400, 100)
 
         .. code-block:: python
-        
+
             Line((200, 100), (400,100))
 
         Create a line from (200, 100) to (400, 100) with thickness 2
 
         .. code-block:: python
-        
+
             l = Line((200, 100), (400,100))
             l.thickness = 2
-        
+
     """
 
     def __init__(self, start_position: tuple, end_position: tuple):
+        print(start_position, end_position)
+        if not start_position or not end_position:
+            start_position = (0, 0)
+            end_position = (0, 0)
         self.check_arguments(start_position, end_position)
         self._start_position = start_position
         self._end_position = end_position
@@ -247,9 +310,9 @@ class Line(Shape):
         self.position = box.topleft
 
     def check_arguments(self, start_position, end_position):
-        if type(start_position) != tuple:
+        if type(start_position) not in [tuple, board_position.BoardPosition, None]:
             raise LineFirstArgumentError(start_position)
-        if type(end_position) != tuple:
+        if type(end_position) not in [tuple, board_position.BoardPosition, None]:
             raise LineSecondArgumentError(end_position)
 
     def set_physics_default_values(self):
@@ -279,13 +342,14 @@ class Line(Shape):
         _x_end = self.end_position[0] - box.topleft[0] - self.border
         _y_end = self.end_position[1] - box.topleft[1] - self.border
         self.local_end_position = (_x_end, _y_end)
-        print(self.local_start_position, self.local_end_position, box, self.size, self.position)
         super()._update_draw_shape()
         # self.costume.load_surface()
-        
 
     def _inner_shape(self):
-        return pygame.draw.line, [self.local_start_position, self.local_end_position]
+        return pygame.draw.line, [self.local_start_position, self.local_end_position, 0]
+
+    def _outer_shape(self):
+        return pygame.draw.line, [self.local_start_position, self.local_end_position, self.border]
 
     @property
     def start_position(self):
@@ -314,6 +378,7 @@ class Line(Shape):
     def thickness(self, value):
         self.border = value
 
+
 class Rectangle(Shape):
     """
     A rectangular shape defined by position, width and height
@@ -328,13 +393,13 @@ class Rectangle(Shape):
         width: The width of the rect
 
     Examples:
-        
+
         Create a rect with the topleft position (200, 100), the width 20 and the height 10
 
         .. code-block:: python
 
             Rectangle((200, 100), 20, 10)
-        
+
     """
 
     def __init__(
@@ -359,7 +424,10 @@ class Rectangle(Shape):
         super()._update_draw_shape()
 
     def _inner_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1])]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), 0]
+
+    def _outer_shape(self):
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), self.border]
 
     def set_physics_default_values(self):
         self.physics.shape_type = "rect"
@@ -367,19 +435,18 @@ class Rectangle(Shape):
         self.physics.correct_angle = 90
 
     @classmethod
-    def from_topleft(cls, position : tuple, width : float, height: float):
-        """Creates a rectangle with topleft at position
-        """
+    def from_topleft(cls, position: tuple, width: float, height: float):
+        """Creates a rectangle with topleft at position"""
         rectangle = cls(position, width, height).center
         return rectangle
 
     @classmethod
-    def from_center(cls, position : tuple, width: float, height: float):
-        """Creates a rectangle with center at position
-        """
+    def from_center(cls, position: tuple, width: float, height: float):
+        """Creates a rectangle with center at position"""
         rectangle = cls(position, width, height)
         rectangle.center = rectangle.position
         return rectangle
+
 
 class Polygon(Shape):
     """
@@ -420,7 +487,10 @@ class Polygon(Shape):
         super()._update_draw_shape()
 
     def _inner_shape(self):
-        return pygame.draw.polygon, [self.mod_pointlist]
+        return pygame.draw.polygon, [self.mod_pointlist, 0]
+
+    def _outer_shape(self):
+        return pygame.draw.polygon, [self.mod_pointlist, self.border]
 
     @property
     def pointlist(self):
@@ -430,3 +500,9 @@ class Polygon(Shape):
     def pointlist(self, value: int):
         self._pointlist = value
         self.costume_manager.reload_costume()
+
+class Triangle(Polygon):
+    def __init__(self, p1 : Tuple, p2 : Tuple, p3: Tuple):
+        self._border = 1
+        pointlist = [p1, p2, p3]
+        super().__init__(pointlist)

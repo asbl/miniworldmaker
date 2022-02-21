@@ -1,0 +1,408 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Spielfiguren" href="03_tokens.html" /><link rel="prev" title="Installation" href="01_installation.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>Das Spielfeld (Board) - miniworldmaker 2021 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">miniworldmaker 2021 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">miniworldmaker 2021 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../impressum.html">Impressum</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (Deutsch)</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Tutorial Deutsch - Objects First</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_installation.html">Installation</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Das Spielfeld (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_tokens.html">Spielfiguren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_actions.html">Aktionen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_movement.html">Bewegung und Ausrichtung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_events.html">Ereignisse</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_collisions.html">Kollisionen und Sensoren</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_collisions2.html">Kollisionen und Sensoren II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09_costumes.html">Kostüme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="10_animations.html">Animationen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12_status.html">Status: Spielstand/Spielende/Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="13_physics.html">Physik</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../classesfirst_german/index.html">Tutorial Deutsch - Classes First</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../classesfirst_german/classes.html">Klassen</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../processing_german/index.html">Processing</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../processing_german/01_first_steps.html">Zeichnen mit dem Miniworldmaker - Grundlagen</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorial (English)</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../objectsfirst_english/index.html">Tutorial English - Objects First</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/01_installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/02_board.html">The playing field (Board)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/03_tokens.html">Game Figures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/04_actions.html">Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/05_movement.html">Movement and alignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/06_events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/07_collisions.html">Collisions and sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/08_collisions2.html">Collisions and sensors II</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/09_costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/10_animations.html">Animations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/11_timers.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/12_status.html">Status: Game state/end of game/levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../objectsfirst_english/13_physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Key Concepts</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../key_concepts/index.html">Key Concepts</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/boards.html">Boards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/tokens.html">Tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/directions.html">Directions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/movement.html">Movement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/events.html">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/costumes.html">Costumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/collisions.html">Collisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../key_concepts/physics.html">Physics</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.html">Appearance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.background.html">Appearance: Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/appearance.costume.html">Appearance: Costume</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.html">Board</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.pixelboard.html">Board: PixelBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board.tiledboard.html">Board: TiledBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/board_position.html">BoardPositions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timer.html">Timer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timer.html#actiontimer">ActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timer.html#loopactiontimer">LoopActionTimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.html">Token</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.shape.html">Token: Shapes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/token.texttoken.html">Token.Texts and Numbers</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="das-spielfeld-board">
+<h1>Das Spielfeld (Board)<a class="headerlink" href="#das-spielfeld-board" title="Permalink to this headline">¶</a></h1>
+<p>Los geht es!</p>
+<div class="section" id="die-erste-welt">
+<h2>Die erste Welt<a class="headerlink" href="#die-erste-welt" title="Permalink to this headline">¶</a></h2>
+<p>Wir erstellen eine erste Welt. Diese kann mit folgendem Code erzeugt werden:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">miniworldmaker</span>
+</span><span class="linenos"> 2</span>
+<span class="hll"><span class="linenos"> 3</span><span class="n">board</span> <span class="o">=</span> <span class="n">miniworldmaker</span><span class="o">.</span><span class="n">TiledBoard</span><span class="p">()</span>
+</span><span class="hll"><span class="linenos"> 4</span><span class="n">board</span><span class="o">.</span><span class="n">add_background</span><span class="p">(</span><span class="s2">"images/soccer_green.jpg"</span><span class="p">)</span>
+</span><span class="linenos"> 5</span><span class="n">board</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="linenos"> 6</span><span class="n">board</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="linenos"> 7</span><span class="n">board</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">=</span> <span class="mi">42</span>
+<span class="linenos"> 8</span><span class="n">board</span><span class="o">.</span><span class="n">speed</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="linenos"> 9</span>
+<span class="hll"><span class="linenos">10</span><span class="n">board</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></pre></div>
+</div>
+<div class="section" id="was-passiert-hier">
+<h3>Was passiert hier?<a class="headerlink" href="#was-passiert-hier" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Zeile 1: Die miniworldmaker library wird importiert.</p></li>
+<li><p>Zeile 3: Ein neues <strong>Objekt</strong> vom Typ <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> wird erzeugt</p></li>
+<li><p>Zeile 4: Das neue Objekt erhält einen <code class="docutils literal notranslate"><span class="pre">background</span></code>.</p></li>
+<li><p>Zeile 5-8: Es werden verschiedene Attribute von ‘board’ verändert.</p></li>
+<li><p>Zeile 10: Das Spiel wird gestartet. Mit <code class="docutils literal notranslate"><span class="pre">board.run()</span></code> wird eine mainloop gestartet, die das Board immer und immer wieder neu zeichnet. Diese Anweisung <strong>muss</strong> immer die letzte Zeile deines Codes sein.</p></li>
+</ul>
+</div>
+<div class="section" id="ergebnis">
+<h3>Ergebnis:<a class="headerlink" href="#ergebnis" title="Permalink to this headline">¶</a></h3>
+<p>Je nach Hintergrundbild sieht dein Ergebnis so aus:</p>
+<a class="reference internal image-reference" href="../_images/first.jpg"><img alt="First Miniworldmaker Example" src="../_images/first.jpg" style="width: 100%;"/></a>
+</div>
+</div>
+<div class="section" id="etwas-theorie-wie-funktioniert-der-miniworldmaker">
+<h2>Etwas Theorie: Wie funktioniert der Miniworldmaker?<a class="headerlink" href="#etwas-theorie-wie-funktioniert-der-miniworldmaker" title="Permalink to this headline">¶</a></h2>
+<p>In Miniworldmaker gibt es zwei unterschiedliche Arten von Objekten, die du erzeugen kannst:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Board</span></code>: Ein Spielbrett auf dem sich Spielfiguren befinden.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">Token</span></code>: Spielfiguren die zahlreiche Attribute und Methoden mitbringen, z.B. Bewegung,</dt><dd><p>Kollisionsabfrage, ….</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>In den nächsten Kapiteln lernst du, wie du Tokens erstellen kannst, die miteinander kommunizieren können.</p>
+</div>
+<div class="section" id="ausblick-verschiedene-boards">
+<h2>Ausblick: Verschiedene Boards<a class="headerlink" href="#ausblick-verschiedene-boards" title="Permalink to this headline">¶</a></h2>
+<p>Es gibt mehrere Kind-Klassen von Board</p>
+<ul class="simple">
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">TiledBoard</span></code> ist geeignet für Boards, bei denen sich die Akteure auf “Kacheln” bewegen.</p></li>
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">PixelBoard</span></code> ist für pixelgenaue Darstellungen vorgesehen</p></li>
+<li><p>Ein <code class="docutils literal notranslate"><span class="pre">PhysicsBoard</span></code> simuliert physikalische Eigenschaften und Objekte auf dem Board.</p></li>
+</ul>
+<p>Einige Features der Boards (z.B. Kollisionen) unterscheiden sich geringfügig.</p>
+<ul class="simple">
+<li><p>Mehr Informationen, siehe <a class="reference internal" href="../key_concepts/boards.html"><span class="doc">Key Concepts: Boards</span></a></p></li>
+<li><p><a class="reference external" href="https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/1%20Costumes%20and%20Backgrounds">Weitere Beispiele</a></p></li>
+</ul>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="03_tokens.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Spielfiguren</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="01_installation.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Installation</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Andreas Siebel |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../_sources/objectsfirst_german/02_board.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Das Spielfeld (Board)</a><ul>
+<li><a class="reference internal" href="#die-erste-welt">Die erste Welt</a><ul>
+<li><a class="reference internal" href="#was-passiert-hier">Was passiert hier?</a></li>
+<li><a class="reference internal" href="#ergebnis">Ergebnis:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#etwas-theorie-wie-funktioniert-der-miniworldmaker">Etwas Theorie: Wie funktioniert der Miniworldmaker?</a></li>
+<li><a class="reference internal" href="#ausblick-verschiedene-boards">Ausblick: Verschiedene Boards</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true});</script>
+    </body>
+</html>
