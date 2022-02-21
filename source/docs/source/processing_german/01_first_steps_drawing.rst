@@ -1,6 +1,16 @@
-********************************************
+*********************************************
 Zeichnen mit dem Miniworldmaker - Grundlagen
 *********************************************
+
+Vorwort
+#######
+
+Dieses Tutorial ist stark inspiriert vom großartigen Vorlesungsskript von Prof. Dr. Michael Kipp https://michaelkipp.de/processing/, welches sich auf Processing bezieht. 
+
+Der miniworldmaker-Port von processing übernimmt einige Ideen und Konzepte von Processing, setzt dies aber oft auf leicht abweichende Art um.
+
+Los geht es!
+#############
 
 Hier lernst du das Programmieren mit dem miniworldmaker kennen. Der miniworldmaker hat einen *Processing*-Modus, der sich an der populären Grafikprogrammierumgebung orientiert.
 
@@ -12,12 +22,14 @@ Monitore bestehen aus einem Gitter kleinester Quadrate. Diese Quadrate sind so k
 Die Pixel sind in einem *Koordinatensystem* angeordnet. Dieses ist allerdings leicht anders aufgebaut, denn in der Regel ist der Ursprung in der oberen linken Ecke:
 
 .. image:: ../_images/processing/coordinates.png
+  :width: 300px
   :alt: Coordinates
 
 Wichtig
-#######
+*******
 
-Informatiker zählen in der Regel beginnend mit 0, d.h. die obere linke Ecke hat die Koordinaten (0,0). Ist das Bildschirmfenster 800x600 groß, so hat die untere rechte Ecke die Koordinaten (799, 599)
+Informatiker zählen in der Regel beginnend mit 0, d.h. die obere linke Ecke hat die Koordinaten (0,0). Ist das Bildschirmfenster 800x600 groß, 
+so hat die untere rechte Ecke die Koordinaten (799, 599)
 
 Das erste Programm
 ##################
@@ -35,9 +47,11 @@ Ein miniworldmaker-Programm besteht aus mehreren Teilen:
 
   board.run()
 
-  - 1: Die miniworldmaker Bibliothek wird importiert
-  - 2: Ein Spielfeld wird erstellt mit den Maßen (800, 600)
-  - 6: Am Ende wird die mainloop gestartet, dies muss immer die letzte Zeile deines Programms sein.
+Erklärung:
+
+- 1: Die miniworldmaker Bibliothek wird importiert
+- 2: Ein Spielfeld wird erstellt mit den Maßen (800, 600)
+- 6: Am Ende wird die mainloop gestartet, dies muss immer die letzte Zeile deines Programms sein.
 
 Dazwischen findet sich ein *Kommentar* - Kommentare beginnen immer mit einer # und werden vom Computer ignoriert und sind für **Menschen** gemacht. Sie dienen dazu, Programmierern Hinweise zu geben, hier z.B. das an diese Stelle dein eigener Code kommt.
 
@@ -55,7 +69,8 @@ Dieser könnte z.B. so aussehen:
 
 An die Stelle (10, 10) wird ein Pixel gezeichnet.
 
-.. image:: ../images/processing/pixel.png
+.. image:: ../_images/processing/pixel.png
+  :width: 60%
   :alt: Pixel
 
 Zeichnen geometrischer Grundformen.
@@ -114,6 +129,7 @@ Rechteck
 Ein Rechteck wird beschrieben durch Position, Breite und Höhe:
 
 .. code-block:: python
+
   Rectangle(position, width, height)
 
 
@@ -122,13 +138,15 @@ Der Parameter `position` beschreibt die obere linke Ecke des Rechtecks.
 Willst du ein Rechteck an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
 .. code-block:: python
+
   from miniworldmaker import *
 
   board = PixelBoard(800, 600)
   Rectangle((100, 100), 20, 100)
   board.run()
 
-.. image:: ../images/processing/rectangle.png
+.. image:: ../_images/processing/rectangle.png
+  :width: 60%  
   :alt: Rectangle
 
 Ellipse
@@ -144,6 +162,7 @@ Ellipsen werden im Prinzip wie Rechtecke beschrieben, d.h. die Ellipse wird dann
 Willst du eine Ellipse an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
 .. code-block:: python
+
   from miniworldmaker import *
 
   board = PixelBoard(800, 600)
@@ -162,6 +181,7 @@ Oft will man ein Rechteck oder eine Ellipse nicht an der oberen linken Position 
 Mit der Klassenmethode from_center kannst du eine Ellipse am Zentrum erstellen.
 
 .. code-block:: python
+  
   from miniworldmaker import *
 
   board = PixelBoard(100, 200)
@@ -169,7 +189,8 @@ Mit der Klassenmethode from_center kannst du eine Ellipse am Zentrum erstellen.
   board.run()
 
 
-.. image:: ../images/processing/from_center.png
+.. image:: ../_images/processing/from_center.png
+  :width: 80%  
   :alt: from_center
 
 
@@ -179,9 +200,94 @@ Mit der Klassenmethode from_center kannst du eine Ellipse am Zentrum erstellen.
 Du kannst die Ellipse nach dem Verschieben an den Mittelpunkt verschieben;
 
 .. code-block:: python
+
   from miniworldmaker import *
 
   board = PixelBoard(100, 200)
   Ellipse((50, 100), 100, 200)
   ellipse.center = ellipse.position
   board.run()
+
+
+****************
+Advanced Drawing
+****************
+
+Komplexere geometrische Grundformen
+###################################
+
+Arc
+***
+
+Kreisbögen und Kreisausschnitte zeichnest du mit folgendem Befehl:
+
+.. code-block:: python
+
+  Arc(position, width, height, start_angle, end_angle)
+
+Bedeutung der Parameter:
+
+* ``position``: Die Position als 2-Tupel
+* ``width``, ``height``: Breite und Höhe bei Erstellung einer Ellipse. Wähle beide gleich, damit sich der Radius für einen Kreisbogen ergibt oder wähle unterschiedle Werte, damit sich der Bogen und Ausschnitt einer Ellipse ergibt.
+* ``start_angle``, ``end_angle``: Die Winkel des Ausschnitts. Die Winkel werden von einer gedachten Linie *gegen den Uhrzeigersinn* gemessen.
+
+
+.. image:: ../_images/processing/arc.png
+  :width: 60%
+  :alt: Arc: Start und End-Angle
+
+Beispiel:
+
+.. code-block:: python
+  :lineno-start: 1
+
+  from miniworldmaker import *
+
+  board = PixelBoard(800, 600)
+  a1 = Arc.from_center((200, 200), 200, 200, 30, 242)
+  board.run()
+  
+Triangle
+********
+
+Ein Triangle erstellst du mit folgendem Befehl:
+
+.. code-block:: python
+
+  Triangle(p1,p2, p3)
+
+p1, p2 und p3 sind Punkte, die du jeweils als Tupel schreiben kannst.
+
+Beispiel:
+
+.. code-block:: python
+  :lineno-start: 1
+
+  from miniworldmaker import *
+
+  board = PixelBoard(800, 600)
+  Triangle((10,10), (100,100), (200,10))
+  board.run()
+
+Polygon
+*******
+
+Ein Polygon (d.h. ein n-Eck) erstellst du mit folgendem Befehl:
+
+.. code-block:: python
+
+  Polygon(pointlist)
+
+``pointlist`` ist eine Liste von Punkten. Das Dreieck aus dem vorherigen Beispiel kannst du z.B. folgendermaßen als Polygon erstellen:
+
+Beispiel:
+
+.. code-block:: python
+  :lineno-start: 1
+
+  from miniworldmaker import *
+
+  board = PixelBoard(800, 600)
+  Polygon([(10,10), (100,100), (200,10)])
+  board.run()
+

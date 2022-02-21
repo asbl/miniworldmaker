@@ -670,6 +670,7 @@ class Board(container.Container):
                 self.act_all()
                 self._run_next_line_in_started_method()
             self.collision_handler.handle_all_collisions()
+            self.position_handler.update_positions()
             # run animations
             self.view_handler.update_all_costumes()
             self.view_handler.update_background()
@@ -738,12 +739,10 @@ class Board(container.Container):
             >>>     if mouse:
             >>>         self.point_towards_position(mouse)
         """
-        pos = board_position_factory.BoardPositionFactory(self).from_pixel(pygame.mouse.get_pos())
-        clicked_container = self.app.container_manager.get_container_by_pixel(pos[0], pos[1])
-        if clicked_container == self:
-            return pos
-        else:
-            return None
+        return self.position_handler.mouse_position
+        
+    def get_prev_mouse_position(self):
+        return self.position_handler.prev_mouse_position
 
     def is_mouse_pressed(self) -> bool:
         if pygame.mouse.get_pressed()[0]:
