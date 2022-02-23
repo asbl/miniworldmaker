@@ -50,14 +50,14 @@ The instruction for this is:
 
     token_name.add_costume("path_to_image")
 
-::note
+..note::
   Note: ``path_to_image`` is a (relative path) to the image.
   You should put your images in the subfolder ``images``, then the image ``image.png`` in the subfolder ``images`` has the path ``images/image.png``.
 
 Result
 --------
 
-... image:: /_images/token.jpg
+.. image:: /_images/token.jpg
   :width: 100%
   :alt: First Token
 
@@ -77,4 +77,4 @@ View
 ========
 
 * More information. See :doc:`Key Concepts: boards <../key_concepts/tokens>`
-* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds>`_
+* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/1%20Costumes%20and%20Backgrounds>`_

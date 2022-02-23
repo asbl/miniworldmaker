@@ -53,7 +53,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx_autodoc_typehints',
     'sphinx.ext.napoleon',
-    #'myst_parser',
+    'myst_parser',
     'sphinxcontrib.mermaid'
 ]
 
@@ -79,7 +79,7 @@ templates_path = ['_templates']
 source_suffix = {
     '.rst': 'restructuredtext',
    #'.txt': 'markdown',
-    #'.md': 'markdown',
+    '.md': 'markdown',
 }
 
 #source_parsers = {

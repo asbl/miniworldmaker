@@ -90,5 +90,5 @@ Example
 View
 ========
 
-* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/07%20-%20sensors_2.py)>`_
+* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/07%20-%20sensors_2.py)>`_
 

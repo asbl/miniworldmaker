@@ -104,7 +104,7 @@ class SizeOnTiledBoardError(MiniworldMakerError):
 
 class TokenArgumentShouldBeTuple(MiniworldMakerError):
     def __init__(self):
-        self.message = f"First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets? Instanciate the token with Token((x,y)) instead of  Token(x,y)"
+        self.message = f"First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets?"
         super().__init__(self.message)
 
 class PhysicsSimulationTypeError(MiniworldMakerError):
@@ -144,4 +144,9 @@ class LineFirstArgumentError(MiniworldMakerError):
 class LineSecondArgumentError(MiniworldMakerError):
     def __init__(self, end_position):
         self.message = f"Error: Second argument 'end_position' of Line should be tuple, value. Found {end_position}, type: {type(end_position)}"
+        super().__init__(self.message)
+
+class NoBoardError(MiniworldMakerError):
+    def __init__(self):
+        self.message = f"Error: Create a board befor you place Tokens"
         super().__init__(self.message)
