@@ -95,5 +95,5 @@ View
 
 * More information. See :doc:`Key Concepts: Movement <../key_concepts/movement>`.
 * More information. See :doc:`Key Concepts: Directions <../key_concepts/directions>`.
-* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/04%20-%20movement%20and%20direction.py)>`_.
-* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/2%20Movement>`_
+* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/04%20-%20movement%20and%20direction.py>`_.
+* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/2%20Movement>`_

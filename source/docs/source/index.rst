@@ -40,16 +40,6 @@ Links
   :titlesonly:
   
   examples
-  impressum
-
-.. toctree::
-  :maxdepth: 1
-  :caption: Tutorial (Deutsch)
-  :titlesonly:
-  
-  objectsfirst_german/index
-  classesfirst_german/index
-  processing_german/index
 
 .. toctree::
   :maxdepth: 1
@@ -57,6 +47,16 @@ Links
   :titlesonly:
   
   objectsfirst_english/index
+  
+.. toctree::
+  :maxdepth: 1
+  :caption: Tutorial (Deutsch)
+  :titlesonly:
+  
+  objectsfirst_german/index
+  processing_german/index
+
+
 
 .. toctree::
   :maxdepth: 1
@@ -71,4 +71,9 @@ Links
   
   api/index
 
+.. toctree::
+  :maxdepth: 1
+  :titlesonly:
+  
+  impressum
 

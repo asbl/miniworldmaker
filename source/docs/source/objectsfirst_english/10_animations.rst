@@ -71,4 +71,4 @@ Complete example
 Examples
 =========
 
-* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/animations>`_
+* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/animations>`_

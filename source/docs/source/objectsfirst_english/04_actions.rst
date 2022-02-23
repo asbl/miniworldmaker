@@ -42,12 +42,16 @@ When you create a token, you can use the decorator ``@register`` to add an ``act
 What happens here?
 ------------------
 
-* Lines 12-14: The decorator ``@player.register`` binds the ``act`` method to the ``player`` object.
+Lines 12-14: The decorator ``@player.register`` binds the ``act`` method to the ``player`` object.
 
 In a similar way you will later often register reactions to events on objects (e.g. reactions to keyboard or mouse inputs or collision checks).
+
+.. image:: /_images/moving_token.gif
+  :width: 100%
+  :alt: First Token
 
 Outlook
 --------
 
-* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/03%20-%20actions.py>`_
-* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/2%20Movement>`_
+* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/03%20-%20actions.py>`_
+* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/2%20Movement>`_

@@ -1,8 +1,8 @@
-Tutorial English - Objects First
+Objects First
 ********************************
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     01_installation
     02_board

@@ -55,6 +55,6 @@ Example:
 View
 ========
 
-* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/05%20-%20events.py>`_
-* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/05%20-%20events.py>`_
+* `Full example <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py>`_
+* `More examples <https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py>`_
 * More information. See :doc:`Key Concepts: Events <../key_concepts/events>`.

@@ -10,10 +10,12 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     NoValidBoardPositionError,
     TokenArgumentShouldBeTuple,
     NotImplementedOrRegisteredError,
+    NoBoardError
 )
 from miniworldmaker.tools import token_inspection
 from miniworldmaker.dialogs import ask
 import miniworldmaker
+
 
 
 class Meta(type):
@@ -95,6 +97,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.board_sensor: miniworldmaker.TokenBoardSensor = None
         self.position_manager: miniworldmaker.TokenPositionManager = None
         self.board: miniworldmaker.Board = miniworldmaker.App.board
+        if not self.board:
+            raise NoBoardError()
         _token_connector = self.board.get_token_connector(self)
         _token_connector.add_token_managers(None, position)
         pygame.sprite.DirtySprite.__init__(self)

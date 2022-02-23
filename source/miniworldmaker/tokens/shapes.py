@@ -88,9 +88,6 @@ class Circle(Shape):
     def from_topleft(cls, position: tuple, radius: int):
         """Creates a circle with topleft at position"""
         circle = cls(position, radius)
-        print(circle)
-        print(circle.topleft)
-        print(circle.topleft, circle.center[0], circle.center[1])
         circle.topleft = circle.center[0], circle.center[1]
         return circle
 
@@ -213,6 +210,8 @@ class Arc(Ellipse):
     ):
         self._start_angle = start_angle
         self._end_angle = end_angle
+        if start_angle == end_angle:
+            self._end_angle = start_angle + 360
         super().__init__(position, width, height)
 
     @property
@@ -294,7 +293,6 @@ class Line(Shape):
     """
 
     def __init__(self, start_position: tuple, end_position: tuple):
-        print(start_position, end_position)
         if not start_position or not end_position:
             start_position = (0, 0)
             end_position = (0, 0)

@@ -1,13 +1,13 @@
-Tutorial Deutsch - Objects First
+Objects First
 ********************************
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     01_installation
     02_board
     03_tokens
-    04_actions
+    04_dynamic
     05_movement
     06_events
     07_collisions
