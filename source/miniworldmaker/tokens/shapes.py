@@ -289,7 +289,7 @@ class Line(Shape):
         .. code-block:: python
 
             l = Line((200, 100), (400,100))
-            l.thickness = 2
+            l.border = 2
 
     """
 
