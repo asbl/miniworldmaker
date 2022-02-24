@@ -22,10 +22,13 @@ board.run()
 
 Was passiert hier?
 
--   Zeile 1: Die miniworldmaker library wird importiert.
--   Zeile 2: Ein neues **Objekt** vom Typ `TiledBoard` wird erzeugt. Im Folgenden kann man mit dem Namen `board` darauf zugreifen.
--   Zeile 3-5: Es werden verschiedene Attribute von `board` verändert, indem mit board.attributsname darauf zugegriffen wird.
--   Zeile 7: Das Spiel wird gestartet. Mit `board.run()` wird eine
+* Zeile 1: Die miniworldmaker library wird importiert.
+
+* Zeile 2: Ein neues **Objekt** vom Typ `TiledBoard` wird erzeugt. Im Folgenden kann man mit dem Namen `board` darauf zugreifen.
+
+* Zeile 3-5: Es werden verschiedene Attribute von `board` verändert, indem mit board.attributsname darauf zugegriffen wird.
+
+* Zeile 7: Das Spiel wird gestartet. Mit `board.run()` wird eine
     mainloop gestartet, die das Board immer und immer wieder neu
     zeichnet. Diese Anweisung **muss** immer die letzte Zeile deines
     Codes sein.
@@ -77,9 +80,9 @@ Damit kannst du die Größe des Boards verändern:
 In Miniworldmaker gibt es zwei unterschiedliche Arten von Objekten, die
 du erzeugen kannst:
 
--   `Board`: Ein Spielbrett auf dem sich Spielfiguren befinden.
+* `Board`: Ein Spielbrett auf dem sich Spielfiguren befinden.
 
--   `Token`: Spielfiguren die zahlreiche Attribute und Methoden mitbringen, z.B. Bewegung. Kollisionsabfrage, \....
+* `Token`: Spielfiguren die zahlreiche Attribute und Methoden mitbringen, z.B. Bewegung. Kollisionsabfrage, \....
 
 <img class="autowidth" src="../_images/board_and_tokens.png" alt="Board and Tokens"/>
 
@@ -137,6 +140,5 @@ Für Anfänger kann es hilfreich sein, auf diese Art von Importen zu verzichten.
 
 ## Ausblick
 
--   Mehr Informationen, siehe [Key Concepts: Boards](/key_concepts/boards)
--   [Weitere
-    Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/1%20Costumes%20and%20Backgrounds)
+* Mehr Informationen, siehe [Key Concepts: Boards](/key_concepts/boards)
+* [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/1%20Costumes%20and%20Backgrounds)
