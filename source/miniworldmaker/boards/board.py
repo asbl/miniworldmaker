@@ -237,14 +237,15 @@ class Board(container.Container):
 
     @property
     def speed(self) -> int:
-        """
-        How often are events and game logic processed?
-
-        The game logic can be called more often or less often independently from board.fps
+        """The game logic is called every ``speed`` steps. 
+        
+        If speed = 30, act is called at frame 30, 60, 90, ...
 
         Examples:
 
-        .. code-block:: python
+          Set speed and fps. 
+
+          .. code-block:: python
 
             board.speed = 10
             board.fps = 24
@@ -253,11 +254,7 @@ class Board(container.Container):
                 i = i + 1
                 print(board.frame, i)
                 if board.frame == 120:
-       
-    def remove_dynamic_token(self):
-        if self.token in self.board.dynamic_tokens:
-            self.board.dynamic_tokens.remove(self.token)             test_instance.assertEqual(i, 13)
-                    test_instance.assertEqual(board.frame, 120)
+
         """
         return self._speed
 
@@ -350,6 +347,15 @@ class Board(container.Container):
 
     @property
     def size(self) -> tuple:
+        """Set size of board
+
+        Examples:
+
+          .. code-block:: python
+
+            board = miniworldmaker.PixelBoard()
+            board.size = (800, 600)
+        """
         return (self.columns, self.rows)
 
     @size.setter
@@ -361,6 +367,8 @@ class Board(container.Container):
 
     @property
     def fill_color(self):
+        """Set default fill color for borders and lines
+        """
         return self._fill_color
 
     @fill_color.setter
@@ -369,6 +377,8 @@ class Board(container.Container):
 
     @property
     def stroke_color(self):
+        """Set default stroke color for borders and lines. (equivalent to border-color)
+        """
         return self._stroke_color
 
     @stroke_color.setter
@@ -377,6 +387,8 @@ class Board(container.Container):
 
     @property
     def border_color(self):
+        """Set default border color for borders and lines.
+        """
         return self.border_color
 
     @stroke_color.setter
@@ -433,14 +445,11 @@ class Board(container.Container):
         return self.view_handler.background
 
     def remove_from_board(self, token: token_module.Token):
-        """
-        removes a token from board.
+        """Removes a token from board.
         The method is called with token.remove()
 
         Args:
             token: The token to remove from board.
-
-        Returns:
 
         """
         self.get_token_connector(token).remove_token_from_board(token)
@@ -526,8 +535,13 @@ class Board(container.Container):
             A list of tokens
 
         Examples:
-            >>> position = board.get_mouse_position()
-            >>> tokens = board.get_tokens_by_pixel(position)
+
+          Get all tokens at mouse position:
+
+          .. code-block:: python
+    
+              position = board.get_mouse_position()
+              tokens = board.get_tokens_by_pixel(position)
 
         """
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
@@ -740,10 +754,11 @@ class Board(container.Container):
             This example shows you how to use the mouse_position
 
             .. code-block:: python
-              def act(self):
-                  mouse = self.board.get_mouse_position()
-                  if mouse:
-                  self.point_towards_position(mouse)
+
+                def act(self):
+                    mouse = self.board.get_mouse_position()
+                    if mouse:
+                        self.point_towards_position(mouse)
         """
         return self.position_handler.mouse_position
         
