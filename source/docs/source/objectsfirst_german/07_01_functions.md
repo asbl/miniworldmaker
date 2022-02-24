@@ -2,7 +2,6 @@
 
 Du hast bisher Methoden verwendet, die zu einem Board oder einem Token gehören, z.B. ``on_setup``, ``act``.
 
-
 ## Definieren von Funktionen
 
 Oft willst du komplizierte Dinge automatisieren, z.B. das Anlegen von Tokens. 
@@ -18,13 +17,13 @@ def create_token(x, y):
 
 Deine Funktion besteht aus einer *Signatur* und einem *Funktionskörper*.
 
-  * Die Signatur ist die erste Zeile der Funktion. Sie enthält alle Informationen
+* Die Signatur ist die erste Zeile der Funktion. Sie enthält alle Informationen
   die du brauchst um die Funktion aufzurufen. Dies ist der **Name** und **Parameter**.
   Der Name dieser Funktion ist `create_token`, die Parameter sind `x`und `y`. 
   Paramter werden benötigt um der Funktion weitere Informationen zu übergeben, in diesem Fall
   die Informationen **wo** das Token erstellt werden soll.
 
-  * Der Funktionskörper ist ein Code-Block. Er enthält alle Befehle, die bei Aufruf der Funktion 
+* Der Funktionskörper ist ein Code-Block. Er enthält alle Befehle, die bei Aufruf der Funktion 
   nacheinander abgearbeitet werden.
   
   Hier wird beim Funktionsaufruf zuerst ein Token angelegt und anschließend 

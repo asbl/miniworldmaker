@@ -1,13 +1,12 @@
-# Kollisionen und Sensoren
+# Sensoren
 
-Zusätzlich zu den Reaktionen auf Ereignisse können Tokens auch über
-**Sensoren** überprüfen, ob sich z.B. andere Tokens an der gleichen
-Stelle befinden.
+Tokens verfügen über **Sensoren**, mit denen sie ihre Umwelt abtasten 
+können und z.B andere Tokens an ihrer Position aufspüren können.
 
 ## Ein Objekt aufspüren
 
-Ein `Token` kann ein anderes `Token` am selben Ort folgendermaßen
-aufspüren:
+Ein `Token` kann ein anderes `Token` am selben Ort aufspüren, indem du die 
+Funktion `on_sensing_token` registrierst.
 
 ```python
 @player.register
@@ -18,9 +17,9 @@ def on_sensing_token(self, other):
 
 ### Was passiert hier?
 
--   Die Funktion `on_sensing_token` wird dann aufgerufen, wenn das Token
+* Die Funktion `on_sensing_token` wird dann aufgerufen, wenn das Token
     ein anderes Objekt am selben Ort aufspürt.
--   Der Parameter `other` ist ein Verweis auf das gefundene Objekt, so
+* Der Parameter `other` ist ein Verweis auf das gefundene Objekt, so
     dass du direkt auf Attribute und Methoden dieses Objektes zugreifen
     kannst (z.B. mit `other.move()`)
 
@@ -50,13 +49,52 @@ ist wie `player2`.
 innerhalb einer Methode bekannt, damit z.B. verhindert wird, dass es zu
 Seiteneffekten kommt, wenn man an verschiedenen Stellen auf die gleiche
 Variable zugreift.
+```
 
 Der Ansatz mit dem hier auf Variablen aus anderen Programmteilen
 zugegriffen wird ist zwar einfach und intuitiv - Später wird man aber
 versuchen dies zu vermeiden.
+
+### Umfangreiches Beispiel
+
+Der folgende Code zeigt, wie du verhindern kannst, dass sich Objekte durch Wände hindurch bewegen können:
+
+```python
+from miniworldmaker import *
+
+board = TiledBoard()
+board.columns = 8
+board.rows = 2
+board.speed = 30
+player = Token()
+player.add_costume("images/player_1.png")
+
+wall = Token((4,0))
+wall.add_costume("images/wall.png")
+
+@player.register
+def act(self):
+    if player.position != (0,4):
+        player.direction = "right"
+        player.move()
+
+@player.register
+def on_sensing_token(self, other):
+    if other==wall:
+        self.move_back()
+    
+
+board.run()
 ```
 
-## Grenzen des Spielfelds überprüfen
+ <video controls loop width=100%>
+  <source src="../_static/wall.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 
+
+## Weitere Sensoren
+
+### Grenzen des Spielfelds überprüfen
 
 Du kannst auch überprüfen, ob eine Spielfigur an den Grenzen des
 Spielfelds ist (oder darüber hinaus):
@@ -98,10 +136,10 @@ ausgegeben: [Borders are here! \[\'right\', \'top\'\]]{.title-ref}
 
 ## Ausblick
 
--   Mehr Informationen. Siehe
+* Mehr Informationen. Siehe
     `Key Concepts: Sensors <../key_concepts/sensors>`{.interpreted-text
     role="doc"}.
--   Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies
+* Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies
     kann über die Eigenschaft `collision_type` des aufspürenden Objekts
     eingestellt werden, z.B. \"mask\" für einen pixelgenauen Vergleich
     oder \'rect\' wenn nur die umschließenden Rechtecke verglichen

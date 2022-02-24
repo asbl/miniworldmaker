@@ -13,8 +13,9 @@ Objects First
     05_movement
     06_00_events
     06_01.conditions
-    07_sensors
-    08_sensors_2
+    07_00_sensors
+    07_01_functions
+    07_02_sensors_2
     09_costumes
     10_animations
     11_timers
