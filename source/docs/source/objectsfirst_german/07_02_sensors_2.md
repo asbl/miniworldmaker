@@ -1,4 +1,4 @@
-# Kollisionen und Sensoren II
+# Sensoren II
 
 Ein typischer Anwendungsfall ist es herauszufinden, *welche Art* von
 **Token** berührt wurde.
