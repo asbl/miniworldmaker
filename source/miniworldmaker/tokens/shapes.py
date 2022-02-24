@@ -214,6 +214,7 @@ class Arc(Ellipse):
             self._end_angle = start_angle + 360
         super().__init__(position, width, height)
 
+
     @property
     def start_angle(self):
         return self._start_angle
@@ -283,7 +284,7 @@ class Line(Shape):
 
             Line((200, 100), (400,100))
 
-        Create a line from (200, 100) to (400, 100) with thickness 2
+        Create a line from (200, 100) to (400, 100)
 
         .. code-block:: python
 
