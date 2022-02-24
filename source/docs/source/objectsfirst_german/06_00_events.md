@@ -2,10 +2,10 @@
 
 Events(Ereignisse) sind ein zentrales Konzept des Miniworldmakers:
 
--   Mit Events können Eingaben abgefragt werden (z.B. Mausklicks oder
-    Tastatureingaben).
--   Mit Events können Objekte miteinander kommunizieren (z.B. über
-    Nachrichten)
+* Mit Events können Eingaben abgefragt werden (z.B. Mausklicks oder
+  Tastatureingaben).
+* Mit Events können Objekte miteinander kommunizieren (z.B. über
+  Nachrichten)
 
 ## Ein Ereignis registrieren
 
@@ -35,10 +35,11 @@ innerhalb der Methode auf Attribute und Methoden des Objekts zugreifen.
 Es gibt die beiden Funktionen `on_key_down(self, key)` und
 `on_key_pressed(self, key)`:
 
--   Die Funktion `on_key_down` wird genau einmal aufgerufen, wenn die
-    Taste gedrückt wird.
--   Die Funktion `on_key_pressed` hingegen wird immer wieder aufgerufen,
-    solange die Taste gedrückt wird.
+- Die Funktion `on_key_down` wird genau einmal aufgerufen, wenn die
+  Taste gedrückt wird.
+
+- Die Funktion `on_key_pressed` hingegen wird immer wieder aufgerufen, 
+  solange die Taste gedrückt wird.
 
 ```{note}
 Beide Funktionen gibt es sowohl in der Variante `on_key_down_b(self)`, 
@@ -100,8 +101,8 @@ def on_message(self, message):
 
 ## Ausblick
 
--   [Vollständiges
+* [Vollständiges
     Beispiel](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py)
--   [Weitere
+* [Weitere
     Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py)
--   Mehr Informationen. Siehe [Key Concepts: Events](../key_concepts/events)
+* Mehr Informationen. Siehe [Key Concepts: Events](../key_concepts/events)
