@@ -36,4 +36,4 @@ Klicke zunächst auf \"Extras -\> Verwalte Pakete\"
 Gib dann im Suchfeld \"miniworldmaker\" ein und installiere den
 miniworldmaker
 
-![Miniworldmaker](../_images/install_thonny2.png
+![Miniworldmaker](../_images/install_thonny2.png)
