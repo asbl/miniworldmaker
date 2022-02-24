@@ -205,6 +205,17 @@ class Ellipse(Shape):
 
 
 class Arc(Ellipse):
+    """
+    An elliptic Arc.
+
+    Args:
+        position: The position as 2-tuple. The ellipse is created at topleft position
+        width: The width of the ellipse
+        height: The height of the ellipse
+        start_angle: The start_angle 
+        end_angle: end_angle 
+
+    """
     def __init__(
         self, position=(0, 0), width: float = 10, height: float = 10, start_angle: float = 0, end_angle: float = 0
     ):
@@ -213,7 +224,6 @@ class Arc(Ellipse):
         if start_angle == end_angle:
             self._end_angle = start_angle + 360
         super().__init__(position, width, height)
-
 
     @property
     def start_angle(self):
@@ -500,8 +510,9 @@ class Polygon(Shape):
         self._pointlist = value
         self.costume_manager.reload_costume()
 
+
 class Triangle(Polygon):
-    def __init__(self, p1 : Tuple, p2 : Tuple, p3: Tuple):
+    def __init__(self, p1: Tuple, p2: Tuple, p3: Tuple):
         self._border = 1
         pointlist = [p1, p2, p3]
         super().__init__(pointlist)
