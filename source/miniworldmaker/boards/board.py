@@ -623,9 +623,11 @@ class Board(container.Container):
 
             Restarts flappy the bird game after collision with pipe:
 
-            >>> def on_sensing_collision_with_pipe(self, other, info):
-            >>>    self.board.is_running = False
-            >>>    self.board.reset()
+            .. code-block:: python
+            
+              def on_sensing_collision_with_pipe(self, other, info):
+                  self.board.is_running = False
+                  self.board.reset()
         """
         self.app.event_manager.send_event_to_containers("reset", self)
 
@@ -638,8 +640,11 @@ class Board(container.Container):
         It starts the mainloop.
 
         Examples:
-            >>> my_board = Board() # or a subclass of Board
-            >>> my_board.show()
+    
+            .. code-block:: python
+            
+              my_board = Board() # or a subclass of Board
+              my_board.show()
 
         """
         if not self._is_setup and hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
@@ -734,10 +739,11 @@ class Board(container.Container):
         Examples:
             This example shows you how to use the mouse_position
 
-            >>> def act(self):
-            >>>     mouse = self.board.get_mouse_position()
-            >>>     if mouse:
-            >>>         self.point_towards_position(mouse)
+            .. code-block:: python
+              def act(self):
+                  mouse = self.board.get_mouse_position()
+                  if mouse:
+                  self.point_towards_position(mouse)
         """
         return self.position_handler.mouse_position
         
