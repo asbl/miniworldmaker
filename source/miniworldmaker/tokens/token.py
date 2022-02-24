@@ -486,7 +486,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                     self.point_towards_position(mouse)
                 self.move()
         """
-        return self.board_sensor.point_towards_position(destination)
+        return self.position_manager.point_towards_position(destination)
 
     def point_towards_token(self, other: "Token") -> int:
         """def s
@@ -673,8 +673,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.move_back()
 
-    def move_in_direction(self, direction: Union[int, str], distance=1):
-        """Moves token *distance* steps into a *direction*.
+    def move_in_direction(self, direction: Union[int, str, tuple, "board_position.BoardPosition"], distance=1):
+        """Moves token *distance* steps into a *direction* or towards a position
 
         .. image:: ../_images/move_in_direction.png
 

@@ -24,6 +24,7 @@ class TiledBoard(miniworldmaker.Board):
         super().__init__(columns=columns, rows=rows)
         self.tile_size = 40
         self.tile_margin = 0
+        self.speed = 30
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens: set = set()  # Set with all dynamic actors
         self.static_tokens_dict: defaultdict = defaultdict(list)

@@ -60,16 +60,15 @@ board.run()
 
 ![First Miniworldmaker Example](../_images/first.jpg)
 
-## Hintergrundbild
+## Die Größe des Boards
 
+Die Größe des Boards
 
+Nachdem du mit board = miniworldmaker.TiledBoard() ein Board angelegt hast, 
+kannst du mit dem Namen board die Eigenschaften des Boards ändern.
 
-### Die Größe des Boards
-
-Nachdem du mit ``board = miniworldmaker.TiledBoard()`` ein Board angelegt hast, 
-kannst du mit dem Namen ``board `` die Eigenschaften des Boards ändern. 
-
-Die wichtigsten Eigenschaften sind zunächst``rows``, ``columns`` und ``tile_size``.  Mit `board.attributsname` greifst du auf das jeweilige Attribut des Boards zu, mit `board.methodenname()` kannst du Methoden aufrufen, die das Board mitbringt, z.B. ``add_background``
+Die wichtigsten Eigenschaften sind zunächst rows, columns und tile_size. 
+Damit kannst du die Größe des Boards verändern:
 
 ![TiledBoard - rows and columns](../_images/tiled_board.png)
 
@@ -129,9 +128,11 @@ board.tile_size = 40
 board.run()
 ```
 
-Anmerkung: Diese Variante mag zwar zuerst hässlicher erscheinen, weil man mehr Text schreiben muss. Dies ist aber in Python die bevorzugte Variante, da so erkennbar ist, welche Objekte aus welcher Bibliothek importiert wurden. Für Anfänger kann es hilfreich sein, auf diese Art von Importen zu verzichten.
+Anmerkung: Die Variante jedesmal `miniworldmaker.objekt` zu schreiben mag zwar zuerst hässlicher erscheinen, weil man mehr Text schreiben muss. 
+Dies ist aber trotzdem in Python die bevorzugte Variante, da so erkennbar ist, welche Objekte aus welcher Bibliothek importiert wurden. 
 
-Es werden hier beide Varianten verwendet. Als Lehrer sollte man sich aber entscheiden, welche Variante man für den Einstieg bevorzugt.
+Es werden hier beide Varianten verwendet. Als Lehrer sollte man sich aber entscheiden, welche Variante man für den Einstieg bevorzugt. 
+Für Anfänger kann es hilfreich sein, auf diese Art von Importen zu verzichten.
 
 
 ## Ausblick

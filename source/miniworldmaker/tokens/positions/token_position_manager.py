@@ -1,9 +1,10 @@
 import pygame
-
+import math
 from typing import Union
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
+from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
 
 
 class TokenPositionManager:
@@ -166,9 +167,14 @@ class TokenPositionManager:
         self.position = destination
         return self
 
-    def move_in_direction(self, direction: Union[int, str], distance=1):
-        direction = self._value_to_direction(direction)
-        self.set_direction(direction)
+    def move_in_direction(self, direction: Union[int, str, board_position.BoardPosition, tuple], distance=1):
+        if type(direction) in [int, str]:
+            direction = self._value_to_direction(direction)
+            self.set_direction(direction)
+        elif type(direction) in [board_position.BoardPosition, tuple]:
+            self.token.board_sensor.point_towards_position(direction)
+        else:
+            raise MoveInDirectionTypeError(direction)
         self.move(distance)
         return self
 
@@ -320,3 +326,35 @@ class TokenPositionManager:
 
     def draw_position(self):
         return (self.x, self.y)
+
+    def point_towards_position(self, destination) -> float:
+        """
+        Token points towards a given position
+
+        Args:
+            destination: The position to which the actor should pointing
+
+        Returns:
+            The new direction
+
+        """
+        pos = self.token.center
+        x = (destination[0] - pos[0])
+        y = (destination[1] - pos[1])
+        if x != 0:
+            m = y / x
+            if x < 0:
+                # destination is left
+                self.token.direction = (math.degrees(math.atan(m)) - 90)
+            else:
+                # destination is right
+                self.token.direction = (math.degrees(math.atan(m)) + 90)
+            return self.token.direction
+        else:
+            m = 0
+            if destination[1] > self.token.position[1]:
+                self.token.direction = 180
+                return self.token.direction
+            else:
+                self.token.direction = 0
+                return self.token.direction
