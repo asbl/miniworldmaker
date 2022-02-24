@@ -35,10 +35,9 @@ innerhalb der Methode auf Attribute und Methoden des Objekts zugreifen.
 Es gibt die beiden Funktionen `on_key_down(self, key)` und
 `on_key_pressed(self, key)`:
 
-- Die Funktion `on_key_down` wird genau einmal aufgerufen, wenn die
+* Die Funktion `on_key_down` wird genau einmal aufgerufen, wenn die
   Taste gedrückt wird.
-
-- Die Funktion `on_key_pressed` hingegen wird immer wieder aufgerufen, 
+* Die Funktion `on_key_pressed` hingegen wird immer wieder aufgerufen, 
   solange die Taste gedrückt wird.
 
 ```{note}

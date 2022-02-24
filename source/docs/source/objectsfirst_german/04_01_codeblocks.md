@@ -10,11 +10,10 @@ def on_setup(self):
     board.speed = 3
 ```
 
-  * In der zweiten Zeile wird eine Funktion definiert, die bestimmte Anweisungen durchführt (dazu später mehr).
+* In der zweiten Zeile wird eine Funktion definiert, die bestimmte Anweisungen durchführt (dazu später mehr).
 
-  * In der ersten Zeile wird diese Funktion mit einem Decorator versehen. Dieser Decorator "heftet" die Funktion an das Board an. Immer wenn das System die Funktion `board.on_setup` aufrufen will, wird die von dir definierte Funktion aufgerufen.
+* In der ersten Zeile wird diese Funktion mit einem Decorator versehen. Dieser Decorator "heftet" die Funktion an das Board an. Immer wenn das System die Funktion `board.on_setup` aufrufen will, wird die von dir definierte Funktion aufgerufen.
   Auf diese Weise kannst du später Funktionen definieren, die auf beliebige Ereignisse reagieren, z.B. Tastendrücke, ...
-
 
 ## Einrückung und Code-Blöcke
 
