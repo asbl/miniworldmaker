@@ -11,6 +11,10 @@ class NoRunError(MiniworldMakerError):
         self.message = "[boardname].run() was not found in your code. This must be the last line in your code \ne.g.:\nboard.run()\n if your board-object is named board."
         super().__init__(self.message)
 
+class MoveInDirectionTypeError(MiniworldMakerError):
+    def __init__(self, direction):
+        self.message = f"`direction` should be a direction (int, str) or a position (BoardPosition, tuple). Found {type(direction)}"
+        super().__init__(self.message)
 
 class BoardInstanceError(MiniworldMakerError):
     def __init__(self):

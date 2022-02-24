@@ -5,13 +5,16 @@ Objects First
     :maxdepth: 1
 
     01_installation
-    02_board
+    02_00_board
+    02_01_naming_and_variables
     03_tokens
-    04_dynamic
+    04_00_dynamic
+    04_01_codeblocks
     05_movement
-    06_events
-    07_collisions
-    08_collisions2
+    06_00_events
+    06_01.conditions
+    07_sensors
+    08_sensors_2
     09_costumes
     10_animations
     11_timers
