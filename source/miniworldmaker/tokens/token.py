@@ -34,16 +34,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     The appearance of a token is determined by its :doc:`Costume <../key_concepts/costumes>`.
 
-    These are the Token Types you can use:
-
-    * Token: Base class for all Kinds of Tokens
-    * TextToken: A TextToken
-    * NumberToken: A NumberToken
-    * Rectangle: A Rectangle
-    * Line: A Line
-    * Circle: A Circle
-    * Ellipse: A Ellipse
-
     Examples:
 
         Creating a token:
@@ -68,8 +58,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         .. code-block:: python
 
-          circle = miniworldmaker.Circle(self.get_mouse_position(), 80, 1)
-          circle.center = circle.position
+          circle = miniworldmaker.Circle(self.get_mouse_position(), 80)
 
     See Also:
 
