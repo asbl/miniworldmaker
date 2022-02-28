@@ -57,28 +57,11 @@ class TiledBoard(miniworldmaker.Board):
         cells.append([x_pos + 1, y_pos - 1])
         return cells
 
-    def is_position_on_board(self, value: tuple) -> bool:
-        """
-        Checks if position is on board
-
-        Args:
-            value: A Board Position or a board rect
-
-        Returns:
-
-        """
-        position = board_position_factory.BoardPositionFactory(self).create(value)
+    def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
+        position = board_position_factory.BoardPositionFactory(self).create(position)
         return self.position_handler.is_position_on_board(position)
 
     def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
-        """
-
-        Args:
-            value:
-
-        Returns:
-
-        """
         position = board_position_factory.BoardPositionFactory(self).create(value)
         return self.position_handler.get_borders_from_position(position)
 
@@ -113,3 +96,4 @@ class TiledBoard(miniworldmaker.Board):
             return None
         else:
             return token_list[0]
+

@@ -1,4 +1,4 @@
-# Funktionen
+# Fachkonzept: Funktionen
 
 Du hast bisher Methoden verwendet, die zu einem Board oder einem Token gehören, z.B. ``on_setup``, ``act``.
 

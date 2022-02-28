@@ -101,43 +101,6 @@ Es gibt mehrere Kind-Klassen von Board
 Diese unterschiedlichen Boards sind für unterschiedliche Einsatzzwecke gedacht. Wähle für deine miniworld das passende Board aus.
 ```
 
-## Importe
-
-Man kann in Python auf unterschiedliche Arten Bibliotheken importieren
-
-Beispiele:
-
-```python
-import miniworldmaker
-from miniworldmaker import *
-import miniworldmaker as worlds
-```
-
-Mit der hier verwendeten Version ``import miniworldmaker`` musst du jedesmal ``miniworldmaker.objekt`` schreiben, wenn du ein Objekt aus der miniworldmaker-Bibliothek importierst. Stattdessen kannst du auch ``from miniworldmaker import *`` schreiben - Dann kannst du miniworldmaker weglassen.
-
-So sähe das Programm aus, wenn wir ``import miniworldmaker`` geschrieben hätten:
-
-```{code-block} python
----
-lineno-start: 1
----
-import miniworldmaker
-board = miniworldmaker.TiledBoard()
-board.add_background("images/soccer_green.jpg")
-board.columns = 20
-board.rows = 8
-board.tile_size = 40
-
-board.run()
-```
-
-Anmerkung: Die Variante jedesmal `miniworldmaker.objekt` zu schreiben mag zwar zuerst hässlicher erscheinen, weil man mehr Text schreiben muss. 
-Dies ist aber trotzdem in Python die bevorzugte Variante, da so erkennbar ist, welche Objekte aus welcher Bibliothek importiert wurden. 
-
-Es werden hier beide Varianten verwendet. Als Lehrer sollte man sich aber entscheiden, welche Variante man für den Einstieg bevorzugt. 
-Für Anfänger kann es hilfreich sein, auf diese Art von Importen zu verzichten.
-
-
 ## Ausblick
 
 * Mehr Informationen, siehe [Key Concepts: Boards](/key_concepts/boards)

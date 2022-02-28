@@ -4,7 +4,7 @@ Boards
 Board
 =====
 
-.. autoclass:: miniworldmaker.boards.board.Board
+.. autoclass:: miniworldmaker.boards.base_board.BaseBoard
    :noindex:
 
 

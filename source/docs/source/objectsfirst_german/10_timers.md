@@ -5,14 +5,13 @@ z.B. möchtest dass eine Aktion nicht sofort, sondern mit einigen
 Millisekunden oder Sekunden Verzögerung eintritt, dann kannst du einen
 Timer verwenden.
 
-```{timer}
+```{note}
 Python bietet auch in der library `time` die Funktion `time.sleep(...)`
 an.
 
 Diese solltest du allerdings **nicht** benutzen, da die globale
 Verzögerung zu Seiteneffekten führen kann.
-
-
+```
 ## Einen Timer starten
 
 Einen Timer kannst du z.B. so starten:

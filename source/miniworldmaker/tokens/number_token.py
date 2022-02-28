@@ -1,7 +1,7 @@
 from miniworldmaker.tokens import text_token
 
 
-class NumberToken(text_token.TextToken):
+class Number(text_token.TextToken):
     """
     A number token shows a Number.
 
@@ -29,9 +29,9 @@ class NumberToken(text_token.TextToken):
         
     """
 
-    def __init__(self, position=(0, 0)):
+    def __init__(self, position=(0, 0), number = 0):
         super().__init__(position)
-        self.set_number(0)
+        self.set_number(number)
         self.is_static = True
         self.set_number(self.number)
 
@@ -74,3 +74,7 @@ class NumberToken(text_token.TextToken):
         """
         self.costume.reload_transformations_after("text changed")
         return int(self.costume.text)
+
+class NumberToken(Number):
+    """Alias for legacy code"""
+    pass

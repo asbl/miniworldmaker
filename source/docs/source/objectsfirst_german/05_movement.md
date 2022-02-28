@@ -26,14 +26,14 @@ Dies wird regelmäßig wiederholt, wenn die Methode act() aufgerufen wird.
 Vollständiges Beispiel:
 
 ```python
-import miniworldmaker
+from miniworldmaker import *
 
-board = miniworldmaker.TiledBoard()
+board = TiledBoard()
 board.columns = 20
 board.rows = 8
 board.tile_size = 42
 board.add_background("images/soccer_green.jpg")
-player = miniworldmaker.Token()
+player = Token()
 player.add_costume("images/player_1.png")
 @player.register
 def act(self):

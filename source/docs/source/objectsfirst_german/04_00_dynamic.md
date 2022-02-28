@@ -20,14 +20,14 @@ eine `act()`-Methode zum Spielfeld oder zu deinen Token hinzufügen:
 ---
 lineno-start: 1
 ---
-import miniworldmaker
+from miniworldmaker import *
 
-board = miniworldmaker.TiledBoard()
+board = TiledBoard()
 board.columns = 20
 board.rows = 8
 board.tile_size = 42
 board.add_background("images/soccer_green.jpg")
-player = miniworldmaker.Token()
+player = Token()
 player.add_costume("images/player_1.png")
 player.direction = 90
 @player.register
@@ -84,13 +84,13 @@ def act(self):
 
 Man kann einstellen, wie oft ``act()`` aufgerufen wird, indem man die Attribute ``board.fps`` und ``board.speed`` konfiguriert.
 
-  * ``board.fps`` definiert die ``frame rate``. Analog zu einem Daumenkino, bei dem du mit festgelegter Geschwindigkeit die Seiten umblätterst, 
+* ``board.fps`` definiert die ``frame rate``. Analog zu einem Daumenkino, bei dem du mit festgelegter Geschwindigkeit die Seiten umblätterst, 
   definiert die Framerate wie oft pro Sekunde das Bild neu gezeichnet wird.
   ``board.fps`` hat den Standardwert 60, d.h. es werden 60 Bilder pro Sekunde angezeigt.
   
-  * Im Attribut ``board.frame`` wird der aktuelle frame gespeichert. Die Frames seit Programmstart werden hochgezählt.
+* Im Attribut ``board.frame`` wird der aktuelle frame gespeichert. Die Frames seit Programmstart werden hochgezählt.
   
-  * ``board.speed`` definiert wie oft die Programmlogik (z.B. act) pro Sekunde aufgerufen wird. 
+* ``board.speed`` definiert wie oft die Programmlogik (z.B. act) pro Sekunde aufgerufen wird. 
   Ein Wert von 60 bedeutet, dass die act()-Methode jeden 60. Frame aufgerufen wird.
 
 
