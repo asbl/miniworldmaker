@@ -1328,10 +1328,10 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                 self.costume.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
 
     def _inner_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.costume.image.get_width(), self.costume.image.get_height()), 0]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), 0]
 
     def _outer_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.costume.image.get_width(), self.costume.image.get_height()), self.border]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), self.border]
 
     def _inner_shape_arguments(self):
         return  [self.fill_color,] +  self._inner_shape()[1] 

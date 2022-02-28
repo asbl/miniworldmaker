@@ -72,5 +72,5 @@ class NumberToken(text_token.TextToken):
                 number = self.number_token.get_number()
             
         """
-        self.costume.call_action("text changed")
+        self.costume.reload_transformations_after("text changed")
         return int(self.costume.text)

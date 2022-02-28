@@ -96,7 +96,7 @@ class TokenCostumeManager:
             if costume >= self.costumes.count_costumes():
                 raise CostumeOutOfBoundsError(self.token, self.costumes.count_costumes, costume)
             costume = self.costumes.get_costume_at_index(costume)
-        self.costume.end_animation()  # ? neccessary
+        self.costume.animation_manager.end_animation(costume)  
         self.costume = costume
         self.costume.dirty = 1
         return self.costume
@@ -119,7 +119,7 @@ class TokenCostumeManager:
     def rotate_costume(self):
         self.costume.dirty = 1
         if self.costume:
-            self.costume.call_action("rotate")
+            self.costume.reload_transformations_after("rotate")
         if self.token.board:
             self.token.board.app.event_manager.send_event_to_containers(
                 "token_changed_direction", self)
@@ -163,6 +163,7 @@ class TokenCostumeManager:
     def reload_costume(self):
         self.update_shape()
         self.costume._reload_all()
+        self.token.dirty = 1
 
     def update_shape(self):
         if self.token.position_manager:

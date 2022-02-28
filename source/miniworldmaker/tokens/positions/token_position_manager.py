@@ -49,6 +49,7 @@ class TokenPositionManager:
 
     @direction.setter
     def direction(self, value: int):
+        self.token.dirty = 1
         self.set_direction(value)
 
     def get_direction(self):
@@ -95,7 +96,7 @@ class TokenPositionManager:
         self.last_direction = self.direction
         self._position = value
         if self.last_position != self._position:
-            self.dirty = 1
+            self.token.dirty = 1
             if self.token.board:
                 self.token.board.app.event_manager.send_event_to_containers(
                     "token_moved", self.token)
@@ -172,7 +173,7 @@ class TokenPositionManager:
             direction = self._value_to_direction(direction)
             self.set_direction(direction)
         elif type(direction) in [board_position.BoardPosition, tuple]:
-            self.token.board_sensor.point_towards_position(direction)
+            self.point_towards_position(direction)
         else:
             raise MoveInDirectionTypeError(direction)
         self.move(distance)

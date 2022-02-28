@@ -1,11 +1,10 @@
-
 from typing import Tuple, Union
 
 from miniworldmaker.tokens import token
 from miniworldmaker.exceptions.miniworldmaker_exception import CantSetAutoFontSize, MiniworldMakerError
 
 
-class TextToken(token.Token):
+class Text(token.Token):
     """
     A Text-Token is a token which contains a Text.
 
@@ -19,50 +18,33 @@ class TextToken(token.Token):
         color: The color of the font (default: white)
 
     Examples:
-        
+
         Create a new text_token::
-        
+
             self.text = TextToken((1,1), "Hello World")
-        
+
 
     """
 
-    def __init__(self, position=None):
+    def __init__(self, position=None, t=" "):
         super().__init__(position)
         self.add_costume((0, 0, 0, 0))
         self.costume.fill_color = (0, 0, 0, 0)
-        self.costume.font_size = 80
+        self.costume.font_size = 24
         self.costume.is_scaled = True
         self.costume.text = ""
-        self._auto_size: str = "font"
         self.is_static: bool = True
-        self.set_text("")
-        
-    @property 
-    def auto_size(self):
-        """Gets auto size value:
-          * "token": token is autosized by font size
-          * "font": font is autosized by token size
-          * None: no autosizing
-        """
-        return self._auto_size
-    
-    @auto_size.setter
-    def auto_size(self, value: Union[None, str]):
-        self._auto_size = value
-        self.set_auto_size()
-        
-    @property        
+        self.set_text(t)
+
+    @property
     def font_size(self):
         return self.costume.font_size
-    
+
     @font_size.setter
     def font_size(self, value):
-        if self.auto_size == "font":
-            raise CantSetAutoFontSize()
         self.costume.font_size = value
-        self.set_auto_size()
-            
+        self._update_text()
+
     def set_text(self, text):
         """
         Sets the text of the token
@@ -71,30 +53,43 @@ class TextToken(token.Token):
             text: The text
         """
         self.costume.text = text
-        self.set_auto_size()
+        self._update_text()
 
     def get_text(self):
         """Gets the currently displayed tex
 
-        Returns: 
+        Returns:
             The currently displayed text
 
         """
         return self.costume.text
 
-    def set_auto_size(self):
-        """Sets self.size by costume.font_size
-        """
-        if self.auto_size == "token":
-            self.set_size((self.costume.font_size * len(self.costume.text), self.costume.font_size), auto_size = False)
-        elif self.auto_size == "font":
-            if len(self.costume.text) != 0:
-                self.costume.font_size = int(
-                    min(self.size[0] / len(self.get_text()), self.size[1]))
-            else:
-                self.costume.font_size = int(min(self.size[0], self.size[1]))
+    @property
+    def text(self):
+        """changes the text."""
+        self.get_text()
 
-    def set_size(self, value, auto_size = True):
+    @text.setter
+    def text(self, value):
+        if value == "":
+            value = " "
+        self.set_text(value)
+        self._update_text()
+
+    def _update_text(self):
+        """Sets self.size by costume.font_size"""
+        if not self.board.fixed_size:
+            self.set_size((self.costume.get_text_width(), self.costume.font_size), auto_size=False)
+        if self.board.fixed_size:
+            self.costume.font_size = 0
+            while self.costume.get_text_width() < self.size[0] and self.costume.font_size < self.size[1]:
+                self.costume.font_size += 1
+
+    def set_size(self, value, auto_size=True):
         super().set_size(value)
-        if auto_size:
-            self.set_auto_size()
+
+
+class TextToken(Text):
+    """Alias for legacy code"""
+
+    pass
