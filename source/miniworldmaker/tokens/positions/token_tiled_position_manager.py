@@ -38,7 +38,6 @@ class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
 
         """
         pos = self.token.position
-        print(destination)
         x = (destination[0] - pos[0])
         y = (destination[1] - pos[1])
         if x != 0:

@@ -62,10 +62,10 @@ class BoardViewHandler:
     def repaint(self):
         if self.background:
             if self.repaint_all:
-                self.background.call_all_actions()
+                self.background.reload_transformations_after("all")
                 self.surface = pygame.Surface(
                     (self.board.container_width, self.board.container_height))
-                image = self.background.reload_image()
+                image = self.background.image
                 self.surface.blit(image, self.surface.get_rect())
             self.board.tokens.clear(self.surface, self.image)
             repaint_rects = self.board.tokens.draw(self.surface)

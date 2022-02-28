@@ -2,6 +2,7 @@ from typing import Union
 
 import pygame
 from miniworldmaker.appearances import appearance
+from miniworldmaker.appearances.managers import transformations_background_manager
 
 
 class Background(appearance.Appearance):
@@ -21,22 +22,16 @@ class Background(appearance.Appearance):
         # Register image actions which you can be triggered
         self._grid_overlay = False
         self._is_scaled_to_tile = False
-        self.image_actions_pipeline = [("scale_to_tile", self.image_action_scale_to_tile,
-                                        "is_scaled_to_tile")] + self.image_actions_pipeline
-        self.image_actions_pipeline.append(("grid_overlay", self.image_action_show_grid, "grid_overlay"))
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
+        self.is_scaled = True
+        self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
 
     def add_image(self, path):
         super().add_image(path)
         self.parent.app.window.display_update()
 
-    def after_init(self):
-        super().after_init()
-        self.is_scaled = True
-
     def next_image(self):
-        """
-        Switches to the next image of the appearance.
+        """Switches to the next image of the appearance.
         """
         super().next_image()
         self.parent.window.repaint_areas.append(self.image.get_rect())
@@ -44,8 +39,7 @@ class Background(appearance.Appearance):
 
     @property
     def grid_overlay(self) -> Union[bool, tuple] :
-        """
-        If not False, a grid overlay is drawn over the background image.
+        """If not False, a grid overlay is drawn over the background image.
 
         Examples:
             >>> a_token.background.grid_overlay = (255, 0, 0, 0)
@@ -68,12 +62,10 @@ class Background(appearance.Appearance):
         if color is not False:
             self._grid_overlay = True
             self.color = color
-            self.call_action("grid_overlay")
-            self.dirty = 1
+            self.reload_transformations_after("grid_overlay")
         else:
             self._grid_overlay = False
-            self.call_action("grid_overlay")
-            self.dirty = 1
+            self.reload_transformations_after("grid_overlay")
 
     @property
     def is_scaled_to_tile(self) -> bool:
@@ -97,29 +89,6 @@ class Background(appearance.Appearance):
     @is_scaled_to_tile.setter
     def is_scaled_to_tile(self, value):
         self._is_scaled_to_tile = value
-        self.call_action("scale_to_tile")
+        self.reload_transformations_after("scale_to_tile")
 
-    def image_action_show_grid(self, image: pygame.Surface, parent) -> pygame.Surface:
-        i = 0
-        while i <= parent.width:
-            pygame.draw.rect(image, self.color, [i, 0, parent.tile_margin, parent.height])
-            i += parent.tile_size + parent.tile_margin
-        i = 0
-        while i <= parent.height:
-            pygame.draw.rect(image, self.color, [0, i, parent.width, parent.tile_margin])
-            i += parent.tile_size + parent.tile_margin
-        return image
 
-    def image_action_scale_to_tile(self, image: pygame.Surface, parent) -> pygame.Surface:
-        image = pygame.transform.scale(image, (self.parent.tile_size, self.parent.tile_size))
-        with_margin = pygame.Surface((parent.tile_size + parent.tile_margin, parent.tile_size + parent.tile_margin))
-        with_margin.blit(image, (parent.tile_margin, parent.tile_margin))
-        return with_margin
-
-    async def _update(self):
-        if self.is_animated:
-            if self.parent.board.frame % self.animation_speed == 0:
-                self.next_image()
-                self.reload_image()
-        else:
-            self.reload_image()

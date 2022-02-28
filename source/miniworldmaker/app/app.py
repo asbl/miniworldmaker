@@ -9,13 +9,13 @@ from miniworldmaker.app import window
 from miniworldmaker.app import event_manager
 from miniworldmaker.app import container_manager
 from miniworldmaker.app import sound_manager
-
+from miniworldmaker.appearances.managers import image_manager
 
 class App:
     """The class app contains the game itself. It's created the first time you call board.run().
 
     Raises:
-        NoRunError: After running the programm, the source of the main module is checked. 
+        NoRunError: After running the programm, the source of the main module is checked.
             If it does not contain a run() method (e.g. board.run()), this error is raised.
     """
 
@@ -38,19 +38,17 @@ class App:
     def __init__(self, title):
         self._output_start()
         self.check_for_run_method()
-        self.container_manager: "container_manager.ContainerManager" = container_manager.ContainerManager(
-            self)
+        self.container_manager: "container_manager.ContainerManager" = container_manager.ContainerManager(self)
         self._quit = False
         self._mainloop_started: bool = False
         self.event_manager: "event_manager.EventManager" = event_manager.EventManager(self)
         self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
-        self.window: "window.Window" = window.Window(
-            title, self.container_manager, self.event_manager)
+        self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
         App.app: App = self
         App.window: "window.Window" = self.window
         self._exit_code: int = 0
 
-    def run(self, image, fullscreen: bool = False, fit_desktop : bool = False, replit : bool = False):
+    def run(self, image, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False):
         """
         runs the main_loop
 
@@ -73,17 +71,9 @@ class App:
         self.window.recalculate_dimensions()
         self.window.display_update()
         self._setup_images()
-        
 
     def _setup_images(self):
-        from pathlib import Path
-        from miniworldmaker.appearances import appearance
-        jpgs = list(Path("./images/").rglob("*.[jJ][pP][gG]"))
-        jpegs = list(Path("./images/w wwsdsdwasd").rglob("*.[jJ][pP][eE][gG]"))
-        pngs = list(Path("./images/").rglob("*.[pP][nN][gG]"))
-        images = jpgs + jpegs + pngs
-        for img_path in images:
-            appearance.Appearance.load_image(img_path)
+        image_manager.ImageManager().setup_images()
 
     def start_mainloop(self):
         self._mainloop_started = True
@@ -91,8 +81,6 @@ class App:
             self._update()
         pygame.display.quit()
         sys.exit(self._exit_code)
-
-
 
     def _update(self):
         """

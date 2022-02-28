@@ -176,6 +176,7 @@ class Board(container.Container):
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.dynamic_tokens = set()
+        self.fixed_size = False
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return token_connector.TokenConnector(self, token)

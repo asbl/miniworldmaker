@@ -116,7 +116,7 @@ class Dummy(token.Token):
 class TokenButton(ToolbarWidget):
 
     def __init__(self, token_type, board, parent, prototype):
-        super().__init__()
+        super().__init__("Button")
         self.parent = parent
         self.board = board
         if prototype.costume.image_paths:
