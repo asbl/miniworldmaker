@@ -1,4 +1,4 @@
-Board: TiledBoard
+Boards: TiledBoard
 *****************
 
 **TiledBoard** is a child class of **Board**
@@ -7,8 +7,12 @@ Board: TiledBoard
 .. mermaid::
 
    classDiagram
+      BaseBoard <|-- Board
       Board <|-- PixelBoard
-      Board <|-- TiledBoard
+      BaseBoard <|-- TiledBoard
+      PixelBoard <|-- PhysicsBoard
+      class BaseBoard{
+      }
       class Board{
       }
       class PixelBoard{
@@ -16,7 +20,8 @@ Board: TiledBoard
       }
       class TiledBoard{
       }  
-
+      class PhysicsBoard{
+      }  
 
 TiledBoard
 ==========

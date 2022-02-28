@@ -69,7 +69,7 @@ wall.remove()
 ```
 ````
 
-## Klassen
+## Ausblick: Klassen
 
 Wenn du mit Klassen arbeitest, nimmt dir der **miniworldmaker** etwas
 Arbeit ab, weil er nun selbst erkennen kann, um welche **Kindklasse**
@@ -92,5 +92,5 @@ def on_sensing_torch(self, torch):
 
 ## Ausblick
 
--   [Vollständiges
+- [Vollständiges
     Beispiel](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/07%20-%20sensors_2.py))

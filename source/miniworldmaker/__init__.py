@@ -4,6 +4,19 @@ from inspect import isclass
 # manually import classes which should be accessible in outer scope.
 
 from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.text_token import Text
+from miniworldmaker.tokens.number_token import Number
+from miniworldmaker.tokens.text_token import TextToken
+from miniworldmaker.tokens.number_token import NumberToken
+from miniworldmaker.tokens.shapes import Point
+from miniworldmaker.tokens.shapes import Line
+from miniworldmaker.tokens.shapes import Rectangle
+from miniworldmaker.tokens.shapes import Circle
+from miniworldmaker.tokens.shapes import Ellipse
+from miniworldmaker.tokens.shapes import Polygon
+from miniworldmaker.tokens.shapes import Triangle
+from miniworldmaker.tokens.shapes import Arc
+from miniworldmaker.boards.base_board import BaseBoard
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.tools.timer import timer

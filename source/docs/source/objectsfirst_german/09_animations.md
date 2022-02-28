@@ -66,6 +66,5 @@ board.run()
 ```
 
 ## Beispiele
-
--   [Weitere
+- [Weitere
     Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/animations)

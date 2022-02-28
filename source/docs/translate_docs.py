@@ -1,8 +1,7 @@
 import deepl
 import os
 from pathlib import Path
-import deepl_key
-translator = deepl.Translator(deepl_key.KEY)
+translator = deepl.Translator(os.getenv("DEEPL_AUTH_KEY"))
 path = os.getcwd()
 
 for root, dirs, files in os.walk("./source/objectsfirst_german/"):

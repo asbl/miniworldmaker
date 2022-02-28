@@ -87,7 +87,7 @@ def on_sensing_token(self, other):
 board.run()
 ```
 
- <video controls loop width=100%>
+ <video controls loop width=300px>
   <source src="../_static/wall.webm" type="video/webm">
   Your browser does not support the video tag.
 </video> 
@@ -107,6 +107,39 @@ def on_sensing_not_on_board(self):
   print("Warning: I'm not on the board!!!")
 ```
 
+Beispiel:
+
+Das folgende Programm simuliert einen umherschwimmenden Fisch:
+
+```python
+from miniworldmaker import *
+
+board=TiledBoard()
+board.columns = 4
+board.rows = 1
+board.add_background("images/water.png")
+fish = Token((0,0))
+fish.add_costume("images/fish.png")
+fish.costume.orientation = - 90
+fish.direction = "right"
+@fish.register
+def act(self):
+    self.move()
+
+@fish.register
+def on_sensing_not_on_board(self):
+    self.move_back()
+    self.flip_x()
+        
+board.run()
+```
+
+ <video controls loop width=300px>
+  <source src="../_static/flipthefish.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+
 *Ist die Figur an den Grenzen des Spielfelds?*
 
 ```python
@@ -116,31 +149,24 @@ def on_sensing_borders(self, borders):
 ```
 
 Befindet sich eine Spielfigur an der Position (0,0) wird folgendes
-ausgegeben: [Borders are here! \[\'right\', \'top\'\]]{.title-ref}
+ausgegeben: `Borders are here! ['right', 'top']`
 
 ## FAQ
 
--   Meine Kollisionen werden nicht erkannt, was kann ich tun?
+* Meine Kollisionen werden nicht erkannt, was kann ich tun?
 
-    Teste zunächst, ob die Methode überhaupt aufgerufen wird, z.B. mit:
+  Teste zunächst, ob die Methode überhaupt aufgerufen wird, z.B. mit:
 
-    ``` python
-    @player.register
-    def on_sensing_token(self, token):
-      print(token)
-      ...
-    ```
+  ``` python
+  @player.register
+  def on_sensing_token(self, token):
+    print(token)
+    ...
+  ```
 
-    Wenn die `print`-Anweisung nicht aufgerufen wird, dann funktioniert
-    der Sensor nicht.
+  Wenn die `print`-Anweisung nicht aufgerufen wird, dann funktioniert
+  der Sensor nicht.
 
 ## Ausblick
 
-* Mehr Informationen. Siehe
-    `Key Concepts: Sensors <../key_concepts/sensors>`{.interpreted-text
-    role="doc"}.
-* Die Objekte können auf unterschiedliche Art aufgespürt werden. Dies
-    kann über die Eigenschaft `collision_type` des aufspürenden Objekts
-    eingestellt werden, z.B. \"mask\" für einen pixelgenauen Vergleich
-    oder \'rect\' wenn nur die umschließenden Rechtecke verglichen
-    werden.
+* Mehr Informationen. Siehe [Key Concepts: Sensors](../key_concepts/sensors>)

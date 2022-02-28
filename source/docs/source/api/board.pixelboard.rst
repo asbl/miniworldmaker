@@ -1,14 +1,18 @@
-Board: PixelBoard
+Boards: Board
 ##################
 
-**PixelBoard** is a child class of **Board**
+**Board** is a child class of **BaseBoard**. It is equivalent to **PixelBoard** 
 
 
 .. mermaid::
 
    classDiagram
+      BaseBoard <|-- Board
       Board <|-- PixelBoard
-      Board <|-- TiledBoard
+      BaseBoard <|-- TiledBoard
+      PixelBoard <|-- PhysicsBoard
+      class BaseBoard{
+      }
       class Board{
       }
       class PixelBoard{
@@ -16,12 +20,14 @@ Board: PixelBoard
       }
       class TiledBoard{
       }  
+      class PhysicsBoard{
+      }  
 
 PixelBoard
 ==========
 
 
-.. autoclass:: miniworldmaker.boards.pixel_board.PixelBoard
+.. autoclass:: miniworldmaker.boards.board.Board
    :members:
 
 

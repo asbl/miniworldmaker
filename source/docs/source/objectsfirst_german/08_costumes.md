@@ -65,6 +65,6 @@ eine Zahl angeben, um zu einem bestimmten Kostüm zu springen.
 
 ### Ausblick
 
--   Es gibt diverse Möglichkeiten das Aussehen deines Bildes anzupassen,
+- Es gibt diverse Möglichkeiten das Aussehen deines Bildes anzupassen,
     z.B. ob dieses rotierbar ist, automatisch skaliert werden soll usw.
--   \--\> Mehr Informationen. Siehe [Key Concepts: Costumes](../key_concepts/costumes)
+- \--\> Mehr Informationen. Siehe [Key Concepts: Costumes](../key_concepts/costumes)
