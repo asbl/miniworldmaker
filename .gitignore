@@ -51,15 +51,11 @@ docs/_build/
 source/docs/build/
 source/docs/build/*
 source/docs/__pycache__/
-git rm --cached source/docs/source/_build/
-git rm --cached source/docs/source/_build/*
-source/miniworldmaker/__pycache__/
-source/miniworldmaker/__pycache__/*
+source/docs/source/_build/
+source/docs/source/_build/*
 source/docs/__pycache__/*
 source/docs/.vscode/
 source/docs/.vscode/*
-source/miniworldmaker/.vscode/
-source/miniworldmaker/.vscode/*
 source/docs/deploy.sh
 source/miniworldmaker.egg-info
 source/dist/
@@ -74,3 +70,11 @@ source/docs/scripts/*
 source/scripts
 source/docs/scripts/
 source/docs/deepl_key.py
+
+# custom
+source/miniworldmaker/__pycache__/
+source/miniworldmaker/__pycache__/*
+source/miniworldmaker/.vscode/
+source/miniworldmaker/.vscode/*
+source/dist
+source/dist/*
