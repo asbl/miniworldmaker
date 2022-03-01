@@ -48,7 +48,12 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-
+source/docs/build/
+source/docs/build/*
+source/docs/.vscode/
+source/docs/.vscode/*
+source/miniworldmaker/.vscode/
+source/miniworldmaker/.vscode/*
 source/docs/deploy.sh
 source/miniworldmaker.egg-info
 source/dist/

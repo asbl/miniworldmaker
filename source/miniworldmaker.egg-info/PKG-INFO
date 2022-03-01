@@ -1,0 +1,68 @@
+Metadata-Version: 2.1
+Name: miniworldmaker
+Version: 2.1.0.0
+Summary: Create 2D Miniworlds and Games
+Home-page: https://github.com/asbl/miniworldmaker
+Author: Andreas Siebel
+Author-email: andreas.siebel@it-teaching.de
+License: OSI Approved :: MIT License
+Download-URL: https://github.com/asbl/miniworldmaker
+Keywords: games,education,mini-worlds,pygame
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Education
+Classifier: Topic :: Education
+Description-Content-Type: text/markdown
+License-File: LICENSE.txt
+
+miniworldmaker
+---------
+
+miniworldmaker allows you to create 2D mini worlds and games. 
+
+It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
+
+<kbd>
+<img src="example.png" alt="example"></img>
+</kbd>
+
+### Tutorial
+
+[English](https://miniworldmaker.de/objectsfirst_english/01_installation.html) | [German](https://miniworldmaker.de/objectsfirst_german/01_installation.html) 
+
+
+### Examples
+
+  * [Angry Birds](https://replit.com/@a_siebel/miniworldmaker-Angry-birds): This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
+
+  * [Kara](https://replit.com/@a_siebel/Kara-in-miniworldmaker"): Kara Prototype
+ 
+  * [RPG Framework](https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker): Framework for simple RPGs and Textadventures
+
+
+### Features
+
+  * miniworldmaker supports pixel-based games as well as games with 
+  tiles (e.g. Rogue-Likes)
+  
+  * Easy creation of animations
+  
+  * Music and sound effects
+  
+  * Integrated GUI elements like console for output, toolbar, ...
+    
+  * Load and Save to SQLite Databases
+  
+  * Integrated Physics-Engine based on Pymunk
+  
+  * Open Source
+  
+  * miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
+
+### Links
+
+[Codeberg](https://codeberg.org/a_siebel/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) | [Cookbook](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/)
+
+

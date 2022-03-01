@@ -1,0 +1,4 @@
+pygame>=2.0.1
+pymunk<=6.2.0,>=6.2.0
+nest_asyncio
+easygui
