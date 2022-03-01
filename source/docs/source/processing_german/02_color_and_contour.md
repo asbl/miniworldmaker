@@ -6,10 +6,10 @@
 
 Eine geometrische Form kann mit dem Attribut ``fill_color`` eingefärbt werden:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(350, 150)
+board = Board(350, 150)
 r = Rectangle((10,10), 100, 100)
 r.fill_color = (255, 0, 0)
 
@@ -24,11 +24,11 @@ board.run()
 
 Eine **Farbe** wird als 3-Tupel angegeben:
 
-  * Der erste Wert ist der *rot*-Anteil
+* Der erste Wert ist der *rot*-Anteil
 
-  * Der zweite Wert ist der *grün*-Anteil
+* Der zweite Wert ist der *grün*-Anteil
 
-  * Der dritte Wert ist der *blau*-Anteil
+* Der dritte Wert ist der *blau*-Anteil
 
 Durch "mischen" dieser Farben erhält man eine konkrete Farbe:
 
@@ -47,10 +47,10 @@ Den Rand kannst du als Integer-Wert mit dem Attribut ``border`` festlegen und di
 
 Das folgende Bild erzeugt ein rotes Rechteck mit gelben Rand:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(350, 150)
+board = Board(350, 150)
 r = Rectangle((10,10), 100, 100)
 r.fill_color = (255, 0, 0)
 r.border = 3
@@ -70,10 +70,10 @@ Du kannst auch Figuren zeigen, die nur einen Rand aber über keine Füllung besi
 
 Das folgende Rechteck hat z.B. keine Füllung:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(350, 150)
+board = Board(350, 150)
 r = Rectangle((10,10), 100, 100)
 r.fill = False
 r.border = 3
@@ -89,10 +89,10 @@ Alle Figuren werden auf einem ``Board`` gezeichnet. Auch das Board hat verschied
 
 Bachte folgenden Code, welcher Größe und Hintergrund des Boards festlegt.
 
-```python
+``` python
   from miniworldmaker import *
 
-  board = PixelBoard()
+  board = Board()
   board.add_background((255,255,255))
   board.size = (400,200)
   r = Rectangle((10,10), 100, 100)

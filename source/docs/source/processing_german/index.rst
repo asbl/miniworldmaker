@@ -12,4 +12,6 @@ Processing
     04_variables.md
     05_movement.md
     06_ifelse.md
+    07_loops.md
+    08_functions.md
 

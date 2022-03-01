@@ -6,10 +6,10 @@ In diesem Kapitel setzen wir Elemente in Bewegung. Dabei helfen uns auch Variabl
 
 Eine einfache Bewegung kannst du realisieren, indem du bei einem Objekt die Attribute x und y veränderst.
 
-```python
+``` python
 from miniworldmaker import *
 import random
-board = PixelBoard((100,100))
+board = Board((100,100))
 c = Circle((0,50), 20)
 @board.register
 def act(self):
@@ -33,10 +33,10 @@ Python kennt 3 Arten von Divisionen:
 
 Das der Rest niemals größer als der Dividend sein kann, kann uns bei Animationen helfen:
 
-```python
+``` python
 from miniworldmaker import *
 import random
-board = PixelBoard((100,100))
+board = Board((100,100))
 c = Circle((0,50), 20)
 x = 0
 @board.register

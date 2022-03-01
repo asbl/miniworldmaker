@@ -1,13 +1,13 @@
 # Installation
 
-Du kannst miniworldmaker auf deinem Computer oder mit Thonny
+Du kannst miniworldmaker auf deinem Computer oder mit Hilfe von Thonny
 installieren:
 
 ## Auf deinem Computer
 
 1. Installiere zuerst Python.
 
-   Python kannst du z.B. unter [Python](https://www.python.org)
+   Python kannst du z.B. unter [Python.org](https://www.python.org)
    herunterladen.
 
    Alternativ kannst du auch die Entwicklungsumgebung

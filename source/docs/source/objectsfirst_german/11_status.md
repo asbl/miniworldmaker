@@ -11,7 +11,7 @@ Text oder Number-Tokens.
 
 Einen Text kannst du so erstellen:
 
-```python
+``` python
 text = miniworldmaker.Text(position, string)
 ```
 
@@ -24,7 +24,7 @@ Auf einem Tiledboard wird dieser komplett innerhalb einer Kachel angezeigt
 
 #### Beispiel:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(400,400)
@@ -41,7 +41,7 @@ Mit dem Attribut text kannst du den Text jederzeit verändern.
 
 Das folgende Programm zeigt immer den zuletzt gedrückten Button an:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(400,400)
@@ -64,7 +64,7 @@ Zahlen kannst du mit Number-Tokens auf den Bildschirm anzeigen.
 Dies funktionier sehr ähnlich wie bei Texten. Das folgende Programm erhöht z.B. 
 jedesmal wenn eine Taste gedrückt wird die angezeigt Zahl um 1:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(400,400)

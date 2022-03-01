@@ -10,10 +10,10 @@ Python hat die einfache Philosphie: Alles ist ein Objekt - Daher wird hier gener
 
 Jeder Wert hat einen Datentyp, welchen du abfragen kannst, z.B. liefert folgendes Programm:
 
-```python
+``` python
 from miniworldmaker import *
 import random
-board = PixelBoard((100,100))
+board = Board((100,100))
 
 print(type("Hello World"))
 print(type(Line((10,10), (100,100))))
@@ -34,7 +34,7 @@ Die folgende Ausgabe auf der Kommandozeile:
 
 Damit im Computer erstellte Objekte wiedergefunden werden können, muss man speichern, wo diese zu finden ist. Auf technischer Ebene speichert man dazu den *Speicherplatz* eines Objekts im Rechner. In einer Programmiersprache wie Python verwenden wir einen Namen um Objekte wiederzufinden.
 
-```python
+``` python
 line = Line((10,10), (100,100))
 ```
 
@@ -42,13 +42,13 @@ speichert die Linie unter dem Namen line. Wenn du jetzt den Namen line verwendes
 
 Du hast z.B. in den vorherigen Kapiteln schon die Farbe einer Linie verändert:
 
-```python
+``` python
 line.fill_color = (255,0,0)
 ```
 
 Genauso kannst du z.B. auch mit Zahlen rechnen
 
-```python
+``` python
 a = 3
 b = 4
 print(a + b)
@@ -58,7 +58,7 @@ print(a + b)
 
 Zuweisungen schreibt man als:
 
-```python
+``` python
 c = a + b
 ```
 Die bedeutet:
@@ -69,7 +69,7 @@ Die bedeutet:
 
 Nach folgendem Programm:
 
-```python
+``` python
 a = 3
 b = 4
 c = a + b
@@ -79,10 +79,10 @@ hat a den Wert 3, b den Wert 4 und c den Wert 7.
 
 Genauso kannst du aber auch Werte von Objekten, z.B. die Position eines Kreises verändern. Das folgende Programm lässt dich einen Kreis mit den Tasten a und d nach links oder rechts bewegen. Die x-Position ist über den Namen ``circle.x`` zugreifbar und kann auch so verändert werden.
 
-```python
+``` python
 from miniworldmaker import *
 import random
-board = PixelBoard((100,100))
+board = Board((100,100))
 
 circle = Circle((50,50), 20)
 
@@ -112,7 +112,7 @@ Manche Programmiersprachen verwenden statt dem = Zeichen ein anderes Zeichen um 
 
 Überall wo du bisher eine Zahl oder einen Text verwendet hast, kannst du auch direkt Variablen einsetzen, z.B.
 
-```python
+``` python
 a = 3
 b = 4
 line = Line((a, b), (5, 6))
@@ -123,7 +123,7 @@ Dies funktioniert immer dann, wenn der **Datentyp** der Variablen mit dem erwart
 
 Folgender Code z.B. führt z.B. zu einem Fehler:
 
-```python
+``` python
 a = 3
 b = 4
 line = Line(a, (5, 6))
@@ -150,9 +150,9 @@ Die Antwort darauf sind "Gültigkeitsbereiche: Eine Variable hat unterschiedlich
 
   Folgendes funktioniert:
 
-  ```python
+  ``` python
   from miniworldmaker import *
-  board = PixelBoard((100,100))
+  board = Board((100,100))
   a = 3
   @board.register
   def on_key_pressed_a(self):
@@ -165,10 +165,10 @@ Die Antwort darauf sind "Gültigkeitsbereiche: Eine Variable hat unterschiedlich
   ````{warning}
   Dies funktioniert aber nicht, da bei der Zuweisung a als lokale Variable interpretiert wird (die nicht definiert wurde)
 
-  ```python
+  ``` python
 
   from miniworldmaker import *
-  board = PixelBoard((100,100))
+  board = Board((100,100))
   a = 3
   @board.register
   def on_key_pressed_a(self):
@@ -180,10 +180,10 @@ Die Antwort darauf sind "Gültigkeitsbereiche: Eine Variable hat unterschiedlich
   
   Dies funktioniert wieder, da a als globale Variable definiert wird und daher auch auf die globale Variable zugegriffen wird.
 
-  ```python
+  ``` python
 
   from miniworldmaker import *
-  board = PixelBoard((100,100))
+  board = Board((100,100))
   a = 3
   @board.register
   def on_key_pressed_a(self):

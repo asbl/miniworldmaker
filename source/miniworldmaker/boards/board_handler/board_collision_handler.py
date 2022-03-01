@@ -1,5 +1,5 @@
 from miniworldmaker.tools import method_caller
-
+from miniworldmaker.tools import token_class_inspection
 
 class BoardCollisionHandler:
     def __init__(self, board):
@@ -22,7 +22,8 @@ class BoardCollisionHandler:
             if token in found_tokens_for_token_type: # found self
                 found_tokens_for_token_type.remove(token)
             for found_token in found_tokens_for_token_type: # found other token
-                if found_token.__class__.__name__.lower() == token_type_of_target:
+                subclasses = token_class_inspection.TokenClassInspection(token).get_all_token_classes()
+                if found_token.__class__ in subclasses:
                     method_caller.call_method(method, [found_token])
 
     def _handle_token_not_sensing_token_methods(self):
@@ -37,7 +38,8 @@ class BoardCollisionHandler:
             if token in found_tokens_for_token_type:
                 found_tokens_for_token_type.remove(token)
             for found_token in found_tokens_for_token_type:
-                if found_token.__class__.__name__.lower() == token_type_of_target:
+                subclasses = token_class_inspection.TokenClassInspection(token).get_all_token_classes()
+                if found_token.__class__ in subclasses:
                     return
             method_caller.call_method(method, None)
 

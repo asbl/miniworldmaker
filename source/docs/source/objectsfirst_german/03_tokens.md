@@ -12,7 +12,7 @@ werden können und die miteinander kommunizieren können.
 Nachdem du das `Board` erstellt hast, wird nun ein `Token`, *(d.h. eine
 Spielfigur)* auf dem Board platziert. Dies geht so:
 
-```{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -49,7 +49,7 @@ Kostüm *anziehen*.
 
 Ein neues Kostüm kannst du mit folgendem Befehl hinzufügen.
 
-```python
+``` python
 token_name.add_costume("path_to_image")
 ```
 
@@ -65,7 +65,7 @@ Du solltest deine Bilder in dem Unterordner `images` ablgegen. Auf Das Bild
 Wir fügen im Beispiel von oben ein Kostüm hinzu:
 
 
-```python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -88,7 +88,7 @@ Ausgabe:
 
 Hier werden vier Tokens angelegt, die alle unterschiedliche Kostüme haben:
 
-```python
+``` python
 import miniworldmaker
 
 board = miniworldmaker.TiledBoard()
@@ -183,17 +183,17 @@ Es gibt einige spezielle Tokens, die du verwenden kannst:
 
 ### Shapes
 
-Es gibt verschiedene Shapes, z.B. ``Rectangle``, ``Line``, ``Circle``, ``Ellipse`` mit denen du geometrische Objekte zeichnen kannst. Diese Objekte benötigen kein Kostüm.
+Es gibt verschiedene Shapes, z.B. `Rectangle`, `Line`, `Circle`, `Ellipse` mit denen du geometrische Objekte zeichnen kannst. Diese Objekte benötigen kein Kostüm.
 
-```{warning}
-Geometrische Objekte können z.Z. nur auf einem ``PixelBoard``, nicht auf einem ``TiledBoard`` gezeichnet werden.
+``` {warning}
+Geometrische Objekte können z.Z. nur auf einem `PixelBoard`, nicht auf einem `TiledBoard` gezeichnet werden.
 ```
 
 #### Beispiel:
 
 Zeichnen eines Kreises mit Hilfe der Position und des Radius:
 
-```python
+``` python
 import miniworldmaker
 board = miniworldmaker.PixelBoard(80, 60)
 miniworldmaker.Circle((40,30), 20)
@@ -208,7 +208,7 @@ Folgende geometrische Objekte kannst du verwenden:
 
 Die Syntax zum Zeichnen einer Linie sieht folgendermaßen aus:
 
-```python
+``` python
   Line(startpoint, endpoint)
 ```
 
@@ -216,7 +216,7 @@ Die Parameter `startpoint` und `endpoint` sind jeweils Tupel, z.B. (1, 2) für x
 
 Wenn du eine Linie von (10,10) zu (100, 200) zeichnen willst so musst du z.B. folgendes schreiben:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(800, 600)
@@ -226,10 +226,9 @@ board.run()
 
 ### Kreise
 
-
 Kreise kannst du allgemein folgendermaßen erstellen:
 
-```python
+``` python
   Line(position, radius)
 ```
 
@@ -238,7 +237,7 @@ Die Position ist der Mittelpunkt des Kreises.
 Wenn du einen Kreis an der Stelle (400,300) mit Radius 20 erstellen willst, musst du folgendes schreiben:
 
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(800, 600)
@@ -250,7 +249,7 @@ board.run()
 
 Ein Rechteck wird beschrieben durch Position, Breite und Höhe:
 
-```python
+``` python
 Rectangle(position, width, height)
 ```
 
@@ -258,7 +257,7 @@ Der Parameter `position` beschreibt die obere linke Ecke des Rechtecks.
 
 Willst du ein Rechteck an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
-```python
+``` python
 code-block:: python
 from miniworldmaker import *
 
@@ -273,13 +272,13 @@ board.run()
 
 Ellipsen werden im Prinzip wie Rechtecke beschrieben, d.h. die Ellipse wird dann so gezeichnet, dass sie genau in das Rechteck hineinpasst. `width` und `height` beziehen sich hier jeweils auf den Durchmesser der Ellipse
 
-```python 
+``` python 
 Ellipse(position, width, height)
 ```
 
 Willst du eine Ellipse an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(800, 600)
@@ -291,5 +290,3 @@ board.run()
 
 -   Mehr Informationen. Siehe
     [Key Concepts: Boards](../key_concepts/tokens)
--   [Weitere
-    Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds)

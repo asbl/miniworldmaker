@@ -52,7 +52,6 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
             self.token.board).create(destination_pos)
         rect = board_rect_factory.BoardRectFactory(self.token.board).from_position(
             destination_pos, dimensions=self.token.size)
-        rect.center = destination_pos
         return rect
 
     def get_line_in_direction(self, start, direction, distance):
@@ -77,9 +76,8 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         return [actor for actor in a_list if type(token.Token) == actor_type]
 
     def sensing_tokens(self, token_filter=None, distance: int = 0, collision_type="default") -> list:
-        # , singleitem: bool = False, exclude=None, token_type=None
         destination_rect = self.get_destination_rect(distance=distance)
-        tokens = self.board.get_tokens_at_rect(destination_rect)
+        tokens = self.get_tokens_at_rect(destination_rect)
         if collision_type == "default":
             collision_type = "mask"
         else:
@@ -99,8 +97,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
 
     def sensing_token(self, token_filter = None, distance: int = 0) -> Union["token.Token", None]:
         destination_rect = self.get_destination_rect(distance)
-        tokens = self.board.get_single_token_at_rect(destination_rect)
-        tokens = self.remove_self_from_token_list(tokens)
+        tokens = [self.get_single_token_at_rect(destination_rect)]
         tokens = self.filter_token_list(tokens, token_filter)
         if self.token.collision_type == "default":
             collision_type = "mask"
@@ -115,4 +112,27 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
                 return token
             if collision_type == "mask" and pygame.sprite.collide_mask(self.token, token):
                 return token
+        return tokens[0]
+
+    def get_single_token_at_rect(self, rect: pygame.Rect) -> "token.Token":
+        # Get first colliding token
+        for token in self.board.tokens.sprites():
+            if token.rect.colliderect(rect) and token != self.token:
+                return token
         return None
+
+    def get_tokens_at_rect(self, rect: pygame.Rect) -> list:
+        """Returns all tokens that collide with a rectangle.
+
+        Args:
+            rect: A rectangle
+            token_type: The class of the tokens which should be added
+            singleitem: Should the return type be a single token (faster) or a list of tokens(slower)
+            exclude: A token which should not be returned e.g. the actor itself
+
+        Returns:
+            If singleitem = True, the method returns all tokens colliding with the rect of the given token_type as list.
+            If singleitem = False, the method returns the first token.
+
+        """
+        return [token for token in self.board.tokens if token.rect.colliderect(rect)]

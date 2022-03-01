@@ -37,7 +37,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             prototype = self.prototypes[self.selected_token_type.__name__]
             size = prototype.size
             rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(position, size)
-            tokens = self.app.board.get_tokens_at_rect(rect)
+            tokens = [token for token in self.app.board.tokens if token.rect.colliderect(rect)]
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
             if tokens:
@@ -93,7 +93,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         if self.dummy:
             self.dummy.position = position
             rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(self.dummy.position, self.dummy.size)
-            tokens = self.app.board.get_tokens_at_rect(rect)
+            tokens = self.dummy.sensing_tokens()
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
             if tokens:

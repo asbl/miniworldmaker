@@ -10,7 +10,7 @@ There are several solutions for this problem:
 You can add an attribute to all your objects, e.g. with the name
 `token_type`:
 
-``python
+``` python
 player2 = miniworldmaker.Token()
 wall = miniworldmaker.Token()
 player2.token_type = "actor"
@@ -34,7 +34,7 @@ crashes.
 
 This can be done with:
 
-``python
+``` python
 if other_token.token_type and other_token.token_type == "actor":
 ```
 
@@ -47,7 +47,7 @@ omit this query.
 You can add objects to a list to check if the touched object is in the list.
 touched object is in this list.
 
-``python
+``` python
 walls = []
 player2 = miniworldmaker.Token()
 wall = miniworldmaker.Token()
@@ -60,10 +60,10 @@ def on_sensing_token(self, other_token):
 ```
 
 ````{warning}
-With this access you have to make sure that deleted objects are also removed from the list
+With this access you have to make sure that deleted objects are removed from the list
 are removed from the list, e.g. in the following way:
 
-``python
+``` python
 walls.remove(wall)
 wall.remove()
 ```
@@ -71,19 +71,19 @@ wall.remove()
 
 ## Outlook: Classes
 
-If you work with classes, the **miniworldmaker** will take some of the
-work for you, because it can now recognize which **child class** of
+If you work with classes, the **miniworldmaker** will do some work for you
+work for you, because it can now recognize which **child class** of `token
 of `token` an object is.
 
 Here you can add the following method to your class:
 
-``python
+``` python
 def on_sensing_[class_name](self, other)
 ```
 
 ### Example
 
-``python
+``` python
 # The other class has the name Torch
 def on_sensing_torch(self, torch):
     print("Sensing torch")

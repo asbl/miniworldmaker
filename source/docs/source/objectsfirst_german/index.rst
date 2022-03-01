@@ -15,9 +15,8 @@ Objects First
     06_00_events
     06_01.conditions
     07_00_sensors
-    07_01_sensors_2
-    07_02_functions
-    07_03_loops
+    07_02_loops
+    07_03_functions
     08_costumes
     09_animations
     10_timers

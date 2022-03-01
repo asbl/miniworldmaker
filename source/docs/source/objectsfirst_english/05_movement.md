@@ -6,14 +6,14 @@ With the ``act(self)`` method you can move tokens in regular intervals. Now you 
 ## The move() function
 
 
-The central function for moving is the ``move()`` function.
+The central function for moving is the `move()` function.
 
-With the function ``move()`` you can move your object by one or more steps:
+With the function `move()` you can move your object by one or more steps:
 
 
 ### Example
 
-``python
+``` python
 @player.register
 def act(self):
     self.direction = "right"
@@ -25,7 +25,7 @@ This is repeated periodically when the act() method is called.
 
 Complete example:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -50,15 +50,15 @@ board.run()
 
 ## move_left, move_right, ...
 
-With the move() function, the ``token`` always moves to the current ``direction``.
+With the move() function, the `token` always moves to the current `direction`.
 
-You can also make the ``token`` move directly in a direction. This can be done with the ``move_right()``, ``move_left()``, ``move_up()`` and ``m̀ove_down()`` functions.
+But you can also make the `token` move directly in a direction. This can be done with the functions `move_right()`, `move_left()`, `move_up()` and `m̀ove_down()`.
 
 ### Example
 
 This code moves the token in the act() method to the right:
 
-``python
+``` python
 @player.register
 def act(self):
     self.move_right()
@@ -66,14 +66,14 @@ def act(self):
 
 ## move_in_direction
 
-Alternatively you can move the token in an arbitrary direction with ``move_in_direction()``.
+Alternatively you can move the token in an arbitrary direction with `move_in_direction()`.
 
 ### Example:
 
 
 This moves the token diagonally right upwards (direction 45°).
 
-``python
+``` python
 @player.register
 def act(self):
     self.move_in_direction(45)
@@ -83,7 +83,7 @@ def act(self):
 
 Move in the direction of the mouse position:
 
-``python
+``` python
 import miniworldmaker
 
 board = miniworldmaker.PixelBoard()
@@ -124,13 +124,13 @@ You can change the direction with the following commands:
 ### Example:
 
 
-``self.direction = 90`` refers *to its own* orientation, for example, ``self.move_in_direction()`` calls its own ``move_in_direction`` method.
+`self.direction = 90` refers *to its own* orientation, for example, `self.move_in_direction()` calls its own `move_in_direction` method.
 
 ### Extensive example
 
 In the following example, the token moves in a circle:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard()

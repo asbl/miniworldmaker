@@ -1,14 +1,14 @@
-# Business concept: Functions
+# Concept: Functions
 
 You have so far used methods that belong to a board or a token, e.g. ``on_setup``, ``act``.
 
-## Define functions
+## Defining functions
 
 Often you want to automate complicated things, e.g. the creation of tokens.
 
 You can do this by defining functions yourself - This works like this:
 
-``python
+``` python
 def create_token(x, y):
     t = token()
     t.position = (x,y)
@@ -34,7 +34,7 @@ Your function consists of a *signature* and a *function body*.
 A function is called with the help of its name. Thereby you pass the arguments defined as parameters to the function.
 This can look like this:
 
-``python
+``` python
 create_token(4,2)
 ```
 
@@ -46,7 +46,7 @@ The following example is a template to make your code shorter if you use functio
 
 Here 10 tokens with 10 commands are created. Without functions you would have needed 30 commands.
 
-``python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()

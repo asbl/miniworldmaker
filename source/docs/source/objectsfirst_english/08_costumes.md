@@ -11,7 +11,7 @@ several images with which animations can be described.
 
 With the function
 
-``python
+``` python
 self.add_costume("images/image.jpg")
 ```
 
@@ -25,14 +25,14 @@ first costume.
 With the command **costume.add_image** you can add more images to a costume.
 to a costume.
 
-``python
+``` python
 self.costume.add_image("images/image_2.jpg")
 ```
 
-Alternatively you can directly add a list of images to a costume
+Alternatively, you can directly add a list of images to a costume
 to a costume:
 
-``python
+``` python
 self.costume.add_image(["images/image_1.jpg, images/image_2.jpg"])
 ```
 
@@ -47,7 +47,7 @@ above).
 
 Then you can animate the costume as follows:
 
-``python
+``` python
 self.costume.is_animated = True
 self.costume.animation_speed = 10
 ```
@@ -56,11 +56,11 @@ self.costume.animation_speed = 10
 
 Here's how to switch between two costumes:
 
-``python
+``` python
 self.switch_costume()
 ```
 
-The statement jumps to the next costume. You can also specify as parameter
+The statement jumps to the next costume. You can also specify as a parameter
 a number to jump to a specific costume.
 
 ### Outlook

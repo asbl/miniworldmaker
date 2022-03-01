@@ -49,7 +49,7 @@ abzufragen als auch in der Variante `on_key_down(self, key)`
 
 ### Beispiel
 
-```python
+``` python
 import miniworldmaker
 
 board = miniworldmaker.TiledBoard()
@@ -82,7 +82,6 @@ board.run()
   Your browser does not support the video tag.
 </video> 
 
-
 ## Nachrichten senden
 
 Mit `send message(self, message)` kannst du eine globale Nachricht an
@@ -97,11 +96,3 @@ def on_message(self, message):
     if message == "Example message":
         do_something()
 ```
-
-## Ausblick
-
-* [Vollständiges
-    Beispiel](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py)
-* [Weitere
-    Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py)
-* Mehr Informationen. Siehe [Key Concepts: Events](../key_concepts/events)

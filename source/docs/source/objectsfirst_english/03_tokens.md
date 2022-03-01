@@ -12,7 +12,7 @@ and can communicate with each other.
 After you have created the board, a token (i.e. a character) is placed on the board.
 character)* is placed on the board. This goes like this:
 
-``{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -49,11 +49,11 @@ costume to your token.
 
 You can add a new costume with the following command.
 
-``python
+``` python
 token_name.add_costume("path_to_image")
 ```
 
-``{note}
+``` {note}
 Note: `path_to_image` is a (relative path) to the image.
 
 You should put your images in the subfolder `images`. To the image
@@ -65,7 +65,7 @@ You should put your images in the subfolder `images`. To the image
 We add a costume in the example from above:
 
 
-``python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -88,7 +88,7 @@ Output:
 
 Here four tokens are created that all have different costumes:
 
-``python
+``` python
 import miniworldmaker
 
 board = miniworldmaker.TiledBoard()
@@ -183,17 +183,17 @@ There are some special tokens you can use:
 
 ### Shapes
 
-There are several shapes, e.g. ``Rectangle``, ``Line``, ``Circle``, ``Ellipse`` with which you can draw geometric objects. These objects do not require a costume.
+There are several shapes, e.g. `Rectangle`, `Line`, `Circle`, `Ellipse` with which you can draw geometric objects. These objects do not require a costume.
 
-``{warning}
-Geometric objects can currently only be drawn on a ``PixelBoard``, not on a ``TiledBoard``.
+``` {warning}
+Geometric objects can currently only be drawn on a `PixelBoard`, not on a `TiledBoard`.
 ```
 
 #### Example:
 
 Drawing a circle using position and radius:
 
-``python
+``` python
 import miniworldmaker
 board = miniworldmaker.PixelBoard(80, 60)
 miniworldmaker.Circle((40,30), 20)
@@ -208,15 +208,15 @@ You can use the following geometric objects:
 
 The syntax for drawing a line looks like this:
 
-``python
+``` python
   Line(startpoint, endpoint)
 ```
 
-The parameters `startpoint` and `endpoint` are tuples respectively, e.g. (1, 2) for x=1 and y=2.
+The parameters `startpoint` and `endpoint` are tuples, e.g. (1, 2) for x=1 and y=2.
 
 If you want to draw a line from (10,10) to (100, 200) you have to write e.g. the following:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(800, 600)
@@ -226,10 +226,9 @@ board.run()
 
 ### Circles
 
-
 You can create circles in general as follows:
 
-``python
+``` python
   Line(position, radius)
 ```
 
@@ -238,7 +237,7 @@ The position is the center of the circle.
 If you want to create a circle at the position (400,300) with radius 20, you have to write the following:
 
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(800, 600)
@@ -250,7 +249,7 @@ board.run()
 
 A rectangle is described by position, width and height:
 
-``python
+``` python
 Rectangle(position, width, height)
 ```
 
@@ -258,7 +257,7 @@ The parameter `position` describes the upper left corner of the rectangle.
 
 If you want to draw a rectangle at position (100, 100) with width 20 and height 100, you have to write the following:
 
-``python
+``` python
 code-block:: python
 from miniworldmaker import *
 
@@ -273,13 +272,13 @@ board.run()
 
 Ellipses are described in the same way as rectangles, i.e. the ellipse is then drawn so that it fits exactly inside the rectangle. Width and height refer to the diameter of the ellipse.
 
-``python
-Ellipse(position, width, height)
+``` python
+ellipse(position, width, height)
 ```
 
-If you want to draw an ellipse at position (100, 100) with width 20 and height 100, you have to write the following:
+If you want to draw an ellipse at position (100, 100) with width 20 and height 100, you must write the following:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(800, 600)

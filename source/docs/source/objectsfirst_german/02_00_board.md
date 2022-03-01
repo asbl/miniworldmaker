@@ -49,7 +49,7 @@ wenn für die Anweisung weitere Informationen benötigt werden - Dazu später me
 
 Wir verändern das Programm oben, um einen Hintergrund hinzuzufügen:
 
-```python
+``` python
 from miniworldmaker import *
 board = TiledBoard()
 board.add_background("images/soccer_green.jpg")
@@ -104,4 +104,3 @@ Diese unterschiedlichen Boards sind für unterschiedliche Einsatzzwecke gedacht.
 ## Ausblick
 
 * Mehr Informationen, siehe [Key Concepts: Boards](/key_concepts/boards)
-* [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/1%20Costumes%20and%20Backgrounds)

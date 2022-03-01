@@ -1,4 +1,4 @@
-# Fachkonzept: Funktionen
+# Funktionen
 
 Du hast bisher Methoden verwendet, die zu einem Board oder einem Token gehören, z.B. ``on_setup``, ``act``.
 
@@ -8,7 +8,7 @@ Oft willst du komplizierte Dinge automatisieren, z.B. das Anlegen von Tokens.
 
 Dies geht, indem du Funktionen selbst definierst - Dies geht z.B. so:
 
-```python
+``` python
 def create_token(x, y):
     t = Token()
     t.position = (x,y)
@@ -34,19 +34,19 @@ Deine Funktion besteht aus einer *Signatur* und einem *Funktionskörper*.
 Eine Funktion wird mit Hilfe des Namens aufgerufen. Dabei übergibst du der Funktion die als Parameter definierten Argumente. 
 Dies kann z.B. so aussehen:
 
-```python
+``` python
 create_token(4,2)
 ```
 
 Hier wird ein Token an der Position x=4 und y=2 angelegt.
 
-## Umfangreiches Beispiel
+## Tokens automatisiert erstellen
 
-Das folgende Beispiel ist eine Vorlage, die deinen Code kürzer gestaltet, wenn du Funktionen verwendest. 
+Mit Hilfe von Funktionen kannst du das erstellen von Tokens abkürzen:
 
 Es werden hier 10 Tokens mit 10 Befehlen angelegt. Ohne Funktionen hättest du 30 Befehle benötigt.
 
-```python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -79,3 +79,41 @@ board.run()
 Ausgabe: 
 
 ![walls](../_images/walls.png)
+
+## Eigenschaften und Methoden registrieren.
+
+Das folgende Programm erstellt automatisch "Regentropfen".
+
+In der funktion raindrop werden nicht nur Eigenschaften für jeden Tropfen festgelegt, sondern auch Methoden registriert.
+
+```python
+from miniworldmaker import *
+import random
+
+board = Board()
+board.add_background((80,180,255))
+def raindrop(x,y):
+    c = Circle((x, y), random.randint(10, 20))
+    speed = random.randint(1,5)
+    c.color = (0,0,random.randint(100,255), 100)
+    c.static = True
+    @c.register
+    def act(self):
+        self.move_down(random.randint(1,3))
+    @c.register
+    def on_sensing_not_on_board(self):
+        self.remove()
+        
+@board.register
+def act(self):
+    if board.frame % 5 == 0:
+        raindrop(random.randint(0,400),0)
+    
+
+board.run()
+```
+
+ <video controls loop width=450px>
+  <source src="../_static/raindrops.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 

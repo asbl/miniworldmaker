@@ -1,4 +1,4 @@
-# Fachkonzept: Importe
+# Konzept: Importe
 
 Mit import kannst du Bibliotheken importieren und die dort abgelegten Klassen und Funktionen verwenden. Es gibt unterschiedliche Arten, wie du Bibliotheken importieren kannst:
 
@@ -7,17 +7,17 @@ Mit import kannst du Bibliotheken importieren und die dort abgelegten Klassen un
 Man kann in Python auf unterschiedliche Arten Bibliotheken importieren. 
 Die folgenden 3 Anweisungen sind alle erlaubt:
 
-```python
+``` python
 import miniworldmaker
 from miniworldmaker import *
 import miniworldmaker as mwm
 ```
 
-Mit der hier verwendeten Version ``import miniworldmaker`` musst du jedesmal ``miniworldmaker.objekt`` schreiben, wenn du ein Objekt aus der miniworldmaker-Bibliothek importierst. Stattdessen kannst du auch ``from miniworldmaker import *`` schreiben - Dann kannst du miniworldmaker weglassen.
+Mit der hier verwendeten Version `import miniworldmaker` musst du jedesmal `miniworldmaker.objekt` schreiben, wenn du ein Objekt aus der miniworldmaker-Bibliothek importierst. Stattdessen kannst du auch `from miniworldmaker import *` schreiben - Dann kannst du miniworldmaker weglassen.
 
-So sähe das erste Programm aus, wenn wir ``import miniworldmaker`` geschrieben hätten:
+So sähe das erste Programm aus, wenn wir `import miniworldmaker` geschrieben hätten:
 
-```{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -53,7 +53,7 @@ Wenn die der Name `miniworldmaker` zu lang ist, dann kannst du einen Alias defin
 
 Das Programm würde dann folgendermaßen aussehen:
 
-```{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---

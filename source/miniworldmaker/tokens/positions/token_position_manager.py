@@ -16,7 +16,7 @@ class TokenPositionManager:
         self._old_size = (0, 0)
         self._size = (1, 1)
         self.is_static = False
-        self._position = 0
+        self._position = (0, 0)
         self._direction = 0
         self._initial_direction = 0
         if position is not None:
@@ -29,7 +29,7 @@ class TokenPositionManager:
         return self.get_rect()
 
     def get_rect(self):
-        return pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
+        return pygame.Rect(self.token.position[0], self.token.position[1], self.size[0], self.size[1])
 
     @classmethod
     def from_center(cls, center_position: board_position.BoardPosition):
