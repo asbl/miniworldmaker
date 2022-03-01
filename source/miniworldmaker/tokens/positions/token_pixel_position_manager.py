@@ -21,7 +21,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
         if self.token.costume:
             _rect = self.token.costume.image.get_rect()
         else:
-            _rect = pygame.Rect(self._position[0], self._position[1], self.token.size[0], self.token.size[1])
+            _rect = pygame.Rect(self.position[0], self._position[1], self.token.size[0], self.token.size[1])
         _rect_center_pos = super().get_position()
         _rect.center = _rect_center_pos[0], _rect_center_pos[1]
         return _rect

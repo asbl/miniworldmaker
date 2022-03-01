@@ -1,13 +1,13 @@
 # Installation
 
-You can install miniworldmaker on your computer or with Thonny
+You can install miniworldmaker on your computer or with the help of Thonny
 to install it:
 
 ## On your computer
 
 1. install Python first.
 
-   You can download Python from [Python](https://www.python.org)
+   Python can be downloaded from [Python.org](https://www.python.org).
    download.
 
    Alternatively you can install the development environment
@@ -16,7 +16,7 @@ to install it:
 
 Install the framework with:
 
-``python
+``` python
 pip install miniworldmaker
 ```
 

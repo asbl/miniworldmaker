@@ -33,27 +33,25 @@ lineno-start: 1
 ---
 
 from miniworldmaker import *
-board = PixelBoard(800,600)
+board = Board()
 
 # Your code here
 
 board.run()
 ```
 
-  * 1: Die miniworldmaker Bibliothek wird importiert
- 
-  * 2: Ein Spielfeld wird erstellt mit den Maßen (800, 600)
-
-  * 6: Am Ende wird die mainloop gestartet, dies muss immer die letzte Zeile deines Programms sein.
+* 1: Die miniworldmaker Bibliothek wird importiert
+* 2: Ein Spielfeld wird erstellt.
+* 6: Am Ende wird die mainloop gestartet, dies muss immer die letzte Zeile deines Programms sein.
 
 Dazwischen findet sich ein *Kommentar* - Kommentare beginnen immer mit einer # und werden vom Computer ignoriert und sind für **Menschen** gemacht. Sie dienen dazu, Programmierern Hinweise zu geben, hier z.B. das an diese Stelle dein eigener Code kommt.
 
 Dieser könnte z.B. so aussehen:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 
 Point((10,10))
 
@@ -62,9 +60,16 @@ board.run()
 
 <img src="../_images/processing/pixel.png" alt="A pixel" width="260px">
 
+Du kannst auch die Größe des Boards anpassen, indem du dem Board beim erstellen zwei Argumente übergibst:
+
+``` python
+from miniworldmaker import *
+
+board = Board(200, 400)
+board.run()
+```
 
 ## Zeichnen geometrischer Grundformen.
-
 
 Als nächstes lernst du, geometrische Grundformen zu zeichnen.
 
@@ -72,7 +77,7 @@ Als nächstes lernst du, geometrische Grundformen zu zeichnen.
 
 Die Syntax zum Zeichnen einer Linie sieht folgendermaßen aus:
 
-```python
+``` python
   Line(startpoint, endpoint)
 ```
 
@@ -80,20 +85,19 @@ Die Parameter `startpoint` und `endpoint` sind jeweils Tupel, z.B. (1, 2) für x
 
 Wenn du eine Linie von (10,10) zu (100, 200) zeichnen willst so musst du z.B. folgendes schreiben:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 Line((10,10), (100, 200))
 board.run()
 ```
 
 ### Kreise
 
-
 Kreise kannst du allgemein folgendermaßen erstellen:
 
-```python
+``` python
   Line(position, radius)
 ```
 
@@ -102,10 +106,10 @@ Die Position ist der Mittelpunkt des Kreises.
 Wenn du einen Kreis an der Stelle (400,300) mit Radius 20 erstellen willst, musst du folgendes schreiben:
 
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 Circle((400,300), 20)
 board.run()
 ```
@@ -114,7 +118,7 @@ board.run()
 
 Ein Rechteck wird beschrieben durch Position, Breite und Höhe:
 
-```python
+``` python
 Rectangle(position, width, height)
 ```
 
@@ -122,11 +126,11 @@ Der Parameter `position` beschreibt die obere linke Ecke des Rechtecks.
 
 Willst du ein Rechteck an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
-```python
+``` python
 code-block:: python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 Rectangle((100, 100), 20, 100)
 board.run()
 ```
@@ -137,16 +141,16 @@ board.run()
 
 Ellipsen werden im Prinzip wie Rechtecke beschrieben, d.h. die Ellipse wird dann so gezeichnet, dass sie genau in das Rechteck hineinpasst. `width` und `height` beziehen sich hier jeweils auf den Durchmesser der Ellipse
 
-```python 
+``` python 
 Ellipse(position, width, height)
 ```
 
 Willst du eine Ellipse an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 Rectangle((100, 100), 20, 100)
 board.run()
 ```
@@ -161,10 +165,10 @@ Oft will man ein Rechteck oder eine Ellipse nicht an der oberen linken Position 
 
 Mit der Klassenmethode from_center kannst du eine Ellipse am Zentrum erstellen.
 
-```python  
+``` python  
 from miniworldmaker import *
 
-board = PixelBoard(100, 200)
+board = Board()
 Ellipse.from_center((50, 100), 100, 200)
 board.run()
 ```
@@ -175,10 +179,10 @@ board.run()
 
 Du kannst die Ellipse nach dem Verschieben an den Mittelpunkt verschieben;
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(100, 200)
+board = Board()
 Ellipse((50, 100), 100, 200)
 ellipse.center = ellipse.position
 board.run()
@@ -192,26 +196,26 @@ board.run()
 
 Kreisbögen und Kreisausschnitte zeichnest du mit folgendem Befehl:
 
-```python
+``` python
 Arc(position, width, height, start_angle, end_angle)
 ```
 
 Bedeutung der Parameter:
 
-  * ``position``: Die Position als 2-Tupel
+* ``position``: Die Position als 2-Tupel
 
-  * ``width``, ``height``: Breite und Höhe bei Erstellung einer Ellipse. Wähle beide gleich, damit sich der Radius für einen Kreisbogen ergibt oder wähle unterschiedle Werte, damit sich der Bogen und Ausschnitt einer Ellipse ergibt.
+* ``width``, ``height``: Breite und Höhe bei Erstellung einer Ellipse. Wähle beide gleich, damit sich der Radius für einen Kreisbogen ergibt oder wähle unterschiedle Werte, damit sich der Bogen und Ausschnitt einer Ellipse ergibt.
   
-  * ``start_angle``, ``end_angle``: Die Winkel des Ausschnitts. Die Winkel werden von einer gedachten Linie *gegen den Uhrzeigersinn* gemessen.
+* ``start_angle``, ``end_angle``: Die Winkel des Ausschnitts. Die Winkel werden von einer gedachten Linie *gegen den Uhrzeigersinn* gemessen.
 
 <img src="../_images/processing/arc.png" alt="Arc - Start and Endangle" width="260px"/>
 
 #### Beispiel:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 a1 = Arc.from_center((200, 200), 200, 200, 30, 242)
 board.run()
 ```
@@ -221,7 +225,7 @@ board.run()
 
 Ein Dreieck erstellst du mit folgendem Befehl:
 
-```python
+``` python
 Triangle(p1,p2, p3)
 ```
 
@@ -229,10 +233,10 @@ p1, p2 und p3 sind Punkte, die du jeweils als Tupel schreiben kannst.
 
 #### Beispiel:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 Triangle((10,10), (100,100), (200,10))
 board.run()
 ```
@@ -242,7 +246,7 @@ board.run()
 
 Ein Polygon (d.h. ein n-Eck) erstellst du mit folgendem Befehl:
 
-```python
+``` python
 Polygon(pointlist)
 ```
 
@@ -250,10 +254,11 @@ Polygon(pointlist)
 
 #### Beispiel:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard(800, 600)
+board = Board()
 Polygon([(10,10), (100,100), (200,10)])
 board.run()
 ```
+

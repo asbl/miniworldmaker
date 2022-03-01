@@ -7,7 +7,7 @@ Let's go!
 We create a first world. This can be created with the following code
 code:
 
-``{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -49,7 +49,7 @@ if more information is needed for the statement - more about that later.
 
 We modify the program above to add a background:
 
-``python
+``` python
 from miniworldmaker import *
 board = TiledBoard()
 board.add_background("images/soccer_green.jpg")
@@ -89,7 +89,7 @@ you can create:
 In the next chapters you will learn how to create tokens which can
 communicate with each other.
 
-``{note}
+``` {note}
 There are several child classes of board
 
 - A `TiledBoard` is suitable for boards, where the actors move

@@ -11,7 +11,7 @@ Text or Number tokens.
 
 You can create a text like this:
 
-``python
+``` python
 text = miniworldmaker.Text(position, string)
 ```
 
@@ -24,7 +24,7 @@ On a tiledboard it will be displayed completely inside a tile
 
 #### Example:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(400,400)
@@ -41,7 +41,7 @@ You can change the text at any time using the text attribute.
 
 The following program always displays the last pressed button:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(400,400)
@@ -64,7 +64,7 @@ You can display numbers on the screen with number tokens.
 This works very similar to text. The following program for example
 every time a key is pressed the displayed number is increased by 1:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard(400,400)
@@ -89,11 +89,11 @@ The following are typical end-of-game/level change actions:
 
 The following commands are available for this:
 
-- `board.stop()`: Stops the game board. No more actions are executed
+- `board.stop()`: Stops the game board. No more actions will be executed
     and no events are queried.
 - `board.start()`: This cancels a stop command.
 - `board.is_running`: With this variable you can query the status of the board.
-    board.
+    of the board.
 - `board.clear()`: This function removes all pieces from the board.
 - `board.reset()`: The function clears the current board and creates a new board
     creates a new board with all the pieces as they were in

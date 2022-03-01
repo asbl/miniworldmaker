@@ -10,7 +10,7 @@ collision functions work slightly different than on other boards:
 
 First create a physics board and a token in it:
 
-`` python
+``` python
 import miniworldmaker
 
 myboard = miniworldmaker.PhysicsBoard()

@@ -3,63 +3,138 @@
 Tokens verfügen über **Sensoren**, mit denen sie ihre Umwelt abtasten 
 können und z.B andere Tokens an ihrer Position aufspüren können.
 
-## Ein Objekt aufspüren
+## Ein Objekt aufspüren.
 
-Ein `Token` kann ein anderes `Token` am selben Ort aufspüren, indem du die 
-Funktion `on_sensing_token` registrierst.
-
-```python
-@player.register
-def on_sensing_token(self, other):
-    print("Damage!!!!!")
-    self.remove()
-```
-
-### Was passiert hier?
-
-* Die Funktion `on_sensing_token` wird dann aufgerufen, wenn das Token
-    ein anderes Objekt am selben Ort aufspürt.
-* Der Parameter `other` ist ein Verweis auf das gefundene Objekt, so
-    dass du direkt auf Attribute und Methoden dieses Objektes zugreifen
-    kannst (z.B. mit `other.move()`)
-
-## Vergleichen mit gefundenem Objekt
-
-Oft soll eine Aktion nur ausgeführt werden, wenn ein *bestimmtes* Objekt
-aufgespürt wird.
-
+Du kannst Objekte aufspüren, indem du die entsprechenden Sensoren direkt aufrufst.
 Dies geht z.B. so:
 
-```{code-block} python
----
-lineno-start: 1
----
-@player1.register
-def on_sensing_token(self, other):
-    global player2
-    if other == player2:
-      print("I found you, player2!")
+``` python
+from miniworldmaker import *
+
+board = Board(200, 100)
+
+r = Rectangle((10,10),50,100)
+
+c = Circle((200,50),20)
+
+@c.register
+def act(self):
+    self.move_left()
+
+    
+@r.register
+def act(self):
+    token = self.sensing_token()
+    if token:
+        self.color = (255,0,0)
+
+board.run()
 ```
 
-Der Vergleich in Zeile 6 überprüft, ob das Objekt **dasselbe** Objekt
-ist wie `player2`.
+Die zweite `act()`-Methode enthält den Sensor. Die Anweisung `if token` ist äquivalent zu
+`if token != None`.
 
-```{note}
+Wenn das Rechteck mit seinen Sensoren ein anderes `Token` aufspürt, dann ändert sich die Farbe.
+
+ <video controls loop width=300px>
+  <source src="../_static/sensor.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 
+
+## Ereignisse
+
+In dem Beispiel oben wurde *aktiv* nach Tokens gesucht. Alternativ dazu kannst du auch ein Ereignis registrieren,
+dass automatisch dann aufgerufen wird, wenn der Sensor des Tokens etwas aufspürt:
+
+Das letzte Programm kann mit Hilfe von Ereignissen so programmiert werden:
+
+``` python
+from miniworldmaker import *
+
+board = Board(200, 100)
+
+r = Rectangle((10,10),50,100)
+
+c = Circle((200,50),20)
+
+@c.register
+def act(self):
+    self.move_left()
+
+    
+@r.register
+def on_sensing_token(self, other):
+    self.color = (255,0,0)
+
+board.run()
+```
+
+Was passiert hier?
+
+* Die registrierte Funktion `on_sensing_token` wird dann aufgerufen, wenn das Token
+  ein anderes Objekt am selben Ort aufspürt.
+* Der Parameter `other` ist ein Verweis auf das gefundene Objekt. Du kannst diesen benutzen
+  um herauszufinden, welches andere Token gefunden wurde. 
+
+## Was wurde gefunden?
+
+Mit Hilfe von Sensoren und if-else Verzweigungen kannst du herausfinden, was genau gefunden wurde.
+Dies geht z.B. so:
+
+``` python
+from miniworldmaker import *
+
+board = Board(200, 100)
+
+r = Rectangle((10,10),50,100)
+
+c1 = Circle((200,50),20)
+c2 = Circle((120,50),20)
+
+@c1.register
+def act(self):
+    self.move_left()
+
+@c2.register
+def act(self):
+    self.move_left()
+    
+@r.register
+def on_sensing_token(self, other):
+    if other == c1:
+        self.color = (255,0,0)
+    if other == c2:
+        self.color = (0, 255,0)
+
+board.run()
+```
+
+In der on_sensing_token-Methode wird überprüft, ob `other` das gleiche Objekt ist wie `c1` bzw. `c2`.
+
+Wenn dies zutrifft, wird das Rechteck entsprechend eingefärbt.
+
+ <video controls loop width=300px>
+  <source src="../_static/sensor2.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+``` {note}
 **Exkurs: Globale Variablen**: Normalerweise sind Variablen nur
 innerhalb einer Methode bekannt, damit z.B. verhindert wird, dass es zu
 Seiteneffekten kommt, wenn man an verschiedenen Stellen auf die gleiche
 Variable zugreift.
-```
+
 
 Der Ansatz mit dem hier auf Variablen aus anderen Programmteilen
-zugegriffen wird ist zwar einfach und intuitiv - Später wird man aber
-versuchen dies zu vermeiden.
+zugegriffen wird ist zwar einfach und intuitiv - Im Tutorial `classes_first`
+wirst du lernen, wie man dies vermeiden kann.
+```
+### Wände
 
-### Umfangreiches Beispiel
+Der folgende Code zeigt, wie du verhindern kannst, dass sich Objekte durch Wände hindurch bewegen können.
+Auch dies lässt sich mit Hilfe von Sensoren ermöglichen:
 
-Der folgende Code zeigt, wie du verhindern kannst, dass sich Objekte durch Wände hindurch bewegen können:
-
-```python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -101,7 +176,7 @@ Spielfelds ist (oder darüber hinaus):
 
 *Ist die Figur nicht auf dem Spielfeld?*
 
-```python
+``` python
 @player3.register
 def on_sensing_not_on_board(self):
   print("Warning: I'm not on the board!!!")
@@ -111,7 +186,7 @@ Beispiel:
 
 Das folgende Programm simuliert einen umherschwimmenden Fisch:
 
-```python
+``` python
 from miniworldmaker import *
 
 board=TiledBoard()
@@ -142,7 +217,7 @@ board.run()
 
 *Ist die Figur an den Grenzen des Spielfelds?*
 
-```python
+``` python
 @player4.register
 def on_sensing_borders(self, borders):
   print("Borders are here!", str(borders))

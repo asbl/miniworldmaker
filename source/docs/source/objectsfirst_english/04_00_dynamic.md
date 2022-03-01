@@ -16,7 +16,7 @@ to add an `act()` method to the game field or to your tokens:
 
 ### Example
 
-``{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -63,7 +63,7 @@ Example:
 
 This code
 
-``python
+``` python
 @player.register
 def act(self):
     self.direction = "right"
@@ -71,30 +71,30 @@ def act(self):
 
 is equivalent to this code:
 
-``python
+``` python
 @player.register
 def act(self):
     player.direction = "right"
 ```
 
-``self`` here refers to the ``player`` object where the method was registered.
+`self` here refers to the `player` object where the method was registered.
 
 ## The frame rate - how often is act() called?
 
 
-You can set how often ``act()`` is called by configuring the ``board.fps`` and ``board.speed`` attributes.
+You can set how often `act()` is called by configuring the `board.fps` and `board.speed` attributes.
 
-* ``board.fps`` defines the ``frame rate``. Analogous to a flipbook, where you turn the pages at a fixed speed,
+* `board.fps` defines the `frame rate`. Analogous to a flipbook, where you turn the pages at a fixed speed,
   the frame rate defines how many times per second the image is redrawn.
-  ``board.fps`` has the default value 60, i.e. 60 frames per second are displayed.
+  `board.fps` has the default value 60, i.e. 60 frames per second are displayed.
   
-* The attribute ``board.frame`` stores the current frame. The frames since program start are counted up.
+* In the attribute `board.frame` the current frame is stored. The frames since program start are counted up.
   
-* ``board.speed`` defines how often the program logic (e.g. act) is called per second.
+* `board.speed` defines how often the program logic (e.g. act) is called per second.
   A value of 60 means that the act() method is called every 60th frame.
 
 
-``python
+``` python
   from miniworldmaker import *
 
   board = PixelBoard()
@@ -124,7 +124,7 @@ The program above has the output:
 
 
 It is counted up very slowly, because exactly one frame per second is played and every 3. frame
-(so every 3 seconds) the function ``act()`` is called.
+(so every 3 seconds) the function `act()` is called.
 
 
 

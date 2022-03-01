@@ -18,10 +18,10 @@ Wir fangen mit zwei einfachen Methoden an, `on_setup` und `act`
 
 Das folgende Programm:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 board.size = (120,210)
 
 @board.register
@@ -33,7 +33,6 @@ def act(self):
     print("act")
 ```
 
-
 liefert z.B. folgende Ausgabe
 
 ```
@@ -43,18 +42,15 @@ act
 act
 ```    
 
-
 ## Code-Blöcke
-
-
 Die Zeile ``def on_setup(self):`` endet mit einem Doppelpunkt. Darunter siehst du einen Codeblock:
 
 Die Inhalte der Funktion sind alle *eingerückt*, alles was gleich weit eingerückt ist, gehört zu einem Block.
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 board.size = (120,210)
 
 @board.register
@@ -78,20 +74,19 @@ Beim Aufruf von ``on_setup`` werden die vier Zeilen darunter aufgerufen, nicht a
 
 Man kann einstellen, wie oft ``act()`` aufgerufen wird, indem man die Attribute ``board.fps`` und ``board.speed`` konfiguriert.
 
-  * ``board.fps`` definiert die ``frame rate``. Analog zu einem Daumenkino, bei dem du mit festgelegter Geschwindigkeit die Seiten umblätterst, 
+* ``board.fps`` definiert die ``frame rate``. Analog zu einem Daumenkino, bei dem du mit festgelegter Geschwindigkeit die Seiten umblätterst, 
   definiert die Framerate wie oft pro Sekunde das Bild neu gezeichnet wird.
   ``board.fps`` hat den Standardwert 60, d.h. es werden 60 Bilder pro Sekunde angezeigt.
+
+* Im Attribut ``board.frame`` wird der aktuelle frame gespeichert. Die Frames seit Programmstart werden hochgezählt.
   
-  * Im Attribut ``board.frame`` wird der aktuelle frame gespeichert. Die Frames seit Programmstart werden hochgezählt.
-  
-  * ``board.speed`` definiert wie oft die Programmlogik (z.B. act) pro Sekunde aufgerufen wird. 
+* ``board.speed`` definiert wie oft die Programmlogik (z.B. act) pro Sekunde aufgerufen wird. 
   Ein Wert von 60 bedeutet, dass die act()-Methode jeden 60. Frame aufgerufen wird.
 
-
-```python
+``` python
   from miniworldmaker import *
 
-  board = PixelBoard()
+  board = Board()
   board.size = (120,210)
 
   @board.register
@@ -125,10 +120,10 @@ Es wird sehr langsam hochgezählt, weil genau ein Frame pro Sekunde abgespielt w
 
   Achtung: Es kann zu unvorhergesehenen Nebenwirkungen führen, wenn man Code falsch einrückt, betrachte z.B. folgendes Programm:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 board.size = (120,210)
 
 @board.register
@@ -158,11 +153,9 @@ Das Programm hat die Ausgabe:
 
 ````
 
-
 Dies liegt daran, dass zuerst ``on_setup()`` ausgeführt wird, nachdem in Zeile 3 das Board erstellt wurde.
 Anschließend werden die beiden nicht eingerückten Befehle ausgeführt und sobald ``run()`` gestartet wird, wird die Funktion
 ``act()`` aufgerufen. Achte darauf, dass deine Anweisungen sich innerhalb der Code-Blöcke von act und on_setup befinden.
-
 
 ## Maus-Interaktionen 
 
@@ -174,10 +167,10 @@ Zunächst schauen wir uns Mausinteraktionen an:
 
 Mit der Methode ``get_mouse_position`` kannst du die Mausposition abfragen:
 
- ```python
+ ``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 
 @board.register
 def on_setup(self):
@@ -196,10 +189,10 @@ Der Kreis folgt nun deiner Mausposition:
 
 Wenn du Linien zeichnen möchtest, benötigst du die aktuelle und die letzte Mausposition. Dies geht z.B. wie folgt:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 
 @board.register
 def on_setup(self):
@@ -214,17 +207,16 @@ board.run()
 
 <img src="../_images/processing/lines1.png" alt="Get the mouse position" width="260px">
 
-
 ## Listener-Methoden
 
 
 Schön wäre es, wenn wir noch auf spezifische Events reagieren können, z.B. auf Tastendrücke oder Mausklicks. 
 Dafür können wir bestimmte Listener-Methoden registrieren, z.B. ``on_mouse_pressed``
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 
 @board.register
 def on_setup(self):
@@ -251,10 +243,10 @@ board.run()
 
 Du kannst auch Angaben von der Tastatur abfragen:
 
-```python
+``` python
 from miniworldmaker import *
 
-board = PixelBoard()
+board = Board()
 
 @board.register
 def on_setup(self):
@@ -282,10 +274,10 @@ Python stellt mit der random Bibliothek einige Möglichkeiten zur Verfügung, wi
 
 So wird z.B. ein Kreis in einer zufälligen Farbe erstellt:
 
-```python
+``` python
 from miniworldmaker import *
 import random
-board = PixelBoard()
+board = Board()
 
 @board.register
 def on_setup(self):

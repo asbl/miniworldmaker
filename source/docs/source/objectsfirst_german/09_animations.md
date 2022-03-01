@@ -64,7 +64,3 @@ player2.loop_animation(30)
 
 board.run()
 ```
-
-## Beispiele
-- [Weitere
-    Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/animations)

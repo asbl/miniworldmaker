@@ -63,7 +63,7 @@ Beispiel:
 
 Dieser Code
 
-```python
+``` python
 @player.register
 def act(self):
     self.direction = "right"
@@ -71,30 +71,30 @@ def act(self):
 
 ist äquivalent zu diesem Code:
 
-```python
+``` python
 @player.register
 def act(self):
     player.direction = "right"
 ```
 
-``self`` bezieht sich hier auf das ``player``-Objekt, bei dem die Methode registriert wurde.
+`self` bezieht sich hier auf das `player`-Objekt, bei dem die Methode registriert wurde.
 
 ## Die Frame Rate - Wie oft wird act() aufgerufen?
 
 
-Man kann einstellen, wie oft ``act()`` aufgerufen wird, indem man die Attribute ``board.fps`` und ``board.speed`` konfiguriert.
+Man kann einstellen, wie oft `act()` aufgerufen wird, indem man die Attribute `board.fps` und `board.speed` konfiguriert.
 
-* ``board.fps`` definiert die ``frame rate``. Analog zu einem Daumenkino, bei dem du mit festgelegter Geschwindigkeit die Seiten umblätterst, 
+* `board.fps` definiert die `frame rate`. Analog zu einem Daumenkino, bei dem du mit festgelegter Geschwindigkeit die Seiten umblätterst, 
   definiert die Framerate wie oft pro Sekunde das Bild neu gezeichnet wird.
-  ``board.fps`` hat den Standardwert 60, d.h. es werden 60 Bilder pro Sekunde angezeigt.
+  `board.fps` hat den Standardwert 60, d.h. es werden 60 Bilder pro Sekunde angezeigt.
   
-* Im Attribut ``board.frame`` wird der aktuelle frame gespeichert. Die Frames seit Programmstart werden hochgezählt.
+* Im Attribut `board.frame` wird der aktuelle frame gespeichert. Die Frames seit Programmstart werden hochgezählt.
   
-* ``board.speed`` definiert wie oft die Programmlogik (z.B. act) pro Sekunde aufgerufen wird. 
+* `board.speed` definiert wie oft die Programmlogik (z.B. act) pro Sekunde aufgerufen wird. 
   Ein Wert von 60 bedeutet, dass die act()-Methode jeden 60. Frame aufgerufen wird.
 
 
-```python
+``` python
   from miniworldmaker import *
 
   board = PixelBoard()
@@ -122,15 +122,5 @@ Das Programm oben hat die Ausgabe:
   15
 ```
 
-
 Es wird sehr langsam hochgezählt, weil genau ein Frame pro Sekunde abgespielt wird und jeden 3. Frame
-(also alle 3 Sekunden) die Funktion ``act()`` aufgerufen wird.
-
-
-
-## Ausblick
-
--   [Vollständiges
-    Beispiel](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/03%20-%20actions.py)
--   [Weitere
-    Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/2%20Movement)
+(also alle 3 Sekunden) die Funktion `act()` aufgerufen wird.

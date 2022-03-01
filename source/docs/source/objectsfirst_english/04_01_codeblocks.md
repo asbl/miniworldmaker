@@ -1,9 +1,10 @@
-# Business concept: functions and code blocks
+# Concept: functions and code blocks
 
 ## Functions and Decorators
-The following code was used in the last chapter:
 
-``python
+In the last chapter the following code was used:
+
+``` python
 @board.register
 def on_setup(self):
     board.fps = 1
@@ -17,9 +18,9 @@ def on_setup(self):
 
 ## Indentation and code blocks
 
-The third and fourth line of the program code above are indented. This means that when called, the two indented lines will be called.
+The third and fourth lines of the program code above are indented. This means that when called, the two indented lines will be called.
 
-Code blocks in Python are always used to define when a particular branch in your program begins and when it ends. Everything that is indented the same distance belongs to a common code block.
+Code blocks are always used in Python to define when a particular branch in your program begins and when it ends. Everything that is indented the same distance belongs to a common code block.
 
 ## Coding standards How far should be indented?
 
@@ -29,7 +30,7 @@ However, there are certain coding standards in Python that programmers have agre
 
 For example, it was agreed that code should always be indented 4 characters. You can of course handle this differently for yourself - but at the latest when you work in a team, it is helpful to stick to such conventions.
 
-In Python functions and conventions are defined in so called PEPs ("Python Enhancement Proposal). Style guides can be found in [PEP 8](https://www.python.org/dev/peps/pep-0008/).
+In Python functions and conventions are defined in so called PEPs ("Python Enhancement Proposal). Style guides can be found e.g. in [PEP 8](https://www.python.org/dev/peps/pep-0008/).
 
 Besides the indentation you will find much more there, e.g. you write `a = a + 3` instead of `a=a+3`, because the former is easier to read. The programming language does not force you to do this, but this way the code is easier to read for other programmers.
 

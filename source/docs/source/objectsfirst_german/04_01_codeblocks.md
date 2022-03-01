@@ -1,9 +1,10 @@
-# Fachkonzept: Funktionen und Code-Blöcke
+# Konzept: Funktionen und Code-Blöcke
 
 ## Funktionen und Decorators
+
 Im letzten Kapitel wurde folgender Code verwendet:
 
-```python
+``` python
 @board.register
 def on_setup(self):
     board.fps = 1

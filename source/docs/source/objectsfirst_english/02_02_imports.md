@@ -1,4 +1,4 @@
-# Specialist concept: Imports
+# Concept: Imports
 
 With import you can import libraries and use the classes and functions stored there. There are different ways how you can import libraries:
 
@@ -7,17 +7,17 @@ With import you can import libraries and use the classes and functions stored th
 You can import libraries in Python in different ways.
 The following 3 statements are all allowed:
 
-``python
+``` python
 import miniworldmaker
 from miniworldmaker import *
 import miniworldmaker as mwm
 ```
 
-With the version used here ``import miniworldmaker`` you have to write ``miniworldmaker.object`` every time you import an object from the miniworldmaker library. Instead, you can also write ``from miniworldmaker import *`` - then you can omit miniworldmaker.
+With the version used here `import miniworldmaker` you have to write `miniworldmaker.object` every time you import an object from the miniworldmaker library. Instead you can also write `from miniworldmaker import *` - Then you can omit miniworldmaker.
 
-This is what the first program would look like if we had written ``import miniworldmaker``:
+This is what the first program would look like if we had written `import miniworldmaker`:
 
-``{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -53,7 +53,7 @@ If the name `miniworldmaker` is too long, you can define an alias, e.g. `mwm`.
 
 The program would then look like this:
 
-``{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---

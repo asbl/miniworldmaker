@@ -36,7 +36,7 @@ Es gibt verschiedene Arten von Timer:
 Der ActionTimer ruft nach einer vorgegebenen Zeit eine Methode mit
 Argumenten auf und entfernt sich danach selbst.
 
-```python
+``` python
 miniworldmaker.ActionTimer(24, player.move, None)
 ```
 
@@ -49,12 +49,12 @@ diese Schleife enden soll, muss der Timer gelöscht werden:
 -   So erstellst du einen Loop-Actiontimer. Der erste Parameter gibt an
     in welchen Abständen die Schleife wiederholt werden soll.
 
-    ```python
+    ``` python
     loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move)
     ```
 
 -   So kannst du einen LoopActionTimer wieder entfernen.
 
-    ```python
+    ``` python
     loopactiontimer.unregister()
     ```

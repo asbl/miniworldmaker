@@ -15,7 +15,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         tile_size: int = 1,
         tile_margin: int = 0,
     ):
-        super(pixel_board_module.PixelBoard, self).__init__(columns, rows, tile_size, tile_margin)
+        super().__init__(columns, rows)
         self.gravity_x: float = 0
         self.gravity_y: float = 900
         self.debug: bool = False

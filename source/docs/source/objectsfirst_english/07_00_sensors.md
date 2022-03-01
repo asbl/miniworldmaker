@@ -8,7 +8,7 @@ and can e.g. detect other tokens at their position.
 A `token` can track another `token` at the same location by using the
 function `on_sensing_token`.
 
-``python
+``` python
 @player.register
 def on_sensing_token(self, other):
     print("Damage!!!!!")
@@ -30,7 +30,7 @@ is found.
 
 This goes for example like this:
 
-``{code-block} python
+``` {code-block} python
 ---
 lineno-start: 1
 ---
@@ -44,9 +44,9 @@ def on_sensing_token(self, other):
 The comparison in line 6 checks whether the object **is** the same object
 as `player2`.
 
-``{note}
+``` {note}
 **Excursus: Global Variables**: Normally variables are only known
-only known within a method, e.g. to avoid side effects if the same
+only known within a method, e.g. to prevent side-effects when the same
 side effects when accessing the same variable in different places.
 variable in different places.
 ```
@@ -59,7 +59,7 @@ try to avoid this.
 
 The following code shows how you can prevent objects from moving through walls:
 
-``python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -97,11 +97,11 @@ board.run()
 ### Check boundaries of the playing field
 
 You can also check if a character is at the borders of the playing field (or beyond).
-playing field (or beyond):
+playing field (or beyond it):
 
 ### Is the piece not on the playing field?###.
 
-``python
+``` python
 @player3.register
 def on_sensing_not_on_board(self):
   print("Warning: I'm not on the board!!!")
@@ -111,7 +111,7 @@ Example:
 
 The following program simulates a fish swimming around:
 
-``python
+``` python
 from miniworldmaker import *
 
 board=TiledBoard()
@@ -142,7 +142,7 @@ board.run()
 
 *Is the character at the boundaries of the playing field?*
 
-``python
+``` python
 @player4.register
 def on_sensing_borders(self, borders):
   print("Borders are here!", str(borders))

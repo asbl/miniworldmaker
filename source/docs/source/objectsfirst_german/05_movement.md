@@ -2,18 +2,16 @@
 
 Mit der ``act(self)``-Methode kannst du Token in regelmäßigen Abständen ansteuern. Jetzt lernst du, wie du deine Token gezielt in eine Richtung bewegen kannst.
 
-
 ## Die move()-Funktion
 
 
-Die zentrale Funktion zum Bewegen ist die Funktion ``move()``.
+Die zentrale Funktion zum Bewegen ist die Funktion `move()`.
 
-Mit der Funktion ``move()`` kannst du dein Objekt um einen oder mehrere Schritte bewegen:
-
+Mit der Funktion `move()` kannst du dein Objekt um einen oder mehrere Schritte bewegen:
 
 ### Beispiel
 
-```python
+``` python
 @player.register
 def act(self):
     self.direction = "right"
@@ -25,7 +23,7 @@ Dies wird regelmäßig wiederholt, wenn die Methode act() aufgerufen wird.
 
 Vollständiges Beispiel:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
@@ -50,15 +48,15 @@ board.run()
 
 ## move_left, move_right, ...
 
-Mit der Funktion move() bewegt sich das ``Token`` immer in die aktuelle ``direction``. 
+Mit der Funktion move() bewegt sich das `Token` immer in die aktuelle `direction`. 
 
-Du kannst das ``Token`` aber auch direkt in eine Richtung bewegen lassen. Dies geht mit den Befehlen ``move_right()``, ``move_left()``, ``move_up()`` und ``m̀ove_down()``.
+Du kannst das `Token` aber auch direkt in eine Richtung bewegen lassen. Dies geht mit den Befehlen `move_right()`, `move_left()`, `move_up()` und `m̀ove_down()`.
 
 ### Beispiel
 
 Dieser Code bewegt das Token in der act()-Methode nach rechts:
 
-```python
+``` python
 @player.register
 def act(self):
     self.move_right()
@@ -66,14 +64,14 @@ def act(self):
 
 ## move_in_direction
 
-Alternativ kannst du das Token mit ``move_in_direction()`` auch in eine beliebige Richtung bewegen.
+Alternativ kannst du das Token mit `move_in_direction()` auch in eine beliebige Richtung bewegen.
 
 ### Beispiel:
 
 
 Dies bewegt das Token schräg rechts nach oben (Richtung 45°). 
 
-```python
+``` python
 @player.register
 def act(self):
     self.move_in_direction(45)
@@ -83,7 +81,7 @@ def act(self):
 
 Bewegung in Richtung der Mausposition:
 
-```python
+``` python
 import miniworldmaker
 
 board = miniworldmaker.PixelBoard()
@@ -108,29 +106,25 @@ board.run()
 
 ## Die Richtung ändern
 
-
 Die Richtung kannst du mit folgenden Befehlen ändern:
 
-  * ``player.turn_left(degrees)`` - Dreht das Token um **degrees** Grad nach links.
-
-  * ``player.turn_right(degrees)`` - Dreht das Token um **degrees** Grad nach rechts.
-
-  * ``player.direction = degrees``- Gibt dem player-Objekt die absolute Ausrichtung degrees.
+* ``player.turn_left(degrees)`` - Dreht das Token um **degrees** Grad nach links.
+* ``player.turn_right(degrees)`` - Dreht das Token um **degrees** Grad nach rechts.
+* ``player.direction = degrees``- Gibt dem player-Objekt die absolute Ausrichtung degrees.
   
-  Der Wert degrees kann hier entweder als Zahl oder als Text wie in folgender Grafik angegeben werden (0: oben, 180, unten, 90 rechts, -90 links):
+Der Wert degrees kann hier entweder als Zahl oder als Text wie in folgender Grafik angegeben werden (0: oben, 180, unten, 90 rechts, -90 links):
 
 ![Move on board](/_images/movement.jpg)
   
 ### Beispiel:
 
-
-``self.direction = 90`` bezieht sich z.B. *auf die eigene* Ausrichtung, ``self.move_in_direction()`` ruft die eigene Methode ``move_in_direction`` auf.
+`self.direction = 90` bezieht sich z.B. *auf die eigene* Ausrichtung, `self.move_in_direction()` ruft die eigene Methode `move_in_direction` auf.
 
 ### Umfangreiches Beispiel
 
 Im folgenden Beispiel bewegt sich das Token im Kreis:
 
-```python
+``` python
 from miniworldmaker import *
 
 board = PixelBoard()
@@ -155,13 +149,7 @@ board.run()
   Your browser does not support the video tag.
 </video> 
 
-
-
-
-
 ## Ausblick
 
 * Mehr Informationen. Siehe [Key Concepts: Movement](../key_concepts/movement)
 * Mehr Informationen. Siehe [Key Concepts: Directions](../key_concepts/directions)
-* [Vollständiges Beispiel](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/04%20-%20movement%20and%20direction.py)
-* [Weitere Beispiele](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/2%20Movement)

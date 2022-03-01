@@ -8,7 +8,7 @@ you can do:
 
 If you add multiple images to a costume, you can animate them with
 
-`` python
+``` python
 my_token.costume.add_images(["images/2.png", "images/3.png", "images/4.png"])
 # ...
 my_token.costume.animate()
@@ -16,10 +16,10 @@ my_token.costume.animate()
 
 animate.
 
-With the parameter `loop` you can specify whether the animation should be
+With the parameter `loop` you can specify if the animation should be
 should be repeated:
 
-`` python
+``` python
 robo.costume.animate(loop = True)
 ```
 

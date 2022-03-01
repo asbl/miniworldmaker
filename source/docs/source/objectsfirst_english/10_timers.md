@@ -5,11 +5,11 @@ e.g. want an action to occur not immediately, but with a delay of some
 milliseconds or seconds delay, you can use a timer.
 timer.
 
-``{note}
+``` {note}
 Python also provides in the `time` library the function `time.sleep(...)`.
 in the library.
 
-However, you should **not** use this function, because the global
+However, you should **not** use this function, since the global
 delay can lead to page effects.
 ```
 ## Start a timer
@@ -36,7 +36,7 @@ There are different types of timers:
 The ActionTimer calls a method with arguments after a specified time and then removes itself.
 arguments and then removes itself.
 
-``python
+``` python
 miniworldmaker.ActionTimer(24, player.move, None)
 ```
 
@@ -49,12 +49,12 @@ this loop is to end, the timer must be deleted:
 - How to create a loop action timer. The first parameter specifies
     in which intervals the loop should be repeated.
 
-    ``python
+    ``` python
     loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move)
     ```
 
 - This is how you can remove a LoopActionTimer.
 
-    ```python
+    ``` python
     loopactiontimer.unregister()
     ```

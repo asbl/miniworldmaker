@@ -20,7 +20,7 @@ Zeichne ein Haus mit Grundformen:
 
   from miniworldmaker import *
 
-  board = PixelBoard()
+  board = Board()
   board.size = (120,210)
   Rectangle((10,100), 100, 100)
   Triangle((10,100), (60, 50), (110, 100))
@@ -50,7 +50,8 @@ Zeichne ein Gesicht mit Grundformen
 
   from miniworldmaker import *
   import random
-  board = PixelBoard((100,100))
+  board = Board((100,100))
+  board.size = (100, 100)
   Circle.from_center((50,50),50)
   Arc.from_center((50,80),40,20, 180, 360)
   Circle.from_center((30,30),10)

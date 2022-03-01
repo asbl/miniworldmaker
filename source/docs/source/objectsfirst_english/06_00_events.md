@@ -14,7 +14,7 @@ be registered.
 
 This works in the same way as the `act()` method:
 
-``python
+``` python
 @player.register
 def on_key_down_w(self):
     self.move()
@@ -40,7 +40,7 @@ There are two functions `on_key_down(self, key)` and
 * The function `on_key_pressed`, on the other hand, is called again and again,
   as long as the key is pressed.
 
-``{note}
+``` {note}
 Both functions exist in the variant `on_key_down_b(self)`,
 `on_key_pressed_c(self)` to query the pressing of a concrete key, and
 as well as in the variant `on_key_down(self, key)`.
@@ -49,7 +49,7 @@ as well as in the variant `on_key_down(self, key)`.
 
 ### Example
 
-``python
+``` python
 import miniworldmaker
 
 board = miniworldmaker.TiledBoard()
@@ -91,7 +91,7 @@ With `send message(self, message)` you can send a global message to
 
 Example:
 
-``python
+``` python
 @player.register
 def on_message(self, message):
     if message == "Example message":

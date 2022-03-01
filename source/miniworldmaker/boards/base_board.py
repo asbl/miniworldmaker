@@ -545,36 +545,6 @@ class BaseBoard(container.Container):
         """
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
 
-    def get_tokens_at_rect(self, rect: pygame.Rect) -> Union[token_module.Token, list]:
-        """
-        Gets all Tokens which are colliding with a given rect.
-
-        Args:
-            rect: The rect
-            singleitem: Should the method return a single token (faster) or all tokens at rect (slower)
-            exclude: Exclude a token
-            token_type: Filter return values by token type
-
-        Returns: A single token or a list of tokens at rect
-
-        """
-        pass
-
-        def get_single_token_at_rect(self, rect: pygame.Rect) -> Union[token_module.Token, list]:
-            """
-            Gets the first Token which is colliding with a given rect.
-
-            Args:
-                rect: The rect
-                singleitem: Should the method return a single token (faster) or all tokens at rect (slower)
-                exclude: Exclude a token
-                token_type: Filter return values by token type
-
-            Returns: A single token or a list of tokens at rect
-
-            """
-        pass
-
     @property
     def image(self) -> pygame.Surface:
         """
@@ -607,7 +577,7 @@ class BaseBoard(container.Container):
         tokens = self.get_tokens_at_rect(board_rect)
         for token in tokens:
             if token is not None:
-                [token.remove() for token in Board.filter_actor_list(tokens, token_class)]
+                [token.remove() for token in BaseBoard.filter_actor_list(tokens, token_class)]
 
     def start(self):
         self.is_running = True
@@ -844,29 +814,6 @@ class BaseBoard(container.Container):
 
         """
         pass
-
-    def get_tokens_at_rect(self, rect: pygame.Rect) -> list:
-        """Returns all tokens that collide with a rectangle.
-
-        Args:
-            rect: A rectangle
-            token_type: The class of the tokens which should be added
-            singleitem: Should the return type be a single token (faster) or a list of tokens(slower)
-            exclude: A token which should not be returned e.g. the actor itself
-
-        Returns:
-            If singleitem = True, the method returns all tokens colliding with the rect of the given token_type as list.
-            If singleitem = False, the method returns the first token.
-
-        """
-        return [token for token in self.tokens if token.rect.colliderect(rect)]
-
-    def get_single_token_at_rect(self, rect: pygame.Rect) -> token_module.Token:
-        # Get first colliding token
-        for token in self.tokens:
-            if token.rect.colliderect(rect):
-                return token
-        return []
 
     def is_on_board(self) -> bool:
         self.is_position_on_board(self.position)
