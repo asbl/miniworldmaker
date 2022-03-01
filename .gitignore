@@ -50,6 +50,12 @@ coverage.xml
 docs/_build/
 source/docs/build/
 source/docs/build/*
+source/docs/__pycache__/
+git rm --cached source/docs/source/_build/
+git rm --cached source/docs/source/_build/*
+source/miniworldmaker/__pycache__/
+source/miniworldmaker/__pycache__/*
+source/docs/__pycache__/*
 source/docs/.vscode/
 source/docs/.vscode/*
 source/miniworldmaker/.vscode/
