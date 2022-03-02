@@ -5,6 +5,10 @@ __pycache__/
 # C extensions
 *.so
 
+# editor
+.vscode
+*/.vscode
+
 # Distribution / packaging
 bin/
 build/
@@ -70,6 +74,7 @@ source/docs/scripts/*
 source/scripts
 source/docs/scripts/
 source/docs/deepl_key.py
+source/miniworldmaker.egg-info
 
 # custom
 source/miniworldmaker/__pycache__/

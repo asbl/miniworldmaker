@@ -217,3 +217,53 @@ board.run()
   <source src="../_static/raindrops.webm" type="video/webm">
   Your browser does not support the video tag.
 </video> 
+
+## Rückgabewerte
+
+Die bisherigen Funktionen haben ein Unterprogramm ausgeführt und dabei ggf. Informationen über Parameter erhalten.
+
+Mit Hilfe von Rückgabewerten kannst du auch Informationen zurückgeben.
+
+Im einfachen Fall sieht dies so aus:
+
+``` python
+def is_even(x):
+    if x % 2 == 0:
+        return True
+    else:
+        return False
+
+print(is_even(4))
+```
+
+In der letzten Zeile passiert folgendes: Bevor die Funktion `print` ausgeführt werden kann, muss die 
+Funktion `is_even` ausgewertet werden. Das Ergebnis der Funktion (Hier: `True`) wird dann 
+anstelle des Funktionsaufrufs eingesetzt.
+
+Das folgende Programm erstelllt zufällig Kreise. Wenn diese links von der Mitte sind, 
+werden sie rot eingefärbt, ansonsten weiß.
+
+``` python 
+from miniworldmaker import *
+import random
+
+board = Board(400, 50)
+        
+
+def is_left(obj):
+    if obj.x <= 200:
+        return True
+    else:
+        return False
+
+for i in range(20):
+    x = random.randint(0,400)
+    y = 25
+    c = Circle((x, y), 10)
+    if is_left(c):
+        c.color = (255,0,0)
+
+board.run()
+```
+
+<img src="../_images/processing/is_left.png" width=260px alt="is left"/>

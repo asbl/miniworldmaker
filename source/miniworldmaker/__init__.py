@@ -22,6 +22,9 @@ from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.tools.timer import timer
 from miniworldmaker.tools.timer import loop
 
+import nest_asyncio
+nest_asyncio.apply()
+
 # auto import all classes, so that every class is imported
 
 from pkgutil import extend_path

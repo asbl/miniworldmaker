@@ -1,4 +1,3 @@
-import nest_asyncio
 import asyncio
 import pygame
 import inspect
@@ -112,7 +111,6 @@ class AppearanceBase(metaclass=MetaAppearance):
     def update(self):
         loop = asyncio.get_event_loop()
         task = loop.create_task(self.animation_manager.update(self))
-        nest_asyncio.apply()
         loop.run_until_complete(task)
         return 1
 
