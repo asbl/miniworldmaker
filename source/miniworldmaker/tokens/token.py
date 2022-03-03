@@ -14,8 +14,8 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
 )
 from miniworldmaker.tools import token_inspection
 from miniworldmaker.dialogs import ask
+from miniworldmaker.tools import color
 import miniworldmaker
-
 
 
 class Meta(type):
@@ -628,6 +628,15 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                             self.move()
         """
         return self.position_manager.move(distance)
+
+    def move_vector(self, vector):
+        """Moves actor in direction defined by the vector
+
+        Returns:
+            The moved token
+
+        """
+        return self.position_manager.move_vector(vector)
 
     def move_up(self, distance: int = 1):
         return self.position_manager.move_in_direction("up", distance)
@@ -1260,6 +1269,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @color.setter
     def color(self, value):
+        value = color.Color.create(value).get()
         self._fill_color = value
         self.costume_manager.reload_costume()
 

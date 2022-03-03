@@ -5,7 +5,7 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
-
+from miniworldmaker.board_positions import board_vector
 
 class TokenPositionManager:
     def __init__(self, token, position):
@@ -23,6 +23,11 @@ class TokenPositionManager:
             self._position = position
         else:
             self._position = (0, 0)
+
+    def move_vector(self, vector):
+        position = self.get_position()
+        position = vector.add_to_position(position)
+        self.set_position(position)
 
     @property
     def rect(self):

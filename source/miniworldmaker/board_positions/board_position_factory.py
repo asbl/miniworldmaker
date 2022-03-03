@@ -1,12 +1,16 @@
 from miniworldmaker.board_positions import board_position
+from miniworldmaker.app.app import App
 import pygame
 
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
 
 class BoardPositionFactory:
 
-    def __init__(self, board):
-        self.board = board
+    def __init__(self, board = None):
+        if board == None:
+            self.board = App.board
+        else:
+            self.board = board
 
     def from_pixel(self, position: tuple):
         board = self.board
