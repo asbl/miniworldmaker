@@ -1,5 +1,5 @@
-Boards: BaseBoard
-********************
+Boards
+******
 
 BaseBoard is the base class for boards. If you use boards in your project, you should create instances of `Board` or `TiledBoard`
 
