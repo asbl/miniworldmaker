@@ -29,7 +29,7 @@ c4.color = (255, 0, 0)
 board.run()
 ```
 
-<img src="../_images/processing/4red_circles.png" width=260px alt="4 red circles"/>
+![4 red circles](../_images/processing/4red_circles.png)
 
 Das Programm ist korrekt. Wenn nun aber alle vier Kreise grün sein sollen, dann musst du das Programm an vier
 Stellen verändern.
@@ -266,4 +266,4 @@ for i in range(20):
 board.run()
 ```
 
-<img src="../_images/processing/is_left.png" width=260px alt="is left"/>
+![is left](../_images/processing/is_left.png)

@@ -1,0 +1,27 @@
+img {
+  border: 1px solid lightgrey;
+  border-radius: 15px;
+  width: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  max-width: 100%;
+}
+
+img.autowidth {
+  width: auto;  
+}
+
+video {
+  border: 1px solid lightgrey;
+  border-radius: 15px;
+  width: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  max-width: 100%;
+}

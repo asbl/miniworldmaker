@@ -3,7 +3,6 @@ MANIFEST.in
 README.md
 setup.py
 miniworldmaker/__init__.py
-miniworldmaker/config.py
 miniworldmaker.egg-info/PKG-INFO
 miniworldmaker.egg-info/SOURCES.txt
 miniworldmaker.egg-info/dependency_links.txt
@@ -33,6 +32,7 @@ miniworldmaker/board_positions/__init__.py
 miniworldmaker/board_positions/board_position.py
 miniworldmaker/board_positions/board_position_factory.py
 miniworldmaker/board_positions/board_rect_factory.py
+miniworldmaker/board_positions/board_vector.py
 miniworldmaker/boards/__init__.py
 miniworldmaker/boards/base_board.py
 miniworldmaker/boards/board.py

@@ -1300,8 +1300,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @border_color.setter
     def border_color(self, value):
-        self._stroke_color = value
-        self.costume_manager.reload_costume()
+        if value != None:
+            self._stroke_color = value
+            self.costume_manager.reload_costume()
+        else:
+            self.border = None
 
     @property
     def fill(self):

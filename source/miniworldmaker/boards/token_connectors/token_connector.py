@@ -22,6 +22,7 @@ class TokenConnector:
         if not self.token.static:
             self.token.board.event_handler.register_events_for_token(self.token)
         self.token.color = self.board.fill_color
+        self.token.border_color = self.board.stroke_color
 
     def add_position_manager_to_token(self, token, position):
         """

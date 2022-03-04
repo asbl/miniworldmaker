@@ -5,8 +5,7 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
-from miniworldmaker.board_positions import board_vector
-
+from miniworldmaker.board_positions.board_vector import Vector
 class TokenPositionManager:
     def __init__(self, token, position):
         self.token = token
@@ -58,7 +57,10 @@ class TokenPositionManager:
         self.set_direction(value)
 
     def get_direction(self):
-        return (self._direction + 180) % 360 - 180
+        direction = (self._direction + 180) % 360 - 180
+        if direction < 0:
+            return 360 - abs(direction)
+        return direction
 
     def set_direction(self, value):
         self.last_direction = self.direction
@@ -207,17 +209,20 @@ class TokenPositionManager:
         """
         if value == "top" or value == "up":
             value = 0
-        if value == "left":
+        elif value == "left":
             value = 270
-        if value == "right":
+        elif value == "right":
             value = 90
-        if value == "down":
+        elif value == "down":
             value = 180
-        if value == "forward":
+        elif value == "forward":
             value = self.direction
-        if value == "back":
+        elif value == "back":
             value = 360 - self.direction
-        value = value % 360
+        elif isinstance(value,Vector):
+            value = value.to_direction() % 360
+        else:
+            value = value % 360
         return value
 
     @staticmethod

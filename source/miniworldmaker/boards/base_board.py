@@ -374,6 +374,11 @@ class BaseBoard(container.Container):
     def fill_color(self, value):
         self._fill_color = color.Color(value).get()
 
+    def fill(self, value):
+        """Set default fill color for borders and lines
+        """
+        self._fill_color = color.Color(value).get()
+
     @property
     def stroke_color(self):
         """Set default stroke color for borders and lines. (equivalent to border-color)
@@ -384,11 +389,16 @@ class BaseBoard(container.Container):
     def stroke_color(self, value):
         self._stroke_color = color.Color(value).get()
 
+    def stroke(self, value):
+        """Set default stroke color for borders and lines. (equivalent to border-color)
+        """
+        self._stroke_color = color.Color(value).get()
+
     @property
     def border_color(self):
         """Set default border color for borders and lines.
         """
-        return self.border_color
+        return self.stroke_color
 
     @stroke_color.setter
     def border_color(self, value):
@@ -482,6 +492,14 @@ class BaseBoard(container.Container):
         Returns:
             The new created background.
         """
+        self.view_handler.add_background(source)
+
+    @property
+    def background(self):
+        return self.view_handler.background
+
+    @background.setter
+    def background(self, source):
         self.view_handler.add_background(source)
 
     def add_to_board(self, token, position: tuple):
@@ -730,7 +748,19 @@ class BaseBoard(container.Container):
                         self.point_towards_position(mouse)
         """
         return self.position_handler.mouse_position
-        
+
+    def get_mouse_x(self):
+        if self.position_handler.mouse_position:
+            return self.position_handler.mouse_position[0]
+        else:
+            return 0
+
+    def get_mouse_y(self):
+        if self.position_handler.mouse_position:
+            return self.position_handler.mouse_position[1]
+        else:
+            return 0
+
     def get_prev_mouse_position(self):
         return self.position_handler.prev_mouse_position
 
