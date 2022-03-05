@@ -16,14 +16,12 @@ class TiledBoard(miniworldmaker.Board):
             columns: The number of columns
             rows: The number of rows
             tile_size: The size of a tile
-            tile_margin: The margin between tiles
         """
         self.default_token_speed: int = 1
         if columns  > 1000 or rows > 1000:
             raise TiledBoardTooBigError(columns, rows, 40)
         super().__init__(columns=columns, rows=rows)
         self.tile_size = 40
-        self.tile_margin = 0
         self.speed = 30
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens: set = set()  # Set with all dynamic actors

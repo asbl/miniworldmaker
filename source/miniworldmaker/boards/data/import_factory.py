@@ -37,11 +37,10 @@ class ImportBoardFromDB(ImportFactory, ImportDBFactory, ImportBoardFactory):
         Loads a sqlite db file.
         """
         data = self.db.select_single_row(
-            "SELECT board_class, width, height, tile_size, tile_margin FROM board")
+            "SELECT board_class, width, height, tile_size FROM board")
         self.board.columns = int(data[1])
         self.board.rows = int(data[2])
         self.board.tile_size = int(data[3])
-        self.board.tile_margin = int(data[4])
         self.board._loaded_from_db = True
         self.board.switch_board(self.board)
         return self.board

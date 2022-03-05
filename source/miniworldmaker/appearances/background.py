@@ -20,7 +20,7 @@ class Background(appearance.Appearance):
         self.parent = board  #: The parent of a Background is the associated board.
         self.board = board
         # Register image actions which you can be triggered
-        self._grid_overlay = False
+        self._grid = False
         self._is_scaled_to_tile = False
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
         self.is_scaled = True
@@ -30,65 +30,29 @@ class Background(appearance.Appearance):
         super().add_image(path)
         self.parent.app.window.display_update()
 
-    def next_image(self):
-        """Switches to the next image of the appearance.
-        """
-        super().next_image()
-        self.parent.window.repaint_areas.append(self.image.get_rect())
-        self.parent.window.window_surface.blit(self.image, (0, 0))
+    def show_grid(self):
+        self.grid = True
 
     @property
-    def grid_overlay(self) -> Union[bool, tuple] :
+    def grid(self) -> Union[bool, tuple] :
         """If not False, a grid overlay is drawn over the background image.
 
         Examples:
-            >>> a_token.background.grid_overlay = (255, 0, 0, 0)
-            Draws a red (255, 0, 0, 0) background overlay
-
-            >>> a_token.background.grid_overlay = False
-            Disables background grid_overlay
-
-            >>> a_token.background.grid_overlay = ()
-            Disables background grid_overlay. Same as a_token.background.grid_overlay = False
 
         """
-        return self._grid_overlay
+        return self._grid
 
-    @grid_overlay.setter
-    def grid_overlay(self, color=(255, 255, 255, 255)):
+    @grid.setter
+    def grid(self, color=(255, 255, 255, 255)):
         if color is True:
-            self._grid_overlay = True
+            self._grid = True
             color = (200, 80, 60)
         if color is not False:
-            self._grid_overlay = True
+            self._grid = True
             self.color = color
-            self.reload_transformations_after("grid_overlay")
+            self.reload_transformations_after("grid")
         else:
-            self._grid_overlay = False
-            self.reload_transformations_after("grid_overlay")
-
-    @property
-    def is_scaled_to_tile(self) -> bool:
-        """Scales the image to Tile_size.
-
-        The method is needed if you want to texture the background on a Tiled_Board
-        and want the texture to fill one tile at a time.
-
-        Examples:
-            Defines a textured board
-
-            >>> class MyBoard(TiledBoard):
-            >>>    def on_setup(self):
-            >>>         self.add_image(path="images/stone.png")
-            >>>         self.background.is_textured = True
-            >>>         self.background.is_scaled_to_tile = True
-            >>>         self.player = Player(position=(3, 4))
-        """
-        return self._is_scaled_to_tile
-
-    @is_scaled_to_tile.setter
-    def is_scaled_to_tile(self, value):
-        self._is_scaled_to_tile = value
-        self.reload_transformations_after("scale_to_tile")
-
+            self._grid = False
+            self.reload_transformations_after("grid")
+        self.parent.view_handler.full_repaint()
 

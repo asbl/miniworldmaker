@@ -133,7 +133,6 @@ class BaseBoard(container.Container):
         columns: Union[int, Tuple[int]] = 40,
         rows: int = 40,
         tile_size: int = 1,
-        tile_margin: int = 0,
     ):
         if self.__class__ == BaseBoard:
             raise BoardInstanceError()
@@ -144,7 +143,7 @@ class BaseBoard(container.Container):
                 rows = size[1]
             else:
                 raise BoardArgumentsError(columns, rows)
-        self._columns, self._rows, self._tile_size, self._tile_margin = columns, rows, tile_size, tile_margin
+        self._columns, self._rows, self._tile_size = columns, rows, tile_size
         self._tokens = pygame.sprite.LayeredDirty()
         self.event_handler: event_handler.BoardEventHandler = event_handler.BoardEventHandler(self)
         super().__init__()
@@ -222,7 +221,7 @@ class BaseBoard(container.Container):
         The width of the container
         """
         if self.view_handler.repaint_all:
-            self._container_width = self.columns * self.tile_size + (self.columns + 1) * self.tile_margin
+            self._container_width = self.columns * self.tile_size 
         return self._container_width
 
     @property
@@ -231,7 +230,7 @@ class BaseBoard(container.Container):
         The height of the container
         """
         if self.view_handler.repaint_all:
-            self._container_height = self.rows * self.tile_size + (self.rows + 1) * self.tile_margin
+            self._container_height = self.rows * self.tile_size
         return self._container_height
 
     @property
@@ -418,19 +417,6 @@ class BaseBoard(container.Container):
         self.view_handler.full_repaint()
 
     @property
-    def tile_margin(self) -> int:
-        """
-        The number of columns
-        """
-        return self._tile_margin
-
-    @tile_margin.setter
-    def tile_margin(self, value: int):
-        self._tile_margin = value
-        self.app.window.dirty = 1
-        self.view_handler.full_repaint()
-
-    @property
     def tokens(self) -> pygame.sprite.LayeredDirty:
         """
         A list of all tokens registered to the grid.
@@ -492,7 +478,7 @@ class BaseBoard(container.Container):
         Returns:
             The new created background.
         """
-        self.view_handler.add_background(source)
+        return self.view_handler.add_background(source)
 
     @property
     def background(self):

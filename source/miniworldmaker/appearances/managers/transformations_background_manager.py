@@ -5,26 +5,19 @@ from miniworldmaker.appearances.managers import transformations_manager
 class TransformationsBackgroundManager(transformations_manager.TransformationsManager):
     def __init__(self, appearance):
         super().__init__(appearance)
-        self.transformations_pipeline = [
-            ("scale_to_tile", self.transformation_scale_to_tile, "is_scaled_to_tile")
-        ] + self.transformations_pipeline
-        self.transformations_pipeline.append(("grid_overlay", self.transformation_show_grid, "grid_overlay"))
+        self.transformations_pipeline.append(("grid", self.transformation_grid, "grid"))
 
-    def transformation_show_grid(self, image: pygame.Surface, appearance) -> pygame.Surface:
+    def transformation_grid(self, image: pygame.Surface, appearance) -> pygame.Surface:
         parent = appearance.parent
+        print("show grid", appearance.color, parent.width, parent.height)
         i = 0
+        j = 0
+        print(image)
         while i <= parent.width:
-            pygame.draw.rect(image, self.color, [i, 0, parent.tile_margin, parent.height])
-            i += parent.tile_size + parent.tile_margin
-        i = 0
-        while i <= parent.height:
-            pygame.draw.rect(image, self.color, [0, i, parent.width, parent.tile_margin])
-            i += parent.tile_size + parent.tile_margin
+            pygame.draw.line(image, appearance.color,(0,i),(parent.width, i), 1)
+            i += parent.tile_size
+        while j <= parent.height:
+                pygame.draw.line(image, appearance.color,(j,0),(j, parent.height), 1)
+                j += parent.tile_size 
+            
         return image
-
-    def transformation_scale_to_tile(self, image: pygame.Surface, appearance) -> pygame.Surface:
-        parent = appearance.parent
-        image = pygame.transform.scale(image, (parent.tile_size, parent.tile_size))
-        with_margin = pygame.Surface((parent.tile_size + parent.tile_margin, parent.tile_size + parent.tile_margin))
-        with_margin.blit(image, (parent.tile_margin, parent.tile_margin))
-        return with_margin

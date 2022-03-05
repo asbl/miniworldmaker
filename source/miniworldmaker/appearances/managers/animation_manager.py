@@ -1,5 +1,4 @@
 import pygame
-
 class AnimationManager:
     """Handles loading and caching of images.
     """
@@ -37,6 +36,10 @@ class AnimationManager:
                 self.image_index = 0
             appearance.parent.dirty = 1
             appearance.reload_transformations_after("all")
+            if appearance.__class__.__name__ == "Background":
+                appearance.parent.app.window.surface.blit(appearance.image, (0, 0))
+                appearance.parent.app.window.add_display_to_repaint_areas()
+                appearance.parent.view_handler.full_repaint()
 
     async def first_image(self):
         """Switches to the first image of the appearance."""

@@ -50,7 +50,6 @@ class ExportBoardToDBFactory(ExportFactory, ExportDBFactory, ExportBoardFactory)
                         `tile_size`		INTEGER,
                         `height`		INTEGER,
                         `width`		    INTEGER,
-                        `tile_margin`	INTEGER
                         );
                         """
         cur = self.db.cursor
@@ -59,9 +58,7 @@ class ExportBoardToDBFactory(ExportFactory, ExportDBFactory, ExportBoardFactory)
         board_dict = {"board_class": self.board.__class__.__name__,
                       "tile_size": self.board.tile_size,
                       "height": self.board.rows,
-                      "width": self.board.columns,
-                      "tile_margin": self.board.tile_margin,
-                      
+                      "width": self.board.columns,                      
                       }
         self.db.insert(table="board", row=board_dict)
         self.db.commit()

@@ -18,6 +18,7 @@ class Appearance(appearance_base.AppearanceBase):
         self._is_flipped = False
         self._is_animated = False
         self._is_textured = False
+        self.texture_size = (0, 0)
         self._is_upscaled = False
         self._is_scaled = False
         self._is_scaled_to_width = False
@@ -58,14 +59,37 @@ class Appearance(appearance_base.AppearanceBase):
         bool: If True, the image is tiled over the background.
 
         Examples:
-            Defines a textured board
+            
+            Texture the board with the given image:
+            
+            .. code-block:: python
 
-            >>> class MyBoard(TiledBoard):
-            >>>    def on_setup(self):
-            >>>         self.add_image(path="images/stone.png")
-            >>>         self.background.is_textured = True
-            >>>         self.background.is_scaled_to_tile = True
-            >>>         self.player = Player(position=(3, 4))
+                from miniworldmaker import *
+
+                board = Board()
+                background = board.add_background("images/stone.png")
+                background.is_textured = True
+                board.run()
+
+            .. image:: ../_images/is_textured.png
+                :alt: Textured image
+
+            Set texture soize
+            
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board()
+                background = board.add_background("images/stone.png")
+                background.is_textured = True
+                background.texture_size = (15,15)
+                board.run()
+
+            .. image:: ../_images/is_textured1.png
+                :alt: Textured image
+
+
         """
         return self._is_textured
 
@@ -287,16 +311,16 @@ class Appearance(appearance_base.AppearanceBase):
 
         Examples:
 
-        .. code-block:: python
+            .. code-block:: python
 
-            from miniworldmaker import *
+                from miniworldmaker import *
 
-            board = Board()
-            token = Token()
-            costume = token.add_costume("images/1.png")
-            costume.add_image("images/2.png")
+                board = Board()
+                token = Token()
+                costume = token.add_costume("images/1.png")
+                costume.add_image("images/2.png")
 
-            board.run()
+                board.run()
 
         """
         super().add_image(path)
@@ -395,3 +419,30 @@ class Appearance(appearance_base.AppearanceBase):
     def reset(self):
         self.animation_manager.set_image_index(0)
         self.animation_manager.end_animation(self)
+
+
+    def set_image(self, index: int) -> bool:
+        """Sets the displayed image of costume/background to selected index
+
+        Args:
+            index (int): The image index
+        
+        Returns:
+            True, if image index exists
+
+        Examples:
+        
+            Add two images two background and switch to image 2
+            
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board()
+                background = board.add_background("images/1.png")
+                background.add_image("images/2.png")
+                background.set_image(1)
+                board.run()
+
+        """
+        return super().set_image(index)

@@ -46,17 +46,31 @@ class TransformationsManager:
                     if image.get_width() != 0 and image.get_height!=0:
                         image = transformation[1](image, appearance)
                         self.cached_images[transformation[0]] = image
-        #appearance.parent.dirty = 1
         return image
 
     def transformation_texture(self, image, appearance):
         background = pygame.Surface((appearance.parent.width, appearance.parent.height))
+        if appearance.texture_size[0] != 0: 
+            texture_width = appearance.texture_size[0]
+        else:
+            if appearance.parent.tile_size == 1:
+                texture_width = image.get_width()
+            else:
+                texture_width = appearance.parent.tile_size
+        if appearance.texture_size[1] != 0: 
+            texture_height = appearance.texture_size[1]
+        else:
+            if appearance.parent.tile_size == 1:
+                texture_height = image.get_width()
+            else:
+                texture_height = appearance.parent.tile_size
+        image = pygame.transform.scale(image, (texture_width, texture_height))
         background.fill((255, 255, 255))
         i, j, width, height = 0, 0, 0, 0
         while width < appearance.parent.width:
             while height < appearance.parent.height:
-                width = i * image.get_width()
-                height = j * image.get_height()
+                width = i * texture_width
+                height = j * texture_height
                 j += 1
                 background.blit(image, (width, height))
             j, height = 0, 0

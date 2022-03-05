@@ -31,10 +31,8 @@ class BoardRectFactory:
         else:
             new_rect = pygame.Rect(0, 0, dimensions.width, dimensions.height)
         # board position to pixel
-        pixel_x = position.x * self.board.tile_size + position.x * \
-            self.board.tile_margin + self.board.tile_margin
-        pixel_y = position.y * self.board.tile_size + position.y * \
-            self.board.tile_margin + self.board.tile_margin
+        pixel_x = position.x * self.board.tile_size
+        pixel_y = position.y * self.board.tile_size
         if position is not None:
             if dimensions is not None:
                 new_rect.topleft = dimensions.topleft

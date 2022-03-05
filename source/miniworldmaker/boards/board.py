@@ -17,7 +17,6 @@ class Board(miniworldmaker.BaseBoard):
         rows: int = 400,
     ):
         self._tile_size = 1
-        self._tile_margin = 0
         super().__init__(columns, rows)
 
     def get_token_connector(self, token):
