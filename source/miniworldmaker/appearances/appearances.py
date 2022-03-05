@@ -88,9 +88,7 @@ class Appearances:
 
 
 class Costumes(Appearances):
-    def set_flip_vertical(self, value):
-        self._set_all("flip_vertical", value)
-
+    pass
 
 class Backgrounds(Appearances):
     pass

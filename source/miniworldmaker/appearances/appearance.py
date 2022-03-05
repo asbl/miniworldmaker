@@ -24,7 +24,6 @@ class Appearance(appearance_base.AppearanceBase):
         self._is_scaled_to_width = False
         self._is_scaled_to_height = False
         self._is_rotatable = False
-        self._flip_vertical = False
         self._orientation = False
         self.animation_speed = 100  #: The animation speed for animations
         self.loop = False
@@ -138,30 +137,6 @@ class Appearance(appearance_base.AppearanceBase):
     @is_rotatable.setter
     def is_rotatable(self, value):
         self._is_rotatable = value
-        self.dirty = 1
-
-    @property
-    def flip_vertical(self):
-        """Flips image vertical
-
-        Returns:
-            If True, the image will be flipped l/r (e.g. for fighters in a street-fighter like game.
-
-        Examples:
-
-            >>> class Player(Token):
-            >>>    def on_setup(self):
-            >>>         self.add_image("background_image.jpg")
-            >>>         self.costume.flip_vertical = True
-
-        """
-        return self._flip_vertical
-
-    @flip_vertical.setter
-    def flip_vertical(self, value):
-        self._flip_vertical = value
-        if self._flip_vertical is True:
-            self.is_rotatable = False
         self.dirty = 1
 
     @property
