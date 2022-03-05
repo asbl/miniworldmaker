@@ -9,10 +9,37 @@ class Background(appearance.Appearance):
     """
     The class describes the background of a board.
 
-    Each board has one or more backgrounds that can be switched between.
-    In addition, each background also has several pictures between which you can switch.
+    A ``background`` can be an image or an color:
 
-    You can scale a background or tile it like a texture.
+    Each board has one or more backgrounds that can be switched between.
+    In addition, each background also has several pictures (or colors) between which you can switch.
+
+    Examples:
+
+        Add an image as background
+
+        .. code-block:: python
+
+            board = Board()
+            Board.add_background(images/my_image.png)
+        
+        Add a color as background:
+
+        .. code-block:: python
+
+            board = Board()
+            Board.add_background((255, 0,0, 0))
+
+        ..or alternative way: Create background with property:
+
+        .. code-block:: python
+
+            from miniworldmaker import *
+
+            board = Board()
+            board.background =(255,0,0)
+            board.run()
+
     """
 
     def __init__(self, board):
@@ -35,9 +62,31 @@ class Background(appearance.Appearance):
 
     @property
     def grid(self) -> Union[bool, tuple] :
-        """If not False, a grid overlay is drawn over the background image.
+        """Shows a grid-overlay
+
+        grid can be `True`, `False` or a color-tuple
 
         Examples:
+
+            Show grid:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = TiledBoard(4,4)
+                board.tile_margin = 10
+                background = board.add_background("images/stone.png")
+                background.is_textured = True
+                token = Token()
+                @token.register
+                def on_key_down(self, key):
+                    self.move_right()
+                background.grid = True
+                board.run()
+
+            .. image:: ../_images/grid.png
+                :alt: Textured image
 
         """
         return self._grid

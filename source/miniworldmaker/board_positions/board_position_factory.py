@@ -14,8 +14,8 @@ class BoardPositionFactory:
 
     def from_pixel(self, position: tuple):
         board = self.board
-        column = (position[0] - board.tile_margin) // (board.tile_size + board.tile_margin)
-        row = (position[1] - board.tile_margin) // (board.tile_size + board.tile_margin)
+        column = (position[0]) // (board.tile_size)
+        row = (position[1]) // (board.tile_size)
         return column, row
 
     def from_float(self, float_position: tuple):
