@@ -99,16 +99,25 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def is_upscaled(self):
-        """
-        bool: If True, the image will be upscaled remaining aspect-ratio.
-
+        """If True, the image will be upscaled remaining aspect-ratio.
+       
         Examples:
 
-            >>> class Player(Token):
-            >>>    def on_setup(self):
-            >>>         self.add_image("background_image.jpg")
-            >>>         self.costume.is_upscaled = True
+            Costume of token t ignoriert aspect-ratio:
 
+            .. code-block:: python
+                
+                from miniworldmaker import *
+
+                board = Board(800,400)
+
+                t = Token((600,50))
+                t.add_costume("images/alien1.png")
+                t.costume.is_scaled = True
+                t.size = (140,80)
+                t.border = 1
+
+                board.run() 
         """
         return self._is_upscaled
 
@@ -119,17 +128,28 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def is_rotatable(self):
-        """Is appearance rotatable?
-
-        Returns:
-            If True, the image will be rotated by parent direction
-
+        """If True, costume will be rotated with token direction
+        
         Examples:
 
-            >>> class Player(Token):
-            >>>    def on_setup(self):
-            >>>         self.add_image("background_image.jpg")
-            >>>         self.costume.is_rotatable = True
+            Costume of token t ignoriert aspect-ratio:
+
+            .. code-block:: python
+                
+                from miniworldmaker import *
+
+                board = Board(800,400)
+
+                t = Token((600,50))
+                t.add_costume("images/alien1.png")
+                t.costume.is_scaled = True
+                t.size = (140,80)
+                t.border = 1
+
+                board.run() 
+
+            .. video:: ../_static/rotatable.webm
+                :autoplay:
 
         """
         return self._is_rotatable
@@ -145,10 +165,38 @@ class Appearance(appearance_base.AppearanceBase):
 
         Examples:
 
-            >>> class Player(Token):
-            >>>    def on_setup(self):
-            >>>         self.add_image("background_image.jpg")
-            >>>         self.costume.orientation = -90
+            Both tokens are moving up. The image of t2 is correctly algined. t1 is looking in the wrong direction.
+
+                .. code-block:: python
+
+                
+
+                    from miniworldmaker import *
+
+                    board = TiledBoard()
+
+                    t1 = Token((4,4))
+                    t1.add_costume("images/player.png")
+                    t1.move()
+
+                    t2 = Token((4,5))
+                    t2.add_costume("images/player.png")
+                    t2.orientation = - 90
+                    t2.move()
+
+                    @t1.register
+                    def act(self):
+                        self.move()
+
+                    @t2.register
+                    def act(self):
+                        self.move()
+                        
+                    board.run()
+
+            .. image:: ../_images/orientation.png
+                :alt: Textured image
+            
         """
         return self._orientation
 
@@ -221,8 +269,8 @@ class Appearance(appearance_base.AppearanceBase):
 
                 board.run() 
 
-                .. image:: ../_images/is_scaled.png
-                    :alt: Textured image
+            .. image:: ../_images/is_scaled.png
+                :alt: Textured image
         """
         return self._is_scaled
 
@@ -266,8 +314,10 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def transparency(self):
-        """
-        Defines a transparency. Coloring is True or false. The color is defined by the attribute appearance.alpha
+        """Defines a transparency. 
+        
+        If ``transparency``is ``True``, the che transparency value
+        is defined by the attribute ``appearance.alpha``
 
         """
         return self._transparency
@@ -279,32 +329,33 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def alpha(self):
-        return self._alpha
-
-    @alpha.setter
-    def alpha(self, value):
         """defines transparency of Token: 0: transparent, 255: visible
         If value < 1, it will be multiplied with 255.
 
         Examples:
+
             .. code-block:: python
                             
-                            from miniworldmaker import *
+                from miniworldmaker import *
 
-                            board = Board(800,400)
+                board = Board(800,400)
 
-                            t = Token((600,250))
-                            t.add_costume("images/alien1.png")
-                            t.costume.alpha = 50
-                            t.width = 40
-                            t.border = 1
+                t = Token((600,250))
+                t.add_costume("images/alien1.png")
+                t.costume.alpha = 50
+                t.width = 40
+                t.border = 1
 
-                            board.run() 
+                board.run() 
 
-                            .. image:: ../_images/alpha.png
-                                :alt: Textured image
+            .. image:: ../_images/alpha.png
+                :alt: Textured image
 
         """
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, value):
         self._alpha = value
         if value > 0 and value < 1:
             value = value * 255
@@ -318,10 +369,12 @@ class Appearance(appearance_base.AppearanceBase):
         """
         Examples:
 
-            >>> explosion = Explosion(position=other.position.up(40).left(40))
-            >>> explosion.costume.is_animated = True
-            >>> explosion.costume.text_position = (100, 100)
-            >>> explosion.costume.text = "100"
+            .. code-block:: python
+        
+                explosion = Explosion(position=other.position.up(40).left(40))
+                explosion.costume.is_animated = True
+                explosion.costume.text_position = (100, 100)
+                explosion.costume.text = "100"
         """
         return self.font_manager.text
 
@@ -382,20 +435,26 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def is_animated(self):
-        """bool: If True, the image will be animated.
-        Depends on appearance.animation_speed
+        """If True, the costume will be animated. 
 
-        Examples:
 
-            >>> class Robot(Token):
-            >>>
-            >>> def __init__(self, position):
-            >>>     super().__init__(position)
-            >>>     self.add_image("images/robot_blue1.png")
-            >>>     self.add_image("images/robot_blue2.png")
-            >>>     self.size = (99, 99)
-            >>>     self.costume.animation_speed = 30
-            >>>     self.costume.is_animated = True
+        .. code-block:: python
+
+            from miniworldmaker import *
+
+            board = Board(80,40)
+
+            robo = Token()
+            robo.costume.add_images(["images/1.png"])
+            robo.costume.add_images(["images/2.png","images/3.png","images/4.png"])
+            robo.costume.animation_speed = 20
+            robo.costume.is_animated = True
+            board.run()
+
+        .. video:: ../_static/animate.webm
+            :autoplay:
+            :width: 300
+            :height: 100
         """
         return self._is_animated
 
@@ -433,6 +492,27 @@ class Appearance(appearance_base.AppearanceBase):
         return self._image.get_at(position.to_int())
 
     def animate(self):
+        """Animates the costume
+
+
+        .. code-block:: python
+
+            from miniworldmaker import *
+
+            board = Board(80,40)
+
+            robo = Token()
+            robo.costume.add_images(["images/1.png"])
+            robo.costume.add_images(["images/2.png","images/3.png","images/4.png"])
+            robo.costume.animation_speed = 20
+            robo.costume.is_animated = True
+            board.run()
+
+        .. video:: ../_static/animate.webm
+            :autoplay:
+            :width: 300
+            :height: 100
+        """
         self.is_animated = True
 
     def after_animation(self):
@@ -441,7 +521,7 @@ class Appearance(appearance_base.AppearanceBase):
 
         Examples:
 
-        The token will be removed after the animation - This can be used for explosions.
+            The token will be removed after the animation - This can be used for explosions.
 
             .. code-block:: python
 

@@ -28,7 +28,7 @@ class Meta(type):
         _token_connector.add_token_to_board(instance._position)
         return instance
 
-
+`
 class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
 
@@ -313,7 +313,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """Directions are handled exactly as in the Scratch programming language,
         see: `Scratch Wiki <https://en.scratch-wiki.info/wiki/Direction_(value)>`_
 
-        The default direction is 0°. All tokens are looking "up"
+        The default direction is ``0°``. All tokens are looking ``"up"``
 
         .. image:: /_images/movement.jpg
             :width: 100%
@@ -321,21 +321,21 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         **Values for Direction**
 
-        * 0° or "up": up
-        * 90° or "right": Move right
-        * -90° or "left": Move left
-        * 180° or "down": Move down
-        * "forward": Current direction
+        * ``0°`` or ``"up"``: up
+        * ``90°`` or ``"right"``: Move right
+        * ``-90°`` or ``"left"``: Move left
+        * ``180°`` or ``"down"``: Move down
+        * ``"forward"``: Current direction
 
         Sets direction of the token.
 
         You can use a integer or a string to describe the direction
 
         Options
-            * 0, "up" - Look up
-            * 90, "right", - Look right
-            * -90, "left", - Look left
-            * -180, 180, "down" - Look down
+            * ``0``, ``"up"`` - Look up
+            * ``90``, ``"right"``, - Look right
+            * ``-90``, ``"left"``, - Look left
+            * ``-180``, ``180``, ``"down"`` - Look down
 
         .. image:: ../_images/direction.png
 
@@ -345,16 +345,16 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
             .. code-block:: python
 
-              def on_key_down(self, keys):
-                  if "W" in keys:
-                      self.direction = "up"
-                  elif "S" in keys:
-                      self.direction = "down"
-                  elif "A" in keys:
-                      self.direction = "left"
-                  elif "D" in keys:
-                      self.direction = "right"
-                  self.move()
+                def on_key_down(self, keys):
+                    if "W" in keys:
+                        self.direction = "up"
+                    elif "S" in keys:
+                        self.direction = "down"
+                    elif "A" in keys:
+                        self.direction = "left"
+                    elif "D" in keys:
+                        self.direction = "right"
+                    self.move()
         """
         return self.position_manager.direction
 
@@ -395,7 +395,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.turn_left(degrees)
 
-    def turn_right(self, degrees: int = 90):
+    def turn_right(self, degrees: float = 90):
         """Turns token by *degrees* degrees right
 
         .. image:: ../_images/turn_right.png
@@ -412,7 +412,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.position_manager.turn_right(degrees)
 
-    def point_in_direction(self, direction: int) -> int:
+    def point_in_direction(self, direction: Union[str, float]) -> float:
         """Token points in given direction.
 
         You can use a integer or a string to describe the direction
@@ -421,10 +421,10 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             The direction as integer or string (see options)
 
         Options
-            * 0, "up" - Look up
-            * 90, "right", - Look right
-            * -90, "left", - Look left
-            * -180, 180, "down" - Look down
+            * ``0``, ``"up"`` - Look up
+            * ``90``, ``"right"``, - Look right
+            * ``-90``, ``"left"``, - Look left
+            * ``-180``, ``180``, ``"down"`` - Look down
 
         .. image:: ../_images/direction.png
 
@@ -446,12 +446,6 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                   self.move()
         """
         return self.position_manager.point_in_direction(direction)
-
-    def delta_x(self, distance: int) -> int:
-        return math.sin(math.radians(self.direction)) * distance
-
-    def delta_y(self, distance: int) -> int:
-        return -math.cos(math.radians(self.direction)) * distance
 
     def point_towards_position(self, destination: int) -> int:
         """
@@ -478,8 +472,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         return self.position_manager.point_towards_position(destination)
 
     def point_towards_token(self, other: "Token") -> int:
-        """def s
-        Token points towards another token.
+        """Token points towards another token.
 
         Args:
             other: The other token
