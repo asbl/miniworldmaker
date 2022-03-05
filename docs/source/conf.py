@@ -40,7 +40,7 @@ release = '2021'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    
+    'sphinxcontrib.video',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',

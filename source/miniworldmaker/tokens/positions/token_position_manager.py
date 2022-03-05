@@ -58,10 +58,8 @@ class TokenPositionManager:
 
     def get_direction(self):
         direction = (self._direction + 180) % 360 - 180
-        if direction < 0:
-            return 360 - abs(direction)
         return direction
-
+        
     def set_direction(self, value):
         self.last_direction = self.direction
         direction = self._value_to_direction(value)

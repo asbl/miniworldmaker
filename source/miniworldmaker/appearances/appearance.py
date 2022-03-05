@@ -284,6 +284,20 @@ class Appearance(appearance_base.AppearanceBase):
 
         Returns:
             Index of the created image.
+
+        Examples:
+
+        .. code-block:: python
+
+            from miniworldmaker import *
+
+            board = Board()
+            token = Token()
+            costume = token.add_costume("images/1.png")
+            costume.add_image("images/2.png")
+
+            board.run()
+
         """
         super().add_image(path)
 
@@ -349,6 +363,25 @@ class Appearance(appearance_base.AppearanceBase):
     def after_animation(self):
         """
         the method is overwritten in subclasses costume and appearance
+
+        Examples:
+
+        The token will be removed after the animation - This can be used for explosions.
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board()
+                token = Token()
+                costume = token.add_costume("images/1.png")
+                costume.add_image("images/2.png")
+                costume.animate()
+                @costume.register
+                def after_animation(self):
+                    self.parent.remove()
+                    
+                board.run()
         """
         pass
 
