@@ -143,7 +143,7 @@ class Vector:
         rot = np.array([[math.cos(theta), -math.sin(theta)], [math.sin(theta), math.cos(theta)]])
         vec = self.vec
         self.vec = np.dot(rot, self.vec)
-        return Vector(self.x, self.y)
+        return self
 
     def to_direction(self) -> float:
         """Returns miniworldmaker direction from vector.
@@ -178,8 +178,8 @@ class Vector:
         l = np.linalg.norm(self.vec)
         if l == 0:
             return 0
-        vec = self.vec / l
-        return Vector(vec[0], vec[1])
+        self.vec = self.vec / l
+        return self
     
     def length(self) -> float:
         """returns length of vector
@@ -217,7 +217,8 @@ class Vector:
         """
         x = - self.x
         y = - self.y
-        return Vector(x, y)
+        self.x, self.y = x, y
+        return self
 
     def multiply(self, other : float) -> typing.Union[float, "Vector"]:
         """product self * other:
@@ -234,24 +235,27 @@ class Vector:
             .. code-block:: python
             
                 a = 5
-                u = Vector(2, 4)
+                u1 = Vector(2, 4)
+                u2 = Vector(2, 4)
                 v = Vector(3, 1)
-                print(u.multiply(a)) # (10, 25)
-                print(u.multiply(v)) # 11               
+                print(u1.multiply(a)) # (10, 25)
+                print(u2.multiply(v)) # 11               
             
             Alternative:
 
             .. code-block:: python
                 
-                print(u * a)  # 25
-                print(u * v) # 25
+                print(u1 * a)  # 25
+                print(u1 * v) # 25
         """
         if type(other) in [int, float]:
             x = self.x * other
             y = self.y * other
+            self.x, self.y = x, y
             return Vector(x, y)
         if type(other) == Vector:
-            return self.dot(other)
+            self.vec =  self.dot(other)
+            return self
         
     def dot(self, other):
         return np.dot(self.vec, other.vec)
@@ -267,8 +271,14 @@ class Vector:
     def __neg__(self):
         return self.neg()
     
-    def __mul__(self, b):
-        return self.multiply(b)
+    def __mul__(self, other):
+        if type(other) in [int, float]:
+            x = self.x * other
+            y = self.y * other
+            return Vector(x, y)
+        if type(other) == Vector:
+            vec = self.dot(other)
+            return Vector(vec[0], vec[1])
 
     
     def __sub__(self, other):
@@ -313,7 +323,8 @@ class Vector:
         if type(other) == Vector:
             x = self.x - other.x
             y = self.y - other.y
-            return Vector(x, y)
+            self.x, self.y = x, y
+            return self
 
     def add(self, other : "Vector") -> "Vector":
         """adds vector `other` to self.
@@ -344,7 +355,8 @@ class Vector:
         if type(other) == Vector:
             x = self.x + other.x
             y = self.y + other.y
-            return Vector(x, y)
+            self.x, self.y = x, y
+            return self
 
     def limit(self, value : float):
         """limits length of vector to value

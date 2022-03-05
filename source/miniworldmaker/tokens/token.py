@@ -28,7 +28,6 @@ class Meta(type):
         _token_connector.add_token_to_board(instance._position)
         return instance
 
-`
 class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
 
