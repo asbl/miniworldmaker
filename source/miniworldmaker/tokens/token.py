@@ -505,25 +505,89 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def width(self):
-        """
-        The width of the token in pixels
+        """The width of the token in pixels. 
+        
+        When the width of a token is changed, the height is scaled proportionally.
+
+        Examples:
+
+            Create a token and scale width/height proportionally:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(800,400)
+
+                def create_token(x, y):
+                t = Token()
+                t.position = (x, y)
+                t.add_costume("images/alien1.png")
+                t.border = 1
+                return t
+
+                t0 = create_token(0,0)
+                t1 = create_token(50,0)
+                t1.height = 400
+                t2 = create_token(300,0)
+                t2.width = 180
+
+                board.run() 
+
+            .. image:: ../_images/widthheight.png
+                :alt: Textured image
         """
         return self.size[0]
 
     @width.setter
     def width(self, value):
-        self.size = (value, self.size[1])
+        old_width = self.size[0]
+        old_height = self.size[1]
+        scale_factor = value/old_width
+        self.size = (value, old_height*scale_factor)
 
     @property
     def height(self):
-        """
-        The height of the token in pixels
+        """The height of the token in pixels. 
+        
+        When the height of a token is changed, the width is scaled proportionally.
+
+        Examples:
+
+            Create a token and scale width/height proportionally:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(800,400)
+
+                def create_token(x, y):
+                t = Token()
+                t.position = (x, y)
+                t.add_costume("images/alien1.png")
+                t.border = 1
+                return t
+
+                t0 = create_token(0,0)
+                t1 = create_token(50,0)
+                t1.height = 400
+                t2 = create_token(300,0)
+                t2.width = 180
+
+                board.run() 
+
+            .. image:: ../_images/widthheight.png
+                :alt: Textured image
         """
         return self.size[1]
 
     @height.setter
     def height(self, value):
-        self.size = (self.size[0], value)
+        old_width = self.size[0]
+        old_height = self.size[1]
+        scale_factor = value/old_height
+        self.size = (old_width * scale_factor, value)
 
 
     @property

@@ -37,6 +37,30 @@ class TokenCostumeManager:
         if hasattr(self.token, "board") and self.token.board:
             self.costume.dirty = 1
 
+    def _create_costume_with_images(self, sources):
+        new_costume = costume.Costume(self.token)
+        for source in sources:
+            new_costume.add_image(source)
+            if not self.token.__class__.class_image:
+                self.__class__.class_image = source
+        return new_costume
+
+    def _create_costume_with_color(self, color):
+        new_costume = costume.Costume(self.token)
+        new_costume.fill_color = color
+        return new_costume
+
+    def _set_first_costume(self, costume):
+        self.costume = costume
+        self.has_costume = True
+        if len(costume.animation_manager.images_list) == 1:
+            image = costume.animation_manager.images_list[0]
+            width = image.get_width()
+            height = image.get_height()
+            scale_factor = width / height
+            if not self.token.board.fixed_size:
+                self.token.size = (self.token.size[0], self.token.size[0] / scale_factor)
+
 
     def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = (255, 255, 0, 0)) -> costume.Costume:
         """
@@ -54,19 +78,14 @@ class TokenCostumeManager:
             self.remove_costume()
         if source is None:
             source = (255, 0, 255, 100)
-        new_costume = costume.Costume(self.token)
         if type(source) == str:
-            new_costume.add_image(source)
-            if not self.token.__class__.class_image:
-                self.__class__.class_image = source
+            new_costume = self._create_costume_with_images([source])
         if type(source) == list:
-            for image in source:
-                new_costume.add_image(image)
+            new_costume = self._create_costume_with_images(source)
         elif type(source) == tuple:
-            new_costume.fill_color = source
+            new_costume = self._create_costume_with_color(source)
         if self.costume is None or not self.has_costume:
-            self.costume = new_costume
-            self.has_costume = True
+            self._set_first_costume(new_costume)
         self.costumes.add(new_costume)
         self.update_shape()
         self.dirty = 1

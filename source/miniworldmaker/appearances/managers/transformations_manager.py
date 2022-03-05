@@ -20,7 +20,6 @@ class TransformationsManager:
             ("write_text", self.transformation_write_text, "text", False),
             ("draw_shapes", self.transformation_draw_shapes, "draw_shapes", False),
             ("rotate", self.transformation_rotate, "is_rotatable", False),
-            ("flip_vertical", self.transformation_flip_vertical, "flip_vertical", False),
         ]
 
     def reset_reload_transformations(self):
@@ -53,14 +52,14 @@ class TransformationsManager:
         if appearance.texture_size[0] != 0: 
             texture_width = appearance.texture_size[0]
         else:
-            if appearance.parent.tile_size == 1:
+            if not hasattr(appearance.parent, "tile_size") or appearance.parent.tile_size == 1:
                 texture_width = image.get_width()
             else:
                 texture_width = appearance.parent.tile_size
         if appearance.texture_size[1] != 0: 
             texture_height = appearance.texture_size[1]
         else:
-            if appearance.parent.tile_size == 1:
+            if not hasattr(appearance.parent, "tile_size") or appearance.parent.tile_size == 1:
                 texture_height = image.get_width()
             else:
                 texture_height = appearance.parent.tile_size
@@ -127,12 +126,6 @@ class TransformationsManager:
         else:
             return image
 
-    def transformation_flip_vertical(self, image: pygame.Surface, appearance) -> pygame.Surface:
-        if appearance.parent.direction < 0:
-            return pygame.transform.flip(image, True, False)
-        else:
-            return image
-
     def transformation_set_orientation(self, image: pygame.Surface, appearance) -> pygame.Surface:
         if appearance.parent.orientation != 0:
             return pygame.transform.rotate(image, -appearance.parent.orientation)
@@ -182,10 +175,11 @@ class TransformationsManager:
             draw_action[0](image, *draw_action[1])
         return image
 
-    def reload_transformations_after(self, transformation_string):
+    def reload_transformations_after(self, transformation_string, appearance):
         reload = False
         for transformation in self.transformations_pipeline:
             if transformation[0] == transformation_string or transformation_string == "all":
                 reload = True  # reload image action
             if reload:
                 self.reload_transformations[transformation[0]] = True  # reload all actions after image action
+        appearance.parent.dirty = 1

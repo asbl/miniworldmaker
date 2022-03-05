@@ -50,10 +50,10 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.initialized = True
 
     def _reload_all(self):
-        self.reload_transformations_after("all")
+        self.reload_transformations_after("all",)
 
     def reload_transformations_after(self, value):
-        self.transformations_manager.reload_transformations_after(value)
+        self.transformations_manager.reload_transformations_after(value, self)
         self.dirty = 1
 
     def draw_shape_append(self, shape, arguments):

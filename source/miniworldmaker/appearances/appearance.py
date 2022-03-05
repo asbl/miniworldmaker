@@ -160,8 +160,38 @@ class Appearance(appearance_base.AppearanceBase):
     @property
     def is_flipped(self):
         """bool: Flips the token by 180° degrees.
+        
+        Examples:
 
-        This can be used e.g. for bouncing actor at border"""
+            Flips actor:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board()
+                token = Token()
+                token.add_costume("images/alien1.png")
+                token.height= 400
+                token.width = 100
+                token.is_rotatable = False
+                @token.register
+                def act(self):
+                    if self.board.frame % 100 == 0:
+                        print("flip")
+                        if self.costume.is_flipped:
+                            self.costume.is_flipped = False
+                        else:
+                            self.costume.is_flipped = True
+                board.run() 
+
+            .. image:: ../_images/flip1.png
+                :alt: Textured image
+
+            .. image:: ../_images/flip2.png
+                :alt: Textured image
+        
+        """
         return self._is_flipped
 
     @is_flipped.setter
