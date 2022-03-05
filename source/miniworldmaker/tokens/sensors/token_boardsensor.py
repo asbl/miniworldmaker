@@ -34,10 +34,10 @@ class TokenBoardSensor():
             return []
         # Filter tokens by classname
         if type(token_filter) == str:
-            self.filter_tokens_by_classname(token_list, token_filter)
+            token_list = self.filter_tokens_by_classname(token_list, token_filter)
         # if
         if token_class_inspection.TokenClassInspection.inherits_from(token_filter.__class__, token.Token):
-            self.filter_tokens_by_instance(token_list, token_filter)
+            token_list = self.filter_tokens_by_instance(token_list, token_filter)
         return token_list
 
     def filter_tokens_by_classname(self, token_list : List["miniworldmaker.Token"], token_filter: str) -> List["miniworldmaker.Token"]:
