@@ -201,7 +201,29 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def is_scaled(self):
-        """bool: Scales the actor to parent-size withour remaining aspect-ratio."""
+        """Scales the actor to parent-size without remaining aspect-ratio.
+
+        Examples:
+
+            Costume of token t ignoriert aspect-ratio:
+
+            .. code-block:: python
+                
+                from miniworldmaker import *
+
+                board = Board(800,400)
+
+                t = Token((600,50))
+                t.add_costume("images/alien1.png")
+                t.costume.is_scaled = True
+                t.size = (140,80)
+                t.border = 1
+
+                board.run() 
+
+                .. image:: ../_images/is_scaled.png
+                    :alt: Textured image
+        """
         return self._is_scaled
 
     @is_scaled.setter
@@ -261,7 +283,31 @@ class Appearance(appearance_base.AppearanceBase):
 
     @alpha.setter
     def alpha(self, value):
+        """defines transparency of Token: 0: transparent, 255: visible
+        If value < 1, it will be multiplied with 255.
+
+        Examples:
+            .. code-block:: python
+                            
+                            from miniworldmaker import *
+
+                            board = Board(800,400)
+
+                            t = Token((600,250))
+                            t.add_costume("images/alien1.png")
+                            t.costume.alpha = 50
+                            t.width = 40
+                            t.border = 1
+
+                            board.run() 
+
+                            .. image:: ../_images/alpha.png
+                                :alt: Textured image
+
+        """
         self._alpha = value
+        if value > 0 and value < 1:
+            value = value * 255
         if value == 255:
             self.transparency = False
         else:
