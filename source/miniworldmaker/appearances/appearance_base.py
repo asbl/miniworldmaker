@@ -109,9 +109,10 @@ class AppearanceBase(metaclass=MetaAppearance):
 
 
     def update(self):
-        loop = asyncio.get_event_loop()
-        task = loop.create_task(self.animation_manager.update(self))
-        loop.run_until_complete(task)
+        #loop = asyncio.get_running_loop()
+        #task = loop.create_task(self.animation_manager.update(self))
+        #loop.run_until_complete(task)
+        asyncio.run(self.animation_manager.update(self))
         return 1
 
     def __str__(self):
