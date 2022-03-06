@@ -60,7 +60,7 @@ class Vector:
 
     @x.setter
     def x(self, value):
-        self.vec[0]= value
+        self.vec = np.array([value, self.vec[1]])
     
     @property
     def y(self):
@@ -70,7 +70,7 @@ class Vector:
 
     @y.setter
     def y(self, value):
-        self.vec[1]= value
+        self.vec = np.array([self.vec[0], value])
     
     @classmethod
     def from_tokens(cls, t1, t2):
@@ -177,7 +177,8 @@ class Vector:
         """
         l = np.linalg.norm(self.vec)
         if l == 0:
-            return 0
+            self.vec = (0, 0)
+            return self
         self.vec = self.vec / l
         return self
     

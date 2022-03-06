@@ -19,6 +19,7 @@ from miniworldmaker.tokens.shapes import Arc
 from miniworldmaker.boards.base_board import BaseBoard
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.pixel_board import PixelBoard
+from miniworldmaker.boards.pixel_board import TiledBoard
 from miniworldmaker.tools.timer import timer
 from miniworldmaker.tools.timer import loop
 from miniworldmaker.board_positions.board_vector import Vector
