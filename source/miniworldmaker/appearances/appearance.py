@@ -577,3 +577,12 @@ class Appearance(appearance_base.AppearanceBase):
 
         """
         return super().set_image(index)
+
+    def to_array(self):
+        return pygame.surfarray.array3d(self.image)
+
+    def from_array(self, arr):
+        print("load background")
+        surf = pygame.surfarray.make_surface(arr)
+        self.image_manager.add_image_from_surface(surf, self)
+        

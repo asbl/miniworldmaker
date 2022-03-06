@@ -89,3 +89,19 @@ class ImageManager:
         appearance.dirty = 1
         appearance._reload_all()
         return len(appearance.animation_manager.images_list) - 1
+
+    def add_image_from_surface(self, surface, appearance) -> int:
+        """Adds an image to the appearance
+
+        Args:
+            path (str): Path to the image relative to actual directory
+
+        Returns:
+            Index of the created image.
+        """
+        _image = surface
+        appearance.animation_manager.images_list.append(_image)
+        #appearance.animation_manager.image_paths.append(path)
+        appearance.dirty = 1
+        appearance._reload_all()
+        return len(appearance.animation_manager.images_list) - 1

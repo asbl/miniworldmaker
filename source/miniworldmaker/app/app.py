@@ -3,7 +3,7 @@ import sys
 import pkg_resources
 import pygame
 import __main__
-
+import warnings
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, NoRunError
 from miniworldmaker.app import window
 from miniworldmaker.app import event_manager
@@ -20,12 +20,13 @@ class App:
     """
 
     board = None
+    path = None
 
     def check_for_run_method(self):
         try:
             with open(__main__.__file__) as f:
                 if ".run(" not in f.read():
-                    raise NoRunError()
+                    warnings.warn("[boardname].run() was not found in your code. This must be the last line in your code \ne.g.:\nboard.run()\n if your board-object is named board.")
         except AttributeError:
             print("can't check if run() is present (This can happen if you are using jupyter notebooks. Resuming)")
 
@@ -99,3 +100,7 @@ class App:
     def quit(self, exit_code=0):
         self._exit_code = exit_code
         self._quit = True
+
+    def register_path(self, path):
+        self.path = path
+        App.path = path

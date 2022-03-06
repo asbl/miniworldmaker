@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from miniworldmaker.app import app
 
 class FileManager:
 
@@ -15,10 +15,11 @@ class FileManager:
 
     @staticmethod
     def get_path_with_file_ending(path, ending):
+        if app.App.path:
+            path = app.App.path + "/" + path
         for filename_extension in ending:
             if Path(path + "." + filename_extension).is_file():
-                print(path + "." + filename_extension)
                 full_path = FileManager.relative_to_absolute_path(path + "." + filename_extension)
-                return full_path
+                return full_path            
         # No file ending found:
         raise FileNotFoundError(path)
