@@ -1,3 +1,4 @@
+from miniworldmaker.appearances import appearance
 class Appearances:
     def __init__(self, appearance):
         if appearance != None:
@@ -32,11 +33,11 @@ class Appearances:
     def remove(self, index):
         del self.appearances_list[index]
 
-    def get_index(self, appearance):
+    def get_index(self, appearance : appearance.Appearance ) -> int:
         # Variant for get_index_of_costume #todo: Rename occurences to get_index
         return self.appearances_list.index(appearance)
 
-    def get_index_of_costume(self, appearance):
+    def get_index_of_costume(self, appearance) -> int:
         return self.appearances_list.index(appearance)
 
     def len(self):
@@ -45,7 +46,7 @@ class Appearances:
     def count_costumes(self):
         return len(self.appearances_list)
 
-    def get_costume_at_index(self, index):
+    def get_appearance_at_index(self, index) -> "appearance.Appearance":
         return self.appearances_list[index]
 
     def _set_all(self, attribute, value):
@@ -84,11 +85,13 @@ class Appearances:
         return self.appearances_list
 
     def __str__(self):
-        return str(len(self.appearances_list)) + " costumes: " + str(self.appearances_list)
+        return str(len(self.appearances_list)) + " Appearances: " + str(self.appearances_list)
 
 
 class Costumes(Appearances):
-    pass
+    def get_costume_at_index(self, index):
+        return super().get_appearance_at_index(index)
 
 class Backgrounds(Appearances):
-    pass
+    def get_background_at_index(self, index):
+        return super().get_appearance_at_index(index)

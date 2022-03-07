@@ -400,9 +400,7 @@ class Appearance(appearance_base.AppearanceBase):
             raise ColorException("ERROR: color should be a 4-tuple (r, g, b, alpha)")
 
     def remove_last_image(self):
-        del self.animation_manager.images_list[-1]
-        self.set_image(-1)
-        self.reload_transformations_after("all")
+        self.image_manager.remove_last_image
 
     def add_image(self, path: str) -> int:
         """Adds an image to the appearance
@@ -548,8 +546,7 @@ class Appearance(appearance_base.AppearanceBase):
         return bound_method
 
     def reset(self):
-        self.animation_manager.set_image_index(0)
-        self.animation_manager.end_animation(self)
+        self.image_manager.reset()
 
 
     def set_image(self, index: int) -> bool:
@@ -576,13 +573,13 @@ class Appearance(appearance_base.AppearanceBase):
                 board.run()
 
         """
-        return super().set_image(index)
+        return self.image_manager.set_image_index(index, self)
 
-    def to_array(self):
+    def to_colors_array(self):
         return pygame.surfarray.array3d(self.image)
 
     def from_array(self, arr):
         print("load background")
         surf = pygame.surfarray.make_surface(arr)
-        self.image_manager.add_image_from_surface(surf, self)
+        self.image_manager.replace_image(surf, 0, self)
         

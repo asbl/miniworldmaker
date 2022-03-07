@@ -4,7 +4,6 @@ import inspect
 from collections import defaultdict
 from miniworldmaker.appearances.managers import font_manager
 from miniworldmaker.appearances.managers import image_manager
-from miniworldmaker.appearances.managers import animation_manager
 from miniworldmaker.appearances.managers import transformations_manager
 
 
@@ -18,6 +17,7 @@ class MetaAppearance(type):
                     cls.__name__, inspect.signature(cls.__init__)
                 )
             )
+            pass
         instance.after_init()
         return instance
 
@@ -41,7 +41,6 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.last_image = None
         self.font_manager = font_manager.FontManager()
         self.image_manager = image_manager.ImageManager()
-        self.animation_manager = animation_manager.AnimationManager()
         self.transformations_manager = transformations_manager.TransformationsManager(self)
 
     def after_init(self):
@@ -76,13 +75,13 @@ class AppearanceBase(metaclass=MetaAppearance):
 
     @property
     def image_paths(self):
-        return self.animation_manager.image_paths
+        return self.image_manager.image_paths
     
     def _reload_image(self):
         if self.dirty == 1:
             self.dirty = 0
-            self.animation_manager.reset_image_index()
-            image = self.animation_manager.load_image_by_image_index(self)
+            self.image_manager.reset_image_index()
+            image = self.image_manager.load_image_by_image_index(self)
             image = self.transformations_manager.process_transformation_pipeline(image, self)
             self._image = image
             self.transformations_manager.reset_reload_transformations()
@@ -105,14 +104,13 @@ class AppearanceBase(metaclass=MetaAppearance):
         return self.image_manager.add_image(path, self)
 
     def set_image(self, value: int) -> bool:
-        return self.animation_manager.set_image_index(value, self)
+        """overwritten in subclass
+        """
+        pass
 
 
     def update(self):
-        #loop = asyncio.get_running_loop()
-        #task = loop.create_task(self.animation_manager.update(self))
-        #loop.run_until_complete(task)
-        asyncio.run(self.animation_manager.update(self))
+        asyncio.run(self.image_manager.update(self))
         return 1
 
     def __str__(self):
@@ -123,5 +121,5 @@ class AppearanceBase(metaclass=MetaAppearance):
             + "] for parent:["
             + str(self.parent)
             + "], images: "
-            + str(self.animation_manager.images_list)
+            + str(self.image_manager.images_list)
         )

@@ -154,3 +154,7 @@ class NoBoardError(MiniworldMakerError):
     def __init__(self):
         self.message = f"Error: Create a board befor you place Tokens"
         super().__init__(self.message)
+
+class ImageIndexNotExistsError(MiniworldMakerError):
+    def __init__(self):
+        self.message = f"Error: Image index does not exist. You can't set costume or background -image to a non-existing image"

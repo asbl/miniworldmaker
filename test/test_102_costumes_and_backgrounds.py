@@ -94,7 +94,7 @@ class Test102(unittest.TestCase):
                 print("Screenshot")
                 path = os.path.dirname(__file__)
                 if path:
-                    path = "/" + path
+                    path = path + "/"
                 file_test = path + f'output/{self.test_title}_test.png'
                 file_output = path + f"output/{self.test_title}.png"
                 if not os.path.isfile(file_test):

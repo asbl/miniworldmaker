@@ -14,6 +14,7 @@ for i in range(5):
 ```
 
 Das Programm gibt folgende Ausgabe
+
 ```
 I'm in a loop!
 I'm in a loop!
@@ -34,6 +35,7 @@ for i in range(5):
 ```
 
 Das Programm gibt folgende Ausgabe
+
 ```
 0
 1
@@ -271,3 +273,4 @@ board.run()
 
 Wie man sieht ist der Programmcode nur an einzelnen Stellen verändert wurden, der Programmablauf bleibt der gleiche. 
 Die `while`-Schleife wird hier durch die `act`-Methode ersetzt.
+

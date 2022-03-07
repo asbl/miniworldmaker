@@ -2,8 +2,7 @@ from typing import Union
 
 import pygame
 from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances.managers import transformations_background_manager
-
+from miniworldmaker.appearances.managers import image_manager, transformations_background_manager, image_board_manager
 
 class Background(appearance.Appearance):
     """
@@ -52,6 +51,7 @@ class Background(appearance.Appearance):
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
         self.is_scaled = True
         self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
+        self.image_manager = image_board_manager.ImageBoardManager()
 
     def add_image(self, path):
         super().add_image(path)

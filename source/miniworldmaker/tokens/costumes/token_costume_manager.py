@@ -53,8 +53,8 @@ class TokenCostumeManager:
     def _set_first_costume(self, costume):
         self.costume = costume
         self.has_costume = True
-        if len(costume.animation_manager.images_list) == 1:
-            image = costume.animation_manager.images_list[0]
+        if len(costume.image_manager.images_list) == 1:
+            image = costume.image_manager.images_list[0]
             width = image.get_width()
             height = image.get_height()
             scale_factor = width / height
@@ -115,7 +115,7 @@ class TokenCostumeManager:
             if costume >= self.costumes.count_costumes():
                 raise CostumeOutOfBoundsError(self.token, self.costumes.count_costumes, costume)
             costume = self.costumes.get_costume_at_index(costume)
-        self.costume.animation_manager.end_animation(costume)  
+        self.costume.image_manager.end_animation(costume)  
         self.costume = costume
         self.costume.dirty = 1
         return self.costume

@@ -1,6 +1,8 @@
 import pygame
 from miniworldmaker.appearances import appearances
+from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import background
+from typing import Union
 
 
 class BoardViewHandler:
@@ -8,7 +10,7 @@ class BoardViewHandler:
     def __init__(self, board):
         self.board = board
         self.repaint_all: int = 1
-        self.background = None
+        self.background : appearances.Backgrounds = None
         self.surface: pygame.Surface = pygame.Surface((1, 1))
         self.has_background = False
         self.backgrounds: appearances.Backgrounds = appearances.Backgrounds(self.background)
@@ -30,6 +32,7 @@ class BoardViewHandler:
             self.backgrounds.remove(-1)
 
     def add_background(self, source):
+        print(self.has_background, self.background)
         if not self.has_background and self.background != None:
             self.remove_background()
         if source is None:
@@ -41,18 +44,22 @@ class BoardViewHandler:
             new_background.fill(source)
         if self.background is None or not self.has_background:
             self.background = new_background
+            self.has_background = True
             self.repaint_all = 1
             self.update_all_costumes()
             self.update_background()
         self.backgrounds.add(new_background)
         return new_background
 
-    def switch_background(self, background):
-        if type(background) == int:
-            background = self.background.get_index(background)
+    def switch_background(self, value : Union["appearance.Appearance", int]):
+        if type(value) == int:
+            background = self.backgrounds.get_background_at_index(value)
+        elif type(value) == appearance.Appearance:
+            index = self.backgrounds.get_index(value)
         self.background = background
         self.repaint_all = 1
-        [token.set_dirty() for token in self.tokens]
+        for token in self.board.tokens:
+            token.dirty = 1
         return self.background
 
     def update_background(self):

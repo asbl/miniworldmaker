@@ -43,8 +43,8 @@ class Vector:
         .. raw:: html 
 
              <video loop autoplay muted width=240>
-            <source src="../_static/mp4/animation1.mp4" type="video/mp4">
-            <source src="../_static/animation1.webm" type="video/webm">
+            <source src="../_static/mp4/vector_1.mp4" type="video/mp4">
+            <source src="../_static/vector_1.webm" type="video/webm">
             Your browser does not support the video tag.
             </video> 
 

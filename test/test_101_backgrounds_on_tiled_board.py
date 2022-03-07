@@ -42,8 +42,10 @@ class Test101(unittest.TestCase):
             if self.test_frame == 1:
                 print("Screenshot")
                 path = os.path.dirname(__file__)
-                file_test = path + f'/output/{self.test_title}_test.png'
-                file_output = path + f"/output/{self.test_title}.png"
+                if path != "":
+                    path =  path + "/"
+                file_test = path + f'output/{self.test_title}_test.png'
+                file_output = path + f"output/{self.test_title}.png"
                 if not os.path.isfile(file_test):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
