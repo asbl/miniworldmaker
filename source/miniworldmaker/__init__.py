@@ -6,7 +6,7 @@ from inspect import isclass
 from miniworldmaker.boards.base_board import BaseBoard
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.pixel_board import PixelBoard
-from miniworldmaker.boards.pixel_board import TiledBoard
+from miniworldmaker.boards.tiled_board import TiledBoard
 from miniworldmaker.boards.physics_board import PhysicsBoard
 
 from miniworldmaker.tokens.token import Token

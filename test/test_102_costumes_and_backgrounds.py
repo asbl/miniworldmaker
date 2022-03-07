@@ -18,10 +18,18 @@ class Test102(unittest.TestCase):
         @board.register
         def init_test(self):
             board.test_frame = 0
-            board.test_title = self.__class__.__name__
+            
         
         @board.register
         def setup_environment(self, test):
+            self.columns = 5
+            self.rows = 5
+            self.tile_size = 40
+            self.add_background("images/grass.jpg")
+            token = Token()
+            token.position = (4,4)
+            token.add_costume("images/player.png")
+            
             # Token 1: Purple in topleft corner
             token1 = Token(position=(0, 0))
             token1.size = (40, 40) # should be in topleft corner
@@ -78,13 +86,6 @@ class Test102(unittest.TestCase):
         @board.register
         def on_setup(self):
             self.init_test()
-            self.columns = 5
-            self.rows = 5
-            self.tile_size = 40
-            self.add_background("images/grass.jpg")
-            token = Token()
-            token.position = (4,4)
-            token.add_costume("images/player.png")
     
         @board.register
         def test(self):
@@ -92,8 +93,10 @@ class Test102(unittest.TestCase):
             if self.test_frame == 1:
                 print("Screenshot")
                 path = os.path.dirname(__file__)
-                file_test = path + f'/output/{self.test_title}_test.png'
-                file_output = path + f"/output/{self.test_title}.png"
+                if path:
+                    path = "/" + path
+                file_test = path + f'output/{self.test_title}_test.png'
+                file_output = path + f"output/{self.test_title}.png"
                 if not os.path.isfile(file_test):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
@@ -106,6 +109,7 @@ class Test102(unittest.TestCase):
             self.test()
         
         #in setup
+        board.test_title = self.__class__.__name__
         board.setup_environment(self)
         
         
@@ -115,4 +119,6 @@ class Test102(unittest.TestCase):
         
 if __name__ == '__main__':
     unittest.main()
+
+
 

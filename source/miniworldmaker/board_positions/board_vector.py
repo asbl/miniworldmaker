@@ -5,6 +5,8 @@ from miniworldmaker.board_positions import board_position
 import numpy as np
 import math
 import typing
+
+
 class Vector:
     """Describes a two dimensional vector.
 
@@ -38,40 +40,42 @@ class Vector:
 
             board.run()
 
-        .. video:: ../_static/vector_1.webm
-            :autoplay:
+        .. raw:: html 
+
+             <video loop autoplay muted width=240>
+            <source src="../_static/mp4/animation1.mp4" type="video/mp4">
+            <source src="../_static/animation1.webm" type="video/webm">
+            Your browser does not support the video tag.
+            </video> 
 
     """
 
     def __init__(self, x, y):
-        self.vec = np.array([x,y])
+        self.vec = np.array([x, y])
 
-    @property    
+    @property
     def angle(self):
-        """describes the angle as miniworldmaker direction
-        """
+        """describes the angle as miniworldmaker direction"""
         return self.to_direction()
 
     @property
     def x(self):
-        """the x compoonent of the vector
-        """
+        """the x compoonent of the vector"""
         return self.vec[0]
 
     @x.setter
     def x(self, value):
         self.vec = np.array([value, self.vec[1]])
-    
+
     @property
     def y(self):
-        """the y component of the vector
-        """
+        """the y component of the vector"""
         return self.vec[1]
 
     @y.setter
     def y(self, value):
         self.vec = np.array([self.vec[0], value])
-    
+
     @classmethod
     def from_tokens(cls, t1, t2):
         """Create a vector from two tokens.
@@ -85,8 +89,7 @@ class Vector:
 
     @classmethod
     def from_direction(cls, direction):
-        """Creates a vector from miniworldmaker direction.
-        """
+        """Creates a vector from miniworldmaker direction."""
         if direction >= 90:
             x = 0 + math.sin(math.radians(direction)) * 1
             y = 0 - math.cos(math.radians(direction)) * 1
@@ -98,13 +101,13 @@ class Vector:
     @classmethod
     def from_token_direction(cls, token):
         """Creates a vector from token direction
-        
+
         Examples:
 
             Creates rotating rectangle
 
             .. code-block:: python
-            
+
                 from miniworldmaker import *
 
                 board = Board()
@@ -118,26 +121,28 @@ class Vector:
                     v1 = Vector.from_token_direction(self)
                     v1.rotate(-1)
                     self.direction = v1
-                    
+
                 board.run()
 
-            .. video:: ../_static/rotating_rectangle.webm
-                :autoplay:
+        .. raw:: html 
+
+             <video loop autoplay muted width="400">
+            <source src="../_static/mp4/rotating_rectangle.mp4" type="video/mp4">
+            <source src="../_static/rotating_rectangle.webm" type="video/webm">
+            Your browser does not support the video tag.
+            </video> 
         """
         return Vector.from_direction(token.direction)
 
     @classmethod
     def from_token_position(cls, token):
-        """Creates a vector from token position
-        """
+        """Creates a vector from token position"""
         x = token.center.x
         y = token.center.y
         return cls(x, y)
 
-
-    def rotate(self, theta : float) -> "Vector":
-        """rotates Vector by theta degrees
-        """
+    def rotate(self, theta: float) -> "Vector":
+        """rotates Vector by theta degrees"""
         theta_deg = theta % 360
         theta = np.deg2rad(theta_deg)
         rot = np.array([[math.cos(theta), -math.sin(theta)], [math.sin(theta), math.cos(theta)]])
@@ -146,12 +151,11 @@ class Vector:
         return self
 
     def to_direction(self) -> float:
-        """Returns miniworldmaker direction from vector.
-        """
+        """Returns miniworldmaker direction from vector."""
         if self.x > 0:
             axis = np.array([0, -1])
         else:
-            axis = np.array([0,1])
+            axis = np.array([0, 1])
         unit_vector_1 = self.vec / np.linalg.norm(self.vec)
         unit_vector_2 = axis / np.linalg.norm(axis)
         dot_product = np.dot(unit_vector_1, unit_vector_2)
@@ -166,11 +170,11 @@ class Vector:
         """sets length of vector to 1
 
         Examples:
-        
+
             Normalized vector with length 1:
-            
+
             .. code-block:: python
-            
+
                 w = Vector(4, 3)
                 print(w.length())     # 5
                 print(w.normalize()) #  (0.8, 0.6)
@@ -181,47 +185,47 @@ class Vector:
             return self
         self.vec = self.vec / l
         return self
-    
+
     def length(self) -> float:
         """returns length of vector
 
         Examples:
-        
+
             Length of vector
-            
+
             .. code-block:: python
-            
+
                 w = Vector(4, 3)
                 print(w.length())     # 5
-            
+
         """
         return np.linalg.norm(self.vec)
-    
+
     def neg(self) -> "Vector":
         """returns -v for Vector v
 
         Examples:
 
             Inverse of vector:
-            
+
             .. code-block:: python
-            
+
                 u = Vector(2, 4)
-                print(u.neg()) # (-2, 5)            
-            
+                print(u.neg()) # (-2, 5)
+
             Alternative:
 
             .. code-block:: python
-                
+
                 print(- u)  # (-2, 5)
 
         """
-        x = - self.x
-        y = - self.y
+        x = -self.x
+        y = -self.y
         self.x, self.y = x, y
         return self
 
-    def multiply(self, other : float) -> typing.Union[float, "Vector"]:
+    def multiply(self, other: float) -> typing.Union[float, "Vector"]:
         """product self * other:
         * returns product, if ``other`` is scalar (return-type: Vector)
         * returns dot-product, if ``other`` is vector (return-type: float)
@@ -232,20 +236,20 @@ class Vector:
         Examples:
 
             Product and dot-product:
-            
+
             .. code-block:: python
-            
+
                 a = 5
                 u1 = Vector(2, 4)
                 u2 = Vector(2, 4)
                 v = Vector(3, 1)
                 print(u1.multiply(a)) # (10, 25)
-                print(u2.multiply(v)) # 11               
-            
+                print(u2.multiply(v)) # 11
+
             Alternative:
 
             .. code-block:: python
-                
+
                 print(u1 * a)  # 25
                 print(u1 * v) # 25
         """
@@ -255,23 +259,22 @@ class Vector:
             self.x, self.y = x, y
             return Vector(x, y)
         if type(other) == Vector:
-            self.vec =  self.dot(other)
+            self.vec = self.dot(other)
             return self
-        
+
     def dot(self, other):
         return np.dot(self.vec, other.vec)
 
-
-    def add_to_position(self, position : "board_position.BoardPosition") -> "board_position.BoardPosition":
+    def add_to_position(self, position: "board_position.BoardPosition") -> "board_position.BoardPosition":
         position = board_position_factory.BoardPositionFactory().create(position)
         return board_position_factory.BoardPositionFactory().create((self.x + position.x, self.y + position.y))
 
     def __str__(self):
         return f"({round(self.x,3)},{round(self.y,3)})"
-    
+
     def __neg__(self):
         return self.neg()
-    
+
     def __mul__(self, other):
         if type(other) in [int, float]:
             x = self.x * other
@@ -281,7 +284,6 @@ class Vector:
             vec = self.dot(other)
             return Vector(vec[0], vec[1])
 
-    
     def __sub__(self, other):
         if type(other) == Vector:
             x = self.x - other.x
@@ -294,8 +296,7 @@ class Vector:
             y = self.y + other.y
             return Vector(x, y)
 
-
-    def sub(self, other : "Vector") -> "Vector":
+    def sub(self, other: "Vector") -> "Vector":
         """adds vector `other` from self.
 
         Args:
@@ -306,19 +307,19 @@ class Vector:
 
         Examples:
 
-            Subtracts two vectors: 
-            
+            Subtracts two vectors:
+
             .. code-block:: python
-            
+
                 v = Vector(3, 1)
                 u = Vector(2, 5)
                 print(u.sub(v)) # (1, -4)
-            
+
 
             Alternative:
 
             .. code-block:: python
-                
+
                 print(u - v)
         """
         if type(other) == Vector:
@@ -327,7 +328,7 @@ class Vector:
             self.x, self.y = x, y
             return self
 
-    def add(self, other : "Vector") -> "Vector":
+    def add(self, other: "Vector") -> "Vector":
         """adds vector `other` to self.
 
         Args:
@@ -338,19 +339,19 @@ class Vector:
 
         Examples:
 
-            Add two vectors: 
-            
+            Add two vectors:
+
             .. code-block:: python
-            
+
                 v = Vector(3, 1)
                 u = Vector(2, 5)
                 print(u.add(v)) # (5, 6)
-            
+
 
             Alternative:
 
             .. code-block:: python
-                
+
                 print(u + v)
         """
         if type(other) == Vector:
@@ -359,8 +360,7 @@ class Vector:
             self.x, self.y = x, y
             return self
 
-    def limit(self, value : float):
-        """limits length of vector to value
-        """
+    def limit(self, value: float):
+        """limits length of vector to value"""
         if self.length() > value:
             self.normalize().multiply(value)

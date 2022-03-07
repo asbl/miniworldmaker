@@ -1,5 +1,6 @@
 img {
-  border: 1px solid lightgrey;
+  border: 2px solid rgb(53, 53, 53);
+  box-shadow: 2px 2px 3px rgba(24, 24, 24, 0.6);
   border-radius: 15px;
   width: auto;
   display: block;
@@ -15,9 +16,9 @@ img.autowidth {
 }
 
 video {
-  border: 1px solid lightgrey;
+  border: 2px solid rgb(53, 53, 53);
+  box-shadow: 2px 2px 3px rgba(24, 24, 24, 0.6);
   border-radius: 15px;
-  width: auto;
   display: block;
   margin-left: auto;
   margin-right: auto;
