@@ -386,7 +386,7 @@ class Appearance(appearance_base.AppearanceBase):
         else:
             self.font_manager.text = value
             self.dirty = 1
-        self._reload_all()
+        self.reload_transformations_after("all",)
 
     def get_text_width(self):
         return self.font_manager.get_font_width()
@@ -400,7 +400,7 @@ class Appearance(appearance_base.AppearanceBase):
             raise ColorException("ERROR: color should be a 4-tuple (r, g, b, alpha)")
 
     def remove_last_image(self):
-        self.image_manager.remove_last_image
+        self.image_manager.remove_last_image()
 
     def add_image(self, path: str) -> int:
         """Adds an image to the appearance
@@ -573,13 +573,14 @@ class Appearance(appearance_base.AppearanceBase):
                 board.run()
 
         """
-        return self.image_manager.set_image_index(index, self)
+        return self.image_manager.set_image_index(index)
 
     def to_colors_array(self):
         return pygame.surfarray.array3d(self.image)
 
     def from_array(self, arr):
-        print("load background")
         surf = pygame.surfarray.make_surface(arr)
-        self.image_manager.replace_image(surf, 0, self)
+        self.image_manager.replace_image(surf, 0)
         
+    def from_appearance(self, appearance, index):
+        self.image_manager.add_image_from_surface(index)

@@ -136,16 +136,12 @@ class TokenCostumeManager:
             index = 0
 
     def rotate_costume(self):
-        self.costume.dirty = 1
         if self.costume:
-            self.costume.reload_transformations_after("rotate")
-        if self.token.board:
-            self.token.board.app.event_manager.send_event_to_containers(
-                "token_changed_direction", self)
+            self.costume.rotated()
 
     def resize_costume(self):
         if self.costume:
-            self.costume._reload_all()
+            self.costume.reload_transformations_after("all",)
 
     def flip_costume(self, value):
         self.costume.is_flipped = value
@@ -181,7 +177,7 @@ class TokenCostumeManager:
 
     def reload_costume(self):
         self.update_shape()
-        self.costume._reload_all()
+        self.costume.reload_transformations_after("all",)
         self.token.dirty = 1
 
     def update_shape(self):

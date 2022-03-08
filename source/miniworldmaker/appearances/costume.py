@@ -36,4 +36,4 @@ class Costume(appear.Appearance):
         """
         self._info_overlay = value
         self.dirty = 1
-        self._reload_all()
+        self.reload_transformations_after("all",)

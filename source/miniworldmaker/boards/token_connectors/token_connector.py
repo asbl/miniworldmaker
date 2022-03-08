@@ -13,9 +13,6 @@ class TokenConnector:
         self.token.fill_color = self.board.fill_color
         self.token.border_color = self.board.stroke_color
         self.token.costume_manager.reload_costume()
-        self.token.dirty = 1
-        if self.token.costume:
-            self.token.costume._reload_all()
         if hasattr(self.token, "on_setup"):
             self.token.on_setup()
             self.board.view_handler.reload_costumes_queue.append(self.token)

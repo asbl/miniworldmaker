@@ -71,10 +71,7 @@ class App:
     def _prepare_mainloop(self):
         self.window.recalculate_dimensions()
         self.window.display_update()
-        self._setup_images()
-
-    def _setup_images(self):
-        image_manager.ImageManager().setup_images()
+        image_manager.ImageManager.cache_images_in_image_folder()
 
     def start_mainloop(self):
         self._mainloop_started = True

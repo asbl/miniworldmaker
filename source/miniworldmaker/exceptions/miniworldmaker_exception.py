@@ -156,5 +156,5 @@ class NoBoardError(MiniworldMakerError):
         super().__init__(self.message)
 
 class ImageIndexNotExistsError(MiniworldMakerError):
-    def __init__(self):
-        self.message = f"Error: Image index does not exist. You can't set costume or background -image to a non-existing image"
+    def __init__(self, appearance, index):
+        self.message = f"Error: Image index {index} does not exist for {appearance}.\n You can't set costume or background -image to a non-existing image"
