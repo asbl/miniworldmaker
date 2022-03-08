@@ -278,3 +278,50 @@ Da die rot-Werte aus dem Bild entfernt werden, erhält das Bild einen gründlich
 So sieht das Ergebnis aus:
 
 ![array](../_images/sunflower2.png)
+
+Als nächstes manipulieren wir die Helligkeit. Dazu können wir sowohl den rot, grün als blau-Wert mit einer Konstante multiplizieren.
+
+```python
+from miniworldmaker import *
+
+board = Board(600,400)
+board.add_background("images/sunflower.jpg")
+arr = board.background.to_colors_array()
+constant = 2
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        arr[x][y][0] = arr[x][y][0] * constant
+        arr[x][y][1] = arr[x][y][1] * constant
+        arr[x][y][2] = arr[x][y][2] * constant
+board.background.from_array(arr)
+board.run()
+```
+
+Der erste Versuch sieht allerdings so aus!
+
+![array](../_images/sunflower3.png)
+
+Wie ist dies passiert? 
+
+Jeder Farbton hat einen Wert zwischen 0 und 255, beim Multiplizieren wurden allerdings einige unserer Werte größer als 255 und sind daher "übergelaufen".
+Du erkennst dies an besonders dunklen Bereichen, die eigentlich hell sein sollten.
+
+Wir müssen also sicherstellen, dass das Ergebnis kleiner als 255 ist, z.B. so:
+
+``` python
+from miniworldmaker import *
+
+board = Board(600,400)
+board.add_background("images/sunflower.jpg")
+arr = board.background.to_colors_array()
+constant = 2
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        arr[x][y][0] = min(arr[x][y][0] * constant, 255)
+        arr[x][y][1] = min(arr[x][y][1] * constant, 255)
+        arr[x][y][2] = min(arr[x][y][2] * constant, 255)
+board.background.from_array(arr)
+board.run()
+```
+
+![array](../_images/sunflower4.png)
