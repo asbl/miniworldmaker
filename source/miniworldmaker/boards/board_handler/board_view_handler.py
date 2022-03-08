@@ -32,7 +32,6 @@ class BoardViewHandler:
             self.backgrounds.remove(-1)
 
     def add_background(self, source):
-        print(self.has_background, self.background)
         if not self.has_background and self.background != None:
             self.remove_background()
         if source is None:
