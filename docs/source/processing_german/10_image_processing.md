@@ -106,7 +106,7 @@ Man kann über dieses Array folgendermaßen iterieren:
 
 ``` python
 from miniworldmaker import *
-
+grey
 board = Board()
 arr = board.background.to_colors_array()
 for x in range(len(arr)): # iterate over all rows
@@ -325,3 +325,199 @@ board.run()
 ```
 
 ![array](../_images/sunflower4.png)
+
+# Bildbearbeitung II (mit Funktionen)
+
+## Helligkeit
+
+Oft benötigen wir die Helligkeit eines Pixels. Die "einfachste Methode dies zu berechnen ist den Durchschnitt der r,g und b-Werte zu berechnen:
+
+``` python
+from miniworldmaker import *
+
+board = Board(600,400)
+board.add_background("images/sunflower.jpg")
+arr = board.background.to_colors_array()
+
+def brightness(r, g, b):
+    return (int(r) + int(g) + int(b)) / 3
+
+print(brightness(arr[10][20]))
+ 
+board.background.from_array(arr)
+board.run()
+```
+
+In der Funktion brightness müssen die Werte r, g und b zunächst umgewandelt werden:
+Es handelt sich um `uint8`-Werte, so dass das Ergebnis niemals größer als 255 werden darf (Ansonsten ensteht ein "Overflow"). Deshalb müssen die Variablen in den Datentyp `int` umgewandelt werden, damit das Ergebnis der Addition auch ein `int`-Wert und damit beliebig groß ist.
+
+Dies können wir nutzen, um jeden Pixel grau zu färben, abhängig von seiner Helligkeit:
+
+``` python
+from miniworldmaker import *
+
+board = Board(600,400)
+board.add_background("images/sunflower.jpg")
+arr = board.background.to_colors_array()
+
+def brightness(r, g, b):
+    return (int(r) + int(g) + int(b)) / 3
+
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        
+        arr[x][y] = brightness(arr[x][y][0], arr[x][y][1], arr[x][y][2])
+        
+board.background.from_array(arr)
+board.run()
+```
+
+![sunflower grey](../_images/sunflower5grey.png)
+
+### Farbunterschied und wahrgenommener Farbunterschied
+
+Beim Arbeiten mit Bildern und Tönen ist es wichtig zu wissen, wie wir Menschen diese wahrnehmen.
+
+Die *wahrgenommene* Helligkeit entspricht nicht der hier berechneten Helligkeit. Für die folgenden Zwecke ist die hier verwendete Form zur Berechnung der Helligkeit aber ausreichend.
+
+## Kantenerkennung
+
+Eine wichtige Funktion in der Bildbearbeitung ist das Erkennen von Kanten. Auch in der künstlichen Intelligenz ist dies wichtig,
+weil Kantenerkennung ein erster Schritt ist, um Objekte in einem Bild zu erkennen.
+
+### Wie funktioniert Kantenerkennung?
+
+### Helferfunktionen
+
+Um uns auf den eigentlichen Algorithmus zu konzentrieren, verwenden wir einige Helfer-Funktionen:
+
+1. Ist ein Bildpunkt im Bild?:
+
+``` python
+def in_array(arr, x, y):
+    if x >= 0 and x < len(arr):
+        if y >= 0 and y < len(arr[0]):
+            return True
+    return False
+```
+
+2. Gebe alle Nachbarzellen eines Bildpunktes zurück:
+
+``` python
+def neighbour_cells(arr, x, y):
+    neighbours = []
+    for x0 in range(x-1, x+1):
+        for y0 in range(y-1, y+1):
+            if in_array(arr, x0, y0):
+                neighbours.append(arr[x0][y0])
+    return neighbours
+```
+
+3. Wir bereiten das Bild vor. Mit  `arr.copy()`` können wir eine Kopie des Bildes erstellen, in der wir nur die Helligkeitswerte speichern.
+
+Auf diese Weise müssen wir später nicht mit allen drei Farbwerten rechnen. 
+
+
+So sieht das Grundgerüst aus:
+
+``` python
+from miniworldmaker import *
+
+board = Board(600,400)
+board.add_background("images/sunflower.jpg")
+arr = board.background.to_colors_array()
+grey_arr = arr.copy()
+
+def brightness(r, g, b):
+    return (int(r) + int(g) + int(b)) / 3
+
+def in_array(arr, x, y):
+    if x >= 0 and x < len(arr):
+        if y >= 0 and y < len(arr[0]):
+            return True
+    return False
+    
+
+def neighbour_cells(arr, x, y):
+    neighbours = []
+    for x0 in range(x-1, x+1):
+        for y0 in range(y-1, y+1):
+            if in_array(arr, x0, y0):
+                neighbours.append(arr[x0][y0])
+    return neighbours
+
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        grey_arr[x][y] = brightness(arr[x][y][0], arr[x][y][1], arr[x][y][2])
+        
+board.background.from_array(arr)
+board.run()
+```
+
+und jetzt ergänzen wir noch den Algorithmus zur Kantenerkennung:
+
+Der Algorithmus funktioniert so: Wir berechnen mit Hilfe der neighbour_cells-Funktion den durchschnittlichen Helligkeitswert aller Nachbarzellen und färben das Bild entsprechend ein.
+
+``` python
+from miniworldmaker import *
+
+board = Board(600,400)
+board.add_background("images/sunflower.jpg")
+arr = board.background.to_colors_array()
+grey_arr = arr.copy()
+
+def brightness(r, g, b):
+    return (int(r) + int(g) + int(b)) / 3
+
+def in_array(arr, x, y):
+    if x >= 0 and x < len(arr):
+        if y >= 0 and y < len(arr[0]):
+            return True
+    return False
+    
+
+def neighbour_cells(arr, x, y):
+    neighbours = []
+    for x0 in range(x-1, x+1):
+        for y0 in range(y-1, y+1):
+            if in_array(arr, x0, y0):
+                neighbours.append(arr[x0][y0])
+    return neighbours
+
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        grey_arr[x][y] = brightness(arr[x][y][0], arr[x][y][1], arr[x][y][2])
+
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        neighbours = neighbour_cells(grey_arr, x, y)
+        sum_neighbours = 0
+        for neighbour in neighbour_cells(grey_arr, x, y):
+            sum_neighbours += neighbour[0]
+        mean_neighbours = sum_neighbours / len(neighbours)
+        diff = grey_arr[x][y][0] - mean_neighbours
+        arr[x][y] = (diff, diff, diff)
+        
+board.background.from_array(arr)
+board.run()
+```
+
+![sunflower grey](../_images/sunflower6black.png)
+
+Die Farben sind noch invertiert, d.h. wir brauchen eine Funktion, die die Farben erneut invertiert, so dass der schwarze Hintergrund weiß wird und die Kanten statt weiß schwarz werden.
+
+Dies geht so:
+
+``` python
+for x in range(len(arr)):
+    for y in range(len(arr[0])):
+        arr[x][y][0] = 255 - arr[x][y][0]
+        arr[x][y][1] = 255 - arr[x][y][1]
+        arr[x][y][2] = 255 - arr[x][y][2]
+```
+
+![sunflower grey](../_images/sunflower8_edge.png)
+
+Diesen Algorithmus können wir noch auf verschiedene Art verändern verbessern. Eine Möglichkeit ist es, nur Zellen weiß zu färben, die einen gewissen Schwellenwert überschreiten und alle anderen Zellen schwarz, man könnte auch das Feld der Nachbarzellen größer gestalten, ...
+
+Probiere es aus!

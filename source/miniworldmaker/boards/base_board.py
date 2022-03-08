@@ -549,6 +549,9 @@ class BaseBoard(container.Container):
         """
         return [token for token in self.tokens if token.rect.collidepoint(pixel)]
 
+    def get_tokens_at_position(self, position) -> list:
+        return [token for token in self.tokens if token.rect.collidepoint(position)]
+
     @property
     def image(self) -> pygame.Surface:
         """

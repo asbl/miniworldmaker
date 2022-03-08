@@ -13,6 +13,7 @@ Processing
     05_movement.md
     06_ifelse.md
     07_loops.md
-    08_image_processing.md
-    09_functions.md
+    08_functions.md
+    09_lists.md
+    10_image_processing.md
 

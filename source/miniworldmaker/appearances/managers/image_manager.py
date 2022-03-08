@@ -95,8 +95,15 @@ class ImageManager:
             return self.add_image_from_path(source)
         elif type(source) == pygame.Surface:
             return self.add_image_from_surface(source)
+        elif type(source) == tuple:
+            return self.add_image_from_color(source)
 
-    
+    def add_image_from_color(self, color):
+        surf = pygame.Surface((4,4), pygame.SRCALPHA)
+        surf.fill(color)
+        self.appearance.fill_color = color
+        return self.add_image_from_surface(surf)
+
     def add_image_from_path(self, path: str) -> int:
         path = self.find_image_file(path)
         # set image by path
@@ -109,6 +116,7 @@ class ImageManager:
 
     def add_image_from_appearance(self, appearance, index):
         appearance.image_manager.get_surface(index)
+        #@todo: add body
 
     def add_image_from_surface(self, surface) -> int:
         """Adds an image to the appearance
@@ -120,7 +128,7 @@ class ImageManager:
             Index of the created image.
         """
         self.images_list.append(surface)
-        self.dirty = 1
+        self.appearance.dirty = 1
         self.appearance.reload_transformations_after("all",)
         return len(self.images_list) - 1
 

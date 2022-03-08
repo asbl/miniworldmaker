@@ -47,13 +47,13 @@ class TokenCostumeManager:
 
     def _create_costume_with_color(self, color):
         new_costume = costume.Costume(self.token)
-        new_costume.fill_color = color
+        new_costume.add_image(color)
         return new_costume
 
-    def _set_first_costume(self, costume):
+    def _set_first_costume(self, costume, color):
         self.costume = costume
         self.has_costume = True
-        if len(costume.image_manager.images_list) == 1:
+        if not color and len(costume.image_manager.images_list) == 1:
             image = costume.image_manager.images_list[0]
             width = image.get_width()
             height = image.get_height()
@@ -80,12 +80,15 @@ class TokenCostumeManager:
             source = (255, 0, 255, 100)
         if type(source) == str:
             new_costume = self._create_costume_with_images([source])
-        if type(source) == list:
+            color = False
+        elif type(source) == list:
             new_costume = self._create_costume_with_images(source)
+            color = False
         elif type(source) == tuple:
             new_costume = self._create_costume_with_color(source)
+            color = True
         if self.costume is None or not self.has_costume:
-            self._set_first_costume(new_costume)
+            self._set_first_costume(new_costume, color)
         self.costumes.add(new_costume)
         self.update_shape()
         self.dirty = 1

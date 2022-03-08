@@ -99,6 +99,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             if tokens:
                 self.dummy.switch_costume(1)
             else:
+                print(self.dummy.costumes)
                 self.dummy.switch_costume(0)
 
     def get_event(self, event, data):
@@ -109,7 +110,9 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 class Dummy(token.Token):
     def on_setup(self):
         self.add_costume((0,0,0,100))
+        print("dummy", self.costumes)
         self.add_costume((255,0,0,100))
+        print("dummy", self.costumes, self.costume.image_manager.images_list)
         self.export = False
 
 
