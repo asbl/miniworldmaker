@@ -259,8 +259,8 @@ class Vector:
             self.x, self.y = x, y
             return Vector(x, y)
         if type(other) == Vector:
-            self.vec = self.dot(other)
-            return self
+            dot_product = self.dot(other)
+            return dot_product
 
     def dot(self, other):
         return np.dot(self.vec, other.vec)
@@ -281,8 +281,8 @@ class Vector:
             y = self.y * other
             return Vector(x, y)
         if type(other) == Vector:
-            vec = self.dot(other)
-            return Vector(vec[0], vec[1])
+            dot_product = self.dot(other)
+            return dot_product
 
     def __sub__(self, other):
         if type(other) == Vector:

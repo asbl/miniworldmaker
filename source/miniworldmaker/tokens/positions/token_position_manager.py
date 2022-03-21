@@ -65,7 +65,7 @@ class TokenPositionManager:
         direction = self._value_to_direction(value)
         self._direction = direction
         if self.last_direction != self._direction:
-            self.token.costume_manager.rotate_costume()
+            self.token.costume.rotated()
 
     @property
     def size(self):
@@ -79,7 +79,7 @@ class TokenPositionManager:
         if value != self._size:
             self._old_size = self._size
             self._size = value
-            self.token.costume_manager.reload_costume()
+            self.token.costume.reload_transformations_after("all")
         return self._size
 
     @property
@@ -304,14 +304,14 @@ class TokenPositionManager:
             int: new direction
         """        
         self.turn_left(180)
-        self.token.costume_manager.flip_costume(not self.token.costume.is_flipped)
+        self.token.costume.flip(not self.token.costume.is_flipped)
         return self.direction
 
     def point_in_direction(self, direction: int) -> int:
         self.direction = self._value_to_direction(direction)
         return self.direction
 
-    def remove(self):
+    def self_remove(self):
         """
         Method is overwritten in subclasses
         """

@@ -42,8 +42,6 @@ class MWMInspection:
     def bind_method(self, method):
         bound_method = method.__get__(self.instance, self.instance.__class__)
         setattr(self.instance, method.__name__, bound_method)
-        if method.__name__ == "on_setup":
-            self.instance.on_setup()
         return bound_method
 
     def get_and_call_method(self, name, args, errors=False):

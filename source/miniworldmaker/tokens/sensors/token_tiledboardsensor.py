@@ -29,7 +29,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
         """
         target = self.get_destination(self.token.position, self.token.direction, distance)
-        on_board = self.token.board.position_handler.is_position_on_board(target)
+        on_board = self.token.board.position_manager.is_position_on_board(target)
         return on_board
 
     def sensing_borders(self, distance = 0):
@@ -44,7 +44,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         """
         target = self.get_destination(self.token.position, self.token.direction, distance)
         rect = (target.x, target.y, self.board.tile_size, self.board.tile_size)
-        return self.token.board.position_handler.get_borders_from_rect(rect)
+        return self.token.board.position_manager.get_borders_from_rect(rect)
 
 
     def sensing_tokens(self, token_filter=None, distance: int = 0) -> list:
@@ -95,5 +95,5 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
             self.board.static_tokens_dict[self.token.position.to_tuple()].remove(self.token)
         super().remove_from_board()
 
-    def remove(self):
+    def self_remove(self):
         self.remove_from_board()

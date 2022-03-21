@@ -5,6 +5,7 @@ import pygame.gfxdraw
 import math
 
 from miniworldmaker.board_positions import board_position
+from miniworldmaker.appearances import shape_costume
 import miniworldmaker
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     EllipseWrongArgumentsError,
@@ -20,7 +21,7 @@ class Shape(miniworldmaker.Token):
     Each geometric object has the following properties:
 
     * border: The border thickness of the object.
-    * fill: True/False if the object should be filled.
+    * is_filled: True/False if the object should be filled.
     * fill_color: The fill color of the object
     * border_color: The border color of the object.
 
@@ -33,14 +34,7 @@ class Shape(miniworldmaker.Token):
         if position == None:
             position = (0, 0)
         super().__init__(position)
-        self.add_costume((100, 0, 0, 0))
-        self.costume.is_upscaled = False
-        self._fill = True
-        self._border = 1
-        self._inner = 0
-
-    def _update_draw_shape(self):
-        super()._update_draw_shape()
+        self.costume = shape_costume.ShapeCostume(self)
 
 
 class Circle(Shape):
@@ -73,16 +67,10 @@ class Circle(Shape):
 
     def __init__(self, position=(0, 0), radius: float = 10):
         self._radius = radius
-        self._border = 1
         super().__init__(position)
+        self.costume = shape_costume.CircleCostume(self)
         self.size = (radius * 2, radius * 2)
         self.center = position
-
-    def _inner_shape(self):
-        return pygame.draw.circle, [(self.size[0] / 2, self.size[0] / 2), self.radius, 0]
-
-    def _outer_shape(self):
-        return pygame.draw.circle, [(self.size[0] / 2, self.size[0] / 2), self.radius, self.border]
 
     @classmethod
     def from_topleft(cls, position: tuple, radius: int):
@@ -113,12 +101,6 @@ class Circle(Shape):
         self.physics.shape_type = "circle"
         self.physics.can_move = True
         self.physics.stable = False
-
-    def _update_draw_shape(self):
-        self.size = (self.radius * 2, self.radius * 2)
-        rect = pygame.Rect(0, 0, self.radius, self.radius)
-        rect.center = (self.position[0], self.position[1])
-        super()._update_draw_shape()
 
 
 class Point(Circle):
@@ -171,24 +153,14 @@ class Ellipse(Shape):
     ):
         self.check_arguments(position, width, height)
         super().__init__(position)
+        self.costume = shape_costume.EllipseCostume(self)
         self._border = 1
         self.size = (width, height)
-        self._update_draw_shape()
+        self.costume._update_draw_shape()
 
     def check_arguments(self, position, width, height):
         if type(position) not in [tuple, board_position.BoardPosition, None]:
             raise EllipseWrongArgumentsError()
-
-    def _inner_shape(self):
-        return pygame.draw.ellipse, [pygame.Rect(0, 0, self.size[0], self.size[1]), 0]
-
-    def _outer_shape(self):
-        return pygame.draw.ellipse, [pygame.Rect(0, 0, self.size[0], self.size[1]), self.border]
-
-    def _update_draw_shape(self):
-        rect = pygame.Rect(0, 0, self.size[0], self.size[1])
-        rect.center = (self.position[0], self.position[1])
-        super()._update_draw_shape()
 
     @classmethod
     def from_topleft(cls, position: tuple, width: float, height: float):
@@ -212,10 +184,11 @@ class Arc(Ellipse):
         position: The position as 2-tuple. The ellipse is created at topleft position
         width: The width of the ellipse
         height: The height of the ellipse
-        start_angle: The start_angle 
-        end_angle: end_angle 
+        start_angle: The start_angle
+        end_angle: end_angle
 
     """
+
     def __init__(
         self, position=(0, 0), width: float = 10, height: float = 10, start_angle: float = 0, end_angle: float = 0
     ):
@@ -224,6 +197,7 @@ class Arc(Ellipse):
         if start_angle == end_angle:
             self._end_angle = start_angle + 360
         super().__init__(position, width, height)
+        self.costume = shape_costume.ArcCostume(self)
 
     @property
     def start_angle(self):
@@ -242,23 +216,6 @@ class Arc(Ellipse):
     def end_angle(self, value):
         self._end_angle = value
         self._update_draw_shape()
-
-    def _inner_shape(self):
-        p = []
-        for n in range(int(self.start_angle), int(self.end_angle), 1):
-            x = int(self.size[0] / 2 + self.width / 2 * math.cos(n * math.pi / 180))
-            y = int(self.size[1] / 2 - self.height / 2 * math.sin(n * math.pi / 180))
-            p.append((x, y))
-        p.append((self.size[0] / 2, self.size[1] / 2))
-        return pygame.draw.polygon, [p, 0]
-
-    def _outer_shape(self):
-        return pygame.draw.arc, [
-            pygame.Rect(0, 0, self.size[0], self.size[1]),
-            math.radians(self.start_angle),
-            math.radians(self.end_angle),
-            1,
-        ]
 
     @classmethod
     def from_topleft(cls, position: tuple, width: float, height: float, start_angle, end_angle):
@@ -311,10 +268,9 @@ class Line(Shape):
         self._start_position = start_position
         self._end_position = end_position
         super().__init__(start_position)
-        self._border = 1
-        self._fill = True
+        self.costume = shape_costume.LineCostume(self)
         self.position = start_position
-        self._update_draw_shape()
+        self.costume._update_draw_shape()
         box = self.get_bounding_box()
         self.position = box.topleft
 
@@ -339,27 +295,6 @@ class Line(Shape):
         )
         return box
 
-    def _update_draw_shape(self):
-        box = self.get_bounding_box()
-        width, height = box[2], box[3]
-        self.size = (width, height)
-        # mod_start: Start of line
-        _x_start = self.start_position[0] - box.topleft[0] - self.border
-        _y_start = self.start_position[1] - box.topleft[1] - self.border
-        self.local_start_position = (_x_start, _y_start)
-        # mod end: End of line
-        _x_end = self.end_position[0] - box.topleft[0] - self.border
-        _y_end = self.end_position[1] - box.topleft[1] - self.border
-        self.local_end_position = (_x_end, _y_end)
-        super()._update_draw_shape()
-        # self.costume.load_surface()
-
-    def _inner_shape(self):
-        return pygame.draw.line, [self.local_start_position, self.local_end_position, 0]
-
-    def _outer_shape(self):
-        return pygame.draw.line, [self.local_start_position, self.local_end_position, self.border]
-
     @property
     def start_position(self):
         return self._start_position
@@ -367,7 +302,7 @@ class Line(Shape):
     @start_position.setter
     def start_position(self, value: int):
         self._start_position = value
-        self.costume_manager.reload_costume()
+        self.costume.reload_transformations_after("all")
 
     @property
     def end_position(self):
@@ -376,7 +311,7 @@ class Line(Shape):
     @end_position.setter
     def end_position(self, value: int):
         self._end_position = value
-        self.costume_manager.reload_costume()
+        self.costume.reload_transformations_after("all")
 
     @property
     def thickness(self):
@@ -419,24 +354,13 @@ class Rectangle(Shape):
     ):
         self.check_arguments(topleft, width, height)
         super().__init__(topleft)
-        self._border = 1
+        self.costume = shape_costume.RectangleCostume(self)
         self.size = (width, height)
-        self._update_draw_shape()
+        self.costume._update_draw_shape()
 
     def check_arguments(self, topleft, width, height):
         if type(topleft) != tuple and type(topleft) != board_position.BoardPosition:
             raise RectFirstArgumentError(topleft)
-
-    def _update_draw_shape(self):
-        rect = pygame.Rect(0, 0, self.width, self.height)
-        rect.center = (self.position[0], self.position[1])
-        super()._update_draw_shape()
-
-    def _inner_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), 0]
-
-    def _outer_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), self.border]
 
     def set_physics_default_values(self):
         self.physics.shape_type = "rect"
@@ -477,29 +401,9 @@ class Polygon(Shape):
     """
 
     def __init__(self, pointlist):
-        self._border = 1
-        self._pointlist = pointlist
         super().__init__((0, 0))
-
-    def _update_draw_shape(self):
-        min_x = min([p[0] for p in self.pointlist])
-        min_y = min([p[1] for p in self.pointlist])
-        width = max([p[0] - min_x for p in self.pointlist]) + self.border
-        height = max([p[1] - min_y for p in self.pointlist]) + self.border
-        self.size = (width, height)
-        self.mod_pointlist = []
-        for point in self.pointlist:
-            x = point[0] - min_x
-            y = point[1] - min_y
-            self.mod_pointlist.append((x, y))
-        self.position = min_x, min_y
-        super()._update_draw_shape()
-
-    def _inner_shape(self):
-        return pygame.draw.polygon, [self.mod_pointlist, 0]
-
-    def _outer_shape(self):
-        return pygame.draw.polygon, [self.mod_pointlist, self.border]
+        self._pointlist = pointlist
+        self.costume = shape_costume.PolygonCostume(self, pointlist)
 
     @property
     def pointlist(self):
@@ -508,11 +412,9 @@ class Polygon(Shape):
     @pointlist.setter
     def pointlist(self, value: int):
         self._pointlist = value
-        self.costume_manager.reload_costume()
 
 
 class Triangle(Polygon):
     def __init__(self, p1: Tuple, p2: Tuple, p3: Tuple):
-        self._border = 1
         pointlist = [p1, p2, p3]
         super().__init__(pointlist)

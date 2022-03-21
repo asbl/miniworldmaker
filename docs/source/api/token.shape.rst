@@ -10,6 +10,7 @@ Base class for shapes
 .. autoclass:: miniworldmaker.tokens.shapes.Shape
    :members:
 
+
 Point
 =====
 

@@ -1,5 +1,5 @@
 Boards: TiledBoard
-*****************
+******************
 
 **TiledBoard** is a child class of **Board**
 
@@ -29,5 +29,7 @@ TiledBoard
 
 .. autoclass:: miniworldmaker.boards.tiled_board.TiledBoard
    :members:
+
+   .. autoclasstoc::
 
 

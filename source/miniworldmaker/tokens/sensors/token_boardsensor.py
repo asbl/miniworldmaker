@@ -22,7 +22,7 @@ class TokenBoardSensor():
         self.board.tokens.remove(self.token)
         self.token.board = None
 
-    def remove(self):
+    def self_remove(self):
         """
         Method is overwritten in subclasses
         """

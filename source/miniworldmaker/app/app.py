@@ -75,6 +75,8 @@ class App:
 
     def start_mainloop(self):
         self._mainloop_started = True
+        self.board.dirty = 1
+        self.board.background.dirty = 1
         while not self._quit:
             self._update()
         pygame.display.quit()

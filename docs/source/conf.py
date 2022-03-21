@@ -54,7 +54,9 @@ extensions = [
     'sphinx_autodoc_typehints',
     'sphinx.ext.napoleon',
     'myst_parser',
-    'sphinxcontrib.mermaid'
+    'sphinxcontrib.mermaid',
+    'sphinx.ext.autosummary',
+    'autoclasstoc',
 ]
 
 myst_enable_extensions = [
@@ -69,6 +71,9 @@ myst_enable_extensions = [
     "substitution",
     "tasklist",
 ]
+
+autodoc_default_flags = ['members', 'no-index']
+autosummary_generate = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -234,3 +239,4 @@ napoleon_include_init_with_doc = True
 # -- Type hints
 
 set_type_checking_flag = False
+

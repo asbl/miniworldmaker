@@ -27,6 +27,7 @@ class TiledBoard(miniworldmaker.Board):
         self.dynamic_tokens: set = set()  # Set with all dynamic actors
         self.static_tokens_dict: defaultdict = defaultdict(list)
         self.fixed_size = True
+        self.rotatable_tokens = True
 
     def get_token_connector(self, token) -> "tiled_board_connector.TiledBoardConnector":
         return tiled_board_connector.TiledBoardConnector(self, token)
@@ -57,11 +58,11 @@ class TiledBoard(miniworldmaker.Board):
 
     def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
         position = board_position_factory.BoardPositionFactory(self).create(position)
-        return self.position_handler.is_position_on_board(position)
+        return self.position_manager.is_position_on_board(position)
 
     def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
         position = board_position_factory.BoardPositionFactory(self).create(value)
-        return self.position_handler.get_borders_from_position(position)
+        return self.position_manager.get_borders_from_position(position)
 
     def _update_token_positions(self):
         """Updates the dynamic_tokens_dict.

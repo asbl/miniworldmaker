@@ -46,6 +46,8 @@ class EventManager:
             if event.type == pygame.QUIT:
                 self.app.quit()
             # Event: Mouse-Button Down
+            elif event.type == pygame.MOUSEBUTTONUP:
+                self.send_mouse_up(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.send_mouse_down(event)
             elif event.type == pygame.MOUSEMOTION:
@@ -69,8 +71,7 @@ class EventManager:
         return False
 
     def send_mouse_down(self, event):
-        """
-        function is called in 'process_pygame_events
+        """function is called in 'process_pygame_events
         """
         pos = pygame.mouse.get_pos()
         if event.button == 1:
@@ -81,6 +82,15 @@ class EventManager:
             self.send_event_to_containers("wheel_up", (pos[0], pos[1]))
         if event.button == 5:
             self.send_event_to_containers("wheel_down", (pos[0], pos[1]))
+
+    def send_mouse_up(self, event):
+        """function is called in 'process_pygame_events
+        """
+        pos = pygame.mouse.get_pos()
+        if event.button == 1:
+            self.send_event_to_containers("mouse_left_released", (pos[0], pos[1]))
+        if event.button == 3:
+            self.send_event_to_containers("mouse_right_released", (pos[0], pos[1]))
 
     def get_keys(self):
         key_codes = None

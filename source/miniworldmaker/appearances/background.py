@@ -1,8 +1,14 @@
-from typing import Union
+from typing import Union, Tuple
 
 import pygame
 from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances.managers import image_background_manager, image_manager, transformations_background_manager
+from miniworldmaker.appearances.managers import (
+    image_background_manager,
+    image_manager,
+    transformations_background_manager,
+)
+from miniworldmaker.app import app
+
 
 class Background(appearance.Appearance):
     """
@@ -21,7 +27,7 @@ class Background(appearance.Appearance):
 
             board = Board()
             Board.add_background(images/my_image.png)
-        
+
         Add a color as background:
 
         .. code-block:: python
@@ -41,27 +47,33 @@ class Background(appearance.Appearance):
 
     """
 
-    def __init__(self, board):
+    def __init__(self, board=None):
         super().__init__()
+        self._fill_color = (150, 150, 150, 255)  # for default image
         self.parent = board  #: The parent of a Background is the associated board.
+        if not board:
+            board = app.App.board
         self.board = board
         # Register image actions which you can be triggered
         self._grid = False
+        self._grid_color = (255,0, 255)
+        self.surface = None
         self._is_scaled_to_tile = False
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
+        self.reload_costumes_queue = []
         self.is_scaled = True
         self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
         self.image_manager = image_background_manager.ImageBackgroundManager(self)
-
-    def add_image(self, path):
-        super().add_image(path)
+        
+    def add_image(self, source: Union[str, pygame.Surface, Tuple] = None) -> int:
+        super().add_image(source)
         self.parent.app.window.display_update()
 
     def show_grid(self):
         self.grid = True
 
     @property
-    def grid(self) -> Union[bool, tuple] :
+    def grid(self) -> Union[bool, tuple]:
         """Shows a grid-overlay
 
         grid can be `True`, `False` or a color-tuple
@@ -92,16 +104,46 @@ class Background(appearance.Appearance):
         return self._grid
 
     @grid.setter
-    def grid(self, color=(255, 255, 255, 255)):
-        if color is True:
-            self._grid = True
-            color = (200, 80, 60)
-        if color is not False:
-            self._grid = True
-            self.color = color
-            self.reload_transformations_after("grid")
-        else:
-            self._grid = False
-            self.reload_transformations_after("grid")
-        self.parent.view_handler.full_repaint()
+    def grid(self, value):
+        self._grid = value
+        self.reload_transformations_after("all")
 
+    def repaint(self):
+        """Called 1/frame from board"""
+        self.board.tokens.clear(self.surface, self.image)
+        repaint_rects = self.board.tokens.draw(self.surface)
+        self.board.app.window.repaint_areas.extend(repaint_rects)
+
+    def reload_transformations_after(self, value):
+        """reloads all transformations (scale, upscale, draw shape, rotate for shape)
+
+        The transformation pipeline is not run through completely,
+        but starting from the passed parameter -
+        The remaining transformations are loaded from the cache.
+
+        "all": Reloads all Transformations
+        "scale": Reloads transformations after scale
+        ...
+        """
+        super().reload_transformations_after(value)
+        
+    def update_all_costumes(self):
+        """updates all costumes"""
+        [token.costume.update() for token in self.reload_costumes_queue]
+        self.board.reload_costumes_queue = []
+        if hasattr(self.board, "dynamic_tokens"):
+            [token.costume.update() for token in self.board.dynamic_tokens]
+
+    def _reload_dirty_image(self):
+        super()._reload_dirty_image()
+        self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
+        self.surface.blit(self.image, self.surface.get_rect())
+        for token in self.board.tokens:
+            token.dirty = 1
+        self.repaint_background()
+        self.update_all_costumes()
+
+    def repaint_background(self):
+        self.parent.app.window.surface.blit(self.image, (0, 0))
+        self.parent.app.window.add_display_to_repaint_areas()
+        self.repaint()

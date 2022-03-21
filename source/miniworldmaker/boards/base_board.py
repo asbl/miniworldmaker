@@ -6,125 +6,25 @@ from typing import List, Tuple, Type, Union
 
 import miniworldmaker
 import pygame
-from miniworldmaker.appearances import appearance, background
-from miniworldmaker.board_positions import (board_position,
-                                            board_position_factory,
-                                            board_rect_factory)
-from miniworldmaker.boards.board_handler import \
-    board_collision_handler as coll_handler
-from miniworldmaker.boards.board_handler import \
-    board_event_handler as event_handler
-from miniworldmaker.boards.board_handler import \
-    board_position_handler as pos_handler
-from miniworldmaker.boards.board_handler import \
-    board_view_handler as view_handler
+from miniworldmaker.appearances import appearance, background, backgrounds_manager
+from miniworldmaker.board_positions import board_position, board_position_factory, board_rect_factory
+from miniworldmaker.boards.board_manager import board_collision_manager as coll_manager
+from miniworldmaker.boards.board_manager import board_event_manager as event_manager
+from miniworldmaker.boards.board_manager import board_position_manager as pos_manager
 from miniworldmaker.boards.data import export_factory, import_factory
 from miniworldmaker.boards.token_connectors import token_connector
 from miniworldmaker.containers import container
 from miniworldmaker.dialogs import ask
 from miniworldmaker.exceptions.miniworldmaker_exception import (
-    BoardArgumentsError, BoardInstanceError, NotImplementedOrRegisteredError)
+    BoardArgumentsError,
+    BoardInstanceError,
+    NotImplementedOrRegisteredError,
+)
 from miniworldmaker.tokens import token as token_module
 from miniworldmaker.tools import board_inspection, color, timer
 
 
 class BaseBoard(container.Container):
-    """`BaseBoard` is the Base Class for Boards, e.g. `TiledBoard`, `PixelBoard` or `PhysicsBoard`.
-
-    You can create a custom board by inherit one of Board subclasses (TiledBoard, PixelBoard or PhysicsBoard) or by creating a board-object:
-
-    *Tiledboard*
-
-    A Board for Games based on Tiles (Like Rogue-Like RPGs).
-
-    * Every token on a TiledBoard has the size of exactly on one Tile. (If your tile_size is 40, every token has the size 40x40. )
-    
-    * The `position` of a token (*mytoken.position*) corresponds to the tile on which it is placed.
-    
-    * Two tokens **collide** when they are on the same tile.
-
-    .. image:: ../_images/tiled_board.jpg
-        :width: 100%
-        :alt: TiledBoard
-
-    Creating a TiledBoard:
-
-    .. code-block:: python
-
-        myboard = miniworldmaker.TiledBoard()
-
-    *PixelBoard*
-
-    A board for pixel accurate games.
-
-    * The position of a token on a PixelBoard is the pixel at toplef of token.
-
-    * New tokens are created with top-left corner of token rect at position.
-
-    * Two tokens collide when their sprites overlap.
-
-    .. image:: ../_images/asteroids.jpg
-        :width: 100%
-        :alt: Asteroids
-
-    Creating a PixelBoard:
-
-    .. code-block:: python
-
-        myboard = miniworldmaker.PixelBoard()
-
-    Examples:
-
-        Creating a TiledBoard Object:
-
-        .. code-block:: python
-
-            myboard = miniworldmaker.TiledBoard()
-            myboard.columns = 30
-            myboard.rows = 20
-            myboard.tile_size = 20
-
-
-        Creating a TiledBoard-Subclass as Class:
-
-        .. code-block:: python
-
-            class MyBoard(miniworldmaker.TiledBoard):
-
-                def on_setup(self):
-                    self.columns = 30
-                    self.rows = 20
-                    self.tile_size = 20
-
-        Creating a PixelBoard Object:
-
-        .. code-block:: python
-
-            myboard = miniworldmaker.PixelBoard()
-            myboard.columns = 300
-            myboard.rows = 200
-
-        Example: A PixelBoard Subclass
-
-        .. code-block:: python
-
-            class MyBoard(miniworldmaker.PixelBoard):
-
-                def on_setup(self):
-                    self.columns = 300
-                    self.rows = 200
-
-
-    See also:
-
-        * See: :doc:`Board <../api/board>`
-        * See: :doc:`TiledBoard <../api/board.tiledboard>`
-
-
-    Args:
-        columns: columns of new board (default: 40)
-        rows: rows of new board (default:40)
-    """
 
     subclasses = None
 
@@ -145,10 +45,12 @@ class BaseBoard(container.Container):
                 raise BoardArgumentsError(columns, rows)
         self._columns, self._rows, self._tile_size = columns, rows, tile_size
         self._tokens = pygame.sprite.LayeredDirty()
-        self.event_handler: event_handler.BoardEventHandler = event_handler.BoardEventHandler(self)
+        self.event_manager: event_manager.BoardEventHandler = event_manager.BoardEventHandler(self)
         super().__init__()
-        self.view_handler: "view_handler.BoardViewHandler" = view_handler.BoardViewHandler(self)
-        self.position_handler: "pos_handler.BoardPositionHandler" = pos_handler.BoardPositionHandler(self)
+        self.backgrounds_manager: "backgrounds_manager.BackgroundsManager" = backgrounds_manager.BackgroundsManager(
+            self
+        )
+        self.position_manager: "pos_manager.BoardPositionHandler" = pos_manager.BoardPositionHandler(self)
         self.ask: "ask.Ask" = ask.Ask(self)
         pygame.init()
         self._is_setup: bool = False
@@ -156,10 +58,12 @@ class BaseBoard(container.Container):
         self._key_pressed: bool = False
         self._animated: bool = False
         self._orientation: int = 0
-        self._static : bool = False
+        self._static: bool = False
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
-        self._fill_color = (255, 255, 255, 255)
-        self._stroke_color = (0, 0, 0, 255)
+        self._default_is_filled = False
+        self._default_fill_color = None
+        self._default_border_color = None
+        self._default_border = None
         self.is_running: bool = True
         self.frame: int = 0
         self.clock: pygame.time.Clock = pygame.time.Clock()
@@ -167,13 +71,15 @@ class BaseBoard(container.Container):
         self.app: miniworldmaker.App = miniworldmaker.App("miniworldmaker")
         self.app.container_manager.add_container(self, "top_left")
         miniworldmaker.App.board = self
-        self.view_handler.init_background(None)
-        self.view_handler.update_background()
-        self.collision_handler: "coll_handler.BoardCollisionHandler" = coll_handler.BoardCollisionHandler(self)
+        self.background = background.Background(self)
+        self.background.update()
+        self.collision_manager: "coll_manager.BoardCollisionHandler" = coll_manager.BoardCollisionHandler(self)
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.dynamic_tokens = set()
         self.fixed_size = False
+        self._container_width = self.columns * self.tile_size
+        self._container_height = self.rows * self.tile_size
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return token_connector.TokenConnector(self, token)
@@ -220,91 +126,18 @@ class BaseBoard(container.Container):
         """
         The width of the container
         """
-        if self.view_handler.repaint_all:
-            self._container_width = self.columns * self.tile_size 
-        return self._container_width
+        return self.columns * self.tile_size
 
     @property
     def container_height(self) -> int:
         """
         The height of the container
         """
-        if self.view_handler.repaint_all:
-            self._container_height = self.rows * self.tile_size
-        return self._container_height
-
-    @property
-    def speed(self) -> int:
-        """The game logic is called every ``speed`` steps. 
-        
-        If speed = 30, act is called at frame 30, 60, 90, ...
-
-        Examples:
-
-          Set speed and fps. 
-
-          .. code-block:: python
-
-            board.speed = 10
-            board.fps = 24
-            def act(self):
-                nonlocal i
-                i = i + 1
-                print(board.frame, i)
-                if board.frame == 120:
-
-        """
-        return self._speed
-
-    @speed.setter
-    def speed(self, value: int):
-        self._speed = value
+        return self.rows * self.tile_size
 
     @property
     def has_background(self) -> bool:
-        return self.view_handler.has_background
-
-    @property
-    def fps(self) -> int:
-        """
-        Frames per second shown on the screen.
-
-        This controls how often the screen is redrawn. However, the game logic
-        can be called more often or less often independently of this with board.speed.
-
-        Examples:
-
-        .. code-block:: python
-
-            board.speed = 10
-            board.fps = 24
-            def act(self):
-                nonlocal i
-                i = i + 1
-                print(board.frame, i)
-                if board.frame == 120:
-                    test_instance.assertEqual(i, 13)
-                    test_instance.assertEqual(board.frame, 120)
-        """
-        return self._fps
-
-    @fps.setter
-    def fps(self, value: int):
-        self._fps = value
-
-    @property
-    def width(self) -> int:
-        """
-        See container_width
-        """
-        return self.container_width
-
-    @property
-    def height(self) -> int:
-        """
-        See container_height
-        """
-        return self.container_height
+        return self.backgrounds_manager.has_background
 
     @property
     def window(self) -> miniworldmaker.App:
@@ -318,126 +151,16 @@ class BaseBoard(container.Container):
         return self._window
 
     @property
-    def rows(self) -> int:
-        """
-        The number of rows
-        """
-        return self._rows
-
-    @rows.setter
-    def rows(self, value: int):
-        self._rows = value
-        self.app.window.dirty = 1
-        self.view_handler.full_repaint()
-
-    @property
-    def columns(self) -> int:
-        """
-        The number of columns
-        """
-        return self._columns
-
-    @columns.setter
-    def columns(self, value: int):
-        self._columns = value
-        self.app.window.dirty = 1
-        self.view_handler.full_repaint()
-
-    @property
-    def size(self) -> tuple:
-        """Set size of board
-
-        Examples:
-
-          .. code-block:: python
-
-            board = miniworldmaker.PixelBoard()
-            board.size = (800, 600)
-        """
-        return (self.columns, self.rows)
-
-    @size.setter
-    def size(self, value: tuple):
-        self.columns = value[0]
-        self.rows = value[1]
-        self.view_handler.full_repaint()
-        self.app.window.dirty = 1
-
-    @property
-    def fill_color(self):
-        """Set default fill color for borders and lines
-        """
-        return self._fill_color
-
-    @fill_color.setter
-    def fill_color(self, value):
-        self._fill_color = color.Color(value).get()
-
-    def fill(self, value):
-        """Set default fill color for borders and lines
-        """
-        self._fill_color = color.Color(value).get()
-
-    @property
-    def stroke_color(self):
-        """Set default stroke color for borders and lines. (equivalent to border-color)
-        """
-        return self._stroke_color
-
-    @stroke_color.setter
-    def stroke_color(self, value):
-        self._stroke_color = color.Color(value).get()
-
-    def stroke(self, value):
-        """Set default stroke color for borders and lines. (equivalent to border-color)
-        """
-        self._stroke_color = color.Color(value).get()
-
-    @property
-    def border_color(self):
-        """Set default border color for borders and lines.
-        """
-        return self.stroke_color
-
-    @stroke_color.setter
-    def border_color(self, value):
-        self.stroke_color = value
-
-    @property
-    def tile_size(self) -> int:
-        """
-        The number of columns
-        """
-        return self._tile_size
-
-    @tile_size.setter
-    def tile_size(self, value: int):
-        self._tile_size = value
-        self.app.window.dirty = 1
-        self.view_handler.full_repaint()
-
-    @property
-    def tokens(self) -> pygame.sprite.LayeredDirty:
-        """
-        A list of all tokens registered to the grid.
-        """
-        return self._tokens
-
-    @property
     def class_name(self) -> str:
         return self.__class__.__name__
 
     @property
     def registered_events(self) -> set:
-        return self.event_handler.registered_events
+        return self.event_manager.registered_events
 
     @registered_events.setter
     def registered_events(self, value):
-        return  # setter is defined so that board_event_handler is not overwritten by board parent class container
-
-    @property
-    def background(self):
-        return self.view_handler.background
+        return  # setter is defined so that board_event_manager is not overwritten by board parent class container
 
     def remove_from_board(self, token: token_module.Token):
         """Removes a token from board.
@@ -448,45 +171,6 @@ class BaseBoard(container.Container):
 
         """
         self.get_token_connector(token).remove_token_from_board(token)
-
-    def remove_background(self, background=None):
-        """Removes a background from board
-
-        Args:
-            index: The index of the new background. Defaults to -1 (last background)
-        """
-        self.view_handler.remove_background()
-
-    def add_background(self, source: Union[str, tuple]) -> "background.Background":
-        """
-        Adds a new background to the board
-
-        Args:
-            source: The path to the first image of the background or a color
-
-        Examples:
-
-            Multiple Backgrounds:
-
-            .. code-block:: python
-
-                board = miniworldmaker.TiledBoard()
-                ...
-                board.add_background("images/soccer_green.jpg")
-                board.add_background("images/space.jpg")
-
-        Returns:
-            The new created background.
-        """
-        return self.view_handler.add_background(source)
-
-    @property
-    def background(self):
-        return self.view_handler.background
-
-    @background.setter
-    def background(self, source):
-        self.view_handler.add_background(source)
 
     def add_to_board(self, token, position: tuple):
         """
@@ -500,11 +184,11 @@ class BaseBoard(container.Container):
         self.get_token_connector(token).add_token_to_board(token, position)
 
     def blit_surface_to_window_surface(self):
-        self.app.window.surface.blit(self.surface, self.rect)
+        self.app.window.surface.blit(self.background.surface, self.rect)
 
     def get_colors_at_position(self, position: tuple):
         position = board_position_factory.BoardPositionFactory(self).create(position)
-        return self.position_handler.get_color(position)
+        return self.position_manager.get_color(position)
 
     def get_colors_at_line(self, line: list):
         """
@@ -542,7 +226,7 @@ class BaseBoard(container.Container):
           Get all tokens at mouse position:
 
           .. code-block:: python
-    
+
               position = board.get_mouse_position()
               tokens = board.get_tokens_by_pixel(position)
 
@@ -554,21 +238,8 @@ class BaseBoard(container.Container):
 
     @property
     def image(self) -> pygame.Surface:
-        """
-        The current displayed image
-        """
-        return self.view_handler.image
-
-    @property
-    def surface(self):
-        return self.view_handler.surface
-
-    @surface.setter
-    def surface(self, value):
-        """
-        Method is overwritten in subclasses
-        """
-        pass
+        """The current displayed image"""
+        return self.backgrounds_manager.image
 
     def remove_tokens_from_rect(self, rect, token_class=None, exclude=None):
         """Removes all tokens in an area
@@ -586,25 +257,6 @@ class BaseBoard(container.Container):
             if token is not None:
                 [token.remove() for token in BaseBoard.filter_actor_list(tokens, token_class)]
 
-    def start(self):
-        self.is_running = True
-
-    def stop(self, frames=1):
-        """
-        stops the board in n-frames
-        """
-        if frames == 0:
-            self.is_running = False
-        else:
-            timer.ActionTimer(frames, self.stop, 0)
-
-    def clear(self):
-        self.clean()
-
-    def clean(self):
-        for token in self.tokens:
-            token.remove()
-
     def reset(self):
         """Resets the board
         Creates a new board with init-function - recreates all tokens and actors on the board.
@@ -614,7 +266,7 @@ class BaseBoard(container.Container):
             Restarts flappy the bird game after collision with pipe:
 
             .. code-block:: python
-            
+
               def on_sensing_collision_with_pipe(self, other, info):
                   self.board.is_running = False
                   self.board.reset()
@@ -622,39 +274,7 @@ class BaseBoard(container.Container):
         self.app.event_manager.send_event_to_containers("reset", self)
 
     def repaint(self):
-        self.view_handler.repaint()
-
-    def run(self, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False, event=None, data=None):
-        """
-        The method show() should always called at the end of your program.
-        It starts the mainloop.
-
-        Examples:
-    
-            .. code-block:: python
-            
-              my_board = Board() # or a subclass of Board
-              my_board.show()
-
-        """
-        if not self._is_setup and hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
-            self.event_handler.handle_event("setup", None)
-            self.app.event_manager.send_event_to_containers("setup", self)
-        if event:
-            self.app.event_manager.send_event_to_containers(event, data)
-        self.app.run(self.image, fullscreen=fullscreen, fit_desktop=fit_desktop, replit=replit)
-
-    def switch_background(self, background: Union[int, Type[appearance.Appearance]]) -> background.Background:
-        """Switches the background of costume
-
-        Args:
-            index: The index of the new costume. If index=-1, the next costume will be selected
-
-        Returns:
-            The new costume
-
-        """
-        self.view_handler.switch_background(background)
+        self.background.repaint()  # called 1/frame in container.repaint()
 
     def update(self):
         # This is the board-mainloop()
@@ -664,18 +284,18 @@ class BaseBoard(container.Container):
             if self.frame > 0 and self.frame % self.speed == 0:
                 self.act_all()
                 self._run_next_line_in_started_method()
-            self.collision_handler.handle_all_collisions()
-            self.position_handler.update_positions()
+            self.collision_manager.handle_all_collisions()
+            self.position_manager.update_positions()
             # run animations
-            self.view_handler.update_all_costumes()
-            self.view_handler.update_background()
+            self.background.update_all_costumes()
+            self.background.update()
             self._tick_timed_objects()
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
-        self.event_handler.executed_events.clear()
+        self.event_manager.executed_events.clear()
 
     def _run_next_line_in_started_method(self):
-        for on_started_method in self.event_handler.registered_events["on_started"]:
+        for on_started_method in self.event_manager.registered_events["on_started"]:
             line_number = self.frame // self.speed + 1
             if on_started_method and self.frame % self.speed == 0 and self.frame != 0:
                 self._run_line(on_started_method, line_number)
@@ -686,7 +306,7 @@ class BaseBoard(container.Container):
             exec(method_source[line_number].strip())
 
     def act_all(self):
-        self.event_handler.act_all()
+        self.event_manager.act_all()
 
     def _tick_timed_objects(self):
         [obj.tick() for obj in self.timed_objects]
@@ -699,75 +319,19 @@ class BaseBoard(container.Container):
             event (str): The event which was thrown, e.g. "key_up", "act", "reset", ...
             data: The data of the event (e.g. ["S","s"], (155,3), ...
         """
-        self.event_handler.handle_event(event, data)
-
-    def play_sound(self, path: str):
-        self.app.sound_manager.play_sound(path)
-
-    def play_music(self, path: str):
-        """
-        plays a music by path
-
-        Args:
-            path: The path to the music
-
-        Returns:
-
-        """
-        self.app.sound_manager.play_music(path)
+        self.event_manager.handle_event(event, data)
 
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.view_handler.find_colors(rect, color, threshold)
-
-    def get_mouse_position(self) -> Union[board_position.BoardPosition, None]:
-        """
-        Gets the current mouse_position
-
-        Returns:
-            Returns the mouse position if mouse is on board. Returns None otherwise
-
-        Examples:
-            This example shows you how to use the mouse_position
-
-            .. code-block:: python
-
-                def act(self):
-                    mouse = self.board.get_mouse_position()
-                    if mouse:
-                        self.point_towards_position(mouse)
-        """
-        return self.position_handler.mouse_position
-
-    def get_mouse_x(self):
-        if self.position_handler.mouse_position:
-            return self.position_handler.mouse_position[0]
-        else:
-            return 0
-
-    def get_mouse_y(self):
-        if self.position_handler.mouse_position:
-            return self.position_handler.mouse_position[1]
-        else:
-            return 0
-
-    def get_prev_mouse_position(self):
-        return self.position_handler.prev_mouse_position
-
-    def is_mouse_pressed(self) -> bool:
-        if pygame.mouse.get_pressed()[0]:
-            return True
-        else:
-            return False
-            
+        return self.backgrounds_manager.find_colors(rect, color, threshold)
 
     def get_board_position_from_pixel(self, pixel):
         return board_position_factory.BoardPositionFactory(self).from_pixel(pixel)
 
     def _update_event_handling(self):
-        self.event_handler.update_event_handling()
+        self.event_manager.update_event_handling()
 
     def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
-        return self.position_handler.is_position_on_board(position)
+        return self.position_manager.is_position_on_board(position)
 
     def register(self, method: callable) -> callable:
         """
@@ -777,23 +341,11 @@ class BaseBoard(container.Container):
         def method...
         """
         bound_method = board_inspection.BoardInspection(self).bind_method(method)
-        self.event_handler.register_event(method.__name__, self)
+        self.event_manager.register_event(method.__name__, self)
         return bound_method
-
-    def send_message(self, message, data=None):
-        self.app.event_manager.send_event_to_containers("message", message)
-
-    def screenshot(self, filename="screenshot.jpg"):
-        pygame.image.save(self.app.window.surface, filename)
-
-    def quit(self, exit_code=0):
-        self.app.quit(exit_code)
 
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)
-
-    def switch_board(self, new_board: Board):
-        self.event_handler.handle_switch_board_event(new_board)
 
     def get_tokens_by_class_name(self, classname: str):
         return [token for token in self._tokens if token.__class__.__name__ == classname]
@@ -836,3 +388,20 @@ class BaseBoard(container.Container):
 
     def is_on_board(self) -> bool:
         self.is_position_on_board(self.position)
+
+    def _filter_tokens_by_type(self, token_list, token_type):
+        filtered_tokens = token_list
+        # token class_name --> class
+        if type(token_type) == str:  # is token_type a string
+            token_type = self.find_token_class_for_name(token_type)
+        # single token --> list
+        if isinstance(token_type, token_module.Token):  # is_token_type a object?
+            token_list = [token_type]
+        # filter
+        if token_type:
+            filtered_tokens = [
+                token
+                for token in token_list
+                if (issubclass(token.__class__, token_type) or token.__class__ == token_type)
+            ]
+        return filtered_tokens

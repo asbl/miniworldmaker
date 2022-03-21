@@ -31,3 +31,5 @@ Background
 
 .. autoclass:: miniworldmaker.appearances.background.Background
    :members:
+
+   .. autoclasstoc::

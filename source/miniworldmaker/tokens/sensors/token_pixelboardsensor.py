@@ -19,7 +19,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
 
     def sensing_on_board(self, distance=0) -> bool:
         target_rect = self.get_destination_rect(distance)
-        return self.board.position_handler.is_rect_completly_on_board(target_rect)
+        return self.board.position_manager.is_rect_completly_on_board(target_rect)
 
     def sensing_borders(self, distance: int = 0) -> list:
         """
@@ -30,7 +30,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         borders = None
         for _ in range(distance + 1):
             target_rect = self.get_destination_rect(distance)
-            borders = self.board.position_handler.get_borders_from_rect(target_rect)
+            borders = self.board.position_manager.get_borders_from_rect(target_rect)
             if borders:
                 return borders
             else:

@@ -1,63 +1,99 @@
 from __future__ import annotations
-import math
+from miniworldmaker.tokens import base_token
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
-import pygame
-import pygame.gfxdraw
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
+from miniworldmaker.appearances import costumes_manager
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import (
-    NoValidBoardPositionError,
-    TokenArgumentShouldBeTuple,
     NotImplementedOrRegisteredError,
-    NoBoardError
+    NoBoardError,
 )
 from miniworldmaker.tools import token_inspection
 from miniworldmaker.dialogs import ask
-from miniworldmaker.tools import color
 import miniworldmaker
 
 
-class Meta(type):
-    def __call__(cls, *args, **kwargs):
-        try:
-            instance = super().__call__(*args, **kwargs)
-        except NoValidBoardPositionError:
-            raise TokenArgumentShouldBeTuple()
-        _token_connector = instance.board.get_token_connector(instance)
-        _token_connector.add_token_to_board(instance._position)
-        return instance
-
-class Token(pygame.sprite.DirtySprite, metaclass=Meta):
+class Token(base_token.BaseToken):
     """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
 
     The appearance of a token is determined by its :doc:`Costume <../key_concepts/costumes>`.
 
     Examples:
 
-        Creating a token:
+        Create a token:
 
         .. code-block:: python
 
-          board = miniworldmaker.PixelBoard()
-          board.size = (800,300)
-          my_token = miniworldmaker.Token(position=(0, 0))
+            from miniworldmaker import *
 
-        Creating a token Class:
+            board = Board()
+            board.size = (100,60)
+            Token(position=(10, 10))
+
+            board.run()
+
+        Output:
+
+        .. image:: ../_images/token1.png
+            :width: 100px
+            :alt: Create a token
+
+        Create a token with a image:
 
         .. code-block:: python
 
-          class MyToken(miniworldmaker.Token):
-              def on_setup(self):
-                  self.add_costume("images/2.png")
+            from miniworldmaker import *
 
-          my_token = MyToken(position = (40,130))
+            board = Board(100,60)
+            token = Token((10, 10))
+            token.add_costume("images/player.png")
 
-        Creating a Circle from Center at mouse position
+            board.run()
+
+        Output:
+
+        .. image:: ../_images/token2.png
+            :width: 100px
+            :alt: Create a Token with image
 
         .. code-block:: python
 
-          circle = miniworldmaker.Circle(self.get_mouse_position(), 80)
+            import miniworldmaker
+
+            class MyToken(miniworldmaker.Token):
+
+                def on_setup(self):
+                    self.add_costume("images/player.png")
+
+            board = Board(100,60)
+            my_token = MyToken(position = (40,130))
+            board.run()
+
+        Output:
+
+        .. image:: ../_images/token1.png
+            :width: 100px
+            :alt: Create a token
+
+        Create a Token at current mouse position:
+
+        .. code-block:: python
+
+            from miniworldmaker import *
+
+            board = Board()
+
+            @board.register
+            def act(self):
+                Token(self.get_mouse_position())
+
+            board.run()
+
+        .. image:: ../_images/token3.png
+            :width: 100px
+            :alt: Create a token at mouse position
+
 
     See Also:
 
@@ -68,59 +104,33 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         position: The topleft position of the token as tuple,. e.g. (200,200)
     """
 
-    token_count: int = 0
-    class_image: str = ""
-
-    def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None):
-        self._collision_type: str = ""
-        self._layer: int = 0
-        self._border = 0
-        self._fill = False
-        self._fill_color = (0,0,0,0)      
-        self._stroke_color = (0,0,0,0) 
-        self._inner = 0   
-        self._managers: list = list()
-        self.token_id: int = Token.token_count + 1
-        self.costume_manager: miniworldmaker.TokenCostumeManager = None
-        self.board_sensor: miniworldmaker.TokenBoardSensor = None
-        self.position_manager: miniworldmaker.TokenPositionManager = None
-        self.board: miniworldmaker.Board = miniworldmaker.App.board
-        if not self.board:
-            raise NoBoardError()
-        _token_connector = self.board.get_token_connector(self)
-        _token_connector.add_token_managers(None, position)
-        pygame.sprite.DirtySprite.__init__(self)
-        Token.token_count += 1
-        self.static: bool = False
-        self.speed: int = 1
-        self._position: "board_position.BoardPosition" = position
-        self.ask: "ask.Ask" = ask.Ask(self.board)
 
 
     @property
     def collision_type(self) -> str:
         """collision_type specifies how collisions should be checked:
 
-            * `default`: tile for TiledBoards, 'mask' for PixelBoards
+        * `default`: tile for TiledBoards, 'mask' for PixelBoards
 
-            * `tile`: Are tokens on the same tile? (only TiledBoard)
+        * `tile`: Are tokens on the same tile? (only TiledBoard)
 
-            * `rect`: Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
+        * `rect`: Are tokens colliding when checking their bounding - boxes? (Only PixelBoard)
 
-            * `static-rect`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+        * `static-rect`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
 
-            * `circle`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
+        * `circle`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
 
-            * `mask`: Are tokens colliding when checkig if their image masks are overlapping.
+        * `mask`: Are tokens colliding when checkig if their image masks are overlapping.
         """
         return self._collision_type
 
     @collision_type.setter
-    def collision_type(self, value : str):
+    def collision_type(self, value: str):
         self._collision_type = value
 
     @property
     def layer(self) -> int:
+        """defines layer the token is drawn, if multiple tokens overlap."""
         return self._layer
 
     @layer.setter
@@ -155,101 +165,172 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     @property
     def is_flipped(self) -> bool:
         """
-        If a token is flipped, it is mirrored via the y-axis.
+        If a token is flipped, it is mirrored via the y-axis. You can use this property in 2d-plattformers to change the direction of token.
+
+        .. note::
+
+            It may be neccessary to set ``is_rotatable = True``
+
+        Examples:
+
+            Flip a costume after 100 frames.
+
+            .. code-block::
+
+                from miniworldmaker import *
+
+                board = Board(100,100)
+                token = Token()
+                token.add_costume("images/alien1.png")
+                token.height= 400
+                token.width = 100
+                token.is_rotatable = False
+                @token.register
+                def act(self):
+                    if self.board.frame % 100 == 0:
+                        if self.is_flipped:
+                            self.is_flipped = False
+                        else:
+                            self.is_flipped = True
+                board.run()
+
+            Output:
+
+            .. raw:: html
+
+                <video loop autoplay muted width=200>
+                <source src="../_static/flipalien.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
 
         Returns:
             True, if token is flipped
 
-        Examples:
-
-            flip a token in Example flipthefish.py
-
-            .. code-block:: python
-
-              def on_sensing_not_on_board(self):
-                  self.move_back()
-                  self.flip_x()
-                  print(self.is_flipped()) # true
         """
         return self.costume.is_flipped
 
     @is_flipped.setter
     def is_flipped(self, value: bool):
-        self.costume_manager.flip_costume(value)
+        self.costume.is_flipped = value
 
     def flip_x(self) -> int:
-        """Flips the actor by 180° degrees
+        """Flips the actor by 180° degrees. The costume is flipped and the tokens direction changed by 180 degrees.
 
         .. image:: ../_images/flip_x.png
 
-        Returns:
-            int: The new direction
-
         Examples:
 
-            flip a token.
+            Flip a token in Example flipthefish.py
 
             .. code-block:: python
 
-              def on_sensing_not_on_board(self):
-                  self.move_back()
-                  self.flip_x()
+                from miniworldmaker import *
+
+                board=TiledBoard()
+                board.columns = 4
+                board.rows = 1
+                board.add_background("images/water.png")
+                fish = Token()
+                fish.border = 1
+                fish.add_costume("images/fish.png")
+                fish.direction = "right"
+                fish.orientation = -90
+                @fish.register
+                def act(self):
+                    self.move()
+                    print(fish.position)
+
+                @fish.register
+                def on_sensing_not_on_board(self):
+                    self.move_back()
+                    self.flip_x()
+
+                board.run()
+
+            Output:
+
+            .. raw:: html
+
+                <video loop autoplay muted width=200>
+                <source src="../_static/flipthefish.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
+
         """
         return self.position_manager.flip_x()
 
-    def __str__(self):
-        if self.board and hasattr(self.board, "position_manager"):
-            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
-                self.class_name, self.token_id, self.position, self.size
-            )
-        else:
-            return "**: {0}; ID: {1}".format(self.class_name, self.token_id)
-
-    @property
-    def image(self) -> pygame.Surface:
-        """
-        The image of the token:
-
-        .. warning::
-          Warning: You should not directly draw on the image
-          as the image will be reloaded during animations
-
-        """
-        return self.costume_manager.image
-
-    @property
-    def dirty(self) -> int:
-        """If token is dirty, it will be repainted.
-
-        Returns:
-
-            int: 1 if token is dirty/0 otherwise
-        """
-        if self.costume_manager:
-            return self.costume_manager.dirty
-
-    @dirty.setter
-    def dirty(self, value: int):
-        if self.costume_manager:
-            self.costume_manager.dirty = value
-
-    @property
-    def rect(self) -> pygame.Rect:
-        """
-        The surrounding Rectangle as pygame.Rect.
-        Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
-        """
-        return self.position_manager.rect
-
-    def get_rect(self) -> pygame.Rect:
-        return self.position_manager.rect
-
-    def add_costume(self, source=(255, 255, 0, 0)) -> costume.Costume:
+    def add_costume(self, source: Union[Tuple, str] = None) -> costume.Costume:
         """Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
         Args:
-            path: Path to the first image of new costume
+            source: Path to the first image of new costume or Tuple with color-value
+
+        Examples:
+
+            Add first costume from image:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board((100,60))
+                token = Token((10,10))
+                costume = token.add_costume("images/player.png")
+
+                board.run()
+
+
+            Output:
+
+            .. image:: ../_images/add_costume1.png
+                :width: 100px
+                :alt: Create Token with image as costume
+
+            Add first costume from color:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board((100,60))
+                token = Token((10,10))
+                costume = token.add_costume((255,255,0))
+
+                board.run()
+
+            Output:
+
+            .. image:: ../_images/add_costume2.png
+                :width: 100px
+                :alt: Create Token with image as costume
+
+
+            Create two costumes and switch between costumes
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board((100,60))
+                token = Token((10,10))
+                board.speed = 30
+                costume1 = token.add_costume((255,255,0))
+                costume2 = token.add_costume((255,0,255))
+                @token.register
+                def act(self):
+                    if self.costume == costume1:
+                        self.switch_costume(costume2)
+                    else:
+                        self.switch_costume(costume1)
+
+                board.run()
+
+            Output:
+
+            .. image:: ../_images/add_costume3.png
+                :width: 100%
+                :alt: Create multiple costumes and switch between costumes
 
         Returns:
             The new costume.
@@ -271,7 +352,27 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Args:
             next: If next is True, the next costume will be selected
 
-        Returns: 
+        Examples:
+
+            Switch a costume:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(100,60)
+                t = Token()
+                costume =t1.add_costume("images/1.png")
+                t.add_costume("images/2.png")
+                t.switch_costume(1)
+
+                @timer(frames = 40)
+                def switch():
+                    t1.switch_costume(0)
+
+                board.run()
+
+        Returns:
             The new costume
         """
         self.costume_manager.switch_costume(costume)
@@ -282,7 +383,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Args:
             next: If next is True, the next costume will be selected
 
-        Returns: 
+        Returns:
             The new costume
         """
         self.costume_manager.next_costume()
@@ -354,6 +455,53 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                     elif "D" in keys:
                         self.direction = "right"
                     self.move()
+
+            Move 45°:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(100, 100)
+                c = Circle ((50,50), 10)
+
+                @c.register
+                def act(self):
+                    c.direction = 45
+                    c.move()
+                        
+                board.run()
+
+
+            .. raw:: html
+
+                <video loop autoplay muted width=400>
+                <source src="../_static/move45.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
+
+            Move -45°:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(100, 100)
+                c = Circle ((50,50), 10)
+
+                @c.register
+                def act(self):
+                    c.direction = -45
+                    c.move()
+                        
+                board.run()
+
+            .. raw:: html
+
+                <video loop autoplay muted width=400>
+                <source src="../_static/moveminus45.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
         """
         return self.position_manager.direction
 
@@ -363,15 +511,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def direction_at_unit_circle(self) -> int:
-        """
-        Gets the direction as value in unit circle (0° right, 90° top, 180° left...
+        """Gets the direction as value in unit circle (0° right, 90° top, 180° left...
         """
         return self.position_manager.dir_to_unit_circle(self.direction)
 
     @direction_at_unit_circle.setter
     def direction_at_unit_circle(self, value: int):
-        """
-        Sets the direction from unit circle
+        """Sets the direction from unit circle
         Args:
             value: An angle in the unit circle, e.g. 0°: right, 90° top, ...
         """
@@ -384,6 +530,32 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Options:
           * You can set the value token.is_rotatable = False if you don't want the token to be rotated.
+
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(100, 100)
+                t = Token()
+                t.add_costume("images/arrow.png")
+                t.size = (100,100)
+
+                @t.register
+                def act(self):
+                    t.turn_left(1)
+                    
+                board.run()
+
+            Output:
+
+            .. raw:: html
+       
+                <video loop autoplay muted width=400>
+                <source src="../_static/turnleft.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
 
         Args:
             degrees: degrees in left direction
@@ -398,6 +570,32 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         """Turns token by *degrees* degrees right
 
         .. image:: ../_images/turn_right.png
+
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(100, 100)
+                t = Token()
+                t.add_costume("images/arrow.png")
+                t.size = (100,100)
+
+                @t.register
+                def act(self):
+                    t.turn_left(1)
+                    
+                board.run()
+
+        Output:
+       
+        .. raw:: html
+        
+            <video loop autoplay muted width=400>
+            <source src="../_static/turnright.webm" type="video/webm">
+            Your browser does not support the video tag.
+            </video>
 
         Options:
           * You can set the value token.is_rotatable = False if you don't want the token to be rotated.
@@ -461,7 +659,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             Point towards mouse_position:
 
             .. code-block:: python
-            
+
                 def act(self):
                     mouse = self.board.get_mouse_position()
                 if mouse:
@@ -497,8 +695,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def width(self):
-        """The width of the token in pixels. 
-        
+        """The width of the token in pixels.
+
         When the width of a token is changed, the height is scaled proportionally.
 
         Examples:
@@ -524,7 +722,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                 t2 = create_token(300,0)
                 t2.width = 180
 
-                board.run() 
+                board.run()
 
             .. image:: ../_images/widthheight.png
                 :alt: Textured image
@@ -535,13 +733,13 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def width(self, value):
         old_width = self.size[0]
         old_height = self.size[1]
-        scale_factor = value/old_width
-        self.size = (value, old_height*scale_factor)
+        scale_factor = value / old_width
+        self.size = (value, old_height * scale_factor)
 
     @property
     def height(self):
-        """The height of the token in pixels. 
-        
+        """The height of the token in pixels.
+
         When the height of a token is changed, the width is scaled proportionally.
 
         Examples:
@@ -567,7 +765,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
                 t2 = create_token(300,0)
                 t2.width = 180
 
-                board.run() 
+                board.run()
 
             .. image:: ../_images/widthheight.png
                 :alt: Textured image
@@ -578,9 +776,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def height(self, value):
         old_width = self.size[0]
         old_height = self.size[1]
-        scale_factor = value/old_height
+        scale_factor = value / old_height
         self.size = (old_width * scale_factor, value)
-
 
     @property
     def position(self) -> board_position.BoardPosition:
@@ -674,9 +871,9 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Examples:
 
             if token is on the board, move forward:
-            
+
             .. code-block:: python
-            
+
                 class Robot(Token):
 
                     def act(self):
@@ -718,7 +915,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         Examples:
 
             move_back when field is blocked:
-            
+
             .. code-block:: python
 
                 def on_sensing_wall(self, wall):
@@ -766,7 +963,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             move to (3, 2) on mouse_click
 
             .. code-block:: python
-                
+
                 def on_clicked_left(self, position):
                     self.move_to((3,2))
 
@@ -795,13 +992,58 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         if hasattr(self, "board") and self.board:
             self.board.remove_from_board(self)
         for manager in self._managers:
-            manager.remove()
+            manager.self_remove()
             del manager
         self.kill()
         del self
 
     @property
     def is_rotatable(self) -> bool:
+        """Defines if the costume of a token should be rotatable. The token can still be rotated with the ``direction`` property, but its costume won't be changed
+
+        .. note::
+
+            You can also use ``token.costume.is_rotatable``
+
+        Examples:
+
+            Create a rotatable and a not rotatable token
+
+            .. code-block::
+
+                from miniworldmaker import *
+                board = Board()
+
+                t1 = Token((100,100))
+                t1.add_costume("images/alien1.png")
+
+                t2 = Token((200,200))
+                t2.add_costume("images/alien1.png")
+                t2.is_rotatable = False
+
+                @t1.register
+                def act(self):
+                    self.move()
+                    self.direction += 1
+
+                @t2.register
+                def act(self):
+                    self.move()
+                    self.direction += 1
+
+                board.run()
+
+
+            Output:
+
+            .. raw:: html
+
+                <video loop autoplay muted width=400>
+                <source src="../_static/rotatable.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
+
+        """
         return self.costume.is_rotatable
 
     @is_rotatable.setter
@@ -809,12 +1051,50 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         self.costume.is_rotatable = value
 
     def bounce_from_border(self, borders: List[str]) -> Token:
-        """Bounces the actor from a border.
+        """The actor "bounces" from a border.
+
+        The direction is set according to the principle input angle = output angle.
+
+        .. note::
+
+          You must check for borders first!
 
         Args:
             borders: A list of borders as strings e.g. ["left", "right"]
 
-        Returns: The token
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+                import random
+
+                board = Board(150, 150)
+                token = Token((50,50))
+                token.add_costume("images/ball.png")
+                token.direction = 10
+
+                @token.register
+                def act(self):
+                    self.move()
+                    borders = self.sensing_borders()
+                    if borders:
+                        self.bounce_from_border(borders)
+
+                board.run()
+
+            Output:
+
+            .. raw:: html
+
+                <video loop autoplay muted width=240>
+                <source src="../_static/bouncing_ball.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
+
+
+        Returns:
+            The token
 
         """
         return self.position_manager.bounce_from_border(borders)
@@ -873,14 +1153,40 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
         Examples:
 
-            Sensing a fireplace in rpg.py:
+            The green robot pushes the yellow robot:
 
             .. code-block:: python
-                
-                fireplace =  self.player.sensing_token(Fireplace)
-                if fireplace:
-                    self.console.newline("Du zündest die Feuerstelle an.")
-                    self.fireplace.burn()
+
+                from miniworldmaker import *
+
+                board = TiledBoard(8,3)
+                token = Token((1,1))
+                token.add_costume("images/robo_green.png")
+                token.orientation = -90
+                token.direction = 90
+
+                token2 = Token((4,1))
+                token2.add_costume("images/robo_yellow.png")
+                token2.orientation = -90
+                token2.direction = -90
+
+                @token.register
+                def act(self):
+                    self.move()
+                    token = self.sensing_token()
+                    if token:
+                        token.move_right()
+                board.run()
+
+            Output:
+
+            .. raw:: html
+
+                <video loop autoplay muted width=240>
+                <source src="../_static/pushing.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
+
 
         """
         return self.board_sensor.sensing_token(token_filter, distance)
@@ -904,11 +1210,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def sensing_left_border(self, distance: int = 0) -> bool:
         """Senses borders
-        
+
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: 
+        Returns:
             True if border was found.
 
         """
@@ -916,11 +1222,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def sensing_right_border(self, distance: int = 0) -> bool:
         """Senses borders
-        
+
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: 
+        Returns:
             True if border was found.
 
         """
@@ -928,11 +1234,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def sensing_top_border(self, distance: int = 0) -> bool:
         """Senses borders
-        
+
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: 
+        Returns:
             True if border was found.
 
         """
@@ -940,11 +1246,11 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def sensing_bottom_border(self, distance: int = 0) -> bool:
         """Senses borders
-        
+
         Args:
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: 
+        Returns:
             True if border was found.
 
         """
@@ -957,7 +1263,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
             colors: colors as tuple
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns: 
+        Returns:
             All colors found by Sensor
 
         """
@@ -967,7 +1273,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def sensing_point(self, board_position: Union["board_position.Boardposition", Tuple]) -> bool:
         """Is the token colliding with a specific (global) point?
 
-        Returns: 
+        Returns:
             True if point is below token
         """
         return self.rect.collidepoint(board_position)
@@ -981,7 +1287,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         bound_method = token_inspection.TokenInspection(self).bind_method(method)
         if method.__name__ == "on_setup":
             self.on_setup()
-        self.board.event_handler.register_event(method.__name__, self)
+        self.board.event_manager.register_event(method.__name__, self)
         return bound_method
 
     def bounce_from_token(self, other: "Token"):
@@ -993,8 +1299,8 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
     def animate_costume(self, costume: costume.Costume, speed: int = 10):
         self.costume_manager.animate_costume(costume, speed)
 
-    def loop_animation(self, speed: int = 10):
-        self.costume_manager.loop_animation(speed)
+    # def loop_animation(self, speed: int = 10):
+    #    self.costume_manager.loop_animation(speed)
 
     def send_message(self, message: str):
         self.board.app.event_manager.send_event_to_containers("message", message)
@@ -1043,7 +1349,7 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         is repeatedly called again and again until the key is released.
 
         .. note::
-            
+
             Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`).
 
         Examples:
@@ -1075,25 +1381,32 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         raise NotImplementedOrRegisteredError()
 
     def on_mouse_left(self, position: tuple):
-        """Method is called when left mouse button was pressed.
+        """Method is called when left mouse button was pressed. You must *register* or *implement* this method as an event.
 
-        Examples
-            Register mouse event to board
+        .. note::
+
+            The event is triggered, when mouse-left was clicked, even when the current mouse position is not related to token position.
+
+            You can use :py:meth:`Token.sensing_point` to check, if the mouse_position is *inside* the token.
+
+        Examples:
+
+            A circle will be moved, if you click on circle.
 
             .. code-block::
 
-                @board.register
-                def on_mouse_left(self, position):
-                    print("left" + str(position))
+                from miniworldmaker import *
 
-                @board.register
-                def on_mouse_right(self, position):
-                    print("right" + str(position))
+                board = Board(120,40)
+                circle = Circle((20, 20))
+                circle.direction = 90
 
-                @board.register
-                def on_mouse_middle(self, position):
-                    print("middle" + str(position))
+                @circle.register
+                def on_mouse_left(self, mouse_pos):
+                    if self.sensing_point(mouse_pos):
+                        self.move()
 
+                board.run()
 
         Args:
             position (tuple): Actual mouse position as tuple (x,y)
@@ -1105,18 +1418,18 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         raise NotImplementedOrRegisteredError()
 
     def on_mouse_right(self, position: tuple):
-        """on_mouse_right is called when right mouse button was pressed.
+        """Method is called when right mouse button was pressed. You must *register* or *implement* this method as an event.
+
+        .. note::
+
+            The event is triggered, when mouse was clicked, even when the current mouse position is not related to token position.
+
+            You can use :py:meth:`Token.sensing_point` to check, if the mouse_position is *inside* the token.
 
         Examples:
 
-            Register mouse event to board
-
-            .. code-block::
-
-                @board.register
-                def on_mouse_right(self, position):
-                    print("right" + str(position))
-
+            See: :py:meth:`Token.on_mouse_left`.
+        
         Args:
             position (tuple): Actual mouse position as tuple (x,y)
 
@@ -1126,17 +1439,91 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
         raise NotImplementedOrRegisteredError()
 
     def on_mouse_motion(self, position: tuple):
-        """on_mouse_motion is called when right mouse moves.
+        """Method is called when mouse moves. You must *register* or *implement* this method as an event.
 
-        Examples
+        .. note::
 
-            Register mouse-motion event to board
+            The event is triggered, when mouse is moved, even when the current mouse position is not related to token position.
+
+            You can use :py:meth:`Token.sensing_point` to check, if the mouse_position is *inside* the token.
+
+        Examples:
+
+            A circle will be moved, if you click on circle.
 
             .. code-block::
 
-                @board.register
-                def on_mouse_motion(self, position):
-                    print("motion" + str(position))
+                from miniworldmaker import *
+
+                board = Board(120,40)
+                circle = Circle((20, 20))
+                circle.direction = 90
+
+                @circle.register
+                def on_mouse_motion(self, mouse_pos):
+                    if self.sensing_point(mouse_pos):
+                        self.move()
+
+                board.run()
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+
+        Raises:
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedOrRegisteredError()
+
+    def on_mouse_left_released(self, position: tuple):
+        """Method is called when left mouse key is released. 
+
+        Examples:
+
+            You can use on_mouse_left_release to implement a drag_and_drop event
+
+            .. code-block::
+
+                from miniworldmaker import *
+
+                board = Board(200, 200)
+                circle = Circle((30, 30), 60)
+                circle.direction = 90
+                circle.dragged = False
+
+                @circle.register
+                def on_mouse_left(self, mouse_pos):
+                    if self.sensing_point(mouse_pos):
+                        self.dragged = True
+                        
+                @circle.register
+                def on_mouse_left_released(self, mouse_pos):
+                    if not board.is_mouse_pressed():
+                        self.dragged = False
+                        self.center = mouse_pos
+                        
+                board.run()
+
+            Output:
+
+            .. raw:: html
+
+                <video loop autoplay muted width=200>
+                <source src="../_static/draganddrop.webm" type="video/webm">
+                Your browser does not support the video tag.
+                </video>
+
+
+        Args:
+            position (tuple): Actual mouse position as tuple (x,y)
+
+        Raises:
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedOrRegisteredError()
+
+    def on_mouse_right_released(self, position: tuple):
+        """Method is called when right mouse key is released. See :py:meth:`Token.on_mouse_left_released`.
+
 
         Args:
             position (tuple): Actual mouse position as tuple (x,y)
@@ -1320,30 +1707,94 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def color(self):
-        """->See fill color"""
-        return self._fill_color
+        """->See :py:attr:`Token.fill_color`"""
+        return self.costume.fill_color
 
     @color.setter
     def color(self, value):
-        value = color.Color.create(value).get()
-        self._fill_color = value
-        self.costume_manager.reload_costume()
+        self.costume.fill_color = value
 
     @property
     def fill_color(self):
-        return self._fill_color
+        """The fill color of token as rgba value, e.g. (255, 0, 0) for red.
+        
+        When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume (See: :py:attr:`miniworldmaker.appearances.appearance.Appearance.is_filled`) is set to ``True``.
+        
+        .. note::
+
+            Aliases: :py:attr:`Token.color`
+
+        .. warning:: 
+        
+            If you fill a costume with an image, the image will be completly overwritten, even if `fill_color` is transparent. 
+        
+            This behaviour may change in later relases!
+
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(200,80)
+                board.default_fill_color = (0,0, 255)
+
+                t = Token()
+
+                t2 = Token((40,0))
+                t2.is_filled = (0, 255, 0)
+
+                t3 = Token((80, 0))
+                t3.fill_color = (255, 0, 0)
+
+                t4 = Token((120, 0))
+                t4.add_costume((0,0,0))
+                t4.fill_color = (255, 255, 0)
+
+                t5 = Token((160, 0))
+                t5.add_costume("images/player.png")
+                t5.fill_color = (255, 255, 0, 100) # image is overwritten
+
+                t6 = Circle((0, 40), 20)
+                t6.position = t6.center
+                t6.fill_color = (255, 255, 255)
+
+                t7 = Ellipse((40, 40), 40, 40)
+                t7.fill_color = (255, 0, 255) 
+
+
+                print("is filled", t5.is_filled)
+                board.run()
+
+            Output:
+
+            .. image:: ../_images/fill_color.png
+                :width: 200px
+                :alt: Set borders
+        """
+        return self.costume.fill_color
 
     @fill_color.setter
     def fill_color(self, value):
-        """fill color of token"""
-        self._fill_color = value
-        self.costume_manager.reload_costume()
+        self.costume.fill(value)
+
+    def fill(self, value):
+        """Set fill color for borders and lines"""
+        self.costume.fill(value)
+
+    @property
+    def is_filled(self):
+        """Is token filled with color?"""
+        return self.costume.is_filled
+
+    @is_filled.setter
+    def is_filled(self, value):
+        self.costume.fill(value)
 
     @property
     def stroke_color(self):
-        """see border color"""
-        return self._stroke_color
-
+        """see :py:attr:`Token.border_color`"""
+        return self.border_color
 
     @stroke_color.setter
     def stroke_color(self, value):
@@ -1351,59 +1802,74 @@ class Token(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @property
     def border_color(self):
-        """border color of token"""
-        return self._stroke_color
+        """border color of token.
+
+        The border-color is a rgba value, for example (255, 0, 0) for red, (0, 255, 0) for green and (255, 0, 0, 100).
+
+        If the color-value has 4 values, the last value defines the transparency: 0: Full transparent, 255: No transparency.
+
+        .. note:: 
+
+            You must also set :py:attr:`Token.border` to a value > 0
+
+            Aliases:  :py:attr:`Token.stroke_color`
+
+        Examples:
+
+            See :py:attr:`Token.border`
+
+
+        """
+        return self.costume.border_color
 
     @border_color.setter
     def border_color(self, value):
-        if value != None:
-            self._stroke_color = value
-            self.costume_manager.reload_costume()
-        else:
-            self.border = None
-
-    @property
-    def fill(self):
-        """Is token filled with color?"""
-        return self._fill
-
-    @fill.setter
-    def fill(self, value):
-        self._fill = value
-        self.costume_manager.reload_costume()
+        self.costume.border_color = value
 
     @property
     def border(self):
         """The border-size of token.
 
-        The value is 0, if token has no border
+        The value is 0, if token has no border.
 
-        Returns:
-            _type_: int
+        .. note::
+
+            You can also set border with ``costume.border`` or you can set the border with ``board.default_border``
+
+        Examples:
+
+            Set border of token:
+
+            .. code-block::
+
+                from miniworldmaker import *
+
+                board = Board(210,80)
+                board.default_border_color = (0,0, 255)
+                board.default_border = 1
+
+                t = Token((10,10)) # default-border and color from bord
+                t.add_costume("images/player.png")
+
+                t2 = Token ((60, 10)) # overwrites default border values
+                t2.add_costume("images/player.png")
+                t2.border_color = (0,255, 0)
+                t2.border = 5
+
+                t3 = Token ((110, 10)) # removes border
+                t3.add_costume("images/player.png")
+                t3.border = None
+
+                board.run()
+
+            Output:
+
+            .. image:: ../_images/borders.png
+                :width: 200px
+                :alt: Set borders
         """
-        return self._border
+        return self.costume.border
 
     @border.setter
     def border(self, value):
-        self._border = value
-        self.costume_manager.reload_costume()
-
-    def _update_draw_shape(self):
-        self.costume.draw_shapes = []
-        if self._inner_shape() and self._outer_shape():
-            if self.fill:
-                self.costume.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
-            if self.border:
-                self.costume.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
-
-    def _inner_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), 0]
-
-    def _outer_shape(self):
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.size[0], self.size[1]), self.border]
-
-    def _inner_shape_arguments(self):
-        return  [self.fill_color,] +  self._inner_shape()[1] 
-
-    def _outer_shape_arguments(self):
-        return  [self.border_color,] + self._outer_shape()[1] 
+        self.costume.border = value

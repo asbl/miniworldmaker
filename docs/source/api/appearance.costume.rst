@@ -33,3 +33,5 @@ Costume
 
 .. autoclass:: miniworldmaker.appearances.costume.Costume
    :members:
+
+   .. autoclasstoc::

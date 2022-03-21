@@ -1,13 +1,13 @@
 import pymunk as pymunk_engine
 import sys
-from miniworldmaker.boards import pixel_board as pixel_board_module
+from miniworldmaker.boards import board
 from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
 from miniworldmaker.tools import token_inspection
 from miniworldmaker.tools import token_class_inspection
 import miniworldmaker
 
 
-class PhysicsBoard(miniworldmaker.PixelBoard):
+class PhysicsBoard(miniworldmaker.Board):
     def __init__(
         self,
         columns: int = 40,
@@ -25,10 +25,10 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         self.space.damping = 0.9
         self.space.collision_persistence = 10
         self.physics_tokens = list()
-        self.touching_methods = set()  # filled in token_handler
-        self.separate_methods = set()  # filled in token_handler
+        self.touching_methods = set()  # filled in token_manager
+        self.separate_methods = set()  # filled in token_manager
 
-    def _pymunk_register_collision_handler(self, token, other_class, event, method):
+    def _pymunk_register_collision_manager(self, token, other_class, event, method):
         """
         Adds pymunk collission handler, which is evaluated by pymunk engine.
         The event (begin, end) and the method (on_touching...) are added as data to the handler
@@ -43,7 +43,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         space = self.space
         token_id = hash(token.__class__.__name__) % ((sys.maxsize + 1) * 2)
         other_id = hash(other_class.__name__) % ((sys.maxsize + 1) * 2)
-        handler = space.add_collision_handler(token_id, other_id)
+        handler = space.add_collision_manager(token_id, other_id)
         handler.data["method"] = getattr(token, method.__name__)
         handler.data["type"] = event
         if event == "begin":
@@ -64,7 +64,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
             or method_name.startswith("on_separation_from_")
         ]
 
-    def register_all_physics_collision_handlers_for_token(self, token):
+    def register_all_physics_collision_managers_for_token(self, token):
         """
         Registers on__touching and on_seperation-Methods to token.
         If new_class is set, only methods with new class (e.g. on_touching_new_class are se.t)
@@ -90,7 +90,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
             for other_subcls in subclasses_of_other_token:
                 # If you register a Collission with a Token, collissions with subclasses of the token
                 # are also registered
-                self._pymunk_register_collision_handler(method.__self__, other_subcls, event, method)
+                self._pymunk_register_collision_manager(method.__self__, other_subcls, event, method)
                 return True
 
     def register_touching_method(self, method):
@@ -154,7 +154,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         token = arbiter.shapes[0].token
         other = arbiter.shapes[1].token
         collision = dict()
-        # get touching token_handler for token
+        # get touching token_manager for token
         for method in self.touching_methods:
             method_other_cls_name = method.__name__[len("on_touching_") :].lower()
             method_other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
@@ -170,7 +170,7 @@ class PhysicsBoard(miniworldmaker.PixelBoard):
         token = arbiter.shapes[0].token
         other = arbiter.shapes[1].token
         collision = dict()
-        # get separation token_handler for token
+        # get separation token_manager for token
         for method in self.separate_methods:
             method_other_cls_name = method.__name__[len("on_separation_from_") :].lower()
             method_other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(

@@ -35,6 +35,8 @@ from miniworldmaker.board_positions.board_vector import Vector
 from miniworldmaker.board_positions.board_position import BoardPosition
 from miniworldmaker.board_positions.board_position_factory import BoardPositionFactory
 
+from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
+
 import nest_asyncio
 nest_asyncio.apply()
 

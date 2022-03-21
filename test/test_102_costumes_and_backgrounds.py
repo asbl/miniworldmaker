@@ -71,13 +71,13 @@ class Test102(unittest.TestCase):
             token6 = SwitchBackground(position = (60,250))
 
             # Token 7: Like 6, but switches to costume 1 (remember, counting from 0)
-            token7 = SwitchBackground(position = (60,300))
+            token7 = SwitchBackground(position = (67,307))
             token7.switch_costume(1)
 
             # Token 7 throws error because switching to costume 2 is not allowd
             with test.assertRaises(CostumeOutOfBoundsError):
                 token7.switch_costume(2)
-
+            
             # Token 8: Purple in topleft corner (with center)
             token8 = Token()
             token8.size = (40,40)

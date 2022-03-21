@@ -2,7 +2,7 @@ from typing import Tuple, Union
 
 from miniworldmaker.tokens import token
 from miniworldmaker.exceptions.miniworldmaker_exception import CantSetAutoFontSize, MiniworldMakerError
-
+from miniworldmaker.appearances import text_costume
 
 class Text(token.Token):
     """
@@ -28,8 +28,7 @@ class Text(token.Token):
 
     def __init__(self, position=None, t=" "):
         super().__init__(position)
-        self.add_costume((0, 0, 0, 0))
-        self.costume.fill_color = (0, 0, 0, 0)
+        self.costume = text_costume.TextCostume(self)
         self.costume.font_size = 24
         self.costume.is_scaled = True
         self.costume.text = ""

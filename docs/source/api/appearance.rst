@@ -39,3 +39,5 @@ Appearance
 
 .. autoclass:: miniworldmaker.appearances.appearance.Appearance
    :members:
+
+   .. autoclasstoc::
