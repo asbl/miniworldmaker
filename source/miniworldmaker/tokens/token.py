@@ -1,5 +1,6 @@
 from __future__ import annotations
 from miniworldmaker.tokens import base_token
+from miniworldmaker.tokens import token_aliases
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 from miniworldmaker.appearances import appearance
 from miniworldmaker.appearances import costume
@@ -14,7 +15,7 @@ from miniworldmaker.dialogs import ask
 import miniworldmaker
 
 
-class Token(base_token.BaseToken):
+class Token(base_token.BaseToken, token_aliases.TokenAliases):
     """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
 
     The appearance of a token is determined by its :doc:`Costume <../key_concepts/costumes>`.
@@ -140,6 +141,10 @@ class Token(base_token.BaseToken):
 
     @property
     def last_position(self) -> "board_position.BoardPosition":
+        """Token position in last frame
+
+        Can be used to track changes.
+        """
         return self.position_manager.last_position
 
     @property
@@ -160,7 +165,27 @@ class Token(base_token.BaseToken):
 
     @property
     def costume_count(self) -> int:
-        return self.costume_manager.costume_count
+        """Returns number of costumes of token, 0 if token has no costume
+
+        Examples:
+
+            Add costume and count costumes
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+                board = Board()
+                token = Token()
+                assert token.costume_count == 0
+                token.add_costume((255,0,0,0))
+                assert token.costume_count == 1
+                board.run()
+
+
+        Returns:
+            int: _description_
+        """
+        return self.costume_manager.count()
 
     @property
     def is_flipped(self) -> bool:
@@ -344,7 +369,9 @@ class Token(base_token.BaseToken):
         Args:
             index: The index of the new costume. Defaults to -1 (last costume)
         """
-        self.costume_manager.remove_costume(costume)
+        if costume is None:
+            costume = self.costume
+        return self.costume_manager.remove_appearance(costume)
 
     def switch_costume(self, costume: Union[int, Type["appearance.Appearance"]]) -> "costume.Costume":
         """Switches the costume of token
@@ -390,6 +417,8 @@ class Token(base_token.BaseToken):
 
     @property
     def costume(self) -> costume.Costume:
+        """Gets the costume of token
+        """
         return self.costume_manager.costume
 
     @costume.setter
@@ -397,7 +426,9 @@ class Token(base_token.BaseToken):
         self.costume_manager.costume = value
 
     @property
-    def costumes(self):
+    def costumes(self) -> list:
+        """Gets a list of all costumes.
+        """
         return self.costume_manager.costumes
 
     @property
@@ -1705,14 +1736,6 @@ class Token(base_token.BaseToken):
         _token_connector = self.board.get_token_connector(self)
         _token_connector.set_static(value)
 
-    @property
-    def color(self):
-        """->See :py:attr:`Token.fill_color`"""
-        return self.costume.fill_color
-
-    @color.setter
-    def color(self, value):
-        self.costume.fill_color = value
 
     @property
     def fill_color(self):

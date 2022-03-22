@@ -36,11 +36,13 @@ class CostumesManager(appearances_manager.AppearancesManager):
             The new costume.
 
         """
-        new_costume = costume.Costume(self.token)
-        self.costume = new_costume
-        self.add_new_appearance(new_costume, source)
+        new_costume = self.add_new_appearance(source)
         self.costume.update_shape()
         self.costume.dirty = 1
+        return new_costume
+
+    def get_default_appearance(self):
+        new_costume = costume.Costume(self.token)
         return new_costume
 
     @property
@@ -53,3 +55,10 @@ class CostumesManager(appearances_manager.AppearancesManager):
     def animate_costume(self, costume, speed):
         super().animate_appearance(costume, speed)
 
+    @property
+    def has_costume(self):
+        return self.has_appearance
+
+    @has_costume.setter
+    def has_costume(self, value):
+        self.has_appearance = value

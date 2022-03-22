@@ -137,6 +137,10 @@ class Board(base_board.BaseBoard):
 
         If e.g. ``speed = 30``, the game logic will be called every 30th-frame.
 
+        .. note::
+
+          You can adjust the frame-rate with ``board.fps``
+
         Examples:
 
             Set speed and fps.

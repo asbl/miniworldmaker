@@ -21,7 +21,7 @@ class AppearancesManager:
         self.is_scaled = None
         self.is_scaled_to_width = None
         self.is_scaled_to_height = None
-        self.has_costume = False
+        self.has_appearance = False
 
     @property
     def image(self):
@@ -30,33 +30,36 @@ class AppearancesManager:
         else:
             return pygame.Surface((1, 1))
 
-    def add_new_appearance(self, appearance, source):
-        if source:
-            default = False
+    def add_new_appearance(self, source):
+        """called by ``add_costume`` and ``add_background`` in subclasses.
+        """
+        if not self.has_appearance and not source:
+            return self._add_default_appearance()
+        elif not self.has_appearance and source:
+            self.has_appearance = True
+            return self._add_first_appearance(source)
         else:
-            default = True
-            if appearance:
-                source = appearance._fill_color
+            appearance = self.get_default_appearance()
+            appearance.add_image(source)
+            return self._add_appearance_to_manager(appearance)
+
+
+    def _add_first_appearance(self, source):
+        if self.appearances_list:
+            first = self.appearances_list.pop(-1)
+            del first
+        appearance = self.get_default_appearance()
         appearance.add_image(source)
-        if appearance:
-            if default:
-                self.add_default(appearance)
-            else:
-                self.add(appearance)
+        self._add_appearance_to_manager(appearance)
+        return appearance
 
-    def add_default(self, appearance):
-        self._add(appearance)
+    def _add_default_appearance(self):
+        appearance = self.get_default_appearance()
+        self._add_appearance_to_manager(appearance)
+        return appearance
 
-    def add(self, appearance):
-        if not self.has_costume:
-            self.has_costume = True
-            if self.appearances_list:
-                first = self.appearances_list.pop(-1)
-                del first
-
-        self._add(appearance)
-
-    def _add(self, appearance):
+    def _add_appearance_to_manager(self, appearance):
+        self.appearance = appearance
         self.appearances_list.append(appearance)
         if self.is_rotatable is not None:
             appearance.is_rotatable = self.is_rotatable
@@ -72,12 +75,10 @@ class AppearancesManager:
             appearance.is_scaled_to_height = self.is_scaled_to_height
         if self.is_scaled is not None:
             appearance.is_scaled = self.is_scaled
+        return appearance
 
     def remove(self, index):
         del self.appearances_list[index]
-
-    def get_appearance_at_index(self, appearance: appearance.Appearance) -> int:
-        return self.appearances_list.index(appearance)
 
     def next(self, appearance):
         index = self.get_appearance_at_index(self.costume)
@@ -91,6 +92,11 @@ class AppearancesManager:
 
     def get_appearance_at_index(self, index) -> "appearance.Appearance":
         return self.appearances_list[index]
+
+    def get_index_for_appearance(self, appearance):
+        for index, a_appearance in enumerate(self.appearances_list):
+            if a_appearance == appearance:
+                return index
 
     def _set_all(self, attribute, value):
         for appearance in self.appearances_list:
@@ -130,17 +136,33 @@ class AppearancesManager:
     def __str__(self):
         return str(len(self.appearances_list)) + " Appearances: " + str(self.appearances_list)
 
-    def remove_appearance(self, appearance=None):
+    def _remove_appearance_at_index(self, index):
+        appearance = self.get_appearance_at_index(index)
+        self._remove_appearance_from_manager(appearance)
+
+    def _remove_appearance_from_manager(self, appearance):
+        if self.has_appearance and self.count():
+            if appearance == self.appearance:
+                index = self.get_index_for_appearance(appearance)
+                if index == 0:
+                    self.has_costume = False
+                    self._add_default_appearance()
+                self.switch_appearance(self.get_appearance_at_index(index -1))
+            self.appearances_list.remove(appearance)
+
+    def remove_last_costume(self, index):
+        self.appearances_list.remove(-1)
+
+    def remove_appearance(self, source : Union[int, appearance.Appearance]=None):
         """Removes a costume from token
 
         Args:
             index: The index of the new costume. Defaults to -1 (last costume)
         """
-        if appearance != None:
-            index = self.costumes.get_appearance_at_index_of_costume(appearance)
-            self.costumes.remove(index)
-        else:
-            self.costumes.remove(-1)
+        if type(source) == int:
+            self._remove_appearance_at_index(source)
+        elif isinstance(source, appearance.Appearance):
+            self._remove_appearance_from_manager(source)
 
     def switch_appearance(self, source: Union[int, "appearance.Appearance"]) -> "costume.Costume":
         if type(source) == int:
@@ -167,3 +189,9 @@ class AppearancesManager:
 
     def self_remove(self):
         pass
+
+    def count(self):
+        if self.has_costume:
+            return len(self.appearances_list)
+        else:
+            return 0

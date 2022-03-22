@@ -30,10 +30,13 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
         return super().get_appearance_at_index(index)
 
     def add_background(self, source):
-        new_background = background.Background(self.board)
-        self.background = new_background
-        self.add_new_appearance(new_background, source)
+        new_background = self.add_new_appearance(source)
         return new_background
+
+    def get_default_appearance(self):
+        new_background = background.Background(self.board)
+        return new_background
+
 
     def switch_background(self, source):
         background = super().switch_appearance(source)
