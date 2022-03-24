@@ -56,15 +56,6 @@ Links
   objectsfirst_german/index
   processing_german/index
 
-
-
-.. toctree::
-  :maxdepth: 1
-  :caption: Key Concepts
-  
-  key_concepts/index
-
-
 .. toctree::
   :maxdepth: 1
   :caption: API

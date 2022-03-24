@@ -127,8 +127,8 @@ class Background(appearance.Appearance):
         """
         super().reload_transformations_after(value)
         
-    def update_all_costumes(self):
-        """updates all costumes"""
+    def _update_all_costumes(self):
+        """updates costumes for all tokens on board"""
         [token.costume.update() for token in self.reload_costumes_queue]
         self.board.reload_costumes_queue = []
         if hasattr(self.board, "dynamic_tokens"):
@@ -140,10 +140,11 @@ class Background(appearance.Appearance):
         self.surface.blit(self.image, self.surface.get_rect())
         for token in self.board.tokens:
             token.dirty = 1
-        self.repaint_background()
-        self.update_all_costumes()
+        self._blit_to_window_surface()
+        self._update_all_costumes()
 
-    def repaint_background(self):
+    def _blit_to_window_surface(self):
+        """Blits background to window surface"""
         self.parent.app.window.surface.blit(self.image, (0, 0))
         self.parent.app.window.add_display_to_repaint_areas()
         self.repaint()

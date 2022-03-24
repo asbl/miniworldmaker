@@ -9,11 +9,11 @@ class ImageBackgroundManager(image_manager.ImageManager):
         """Switches to the next image of the appearance."""
         await super().next_image()
         if self.appearance.is_animated:
-            self.appearance.repaint_background()
+            self.appearance._blit_to_window_surface()
 
     def set_image_index(self, value) -> bool:
         rvalue = super().set_image_index(value)
-        self.appearance.repaint_background()
+        self.appearance._blit_to_window_surface()
         return rvalue
 
     def _add_scaling(self, source):

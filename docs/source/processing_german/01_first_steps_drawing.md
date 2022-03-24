@@ -262,3 +262,54 @@ Polygon([(10,10), (100,100), (200,10)])
 board.run()
 ```
 
+`````{admonition} Training
+
+````{admonition} Übung 1.1: Haus mit Grundformen
+  
+
+Zeichne ein Haus mit Grundformen:
+
+![House](../_images/processing/house2.png)
+
+
+<details>
+<summary><a>Lösungsansatz</a></summary>
+
+``` python
+from miniworldmaker import *
+
+board = Board()
+board.size = (120,210)
+Rectangle((10,100), 100, 100)
+Triangle((10,100), (60, 50), (110, 100))
+
+board.run()
+```
+</details>
+
+````
+
+````{admonition} Übung 1.2: Gesicht
+
+Zeichne ein Gesicht mit Grundformen
+
+![Face](../_images/processing/face1.png)
+
+<details>
+<summary><a>Lösungsansatz</a></summary>
+
+``` python
+from miniworldmaker import *
+import random
+board = Board((100,100))
+board.size = (100, 100)
+Circle.from_center((50,50),50)
+Arc.from_center((50,80),40,20, 180, 360)
+Circle.from_center((30,30),10)
+Circle.from_center((70,30),10)
+Line((50,50),(50,70))
+board.run()
+```
+</details>
+````
+`````

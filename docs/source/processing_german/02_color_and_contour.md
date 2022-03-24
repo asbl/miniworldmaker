@@ -106,3 +106,31 @@ Bachte folgenden Code, welcher Größe und Hintergrund des Boards festlegt.
 Ausgabe:
 
 <img src="../_images/processing/board.png" alt="A board" width="260px"/>
+
+`````{admonition} Training
+
+````{admonition} Übung 2.1: Black Face
+
+Zeichne folgende Form:
+
+![Face](../_images/processing/face2.png)
+
+
+
+
+<details>
+<summary><a>Lösungsansatz</a></summary>
+
+``` python
+from miniworldmaker import *
+
+board = Board()
+board.size = (120,210)
+Rectangle((10,100), 100, 100)
+Triangle((10,100), (60, 50), (110, 100))
+
+board.run()
+```
+</details>
+
+`````

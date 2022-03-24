@@ -1,5 +1,5 @@
 from __future__ import annotations
-from miniworldmaker.tokens import base_token
+from miniworldmaker.tokens import token_base
 from miniworldmaker.tokens import token_aliases
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
 from miniworldmaker.appearances import appearance
@@ -15,7 +15,7 @@ from miniworldmaker.dialogs import ask
 import miniworldmaker
 
 
-class Token(base_token.BaseToken, token_aliases.TokenAliases):
+class Token(token_base.BaseToken, token_aliases.TokenAliases):
     """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
 
     The appearance of a token is determined by its :doc:`Costume <../key_concepts/costumes>`.
@@ -1330,10 +1330,87 @@ class Token(base_token.BaseToken, token_aliases.TokenAliases):
     def animate_costume(self, costume: costume.Costume, speed: int = 10):
         self.costume_manager.animate_costume(costume, speed)
 
-    # def loop_animation(self, speed: int = 10):
-    #    self.costume_manager.loop_animation(speed)
+    def animate_loop(self, speed: int = 10):
+        """Animates a costume with a looping animation
+
+        Switches through all costume-images every ``speed``-frame.
+
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(columns=280, rows=100)
+                robo = Token(position=(0, 0))
+                robo.costume.add_images(["images/1.png", "images/2.png","images/3.png","images/4.png"])
+                robo.size = (99, 99)
+                robo.animate_loop()
+                board.run()
+
+        Args:
+            speed (int, optional): Every ``speed`` frame, the image is switched. Defaults to 10.
+        """
+        self.costume.loop = True
+        self.costume_manager.animate(speed)
+
+    def stop_animation(self):
+        """Stops current animation. 
+        Costume ``is_animated`` is set to False
+
+
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board(columns=280, rows=100)
+                robo = Token(position=(0, 0))
+                robo.costume.add_images(["images/1.png", "images/2.png","images/3.png","images/4.png"])
+                robo.size = (99, 99)
+                robo.animate_loop()
+                @timer(frames = 100)
+                def stop():
+                    robo.stop_animation()
+                board.run()
+        """
+        self.costume.is_animated = False
+
 
     def send_message(self, message: str):
+        """Sends a message to board.
+
+        The message can received with the ``on_message``-event
+
+        Examples:
+
+            Send and receive messages:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = Board()
+
+                token1 = Token((2, 2))
+                token1.add_costume((100,0,100,100))
+
+                @token1.register
+                def on_message(self, message):
+                    print("Received message:" + message)
+
+                token2 = Token((100,100))
+                token2.send_message("Hello from token2")
+
+                @token2.register
+                def on_key_down_s(self):
+                    self.send_message("Hello")
+                board.run()
+
+        Args:
+            message (str): A string containing the message.
+        """
         self.board.app.event_manager.send_event_to_containers("message", message)
 
     def on_key_down(self, key: list):
@@ -1813,15 +1890,6 @@ class Token(base_token.BaseToken, token_aliases.TokenAliases):
     @is_filled.setter
     def is_filled(self, value):
         self.costume.fill(value)
-
-    @property
-    def stroke_color(self):
-        """see :py:attr:`Token.border_color`"""
-        return self.border_color
-
-    @stroke_color.setter
-    def stroke_color(self, value):
-        self.border_color = value
 
     @property
     def border_color(self):

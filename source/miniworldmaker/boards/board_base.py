@@ -287,7 +287,7 @@ class BaseBoard(container.Container):
             self.collision_manager.handle_all_collisions()
             self.position_manager.update_positions()
             # run animations
-            self.background.update_all_costumes()
+            self.background._update_all_costumes()
             self.background.update()
             self._tick_timed_objects()
         self.frame = self.frame + 1

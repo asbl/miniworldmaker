@@ -28,7 +28,7 @@ class Costume(appear.Appearance):
     def after_init(self):
         super().after_init()
         self.set_default_color_values()
-        self.update_shape()
+        self._update_shape()
 
     def set_default_color_values(self):
         if self.token.board.default_fill_color:
@@ -44,21 +44,20 @@ class Costume(appear.Appearance):
 
     @property
     def info_overlay(self):
+        """Shows info overlay (Rectangle around the token and Direction marker)
+        Args:
+            color: Color of info_overlay
+        """
         return self._info_overlay
 
     @info_overlay.setter
     def info_overlay(self, value):
-        """
-        Shows info overlay (Rectangle around the token and Direction marker)
-        Args:
-            color: Color of info_overlay
-        """
         self._info_overlay = value
         self.reload_transformations_after(
             "all",
         )
 
-    def update_shape(self):
+    def _update_shape(self):
         if self.token.position_manager:
             self._update_draw_shape()
 
@@ -70,7 +69,7 @@ class Costume(appear.Appearance):
             return self._rect
 
     def _reload_dirty_image(self):
-        self.update_shape()
+        self._update_shape()
         super()._reload_dirty_image()
 
     def set_image(self, source) -> bool:

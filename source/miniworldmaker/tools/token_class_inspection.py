@@ -1,6 +1,6 @@
 import inspect
 import miniworldmaker
-from miniworldmaker.boards import base_board
+from miniworldmaker.boards import board_base
 from miniworldmaker.tokens import token
 from typing import Union, Type
 
@@ -13,7 +13,7 @@ class TokenClassInspection:
             generator: A instance of token or a token class
         """
         if not inspect.isclass(generator):
-            if isinstance(generator, miniworldmaker.BaseBoard) or isinstance(generator, base_board.BaseBoard):
+            if isinstance(generator, miniworldmaker.BaseBoard) or isinstance(generator, board_base.BaseBoard):
                 self.instance = generator.tokens.get_sprite(0)
                 self.token_class = generator.tokens.get_sprite(0).__class__
             else:

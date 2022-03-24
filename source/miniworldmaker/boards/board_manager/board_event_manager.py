@@ -15,6 +15,9 @@ class BoardEventHandler:
     """
 
     def __init__(self, board):
+        """Events are registered here in multiple event lists.
+        The lists are merged into ``self.events``.
+        """
         self.executed_events: set = set()
         self.board = board
         self.registered_events = defaultdict(set)

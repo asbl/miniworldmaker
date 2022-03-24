@@ -3,7 +3,7 @@ from inspect import isclass
 
 # manually import classes which should be accessible in outer scope.
 
-from miniworldmaker.boards.base_board import BaseBoard
+from miniworldmaker.boards.board_base import BaseBoard
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.boards.tiled_board import TiledBoard

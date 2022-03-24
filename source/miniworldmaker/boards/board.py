@@ -3,14 +3,14 @@ from typing import Union
 import pygame
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.boards.token_connectors.pixel_board_connector import PixelBoardConnector
-from miniworldmaker.boards import base_board
+from miniworldmaker.boards import board_base
 from miniworldmaker.tools import color, timer
 from miniworldmaker.appearances import appearance, background
 from typing import List, Tuple, Type, Union
 from miniworldmaker.board_positions import board_position_factory
 
 
-class Board(base_board.BaseBoard):
+class Board(board_base.BaseBoard):
     """A board is a playing field on which tokens can move.
 
     A board has a `background` and provides basic functions for the positioning of
@@ -672,11 +672,11 @@ class Board(base_board.BaseBoard):
         """quits app and closes the window"""
         self.app.quit(exit_code)
 
-    def switch_board(self, new_board: "base_board.BaseBoard"):
+    def switch_board(self, new_board: "board_base.BaseBoard"):
         """Switches to another board
 
         Args:
-            new_board (base_board.BaseBoard): _description_
+            new_board (board_base.BaseBoard): _description_
         """
         self.event_manager.handle_switch_board_event(new_board)
 

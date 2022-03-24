@@ -31,7 +31,9 @@ class AppearancesManager:
             return pygame.Surface((1, 1))
 
     def add_new_appearance(self, source):
-        """called by ``add_costume`` and ``add_background`` in subclasses.
+        """Adds a new Appearance (costume or background) to manager.
+
+        called by ``add_costume`` and ``add_background`` in subclasses.
         """
         if not self.has_appearance and not source:
             return self._add_default_appearance()
@@ -154,7 +156,7 @@ class AppearancesManager:
         self.appearances_list.remove(-1)
 
     def remove_appearance(self, source : Union[int, appearance.Appearance]=None):
-        """Removes a costume from token
+        """Removes an appearance (costume or background) from manager
 
         Args:
             index: The index of the new costume. Defaults to -1 (last costume)
@@ -164,7 +166,7 @@ class AppearancesManager:
         elif isinstance(source, appearance.Appearance):
             self._remove_appearance_from_manager(source)
 
-    def switch_appearance(self, source: Union[int, "appearance.Appearance"]) -> "costume.Costume":
+    def switch_appearance(self, source: Union[int, "appearance.Appearance"]) -> "appearance.Appearance":
         if type(source) == int:
             if source >= self.length():
                 raise miniworldmaker.CostumeOutOfBoundsError(self.token, self.length(), source)
