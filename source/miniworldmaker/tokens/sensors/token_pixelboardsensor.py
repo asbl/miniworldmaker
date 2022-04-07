@@ -3,7 +3,7 @@ import pygame
 from typing import Union
 
 
-from miniworldmaker.board_positions import board_position, board_position_factory
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_rect_factory
 from miniworldmaker.tokens.sensors import token_boardsensor as boardsensor
 from miniworldmaker.tokens import token
@@ -48,8 +48,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
 
     def get_destination_rect(self, distance: int) -> pygame.Rect:
         destination_pos = self.get_destination(self.token.position, self.token.direction, distance)
-        destination_pos = board_position_factory.BoardPositionFactory(
-            self.token.board).create(destination_pos)
+        destination_pos = board_position.Position.create(destination_pos)
         rect = board_rect_factory.BoardRectFactory(self.token.board).from_position(
             destination_pos, dimensions=self.token.size)
         return rect
@@ -61,14 +60,13 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         sampling_rate = int(math.sqrt((target[0] - start[0]) ** 2 + target[1] - start[1] ** 2))
         x_spacing = (target[0] - start[0]) / (sampling_rate + 1)
         y_spacing = (target[1] - start[1]) / (sampling_rate + 1)
-        return [board_position_factory.BoardPositionFactory(self.token.board).create((start[0] + i * x_spacing, start[1] + i * y_spacing) for i in
+        return [board_position.Position.create((start[0] + i * x_spacing, start[1] + i * y_spacing) for i in
                 range(1, sampling_rate + 1))]
 
-    def get_destination(self, start, direction, distance) -> board_position.BoardPosition:
+    def get_destination(self, start, direction, distance) -> "board_position.Position":
         exact_position_x = start[0] + math.sin(math.radians(direction)) * distance
         exact_position_y = start[1] - math.cos(math.radians(direction)) * distance
-        pos = board_position_factory.BoardPositionFactory(
-            self.token.board).create((exact_position_x, exact_position_y))
+        pos = board_position.Position.create((exact_position_x, exact_position_y))
         return pos
 
     @staticmethod

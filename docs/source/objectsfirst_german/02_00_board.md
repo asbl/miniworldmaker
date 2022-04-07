@@ -1,4 +1,4 @@
-# Boards
+# Boards and Tokens
 
 Los geht es!
 
@@ -8,99 +8,55 @@ Wir erstellen eine erste Welt. Diese kann mit folgendem Code erzeugt
 werden:
 
 ```{code-block} python
----
-lineno-start: 1
----
 from miniworldmaker import *
-board = TiledBoard()
-board.columns = 20
-board.rows = 8
-board.tile_size = 40
-
+board = Board(600, 300)
 board.run()
 ```
 
 Was passiert hier?
 
-* Zeile 1: Die miniworldmaker library wird importiert.
+* In der ersten Zeile wird die miniworldmaker-Bibliothek importiert.
+* In der zweiten Zeile wird ein neues ``Board`` erstellt. Dieses ist 600 Pixel breit und 300 Pixel hoch.
+* In der 3. Zeile wird das Board erstellt. Später wirst du noch genauer erfahren, was diese Zeile bedeutet. 
+* Für jetzt reicht es zu wissen, dass diese Zeile immer am Ende deiner Programme stehen muss.
 
-* Zeile 2: Ein neues **Objekt** vom Typ `TiledBoard` wird erzeugt. Im Folgenden kann man mit dem Namen `board` darauf zugreifen.
-
-* Zeile 3-5: Es werden verschiedene Attribute von `board` verändert, indem mit board.attributsname darauf zugegriffen wird.
-
-* Zeile 7: Das Spiel wird gestartet. Mit `board.run()` wird eine
-    mainloop gestartet, die das Board immer und immer wieder neu
-    zeichnet. Diese Anweisung **muss** immer die letzte Zeile deines
-    Codes sein.
-
-So sieht dein erstes Board aus.
-![First Miniworldmaker Example](../_images/first_board.png)
+![First Miniworldmaker Example](../_images/pixel_firstboard.png)
 
 ## Hintergrund
 
-Mit board.objektname hast du *Attribute* des Boards verändert, 
-z.B. `columns`, `rows` oder `tile_size`. 
-Das Board bringt außerdem einige *Methoden* mit, mit dem du es verändern kannst, 
-z.B. die Methode `add_background()`. 
-
-Methoden sind Anweisungen an das `board` etwas bestimmtes zu tun, z.B. einen Hintergrund hinzuzufügen.
-Du erkennst sie daran, dass sie mit Klammern `()` enden. Manchmal steht auch etwas innerhalb dieser Klammern, 
-wenn für die Anweisung weitere Informationen benötigt werden - Dazu später mehr.
-
 Wir verändern das Programm oben, um einen Hintergrund hinzuzufügen:
+
+Dafür musst du zunächst ein Bild in den Unterordner `images` deines Projekts legen. Die Verzeichnisstruktur sieht dann so aus:
+
+```
+project
+│   my_board.py # file with your python code
+└───images
+│   │   grass.png
+```
+
+Mit der Methode ``add_background`` kannst du nun das Bild als Hintergrund zu dem Spielfeld hinzufügen:
 
 ``` python
 from miniworldmaker import *
-board = TiledBoard()
-board.add_background("images/soccer_green.jpg")
-board.columns = 20
-board.rows = 8
-board.tile_size = 40
 
+board = Board(600, 300)
+board.add_background("images/grass.png")
 board.run()
 ```
 
+![First Miniworldmaker Example](../_images/pixel_addbackground.png)
 
-![First Miniworldmaker Example](../_images/first.jpg)
+:::{note}
 
-## Die Größe des Boards
+Es gibt verschiedene Arten von Boards im miniworldmaker. Das `TiledBoard` ist speziell für Spiele auf gekachelten Flächen gedacht
+und das `PhysicsBoard` ist speziell für Spiele mit einer Physikengine gedacht.
+:::
 
-Die Größe des Boards
+:::{seealso}
+[Concept: Naming und Variablen](concept_naming)
+:::
 
-Nachdem du mit board = miniworldmaker.TiledBoard() ein Board angelegt hast, 
-kannst du mit dem Namen board die Eigenschaften des Boards ändern.
-
-Die wichtigsten Eigenschaften sind zunächst rows, columns und tile_size. 
-Damit kannst du die Größe des Boards verändern:
-
-![TiledBoard - rows and columns](../_images/tiled_board.png)
-
-## Etwas Theorie: Wie funktioniert der Miniworldmaker?
-
-In Miniworldmaker gibt es zwei unterschiedliche Arten von Objekten, die
-du erzeugen kannst:
-
-* `Board`: Ein Spielbrett auf dem sich Spielfiguren befinden.
-
-* `Token`: Spielfiguren die zahlreiche Attribute und Methoden mitbringen, z.B. Bewegung. Kollisionsabfrage, \....
-
-<img class="autowidth" src="../_images/board_and_tokens.png" alt="Board and Tokens"/>
-
-In den nächsten Kapiteln lernst du, wie du Tokens erstellen kannst, die
-miteinander kommunizieren können.
-
-```{note}
-Es gibt mehrere Kind-Klassen von Board
-
--   Ein `TiledBoard` ist geeignet für Boards, bei denen sich die Akteure
-    auf \"Kacheln\" bewegen.
--   Ein `PixelBoard` ist für pixelgenaue Darstellungen vorgesehen
--   Ein `PhysicsBoard` simuliert physikalische Eigenschaften und Objekte
-    auf dem Board.
-
-Diese unterschiedlichen Boards sind für unterschiedliche Einsatzzwecke gedacht. Wähle für deine miniworld das passende Board aus.
-```
-
-## Ausblick
-
-* Mehr Informationen, siehe [Key Concepts: Boards](/key_concepts/boards)
+:::{seealso}
+[Concept: Imports](concept_imports)
+:::

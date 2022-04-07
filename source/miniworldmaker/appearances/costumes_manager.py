@@ -37,7 +37,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
 
         """
         new_costume = self.add_new_appearance(source)
-        self.costume.update_shape()
+        self.costume._update_shape()
         self.costume.dirty = 1
         return new_costume
 

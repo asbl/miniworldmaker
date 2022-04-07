@@ -2,7 +2,6 @@ import pygame
 import math
 from typing import Union
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
 from miniworldmaker.board_positions.board_vector import Vector
@@ -36,7 +35,7 @@ class TokenPositionManager:
         return pygame.Rect(self.token.position[0], self.token.position[1], self.size[0], self.size[1])
 
     @classmethod
-    def from_center(cls, center_position: board_position.BoardPosition):
+    def from_center(cls, center_position: "board_position.Position"):
         """
         Creates a token with center at center_position
 
@@ -83,7 +82,7 @@ class TokenPositionManager:
         return self._size
 
     @property
-    def position(self) -> board_position.BoardPosition:
+    def position(self) -> "board_position.Position":
         """
         The position of the token as tuple (x, y)
         """
@@ -93,8 +92,8 @@ class TokenPositionManager:
     def position(self, value: tuple):
         self.set_position(value)
 
-    def get_position(self) -> board_position.BoardPosition:
-        return board_position_factory.BoardPositionFactory(self.token.board).create(self._position)
+    def get_position(self) -> "board_position.Position":
+        return board_position.Position.create(self._position)
 
     def set_position(self, value):
         self.last_position = self.position
@@ -108,7 +107,7 @@ class TokenPositionManager:
         return self.position
 
     @property
-    def center(self) -> board_position.BoardPosition:
+    def center(self) -> "board_position.Position":
         return self.get_center()
 
     @property
@@ -146,7 +145,7 @@ class TokenPositionManager:
         self.set_center(value)
 
     def get_center(self):
-        return board_position_factory.BoardPositionFactory(self.token.board).create((self.center_x, self.center_y))
+        return board_position.Position.create((self.center_x, self.center_y))
 
     def set_center(self, value):
         if self.token.costume is None:
@@ -158,8 +157,8 @@ class TokenPositionManager:
         self.position = rect.topleft
 
     @property
-    def topleft(self) -> board_position.BoardPosition:
-        return board_position_factory.BoardPositionFactory(self.token.board).create((self.rect.topleft[0], self.rect.topleft[1]))
+    def topleft(self) -> "board_position.Position":
+        return board_position.Position.create((self.rect.topleft[0], self.rect.topleft[1]))
 
     @topleft.setter
     def topleft(self, value):
@@ -173,11 +172,11 @@ class TokenPositionManager:
         self.position = destination
         return self
 
-    def move_in_direction(self, direction: Union[int, str, board_position.BoardPosition, tuple], distance=1):
+    def move_in_direction(self, direction: Union[int, str, "board_position.Position", tuple], distance=1):
         if type(direction) in [int, str]:
             direction = self._value_to_direction(direction)
             self.set_direction(direction)
-        elif type(direction) in [board_position.BoardPosition, tuple]:
+        elif type(direction) in [board_position.Position, tuple]:
             self.point_towards_position(direction)
         else:
             raise MoveInDirectionTypeError(direction)
@@ -189,7 +188,7 @@ class TokenPositionManager:
         self.direction = self.last_direction
         return self
 
-    def move_to(self, new_center_position: board_position.BoardPosition):
+    def move_to(self, new_center_position: board_position.Position):
         self.center = new_center_position
         return self
 

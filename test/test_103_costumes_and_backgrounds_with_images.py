@@ -35,8 +35,7 @@ class Test103(unittest.TestCase):
             # Token2 at position (3,1) with purple backgrund
             token2 = Token(position = (3, 1) )
             token2.add_costume((100,0,100,100))
-            with test.assertRaises(SizeOnTiledBoardError):
-                token2.size = (1,1)
+            token2.size = (1,1)
             token2.posisition = (40,40)
                         
         @board.register
@@ -69,7 +68,7 @@ class Test103(unittest.TestCase):
         board.setup_environment(self)
         
         
-    def test_102(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         

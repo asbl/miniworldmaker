@@ -6,7 +6,7 @@ class TokenAliases:
 
     @color.setter
     def color(self, value):
-        self.costume.fill_color = value
+        self.fill_color = value
 
     @property
     def stroke_color(self):

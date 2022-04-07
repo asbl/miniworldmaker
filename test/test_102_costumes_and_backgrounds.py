@@ -36,16 +36,16 @@ class Test102(unittest.TestCase):
             test.assertEqual(token1.position,(0,0))
             
             token2 = Token(position=(40, 40))
-            test.assertEqual(token2.position,BoardPosition(40, 40))
+            test.assertEqual(token2.position,Position(40, 40))
             token2.size = (40, 40)
-            test.assertEqual(token2.position, BoardPosition(40, 40))
+            test.assertEqual(token2.position, Position(40, 40))
             test.assertEqual(token2.size,(40,40))
             
             # Token 3: Below token1, created with Image "1"
             token3 = Token(position=(40, 80))
             token3.add_costume("images/1.png")
             token3.size = (40, 40)
-            test.assertEqual(token3.position, BoardPosition(40, 80))
+            test.assertEqual(token3.position, Position(40, 80))
 
             # Token 4: Below token1, created with Image "2" in `on_setup`-Method
             class MyToken(Token):
@@ -53,12 +53,12 @@ class Test102(unittest.TestCase):
                     self.add_costume("images/2.png")
 
             token4 = MyToken(position = (40,130))
-            test.assertEqual(token4.position, BoardPosition(40, 130))
+            test.assertEqual(token4.position, Position(40, 130))
 
             # Token5: Created with image "3" without file ending
             token5 = Token(position=(60, 200))
             token5.add_costume("images/3")
-            test.assertEqual(token5.position, BoardPosition(60, 200))
+            test.assertEqual(token5.position, Position(60, 200))
             test.assertEqual(token5.costume.image.get_width(), 40)
             test.assertEqual(token5.costume.image.get_height(), 40)
 

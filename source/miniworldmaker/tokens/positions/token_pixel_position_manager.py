@@ -1,6 +1,6 @@
 
 import pygame
-from miniworldmaker.board_positions import board_position_factory
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.tokens.positions import token_position_manager as token_positionmanager
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
 
@@ -31,7 +31,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
         shift_y = self.size[1] / 2
         rect_center = super().get_position()
         pos = rect_center[0] - shift_x, rect_center[1] - shift_y
-        return board_position_factory.BoardPositionFactory(self.token.board).create(pos)
+        return board_position.Position.create(pos)
     
     def set_position(self, value):
         """

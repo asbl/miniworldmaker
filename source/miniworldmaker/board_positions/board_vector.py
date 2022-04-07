@@ -1,6 +1,5 @@
 from miniworldmaker.tokens import token
 import math
-from miniworldmaker.board_positions import board_position_factory
 from miniworldmaker.board_positions import board_position
 import numpy as np
 import math
@@ -265,9 +264,9 @@ class Vector:
     def dot(self, other):
         return np.dot(self.vec, other.vec)
 
-    def add_to_position(self, position: "board_position.BoardPosition") -> "board_position.BoardPosition":
-        position = board_position_factory.BoardPositionFactory().create(position)
-        return board_position_factory.BoardPositionFactory().create((self.x + position.x, self.y + position.y))
+    def add_to_position(self, position: "board_position.Position") -> "board_position.Position":
+        position = board_position.Position.create(position)
+        return board_position.Position.create((self.x + position.x, self.y + position.y))
 
     def __str__(self):
         return f"({round(self.x,3)},{round(self.y,3)})"

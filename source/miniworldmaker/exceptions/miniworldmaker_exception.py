@@ -13,7 +13,7 @@ class NoRunError(MiniworldMakerError):
 
 class MoveInDirectionTypeError(MiniworldMakerError):
     def __init__(self, direction):
-        self.message = f"`direction` should be a direction (int, str) or a position (BoardPosition, tuple). Found {type(direction)}"
+        self.message = f"`direction` should be a direction (int, str) or a position (Position, tuple). Found {type(direction)}"
         super().__init__(self.message)
 
 class BoardInstanceError(MiniworldMakerError):
@@ -79,7 +79,7 @@ class ColorException(MiniworldMakerError):
 
 class NoValidBoardPositionError(MiniworldMakerError):
     def __init__(self, value):
-        self.message = f"No valid board position, type is {type(value)} and should be a 2-tuple or BoardPosition"
+        self.message = f"No valid board position, type is {type(value)} and should be a 2-tuple or Position"
         super().__init__(self.message)
 
 
@@ -137,7 +137,7 @@ class EllipseWrongArgumentsError(MiniworldMakerError):
 
 class RectFirstArgumentError(MiniworldMakerError):
     def __init__(self, start_position):
-        self.message = f"Error: First argument `position` of Rectangle should be tuple or BoardPosition, value. Found {start_position}, type: {type(start_position)}"
+        self.message = f"Error: First argument `position` of Rectangle should be tuple or Position, value. Found {start_position}, type: {type(start_position)}"
         super().__init__(self.message)
 
 class LineFirstArgumentError(MiniworldMakerError):

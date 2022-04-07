@@ -29,6 +29,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.parent = None
         self.board = None
         self.draw_shapes = []
+        self.draw_images = []
         self._is_flipped = False
         self._is_animated = False
         self._is_textured = False
@@ -50,7 +51,6 @@ class AppearanceBase(metaclass=MetaAppearance):
         self._alpha = 255
         self._dirty = 0
         self.call_image_actions = {}
-        self.raw_image = pygame.Surface((0, 0))  # size set in image()-method
         self._image = pygame.Surface((0, 0))  # size set in image()-method
         self.surface_loaded = False
         self.last_image = None
@@ -84,6 +84,14 @@ class AppearanceBase(metaclass=MetaAppearance):
 
     def draw_shape_set(self, shape, arguments):
         self.draw_shapes = [(shape, arguments)]
+        self.reload_transformations_after("all")
+
+    def draw_image_append(self, surface, rect):
+        self.draw_images.append((surface, rect))
+        self.reload_transformations_after("all")
+
+    def draw_image_set(self, surface, rect):
+        self.draw_images = [(surface, rect)]
         self.reload_transformations_after("all")
 
     @property
@@ -211,7 +219,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         )
 
     @property
-    def images(self):
+    def images(self):       
         return self.image_manager.images_list
 
     def register(self, method: callable):
@@ -220,3 +228,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         """
         bound_method = binding.bind_method(self, method)
         return bound_method
+
+    def draw_on_image(self, image, position, width, height):
+        surface = self.image_manager.load_image(image)
+        self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))

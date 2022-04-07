@@ -34,7 +34,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.BoardPosition"]] = None):
+    def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.Position"]] = None):
         self._collision_type: str = ""
         self._layer: int = 0
         self._inner = 0
@@ -52,7 +52,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         BaseToken.token_count += 1
         self.static: bool = False
         self.speed: int = 1
-        self._position: "board_position.BoardPosition" = position
+        self._position: "board_position.Position" = position
         self.ask: "ask.Ask" = ask.Ask(self.board)
 
     def __str__(self):

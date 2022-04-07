@@ -140,7 +140,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         self.board._tokens.change_layer(self, value)
 
     @property
-    def last_position(self) -> "board_position.BoardPosition":
+    def last_position(self) -> "board_position.Position":
         """Token position in last frame
 
         Can be used to track changes.
@@ -152,7 +152,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         return self.position_manager.last_direction
 
     @classmethod
-    def from_center(cls, center_position: "board_position.BoardPosition"):
+    def from_center(cls, center_position: "board_position.Position"):
         """
         Creates a token with center at center_position
 
@@ -811,14 +811,14 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         self.size = (old_width * scale_factor, value)
 
     @property
-    def position(self) -> board_position.BoardPosition:
+    def position(self) -> "board_position.Position":
         """
-        The position of the token as BoardPosition (x, y)
+        The position of the token as Position (x, y)
         """
         return self.position_manager.position
 
     @position.setter
-    def position(self, value: Union[board_position.BoardPosition, tuple]):
+    def position(self, value: Union["board_position.Position", tuple]):
         self.position_manager.position = value
 
     @property
@@ -859,11 +859,11 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         return self.rect.topleft[1]
 
     @property
-    def topleft(self) -> board_position.BoardPosition:
+    def topleft(self) -> "board_position.Position":
         return self.position_manager.topleft
 
     @topleft.setter
-    def topleft(self, value: Union[Tuple, board_position.BoardPosition]):
+    def topleft(self, value: Union[Tuple, "board_position.Position"]):
         self.position_manager.topleft = value
 
     @property
@@ -872,7 +872,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         return self.position_manager.center_y
 
     @property
-    def center(self) -> board_position.BoardPosition:
+    def center(self) -> "board_position.Position":
         return self.position_manager.center
 
     @center_x.setter
@@ -884,7 +884,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         self.position_manager.center_y = value
 
     @center.setter
-    def center(self, value: Union[Tuple, board_position.BoardPosition]):
+    def center(self, value: Union[Tuple, "board_position.Position"]):
         self.position_manager.center = value
 
     def move(self, distance: int = 0):
@@ -955,7 +955,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.move_back()
 
-    def move_in_direction(self, direction: Union[int, str, tuple, "board_position.BoardPosition"], distance=1):
+    def move_in_direction(self, direction: Union[int, str, tuple, "board_position.Position"], distance=1):
         """Moves token *distance* steps into a *direction* or towards a position
 
         .. image:: ../_images/move_in_direction.png
@@ -977,7 +977,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.move_in_direction(direction, distance)
 
-    def move_to(self, position: board_position.BoardPosition):
+    def move_to(self, position: "board_position.Position"):
         """Moves token *distance* to a specific board_posiition
 
         Args:
@@ -1301,7 +1301,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         colors = self.board_sensor.sensing_colors(colors, distance)
         return colors
 
-    def sensing_point(self, board_position: Union["board_position.Boardposition", Tuple]) -> bool:
+    def sensing_point(self, board_position: Union["board_position.Position", Tuple]) -> bool:
         """Is the token colliding with a specific (global) point?
 
         Returns:

@@ -1,7 +1,6 @@
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import *
-from miniworldmaker.board_positions import board_position_factory
-
+from miniworldmaker.board_positions import board_position
 
 class InspectActorToolbar(toolbar.Toolbar):
 
@@ -50,8 +49,7 @@ class InspectActorToolbar(toolbar.Toolbar):
 
     def _set_active_token_from_mouse(self, event, data):
         if event and "mouse" in event and self.board.get_mouse_position():
-            mouse_pos = board_position_factory.BoardPositionFactory(
-                self.board).create(self.board.get_mouse_position())
+            mouse_pos = board_position.Position.create(self.board.get_mouse_position())
             if self.board.is_position_on_board(mouse_pos) and event == "mouse_left":
                 token = self.get_active_token_from_board_position(data)
                 if token:

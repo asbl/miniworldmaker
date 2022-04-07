@@ -6,7 +6,7 @@ from miniworldmaker.board_positions import board_position
 
 class PixelBoardConnector(token_connector.TokenConnector):
 
-    def add_token_to_board(self, position: board_position.BoardPosition):
+    def add_token_to_board(self, position: "board_position.Position"):
         super().add_token_to_board(position)
 
     def add_board_sensor_to_token(self, token):

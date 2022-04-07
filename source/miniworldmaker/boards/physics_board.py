@@ -12,7 +12,6 @@ class PhysicsBoard(miniworldmaker.Board):
         self,
         columns: int = 40,
         rows: int = 40,
-        tile_size: int = 1,
     ):
         super().__init__(columns, rows)
         self.gravity_x: float = 0

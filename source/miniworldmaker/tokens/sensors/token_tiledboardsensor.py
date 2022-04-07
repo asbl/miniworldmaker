@@ -13,10 +13,10 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         super().__init__(token, board)
         self.token.fps = token.board.default_token_speed
         
-    def get_destination(self, start, direction, distance) -> board_position.BoardPosition:
+    def get_destination(self, start, direction, distance) -> "board_position.Position":
         x = start[0] + round(math.sin(math.radians(direction)) * distance)
         y = start[1] - round(math.cos(math.radians(direction)) * distance)
-        return board_position.BoardPosition(x, y)
+        return board_position.Position(x, y)
 
     def sensing_on_board(self, distance=0) -> bool:
         """

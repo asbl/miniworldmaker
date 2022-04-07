@@ -11,7 +11,7 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
     def __init__(self, board, token):
         super().__init__(board, token)
 
-    def add_token_to_board(self, position: board_position.BoardPosition):
+    def add_token_to_board(self, position: "board_position.Position"):
         # add token.physics attribute with physics properties to token
         self.token.physics = token_physics.TokenPhysics(self.token, miniworldmaker.App.board)
         if hasattr(self.token, "set_physics_default_values"):

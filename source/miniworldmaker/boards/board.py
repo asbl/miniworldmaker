@@ -7,7 +7,6 @@ from miniworldmaker.boards import board_base
 from miniworldmaker.tools import color, timer
 from miniworldmaker.appearances import appearance, background
 from typing import List, Tuple, Type, Union
-from miniworldmaker.board_positions import board_position_factory
 
 
 class Board(board_base.BaseBoard):
@@ -124,13 +123,6 @@ class Board(board_base.BaseBoard):
         rows: rows of new board (default:40)
     """
 
-    def __init__(
-        self,
-        columns: int = 400,
-        rows: int = 400,
-    ):
-        super().__init__(columns, rows)
-
     @property
     def speed(self) -> int:
         """speed defines how often the method ``act()`` will be called.  
@@ -245,20 +237,7 @@ class Board(board_base.BaseBoard):
         self.app.window.dirty = 1
         self.background.reload_transformations_after("all")
 
-    @property
-    def tile_size(self) -> int:
-        """Tile size of each tile, if board has tiles
 
-        Returns:
-            int: The tile-size in pixels.
-        """
-        return self._tile_size
-
-    @tile_size.setter
-    def tile_size(self, value: int):
-        self._tile_size = value
-        self.app.window.dirty = 1
-        self.background.reload_transformations_after("all")
 
     @property
     def size(self) -> tuple:
@@ -591,7 +570,7 @@ class Board(board_base.BaseBoard):
         """
         self.app.sound_manager.play_music(path)
 
-    def get_mouse_position(self) -> Union[board_position.BoardPosition, None]:
+    def get_mouse_position(self) -> Union["board_position.Position", None]:
         """
         Gets the current mouse_position
 
@@ -683,7 +662,7 @@ class Board(board_base.BaseBoard):
     def get_token_connector(self, token):
         return PixelBoardConnector(self, token)
 
-    def get_color_from_pixel(self, position: board_position.BoardPosition) -> tuple:
+    def get_color_from_pixel(self, position: "board_position.Position") -> tuple:
         """
         Returns the color at a specific position
 
@@ -716,5 +695,15 @@ class Board(board_base.BaseBoard):
         Returns: The color
 
         """
-        position = board_position_factory.BoardPositionFactory(self).create(position)
+        position = board_position.Position.create(position)
         return self.app.window.surface.get_at(position.to_int())
+
+    def get_from_pixel(self, position):
+        column = position[0]
+        row = position[1]
+        return column, row
+
+    def to_pixel(self, position):
+        x = position[0]
+        y = position[1]
+        return x, y

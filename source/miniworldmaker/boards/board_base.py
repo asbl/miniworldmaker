@@ -7,7 +7,7 @@ from typing import List, Tuple, Type, Union
 import miniworldmaker
 import pygame
 from miniworldmaker.appearances import appearance, background, backgrounds_manager
-from miniworldmaker.board_positions import board_position, board_position_factory, board_rect_factory
+from miniworldmaker.board_positions import board_position, board_rect_factory
 from miniworldmaker.boards.board_manager import board_collision_manager as coll_manager
 from miniworldmaker.boards.board_manager import board_event_manager as event_manager
 from miniworldmaker.boards.board_manager import board_position_manager as pos_manager
@@ -30,8 +30,8 @@ class BaseBoard(container.Container):
 
     def __init__(
         self,
-        columns: Union[int, Tuple[int]] = 40,
-        rows: int = 40,
+        columns: Union[int, Tuple[int]] = 400,
+        rows: int = 400,
         tile_size: int = 1,
     ):
         if self.__class__ == BaseBoard:
@@ -187,7 +187,7 @@ class BaseBoard(container.Container):
         self.app.window.surface.blit(self.background.surface, self.rect)
 
     def get_colors_at_position(self, position: tuple):
-        position = board_position_factory.BoardPositionFactory(self).create(position)
+        position = board_position.Position.create(position)
         return self.position_manager.get_color(position)
 
     def get_colors_at_line(self, line: list):
@@ -203,7 +203,7 @@ class BaseBoard(container.Container):
         """
         colors = []
         for pos in line:
-            pos = board_position_factory.BoardPositionFactory(self).create(pos)
+            pos = board_position.Position.create(pos)
             color_at_pos = self.get_colors_at_position(pos)
             if color_at_pos not in colors:
                 colors.append(color_at_pos)
@@ -325,12 +325,12 @@ class BaseBoard(container.Container):
         return self.backgrounds_manager.find_colors(rect, color, threshold)
 
     def get_board_position_from_pixel(self, pixel):
-        return board_position_factory.BoardPositionFactory(self).from_pixel(pixel)
+        return board_position.Position.from_pixel(pixel)
 
     def _update_event_handling(self):
         self.event_manager.update_event_handling()
 
-    def is_position_on_board(self, position: board_position.BoardPosition) -> bool:
+    def is_position_on_board(self, position: board_position.Position) -> bool:
         return self.position_manager.is_position_on_board(position)
 
     def register(self, method: callable) -> callable:
@@ -374,7 +374,7 @@ class BaseBoard(container.Container):
         """
         raise NotImplementedOrRegisteredError()
 
-    def borders(self, value: Union[tuple, board_position.BoardPosition, pygame.Rect]) -> list:
+    def borders(self, value: Union[tuple, "board_position.Position", pygame.Rect]) -> list:
         """
         Gets all borders a rect is touching
 
@@ -405,3 +405,21 @@ class BaseBoard(container.Container):
                 if (issubclass(token.__class__, token_type) or token.__class__ == token_type)
             ]
         return filtered_tokens
+
+    @property
+    def tile_size(self) -> int:
+        """Tile size of each tile, if board has tiles
+
+        Returns:
+            int: The tile-size in pixels.
+        """
+        return self._tile_size
+
+    @tile_size.setter
+    def tile_size(self, value: int):
+        self.set_tile_size(value)
+
+    def set_tile_size(self, value):
+        self._tile_size = value
+        self.app.window.dirty = 1
+        self.background.reload_transformations_after("all")

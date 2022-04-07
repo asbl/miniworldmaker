@@ -1,6 +1,6 @@
 import os
 
-from miniworldmaker.board_positions import board_position, board_rect_factory, board_position_factory
+from miniworldmaker.board_positions import board_position, board_rect_factory
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers.toolbar_widgets import SaveButton, LoadButton, ToolbarWidget, ToolbarLabel, ToolbarButton
 from miniworldmaker.tokens import token
@@ -58,8 +58,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         pass
 
     def handle_board_event(self, event, data):
-        # preprocess - Get BoardPosition and token at position (max: 1)
-        position = board_position_factory.BoardPositionFactory(self.app.board).from_pixel(data)
+        # preprocess - Get Position and token at position (max: 1)
+        position = board_position.Position.from_pixel(data)
         keys = self.app.board.app.event_manager.get_keys()
         tokens = self.app.board.get_tokens_by_pixel(position)
         if self.dummy in tokens:
@@ -89,7 +89,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 
 
     def _update_dummy(self, data):
-        position = board_position_factory.BoardPositionFactory(self.app.board).create(data)
+        position = board_position.Position.create(data)
         if self.dummy:
             self.dummy.position = position
             rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(self.dummy.position, self.dummy.size)

@@ -93,6 +93,8 @@ Line((10,10), (100, 200))
 board.run()
 ```
 
+![A line](../_images/processing/line2.png)
+
 ### Kreise
 
 Kreise kannst du allgemein folgendermaßen erstellen:
@@ -101,18 +103,23 @@ Kreise kannst du allgemein folgendermaßen erstellen:
   Line(position, radius)
 ```
 
-Die Position ist der Mittelpunkt des Kreises.
+:::{note}
+Die übergebene Position bei Kreisen ist der *Mittelpunkt* des Kreises
+:::
 
-Wenn du einen Kreis an der Stelle (400,300) mit Radius 20 erstellen willst, musst du folgendes schreiben:
+Wenn du einen Kreis an der Stelle (100,200) mit Radius 20 erstellen willst, musst du folgendes schreiben:
 
 
 ``` python
 from miniworldmaker import *
 
 board = Board()
-Circle((400,300), 20)
+Circle((100,200), 20)
 board.run()
+
 ```
+
+![A circle](../_images/processing/circle.png)
 
 ### Rechteck
 
@@ -127,7 +134,6 @@ Der Parameter `position` beschreibt die obere linke Ecke des Rechtecks.
 Willst du ein Rechteck an der Position (100, 100) mit Breite 20 und Höhe 100 zeichnen, so musst du folgendes schreiben:
 
 ``` python
-code-block:: python
 from miniworldmaker import *
 
 board = Board()
@@ -135,7 +141,7 @@ Rectangle((100, 100), 20, 100)
 board.run()
 ```
 
-<img src="../_images/processing/rectangle.png" alt="A Rectangle" width="260px"/>
+![A rectangle](../_images/processing/rectangle.png)
 
 ### Ellipse
 
@@ -151,9 +157,12 @@ Willst du eine Ellipse an der Position (100, 100) mit Breite 20 und Höhe 100 ze
 from miniworldmaker import *
 
 board = Board()
-Rectangle((100, 100), 20, 100)
+Ellipse((100, 100), 20, 100)
 board.run()
+
 ```
+
+![An ellipse](../_images/processing/ellipse.png)
 
 ### Rechteck und Ellipse in die Mitte verschieben.
 

@@ -34,7 +34,7 @@ class Test110(unittest.TestCase):
         token1 = Token(position=(0, 50))
         token1.add_costume("images/player.png")
         token1.costume.orientation = -90
-        assert token1.position == BoardPosition(0, 50)
+        assert token1.position == Position(0, 50)
         assert token1.direction == 0
         assert token1.orientation == -90
 
@@ -48,7 +48,7 @@ class Test110(unittest.TestCase):
         token4.add_costume("images/player.png")
         token4.costume.orientation = 270
 
-        assert token4.position == BoardPosition(0, 200)
+        assert token4.position == Position(0, 200)
         assert token4.rect == pygame.Rect(0, 200, 40, 40)
 
         class UpToken(Token):

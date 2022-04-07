@@ -8,6 +8,7 @@ from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.boards.tiled_board import TiledBoard
 from miniworldmaker.boards.physics_board import PhysicsBoard
+from miniworldmaker.boards.hex_board import HexBoard
 
 from miniworldmaker.tokens.token import Token
 from miniworldmaker.tokens.text_token import Text
@@ -32,8 +33,7 @@ from miniworldmaker.tools.timer import timer
 from miniworldmaker.tools.timer import loop
 
 from miniworldmaker.board_positions.board_vector import Vector
-from miniworldmaker.board_positions.board_position import BoardPosition
-from miniworldmaker.board_positions.board_position_factory import BoardPositionFactory
+from miniworldmaker.board_positions.board_position import Position
 
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
 

@@ -34,8 +34,8 @@ class Test105(unittest.TestCase):
             t4 = Token()
             t4.center=(20, 20)
             t4.add_costume((100,100,100,200))
-            test.assertEquals(t4.position, BoardPosition(0,0))
-            test.assertEquals(t4.center, BoardPosition(20,20))
+            test.assertEquals(t4.position, Position(0,0))
+            test.assertEquals(t4.center, Position(20,20))
 
                                     
         @board.register

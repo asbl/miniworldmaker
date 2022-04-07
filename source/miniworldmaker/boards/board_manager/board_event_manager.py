@@ -6,6 +6,8 @@ from typing import Any
 from miniworldmaker.tools import keys
 import inspect
 
+from miniworldmaker.board_positions import board_position
+
 
 class BoardEventHandler:
     """Processes Board Events
@@ -154,6 +156,8 @@ class BoardEventHandler:
         if event in self.registered_events:
             for method in self.registered_events[event].copy():
                 if type(data) in [list, str, tuple]:
+                    if type(data) == tuple and type(data[0]) == int and type(data[1]) == int: # type is position
+                        data = self.board.get_from_pixel(data)
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
         # handle global events

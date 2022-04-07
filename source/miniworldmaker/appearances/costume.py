@@ -83,9 +83,10 @@ class Costume(appear.Appearance):
 
     def _update_draw_shape(self):
         self.draw_shapes = []
-        if self._inner_shape() and self._outer_shape():
+        if self._inner_shape():
             if self.is_filled:
                 self.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
+        if self._outer_shape():
             if self.border:
                 self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
 

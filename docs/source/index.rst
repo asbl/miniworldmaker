@@ -55,6 +55,7 @@ Links
   
   objectsfirst_german/index
   processing_german/index
+  tiledboard_german/index
 
 .. toctree::
   :maxdepth: 1

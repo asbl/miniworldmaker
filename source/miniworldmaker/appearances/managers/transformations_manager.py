@@ -26,6 +26,7 @@ class TransformationsManager:
             ("coloring", self.transformation_coloring, "coloring", False),
             ("transparency", self.transformation_transparency, "transparency", False),
             ("write_text", self.transformation_write_text, "text", False),
+            ("draw_images", self.transformation_draw_images, "draw_images", False),
             ("draw_shapes", self.transformation_draw_shapes, "draw_shapes", False),
             ("rotate", self.transformation_rotate, "is_rotatable", False),
         ]
@@ -206,6 +207,15 @@ class TransformationsManager:
         text_surf = appearance.font_manager.transformation_write_text(image, appearance, appearance.color)
         self.surface = text_surf
         return text_surf
+
+    def transformation_draw_images(self, image: pygame.Surface, appearance) -> pygame.Surface:
+        for draw_action in appearance.draw_images:
+            surface = draw_action[0]
+            rect = draw_action[1]
+            surface = pygame.transform.scale(surface, (rect[2], rect[3]))
+            image.blit(surface, rect)
+        self.surface = image
+        return image
 
     def transformation_draw_shapes(self, image: pygame.Surface, appearance) -> pygame.Surface:
         for draw_action in appearance.draw_shapes:

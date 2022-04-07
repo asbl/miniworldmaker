@@ -28,7 +28,7 @@ class Test106(unittest.TestCase):
 
             player = Token(position=(3, 4))
             player.add_costume("images/char_blue.png")
-            test.assertEquals(player.position, BoardPosition(3, 4))
+            test.assertEquals(player.position, Position(3, 4))
             test.assertEquals(player.direction, 0)
             player.orientation = -90
             test.assertEquals(player.direction, 0)

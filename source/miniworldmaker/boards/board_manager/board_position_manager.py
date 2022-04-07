@@ -1,13 +1,11 @@
-from miniworldmaker.board_positions import board_position_factory
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.board_positions import board_rect_factory
 import pygame
 
-class BoardPositionHandler:
 
+class BoardPositionHandler:
     def __init__(self, board):
         self.board = board
-        self._position_factory: board_position_factory.BoardPositionFactory = board_position_factory.BoardPositionFactory(
-            self.board)
         self._mouse_position = None
         self._prev_mouse_position = None
 
@@ -16,10 +14,10 @@ class BoardPositionHandler:
         self._mouse_position = self.get_mouse_position()
 
     def get_mouse_position(self):
-        pos = board_position_factory.BoardPositionFactory(self.board).from_pixel(pygame.mouse.get_pos())
+        pos = pygame.mouse.get_pos()
         clicked_container = self.board.app.container_manager.get_container_by_pixel(pos[0], pos[1])
         if clicked_container == self.board:
-            return pos
+            return self.board.get_from_pixel(pos)
         else:
             return None
 
@@ -57,19 +55,21 @@ class BoardPositionHandler:
             True, If the Positions are near each other.
 
         """
-        pos1 = board_position_factory.BoardPositionFactory.create(pos1)
-        pos2 = board_position_factory.BoardPositionFactory.create(pos2)
-        if pos1.x <= pos2.x + distance \
-                and pos1.x >= pos2.x - distance \
-                and pos1.y <= pos2.y + distance \
-                and pos1.y >= pos2.y - distance:
+        pos1 = board_position.Position.create(pos1)
+        pos2 = board_position.Position.create(pos2)
+        if (
+            pos1.x <= pos2.x + distance
+            and pos1.x >= pos2.x - distance
+            and pos1.y <= pos2.y + distance
+            and pos1.y >= pos2.y - distance
+        ):
             return True
         else:
             return False
 
     def is_position_on_board(self, pos):
         """
-        Checks if BoardPosition is on board
+        Checks if Position is on board
 
         Returns:
             True, if Position is on board.
@@ -101,9 +101,11 @@ class BoardPositionHandler:
     def is_rect_completly_on_board(self, rect):
         rect = board_rect_factory.BoardRectFactory(self.board).create(rect)
         topleft_on_board = self.is_position_on_board(
-            board_rect_factory.BoardRectFactory(self.board).create(tuple([rect.left, rect.top])))
+            board_rect_factory.BoardRectFactory(self.board).create(tuple([rect.left, rect.top]))
+        )
         bottom_right_on_board = self.is_position_on_board(
-            board_rect_factory.BoardRectFactory(self.board).create(tuple([rect.right, rect.bottom])))
+            board_rect_factory.BoardRectFactory(self.board).create(tuple([rect.right, rect.bottom]))
+        )
         return topleft_on_board or bottom_right_on_board
 
     def get_colors_in_rect(self, rect, rect_borders=None):
@@ -115,8 +117,7 @@ class BoardPositionHandler:
                 if color not in colors:
                     colors.append(color)
             if rect_borders is None or "right" in rect_borders:
-                color = self.board.background.get_color_from_pixel(
-                    (rect.x + x, rect.y + rect.height))
+                color = self.board.background.get_color_from_pixel((rect.x + x, rect.y + rect.height))
                 if color not in colors:
                     colors.append(color)
         for y in range(self.height):
@@ -125,8 +126,7 @@ class BoardPositionHandler:
                 if color not in colors:
                     colors.append(color)
             if rect_borders is None or "bottom" in rect_borders:
-                color = self.board.background.get_color_from_pixel(
-                    (rect.x + rect.width, rect.y + y))
+                color = self.board.background.get_color_from_pixel((rect.x + rect.width, rect.y + y))
                 if color not in colors:
                     colors.append(color)
         return colors

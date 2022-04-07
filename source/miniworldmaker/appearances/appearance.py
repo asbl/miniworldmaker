@@ -1,5 +1,5 @@
 import pygame
-from miniworldmaker.board_positions import board_position, board_position_factory
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import ColorException
 from miniworldmaker.tools import binding
 from miniworldmaker.tools import color
@@ -614,7 +614,6 @@ class Appearance(appearance_base.AppearanceBase):
             .. image:: ../_images/gradient3.png
                 :alt: converted image
         """
-        print(type(arr))
         surf = pygame.surfarray.make_surface(arr)
         self.image_manager.replace_image(surf)
 

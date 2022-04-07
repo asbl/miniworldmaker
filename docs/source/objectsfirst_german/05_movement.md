@@ -1,38 +1,29 @@
-# Bewegung und Ausrichtung 
+# Position, Ausrichtung und Bewegung
 
-Mit der ``act(self)``-Methode kannst du Token in regelmäßigen Abständen ansteuern. Jetzt lernst du, wie du deine Token gezielt in eine Richtung bewegen kannst.
-
+In diesem Kapitel lernst du, wie du Position und Ausrichtung eines Tokens verändern kannst, um es zu bewegen.
 ## Die move()-Funktion
 
-
-Die zentrale Funktion zum Bewegen ist die Funktion `move()`.
-
-Mit der Funktion `move()` kannst du dein Objekt um einen oder mehrere Schritte bewegen:
-
-### Beispiel
+Die einfachste Art ein Token zu bewegen ist die funktion `move()`. Die Funktion bewegt dein Token in die aktuelle Richtung.
+Die aktuelle Richtung kannst du mit `token.direction` festlegen, z.B. so:
 
 ``` python
-@player.register
-def act(self):
-    self.direction = "right"
-    self.move()
+self.direction = "right" # can also be 90
+self.move()
 ```
 
-Das Token `player` schaut nach rechts und bewegt sich dann einen Schritt nach vorne.
-Dies wird regelmäßig wiederholt, wenn die Methode act() aufgerufen wird.
+Beispiel:
 
-Vollständiges Beispiel:
+Das Token `player` schaut nach rechts und bewegt sich dann einen Schritt nach vorne.
+
 
 ``` python
 from miniworldmaker import *
 
-board = TiledBoard()
-board.columns = 20
-board.rows = 8
-board.tile_size = 42
-board.add_background("images/soccer_green.jpg")
+board = Board()
+board.add_background("images/grass.jpg")
 player = Token()
-player.add_costume("images/player_1.png")
+player.add_costume("images/player.png")
+player.orientation = -90 # correct image orientation
 @player.register
 def act(self):
     self.direction = "right"
@@ -42,7 +33,7 @@ board.run()
 ```
 
  <video controls loop width=100%>
-  <source src="../_static/moving_token.webm" type="video/webm">
+  <source src="../_static/moveright.webm" type="video/webm">
   Your browser does not support the video tag.
 </video> 
 
@@ -52,50 +43,69 @@ Mit der Funktion move() bewegt sich das `Token` immer in die aktuelle `direction
 
 Du kannst das `Token` aber auch direkt in eine Richtung bewegen lassen. Dies geht mit den Befehlen `move_right()`, `move_left()`, `move_up()` und `m̀ove_down()`.
 
-### Beispiel
-
-Dieser Code bewegt das Token in der act()-Methode nach rechts:
+Das Programm oben würde so aussehen:
 
 ``` python
+from miniworldmaker import *
+
+board = Board()
+board.add_background("images/grass.jpg")
+player = Token()
+player.add_costume("images/player.png")
+player.orientation = -90 # correct image orientation
 @player.register
 def act(self):
     self.move_right()
+
+board.run()
 ```
 
 ## move_in_direction
 
 Alternativ kannst du das Token mit `move_in_direction()` auch in eine beliebige Richtung bewegen.
 
-### Beispiel:
-
-
-Dies bewegt das Token schräg rechts nach oben (Richtung 45°). 
+Beispiel: Das Token bewegt sich schräg nach oben
 
 ``` python
+from miniworldmaker import *
+
+board = Board()
+board.add_background("images/grass.jpg")
+player = Token((100,100))
+player.add_costume("images/player.png")
+player.orientation = -90 # correct image orientation
 @player.register
 def act(self):
     self.move_in_direction(45)
+
+board.run()
+
 ```
 
-### Umfangreiches Beispiel
+ <video controls loop width=100%>
+  <source src="../_static/movedirection.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 
 
-Bewegung in Richtung der Mausposition:
+## Beispiel: Bewegung in Mausposition
+
+Das folgende Programm steuert mit Hilfe der Funktion `move_in_direction()` das Token in Richtung des Mauszeigers:
 
 ``` python
-import miniworldmaker
+from miniworldmaker import *
 
-board = miniworldmaker.PixelBoard()
-board.columns = 400
-board.rows = 400
-board.add_background("images/soccer_green.jpg")
-player = miniworldmaker.Token()
-player.add_costume("images/player_1.png")
+board = Board(400, 400)
+board.add_background("images/grass.jpg")
+player = Token()
+player.add_costume("images/player.png")
+player.orientation = -90
 
 @player.register
 def act(self):
     self.move_in_direction(self.board.get_mouse_position())
 
 board.run()
+
 ```
 
  <video controls loop width=100%>
@@ -104,35 +114,131 @@ board.run()
 </video> 
 
 
-## Die Richtung ändern
+## turn_left und turn_right
 
-Die Richtung kannst du mit folgenden Befehlen ändern:
+Mit `turn_left()` und `turn_right` kannst du das Token in eine Richtung drehen.
 
 * ``player.turn_left(degrees)`` - Dreht das Token um **degrees** Grad nach links.
 * ``player.turn_right(degrees)`` - Dreht das Token um **degrees** Grad nach rechts.
-* ``player.direction = degrees``- Gibt dem player-Objekt die absolute Ausrichtung degrees.
+
+Beispiel:
+
+``` python
+from miniworldmaker import *
+
+board = Board(400, 400)
+board.add_background("images/grass.jpg")
+player = Token((100, 100))
+player.add_costume("images/player.png")
+player.orientation = -90
+
+@player.register
+def act(self):
+    self.move()
+    
+@player.register
+def on_key_down_a(self):
+    self.turn_left(30)
+
+@player.register
+def on_key_down_d(self):
+    self.turn_right(30)
+
+
+board.run()
+```
+
+ <video controls loop width=100%>
+  <source src="../_static/turn.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 
+
+## direction und position
+
+Mit den Attributen `direction` und `position` kannst du direkt die Position und Ausrichtung eines Tokens ändern.
+
+### Position
+
+Die Position kannst du mit ``self.position`` ändern.
+
+Beispiel:
+
+``` python
+from miniworldmaker import *
+import random
+
+board = Board(400, 400)
+board.add_background("images/grass.jpg")
+player = Token((100, 100))
+player.add_costume("images/target.png")
+player.orientation = -90
+
+@player.register
+def act(self):
+    if self.board.frame % 50 == 0: # every 50th frame:
+        player.position = (random.randint(0, 400), random.randint(0, 400))
+
+board.run()
+```
+
+Im Beispiel wird die Position alle 50 Frames zufällig neu gesetzt.
+
+ <video controls loop width=100%>
+  <source src="../_static/target1.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 
+
+Anstelle von `position` kannst du auch direkt auf die Werte von Attribute von x und y zugreifen.
+
+Beispiel:
+
+``` python
+from miniworldmaker import *
+
+board = Board()
+board.add_background("images/grass.jpg")
+player = Token((90,90))
+player.add_costume("images/player.png")
+player.costume.orientation = -90 
+@player.register
+def on_key_down_w(self):
+    player.y = player.y - 1
+
+player2 = Token((180,180))
+player2.add_costume("images/player.png")
+player2.costume.orientation = -90 
+@player2.register
+def on_key_pressed_s(self):
+    player2.y = player2.y - 1
+    
+board.run()
+```
+
+ <video controls loop width=100%>
+  <source src="../_static/keydown.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video> 
+
+## Direction
+
+Mit `self.direction` kannst du die aktuelle Richtung des Tokens abfragen oder ändern
   
 Der Wert degrees kann hier entweder als Zahl oder als Text wie in folgender Grafik angegeben werden (0: oben, 180, unten, 90 rechts, -90 links):
 
 ![Move on board](/_images/movement.jpg)
   
-### Beispiel:
-
-`self.direction = 90` bezieht sich z.B. *auf die eigene* Ausrichtung, `self.move_in_direction()` ruft die eigene Methode `move_in_direction` auf.
-
-### Umfangreiches Beispiel
+Beispiel:
 
 Im folgenden Beispiel bewegt sich das Token im Kreis:
 
 ``` python
 from miniworldmaker import *
 
-board = PixelBoard()
-board.columns = 400
-board.rows = 400
-board.add_background("images/soccer_green.jpg")
+board = Board(400,400)
+board.add_background("images/grass.jpg")
 player = Token()
-player.add_costume("images/player_1.png")
+player.add_costume("images/player.png")
+player.orientation = -90
 player.position = (200, 200)
 
 @player.register
@@ -148,8 +254,3 @@ board.run()
   <source src="../_static/move_in_circle.webm" type="video/webm">
   Your browser does not support the video tag.
 </video> 
-
-## Ausblick
-
-* Mehr Informationen. Siehe [Key Concepts: Movement](../key_concepts/movement)
-* Mehr Informationen. Siehe [Key Concepts: Directions](../key_concepts/directions)

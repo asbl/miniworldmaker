@@ -95,7 +95,7 @@ class Circle(Shape):
     @radius.setter
     def radius(self, value):
         self._radius = value
-        self._update_draw_shape()
+        self.costume._update_draw_shape()
 
     def set_physics_default_values(self):
         self.physics.shape_type = "circle"
@@ -159,7 +159,7 @@ class Ellipse(Shape):
         self.costume._update_draw_shape()
 
     def check_arguments(self, position, width, height):
-        if type(position) not in [tuple, board_position.BoardPosition, None]:
+        if type(position) not in [tuple, board_position.Position, None]:
             raise EllipseWrongArgumentsError()
 
     @classmethod
@@ -206,7 +206,7 @@ class Arc(Ellipse):
     @start_angle.setter
     def start_angle(self, value):
         self._start_angle = value
-        self._update_draw_shape()
+        self.costume._update_draw_shape()
 
     @property
     def end_angle(self):
@@ -215,7 +215,7 @@ class Arc(Ellipse):
     @end_angle.setter
     def end_angle(self, value):
         self._end_angle = value
-        self._update_draw_shape()
+        self.costume._update_draw_shape()
 
     @classmethod
     def from_topleft(cls, position: tuple, width: float, height: float, start_angle, end_angle):
@@ -275,9 +275,9 @@ class Line(Shape):
         self.position = box.topleft
 
     def check_arguments(self, start_position, end_position):
-        if type(start_position) not in [tuple, board_position.BoardPosition, None]:
+        if type(start_position) not in [tuple, board_position.Position, None]:
             raise LineFirstArgumentError(start_position)
-        if type(end_position) not in [tuple, board_position.BoardPosition, None]:
+        if type(end_position) not in [tuple, board_position.Position, None]:
             raise LineSecondArgumentError(end_position)
 
     def set_physics_default_values(self):
@@ -359,7 +359,7 @@ class Rectangle(Shape):
         self.costume._update_draw_shape()
 
     def check_arguments(self, topleft, width, height):
-        if type(topleft) != tuple and type(topleft) != board_position.BoardPosition:
+        if type(topleft) != tuple and type(topleft) != board_position.Position:
             raise RectFirstArgumentError(topleft)
 
     def set_physics_default_values(self):

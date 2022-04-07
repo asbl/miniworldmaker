@@ -161,7 +161,6 @@ class ImageManager:
 
     def add_image_from_appearance(self, appearance, index):
         appearance.image_manager.get_surface(index)
-        # @todo: add body
 
     def add_image_from_surface(self, surface) -> int:
         """Adds an image to the appearance
@@ -250,7 +249,6 @@ class ImageManager:
             image = pygame.Surface((self.appearance.parent.width, self.appearance.parent.height), pygame.SRCALPHA)
             #image.fill(self.appearance.fill_color)
             image.set_alpha(255)
-            self.appearance.raw_image = image
             return image
 
     def end_animation(self, appearance):
@@ -267,3 +265,4 @@ class ImageManager:
 
     def remove_image(self, appearance):
         pass
+
