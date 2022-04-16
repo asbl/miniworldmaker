@@ -1,10 +1,18 @@
 import pygame
 import math
 from typing import Union
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
-from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
-from miniworldmaker.board_positions.board_vector import Vector
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from board_positions import board_position
+from exceptions.miniworldmaker_exception import NoCostumeSetError
+from exceptions.miniworldmaker_exception import MoveInDirectionTypeError
+from board_positions.board_vector import Vector
+
+
 class TokenPositionManager:
     def __init__(self, token, position):
         self.token = token
@@ -58,7 +66,7 @@ class TokenPositionManager:
     def get_direction(self):
         direction = (self._direction + 180) % 360 - 180
         return direction
-        
+
     def set_direction(self, value):
         self.last_direction = self.direction
         direction = self._value_to_direction(value)
@@ -78,7 +86,8 @@ class TokenPositionManager:
         if value != self._size:
             self._old_size = self._size
             self._size = value
-            self.token.costume.reload_transformations_after("all")
+            if self.token.costume:
+                self.token.costume.reload_transformations_after("all")
         return self._size
 
     @property
@@ -102,8 +111,7 @@ class TokenPositionManager:
         if self.last_position != self._position:
             self.token.dirty = 1
             if self.token.board:
-                self.token.board.app.event_manager.send_event_to_containers(
-                    "token_moved", self.token)
+                self.token.board.app.event_manager.send_event_to_containers("token_moved", self.token)
         return self.position
 
     @property
@@ -216,7 +224,7 @@ class TokenPositionManager:
             value = self.direction
         elif value == "back":
             value = 360 - self.direction
-        elif isinstance(value,Vector):
+        elif isinstance(value, Vector):
             value = value.to_direction() % 360
         else:
             value = value % 360
@@ -241,10 +249,10 @@ class TokenPositionManager:
         Args:
             value: The direction in math unit circle style.
         """
-        return - (direction + 90) % 360 - 180
+        return -(direction + 90) % 360 - 180
 
     def bounce_from_border(self, borders):
-        """ Bounces the actor from a border.
+        """Bounces the actor from a border.
 
         Args:
             borders: A list of borders as strings e.g. ["left", "right"]
@@ -253,21 +261,23 @@ class TokenPositionManager:
 
         """
         angle = self.direction
-        if ("top" in borders and
-                (self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0)):
+        if "top" in borders and (
+            self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
+        ):
             self.point_in_direction(0)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
-        elif ("bottom" in borders and (
-                (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180))):
+        elif "bottom" in borders and (
+            (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
+        ):
             self.point_in_direction(180)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
-        elif ("left" in borders and self.direction <= 0):
+        elif "left" in borders and self.direction <= 0:
             self.point_in_direction(-90)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
-        elif ("right" in borders and (self.direction >= 0)):
+        elif "right" in borders and (self.direction >= 0):
             self.point_in_direction(90)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
@@ -301,7 +311,7 @@ class TokenPositionManager:
 
         Returns:
             int: new direction
-        """        
+        """
         self.turn_left(180)
         self.token.costume.flip(not self.token.costume.is_flipped)
         return self.direction
@@ -347,16 +357,16 @@ class TokenPositionManager:
 
         """
         pos = self.token.center
-        x = (destination[0] - pos[0])
-        y = (destination[1] - pos[1])
+        x = destination[0] - pos[0]
+        y = destination[1] - pos[1]
         if x != 0:
             m = y / x
             if x < 0:
                 # destination is left
-                self.token.direction = (math.degrees(math.atan(m)) - 90)
+                self.token.direction = math.degrees(math.atan(m)) - 90
             else:
                 # destination is right
-                self.token.direction = (math.degrees(math.atan(m)) + 90)
+                self.token.direction = math.degrees(math.atan(m)) + 90
             return self.token.direction
         else:
             m = 0

@@ -2,13 +2,20 @@ import asyncio
 import pygame
 import inspect
 from collections import defaultdict
-from miniworldmaker.appearances.managers import font_manager
-from miniworldmaker.appearances.managers import image_manager
-from miniworldmaker.appearances.managers import transformations_manager
+
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from appearances.managers import font_manager
+from appearances.managers import image_manager
+from appearances.managers import transformations_manager
+from appearances.managers.image_manager import ImageManager
+
 from typing import Union, Tuple
-from miniworldmaker.tools import binding
-from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances.managers.image_manager import ImageManager
+from tools import binding
 
 
 class MetaAppearance(type):
@@ -42,12 +49,10 @@ class AppearanceBase(metaclass=MetaAppearance):
         self._orientation = False
         self._coloring = None  # Color for colorize operation
         self._transparency = False
-
         self._border = 0
         self._is_filled = False
         self._fill_color = (255, 0, 255, 100)
         self._border_color = None
-
         self._alpha = 255
         self._dirty = 0
         self.call_image_actions = {}
@@ -219,7 +224,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         )
 
     @property
-    def images(self):       
+    def images(self):
         return self.image_manager.images_list
 
     def register(self, method: callable):

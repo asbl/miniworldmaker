@@ -1,4 +1,4 @@
-from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
+from exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
 from inspect import signature
 
 def get_signature(method: callable, arguments: tuple, allow_none=True):

@@ -1,18 +1,17 @@
 from __future__ import annotations
-from miniworldmaker.tokens import token_base
-from miniworldmaker.tokens import token_aliases
+from tokens import token_base
+from tokens import token_aliases
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
-from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances import costume
-from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import (
+from appearances import appearance
+from appearances import costume
+from appearances import costumes_manager
+from board_positions import board_position
+from exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
     NoBoardError,
 )
-from miniworldmaker.tools import token_inspection
-from miniworldmaker.dialogs import ask
-import miniworldmaker
+from tools import token_inspection
+from dialogs import ask
 
 
 class Token(token_base.BaseToken, token_aliases.TokenAliases):
@@ -419,7 +418,8 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def costume(self) -> costume.Costume:
         """Gets the costume of token
         """
-        return self.costume_manager.costume
+        if self.costume_manager:
+            return self.costume_manager.costume
 
     @costume.setter
     def costume(self, value):
@@ -1022,11 +1022,13 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         if hasattr(self, "board") and self.board:
             self.board.remove_from_board(self)
+        for token in self.sensing_tokens():
+            token.dirty = 1
         for manager in self._managers:
             manager.self_remove()
             del manager
+        self.board
         self.kill()
-        del self
 
     @property
     def is_rotatable(self) -> bool:

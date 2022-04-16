@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from miniworldmaker.app import app
+
+from app import app
 
 class FileManager:
 

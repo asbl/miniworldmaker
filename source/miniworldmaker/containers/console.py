@@ -1,5 +1,11 @@
 import pygame
-from miniworldmaker.containers import container
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from containers import container
 
 
 class Console(container.Container):

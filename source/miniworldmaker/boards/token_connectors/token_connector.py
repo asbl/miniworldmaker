@@ -1,5 +1,10 @@
-from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.appearances import costume
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from appearances import costumes_manager
+from appearances import costume
 
 
 class TokenConnector:
@@ -8,8 +13,8 @@ class TokenConnector:
         self.token = token
 
     def add_token_managers(self, position):
-        self.add_board_costume_manager_to_token(self.token)
         self.add_position_manager_to_token(self.token, position)
+        self.add_board_costume_manager_to_token(self.token)
         self.add_board_sensor_to_token(self.token)
 
     def add_token_to_board(self, position):

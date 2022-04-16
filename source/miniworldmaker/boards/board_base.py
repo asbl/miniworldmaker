@@ -4,24 +4,30 @@ import inspect
 from collections import defaultdict
 from typing import List, Tuple, Type, Union
 
-import miniworldmaker
 import pygame
-from miniworldmaker.appearances import appearance, background, backgrounds_manager
-from miniworldmaker.board_positions import board_position, board_rect_factory
-from miniworldmaker.boards.board_manager import board_collision_manager as coll_manager
-from miniworldmaker.boards.board_manager import board_event_manager as event_manager
-from miniworldmaker.boards.board_manager import board_position_manager as pos_manager
-from miniworldmaker.boards.data import export_factory, import_factory
-from miniworldmaker.boards.token_connectors import token_connector
-from miniworldmaker.containers import container
-from miniworldmaker.dialogs import ask
-from miniworldmaker.exceptions.miniworldmaker_exception import (
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from app import app
+from appearances import appearance, background, backgrounds_manager
+from board_positions import board_position, board_rect_factory
+from boards.board_manager import board_collision_manager as coll_manager
+from boards.board_manager import board_event_manager as event_manager
+from boards.board_manager import board_position_manager as pos_manager
+from boards.data import export_factory, import_factory
+from boards.token_connectors import token_connector
+from containers import container
+from dialogs import ask
+from exceptions.miniworldmaker_exception import (
     BoardArgumentsError,
     BoardInstanceError,
     NotImplementedOrRegisteredError,
 )
-from miniworldmaker.tokens import token as token_module
-from miniworldmaker.tools import board_inspection, color, timer
+from tokens import token as token_module
+from tools import board_inspection, color, timer
 
 
 class BaseBoard(container.Container):
@@ -68,9 +74,9 @@ class BaseBoard(container.Container):
         self.frame: int = 0
         self.clock: pygame.time.Clock = pygame.time.Clock()
         # Init graphics
-        self.app: miniworldmaker.App = miniworldmaker.App("miniworldmaker")
+        self.app: "app.App" = app.App("miniworldmaker")
         self.app.container_manager.add_container(self, "top_left")
-        miniworldmaker.App.board = self
+        app.App.board = self
         self.background = background.Background(self)
         self.background.update()
         self.collision_manager: "coll_manager.BoardCollisionHandler" = coll_manager.BoardCollisionHandler(self)

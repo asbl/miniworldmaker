@@ -1,8 +1,8 @@
 import inspect
 from typing import Optional, Union
-from miniworldmaker.tokens import token
-from miniworldmaker.tools.mwminspection import MWMInspection
-from miniworldmaker.tools import method_caller
+from tokens import token
+from tools.mwminspection import MWMInspection
+from tools import method_caller
 
 class TokenInspection(MWMInspection):
 

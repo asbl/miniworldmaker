@@ -1,4 +1,9 @@
-from miniworldmaker.boards.data import db_manager
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from boards.data import db_manager
 
 
 class ImportFactory():

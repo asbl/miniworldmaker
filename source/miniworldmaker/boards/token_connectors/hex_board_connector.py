@@ -1,8 +1,8 @@
-from miniworldmaker.tokens.sensors import token_tiledboardsensor as tiledboardsensor
-from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.tokens.positions import token_hex_position_manager as hexpositionmanager
-from miniworldmaker.boards.token_connectors import tiled_board_connector
-from miniworldmaker.board_positions import board_position
+from appearances import hex_costume
+from appearances import costumes_manager
+from tokens.sensors import token_tiledboardsensor as tiledboardsensor
+from tokens.positions import token_hex_position_manager as hexpositionmanager
+from boards.token_connectors import tiled_board_connector
 
 
 class HexBoardConnector(tiled_board_connector.TiledBoardConnector):
@@ -21,3 +21,9 @@ class HexBoardConnector(tiled_board_connector.TiledBoardConnector):
         self.remove_static_token()
         self.remove_dynamic_token()
         super().remove_token_from_board(token)
+
+
+    def add_board_costume_manager_to_token(self, token):
+        token._costume = hex_costume.HexCostume(token)
+        token.costume_manager = costumes_manager.CostumesManager(token, token._costume)
+        token._managers.append(token.costume_manager)

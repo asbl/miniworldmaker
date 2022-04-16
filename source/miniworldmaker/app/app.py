@@ -4,12 +4,13 @@ import pkg_resources
 import pygame
 import __main__
 import warnings
-from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, NoRunError
-from miniworldmaker.app import window
-from miniworldmaker.app import event_manager
-from miniworldmaker.app import container_manager
-from miniworldmaker.app import sound_manager
-from miniworldmaker.appearances.managers import image_manager
+
+from exceptions.miniworldmaker_exception import MiniworldMakerError, NoRunError
+from app import window
+from app import event_manager
+from app import container_manager
+from app import sound_manager
+from appearances.managers import image_manager
 
 class App:
     """The class app contains the game itself. It's created the first time you call board.run().

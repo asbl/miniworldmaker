@@ -158,3 +158,7 @@ class NoBoardError(MiniworldMakerError):
 class ImageIndexNotExistsError(MiniworldMakerError):
     def __init__(self, appearance, index):
         self.message = f"Error: Image index {index} does not exist for {appearance}.\n You can't set costume or background -image to a non-existing image"
+        
+class NoTileFoundError(MiniworldMakerError):
+    def __init__(self, position):
+        self.message = f"No valid Tile found for position {position}"

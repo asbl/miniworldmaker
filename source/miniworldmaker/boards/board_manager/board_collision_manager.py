@@ -1,5 +1,10 @@
-from miniworldmaker.tools import method_caller
-from miniworldmaker.tools import token_class_inspection
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from tools import method_caller
+from tools import token_class_inspection
 
 class BoardCollisionHandler:
     def __init__(self, board):

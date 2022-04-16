@@ -1,11 +1,12 @@
 from typing import Union
 
 import pygame
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.boards.token_connectors.pixel_board_connector import PixelBoardConnector
-from miniworldmaker.boards import board_base
-from miniworldmaker.tools import color, timer
-from miniworldmaker.appearances import appearance, background
+
+from board_positions import board_position
+from boards.token_connectors.pixel_board_connector import PixelBoardConnector
+from boards import board_base
+from tools import color, timer
+from appearances import appearance, background
 from typing import List, Tuple, Type, Union
 
 

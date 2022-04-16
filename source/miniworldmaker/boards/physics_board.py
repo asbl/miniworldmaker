@@ -1,9 +1,15 @@
 import pymunk as pymunk_engine
 import sys
-from miniworldmaker.boards import board
-from miniworldmaker.boards.token_connectors.physics_board_connector import PhysicsBoardConnector
-from miniworldmaker.tools import token_inspection
-from miniworldmaker.tools import token_class_inspection
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from boards import board
+from boards.token_connectors.physics_board_connector import PhysicsBoardConnector
+from tools import token_inspection
+from tools import token_class_inspection
 import miniworldmaker
 
 
@@ -42,7 +48,7 @@ class PhysicsBoard(miniworldmaker.Board):
         space = self.space
         token_id = hash(token.__class__.__name__) % ((sys.maxsize + 1) * 2)
         other_id = hash(other_class.__name__) % ((sys.maxsize + 1) * 2)
-        handler = space.add_collision_manager(token_id, other_id)
+        handler = space.add_collision_handler(token_id, other_id)
         handler.data["method"] = getattr(token, method.__name__)
         handler.data["type"] = event
         if event == "begin":

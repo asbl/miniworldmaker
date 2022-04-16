@@ -1,8 +1,8 @@
 from typing import Tuple, Union
 
-from miniworldmaker.tokens import token
-from miniworldmaker.exceptions.miniworldmaker_exception import CantSetAutoFontSize, MiniworldMakerError
-from miniworldmaker.appearances import text_costume
+from tokens import token
+from exceptions.miniworldmaker_exception import CantSetAutoFontSize, MiniworldMakerError
+from appearances import text_costume
 
 class Text(token.Token):
     """
@@ -42,7 +42,7 @@ class Text(token.Token):
     @font_size.setter
     def font_size(self, value):
         self.costume.font_size = value
-        self._update_text()
+        self.costume._update_draw_shape()
 
     def set_text(self, text):
         """
@@ -52,7 +52,7 @@ class Text(token.Token):
             text: The text
         """
         self.costume.text = text
-        self._update_text()
+        self.costume._update_draw_shape()
 
     def get_text(self):
         """Gets the currently displayed tex
@@ -73,20 +73,7 @@ class Text(token.Token):
         if value == "":
             value = " "
         self.set_text(value)
-        self._update_text()
-
-    def _update_text(self):
-        """Sets self.size by costume.font_size"""
-        if not self.board.fixed_size:
-            self.set_size((self.costume.get_text_width(), self.costume.font_size), auto_size=False)
-        if self.board.fixed_size:
-            self.costume.font_size = 0
-            while self.costume.get_text_width() < self.size[0] and self.costume.font_size < self.size[1]:
-                self.costume.font_size += 1
-
-    def set_size(self, value, auto_size=True):
-        super().set_size(value)
-
+        self.costume._update_draw_shape()
 
 class TextToken(Text):
     """Alias for legacy code"""

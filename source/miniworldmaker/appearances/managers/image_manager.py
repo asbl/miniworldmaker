@@ -1,8 +1,8 @@
 import pygame
 import os
 from pathlib import Path
-from miniworldmaker.app import file_manager
-from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExistsError
+from app import file_manager
+from exceptions.miniworldmaker_exception import ImageIndexNotExistsError
 from typing import List, Union, Tuple
 
 

@@ -1,4 +1,9 @@
-from miniworldmaker.containers import console
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from containers import console
 
 
 class EventConsole(console.Console):

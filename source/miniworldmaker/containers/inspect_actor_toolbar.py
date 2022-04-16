@@ -1,6 +1,11 @@
-from miniworldmaker.containers import toolbar
-from miniworldmaker.containers.toolbar_widgets import *
-from miniworldmaker.board_positions import board_position
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from containers import toolbar
+from containers.toolbar_widgets import *
+from board_positions import board_position
 
 class InspectActorToolbar(toolbar.Toolbar):
 

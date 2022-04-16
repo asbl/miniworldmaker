@@ -1,6 +1,13 @@
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_rect_factory
+
 import pygame
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from board_positions import board_position
+from board_positions import board_rect_factory
 
 
 class BoardPositionHandler:
@@ -17,7 +24,7 @@ class BoardPositionHandler:
         pos = pygame.mouse.get_pos()
         clicked_container = self.board.app.container_manager.get_container_by_pixel(pos[0], pos[1])
         if clicked_container == self.board:
-            return self.board.get_from_pixel(pos)
+            return pos
         else:
             return None
 
@@ -130,3 +137,5 @@ class BoardPositionHandler:
                 if color not in colors:
                     colors.append(color)
         return colors
+
+    

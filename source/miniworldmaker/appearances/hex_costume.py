@@ -1,57 +1,57 @@
-from miniworldmaker.appearances import costume
+
 import pygame
-import math
+from typing import List
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
 
 
+from boards.elements import hex_elements
+from appearances import costume
+from tokens import hex_tokens
+import miniworldmaker
 class HexCostume(costume.Costume):
-    def __init__(self, token):
+    def __init__(self, token : "hex_tokens.HexToken"):
         super().__init__(token)
         self.set_image((0, 0, 0, 0))
         self.is_scaled = True
         self.is_upscaled = False
         self.is_filled = True
-        self.fill_color = (255, 255, 255, 50)
+        self.mod_pointlist = []
+        self.fill_color = (180, 180, 180, 255)
         self.border = 1
         self.border_color = (100, 100, 100, 255)
+        self._update_draw_shape()
 
-
-class HexBorderCostume(HexCostume):
-    def __init__(self, token, border_direction):
-        self.border_direction = border_direction
-        super().__init__(token)
-
-    def get_inner_shapes(self):
+    def _update_draw_shape(self):
+        self.mod_pointlist = []
         board = self.token.board
-        size = board.tile_size
-        width = board.get_tile_width()
-        height = board.get_tile_height()
-        return {
-            "no": (pygame.draw.line, [(0, size * 1 / 4), (size / 2, 0), 0]),
-            "nw": (pygame.draw.line,[(size / 2, 0), (size, size * 1 / 4), 0]),
-            "w": (pygame.draw.line, [(size, size * 1 / 4), (size, size * 3/4), 0]),
-            "sw": (pygame.draw.line,[(size / 2, size ), (size, size * 3 / 4), 0]),
-            "so": (pygame.draw.line,[(width / 2, height ), (0, height * 3 / 4), 0]),
-            "o": (pygame.draw.line,[(0, height * 1/4 ), (0, height * 3 / 4), 0]),
-            "no": (pygame.draw.line,[(width / 2, 0 ), (0, height * 1 / 4), 0]),
-        }
-
-    def get_outer_shapes(self):
-        board = self.token.board
-        size = board.tile_size
-        width = board.get_tile_width()
-        height = board.get_tile_height()
-        return {
-            "no": (pygame.draw.line, [(0, height * 1 / 4), (width / 2, 0), self.token.border]),
-            "nw": (pygame.draw.line,[(width / 2, 0), (width, height * 1 / 4), self.token.border]),
-            "w":  (pygame.draw.line,[(width, size * 1/4 ), (width, size * 3 / 4), self.token.border]),
-            "sw": (pygame.draw.line,[(width / 2, height ), (width, height * 3 / 4), self.token.border]),
-            "so": (pygame.draw.line,[(width / 2, height ), (0, height * 3 / 4), self.token.border]),
-            "o": (pygame.draw.line,[(0, height * 1/4 ), (0, height * 3 / 4), self.token.border]),
-            "no": (pygame.draw.line,[(width / 2, 0 ), (0, height * 1 / 4), self.token.border]),
-        }
-
+        if board.is_tile(self.token.position):
+            tile = self.token.board.get_tile(self.token.position)
+            for corner in tile.get_neighbour_corners():
+                offset = corner.get_local_coordinate_for_tile(tile)
+                if offset:
+                    self.mod_pointlist.append(offset)
+        else:
+            pass
+        super()._update_draw_shape()
+            
     def _inner_shape(self):
-        return self.get_inner_shapes()[self.border_direction]
-
+        board = self.token.board
+        if board.is_tile(self.token.position):
+            return pygame.draw.polygon, [self.mod_pointlist, 0]
+        elif board.is_corner(self.token.position):
+            return pygame.draw.rect, [pygame.Rect(0,0, self.token.size[0], self.token.size[1]), 0]
+        elif board.is_edge(self.token.position):
+            return pygame.draw.rect, [pygame.Rect(0,0, self.token.size[0], self.token.size[1]), 0]
+        
     def _outer_shape(self):
-        return self.get_outer_shapes()[self.border_direction]
+        board = self.token.board
+        if board.is_tile(self.token.position):
+            return pygame.draw.polygon, [self.mod_pointlist, self.border]
+        elif board.is_corner(self.token.position):
+            return pygame.draw.rect, [pygame.Rect(0,0, self.token.size[0], self.token.size[1]), self.border]
+        elif board.is_edge(self.token.position):
+            return pygame.draw.rect, [pygame.Rect(0,0, self.token.size[0], self.token.size[1]), self.border]

@@ -1,8 +1,8 @@
 import pygame
 from collections import deque
-from miniworldmaker.tools import keys
-from miniworldmaker.app import app
-import miniworldmaker
+
+from app import app
+from tools import keys
 
 class EventManager:
 

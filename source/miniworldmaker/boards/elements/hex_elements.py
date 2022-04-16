@@ -1,12 +1,38 @@
-from miniworldmaker.boards.elements import tile_elements
-from miniworldmaker.app import app
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.boards import hex_board
-import math
-import collections
-import numpy as np
+from typing import OrderedDict
 
-class HexTile(tile_elements.Tile):
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from app import app
+from boards.elements import tile_elements
+from board_positions import board_position
+from boards import hex_board
+import tokens.token as token
+
+import collections
+from typing import Union, Tuple
+import math
+import numpy as np
+from typing import List
+import miniworldmaker
+
+
+class HexBase(tile_elements.TileBase):
+    @staticmethod
+    def get_local_center_coordinate():
+        board = app.App.board
+        return board_position.Position(board.get_tile_width() / 2, board.get_tile_height() / 2)
+
+    def _internal_coordinates(self):
+        return CubeCoord
+
+    def _external_coordinates(self):
+        return CubeCoord
+
+
+class HexTile(HexBase, tile_elements.Tile):
 
     tile_vectors = {
         "w": (+1, 0, -1),
@@ -17,63 +43,25 @@ class HexTile(tile_elements.Tile):
         "sw": (0, +1, -1),
     }
 
-    corner_vectors = {
-        "n": (+1, 0, +1),
-        "nw": (+1, 0, 0),
-        "no": (0, 0, +1),
-        "sw": (+1, +1, 0),
-        "so": (0, +1, +1),
-        "s": (0, +1, 0),
-    }
+    corner_vectors = OrderedDict(
+        [
+            ("n", (+1, 0, +1)),
+            ("nw", (+1, 0, 0)),
+            ("sw", (+1, +1, 0)),
+            ("s", (0, +1, 0)),
+            ("so", (0, +1, +1)),
+            ("no", (0, 0, +1)),
+        ]
+    )
 
     edge_vectors = {
-            "w": [1, 0.5, 0],
-            "nw" : [1, 0, 0.5],
-            "no": [0.5,0,1],
-            "o": [0,0.5,1],
-            "so": [0.5,1,0.5],
-            "sw": [0.5,1,0]}
-    
-    def __init__(self, position):
-        self.offset = OffsetPosition(position[0], position[1])
-        self.board = app.App.board
-        self.position = self.offset.to_cube()
-        self.tiles = []
-        self.corners = []
-        self.edges = []
-        self.board : "hex_board.HexBoard" = app.App.board
-
-    def to_center(self):
-        center_offset = self.get_center_offset()
-        return self.position.to_pixel(size=(self.board.get_hex_size()[1], self.board.get_hex_size()[1]), origin=center_offset)
-
-    @staticmethod
-    def get_center_offset():
-        board = app.App.board
-        return board_position.Position(board.get_tile_width() / 2, board.get_tile_height() / 2)
-
-    def to_pixel(self):
-        return self.position.to_pixel(size=(self.board.get_hex_size()[1], self.board.get_hex_size()[1]), origin=(0,0))
-
-    #@classmethod
-    #def from_pixel(cls, pixel_position, board):
-    #    q = (math.sqrt(3) / 3 * pixel_position[0] - 1.0 / 3 * pixel_position[1]) / (board.base_size() / 2)
-    #    r = (2.0 / 3 * pixel_position[1]) / (board.base_size() / 2)
-    #    cube_coord = OffsetPosition.from_cube(CubeCoord(q, r, -q - r).round())
-    #    return board.tiles[cube_coord]
-
-    @classmethod
-    def from_pixel(cls, position):
-        board : "hex_board.HexBoard"= app.App.board
-        min_value = math.inf
-        nearest_hex = None
-        center_points = board.get_center_points()
-        for hex_position, hex_center in center_points.items():
-            distance = math.sqrt(pow(position[0] - hex_center[0], 2) + pow(position[1] - hex_center[1], 2))
-            if distance < min_value:
-                min_value = distance
-                nearest_hex = hex_position
-        return HexTile(nearest_hex)
+        "w": (1, 0.5, 0),
+        "no": (1, 0, 0.5),
+        "nw": (0.5, 0, 1),
+        "o": (0, 0.5, 1),
+        "so": (0.5, 1, 0),
+        "sw": (0.5, 1, 0.5),
+    }
 
     def is_in_tile(self, pixel_position):
         distance = distance(pixel_position, self.to_center())
@@ -82,8 +70,7 @@ class HexTile(tile_elements.Tile):
                 return False
         return True
 
-    def get_corner(self, direction):
-        board = app.App.board
+    def get_corner(self, direction: Union[str, tuple]) -> "CubeCoord":
         if type(direction) == str:
             vector = self.corner_vectors[direction]
         else:
@@ -93,65 +80,40 @@ class HexTile(tile_elements.Tile):
     def __str__(self):
         return f"Hex-Tile at {self.position}"
 
-class HexCorner():
+    def to_pixel(self):
+        return self.int_coord.to_pixel(
+            self.position, (self.board.get_tile_width() / 2, self.board.get_tile_height() / 2), (0, 0)
+        )
 
-    angles = {"n": 2,
-                  "no" : 3,
-                  "so": 4,
-                  "s": 5,
-                  "sw": 0,
-                  "nw": 1}
+    def _internal_coordinates(self):
+        return CubeCoord
 
-    start_angle = 0.5
+    def _external_coordinates(self):
+        return CubeCoord
 
 
-    neighbours = {
-        "n": ["nw", "no"],
-        "no": ["no", "o"],
-        "nw": ["nw", "w"],
-        "sw": ["sw", "w"],
-        "so": ["so", "o"],
-        "s": ["so", "sw"],
-                }
+class HexCorner(HexBase, tile_elements.Corner):
 
-    
-    def __init__(self, position, direction):        
-        self.position = CubeCoord.from_position(position) + HexTile.corner_vectors[direction]
-        self.positions = [(position, direction)]
-        self.key = (self.position.q,self.position.r, self.position.s)
-        self.board = app.App.board
+    angles = {"n": 2, "no": 3, "so": 4, "s": 5, "sw": 0, "nw": 1}
+    direction_angles = {"n": 0, "no": 0, "so": 0, "s": 0, "sw": 0, "nw": 0}
 
-    @classmethod
-    def from_positions(self, p1, p2, p3):
-        pass
+    tile_vectors = {
+        "n": [(-1, -1, 0), (0, -1, -1), (-1, 0, -1)],
+        "nw": [(0, -1, 0), (0, 0, -1), (-1, 0, 0)],
+        "sw": [(-1, 0, -1), (0, -1, -1), (-1, -1, 0)],
+        "s": [(0, -1, 0), (0, 0, -1), (-1, 0, 0)],
+        "so": [(-1, -1, 0), (-1, 0, -1), (0, -1, -1)],
+        "no": [(0, -1, 0), (0, 0, -1), (-1, 0, 0)],
+    }
 
-    def get_neighbour_tiles(self):
-        pass
-
-    def get_neighbour_corners(self):
-        pass
-
-    def get_neighbour_edges(self):
-        pass
-
-    def get_position(self):
-        position = self.positions[0][0]
-        direction = self.positions[0][1]
-        return self._get_position(position, direction)
-        #return self.cube_coord.to_pixel(size = (self.board.get_hex_size()[0], self.board.get_hex_size()[1]), origin = (0,0))
-
-    def _get_offset(self, direction):
-        angle = HexCorner.angles[direction]
-        start_angle = self.start_angle
-        base_size = self.board.base_size()
-        angle = 2.0 * math.pi * (start_angle - angle) / 6.0
-        return board_position.Position(base_size / 2 * math.cos(angle), base_size / 2 * math.sin(angle))
-    
-    def _get_position(self, position, direction):
-        offset = self._get_offset(direction)
-        center = HexTile.get_center_offset()
-        corner = self.board._hex_to_pixel(position, offset + center)
-        return corner
+    corner_vectors = {
+        "n": [(0, -1, 0), (-1, 0, 0), (0, 0, -1)],
+        "nw": [(0, 0, 1), (0, 1, 0), (0, 0, 1)],
+        "sw": [(0, -1, 0), (0, -1, 0), (0, 0, -1)],
+        "s": [(0, 1, 0), (0, 1, 0), (1, 0, 0)],
+        "so": [(0, -1, 0), (-1, 0, 0), (0, 0, -1)],
+        "no": [(1, 0, 0), (0, 1, 0), (0, 0, 1)],
+    }
 
     def __eq__(self, __o: object) -> bool:
         if type(__o) == HexCorner and self.position == __o.position:
@@ -159,31 +121,70 @@ class HexCorner():
         else:
             return False
 
-    def merge(self, corner):
-        assert corner.position == self.position
-        for pos in corner.positions:
-            if pos not in self.positions:
-                self.positions.append(pos)
+    def __str__(self) -> str:
+        corner_str = "Corner at"
+        for position in self.positions:
+            corner_str += f"({position})"
+        return corner_str
+
+    def _internal_coordinates(self):
+        return CubeCoord
+
+    def _external_coordinates(self):
+        return CubeCoord
+
+    def direction_vectors(self):
+        return HexTile.corner_vectors
+
+
+class HexEdge(HexBase, tile_elements.Edge):
+
+    tile_vectors = {
+        "w": [(-1, 0.5, 0), (0, 0.5, -1)],
+        "sw": [(-0.5, 1, 0), (-0.5, 0, 1)],
+        "so": [(1, 0, 0.5), (0, 1, 0.5)],
+        "o": [(-1, -0.5, 0), (0, -0.5, -1)],
+        "no": [(-0.5, 1, 0), (-0.5, 0, 1)],
+        "nw": [(1, 0, 0.5), (0, 1, 0.5)],
+    }
+
+    corner_vectors = {
+        "w": [(0, -0.5, 0), (0, 0.5, 0)],
+        "sw": [(0.5, 0, 0), (-0.5, 0, 0)],
+        "so": [(0, 0, 0.5), (0, 0, -0.5)],
+        "o": [(0, -0.5, 0), (0, 0.5, 0)],
+        "no": [(0.5, 0, 0), (-0.5, 0, 0)],
+        "nw": [(0, 0, 0.5), (0, 0, -0.5)],
+    }
+
+    direction_angles = {"o": 90, "so": -50, "sw": 50, "w": 0, "nw": -50, "no": 50}
+
+    angles = {"o": 3, "so": 4, "sw": 5, "w": 0, "nw": 1, "no": 2}
 
     def __str__(self) -> str:
-        corner_str =  "Corner at"
+        edge_str = "Edge at"
         for position in self.positions:
-            corner_str+= f"({position[0]}, {position[1]})"
-        return corner_str
-    
+            edge_str += f"({position})"
+        return edge_str
 
-class HexEdge():
-    def __init__(self, position, direction):
-        self.position = CubeCoord.from_position(position) + HexTile.edge_vectors[direction]
-        self.positions = [(position, direction)]
-        self.key = (self.position.q,self.position.r, self.position.s)
+    def get_neighbour_corners(self) -> List["HexCorner"]:
+        neighbours = []
+        for corner in self.corner_vectors:
+            neighbours.append(corner)
+        return neighbours
 
-    def merge(self, edge):
-        assert edge.position == self.position
-        for pos in edge.positions:
-            if pos not in self.positions:
-                self.positions.append(pos)
+    @classmethod
+    def from_tile(cls, tile, direction):
+        return HexEdge(tile, direction)
 
+    def direction_vectors(self):
+        return HexTile.edge_vectors
+
+    def _internal_coordinates(self):
+        return CubeCoord
+
+    def _external_coordinates(self):
+        return CubeCoord
 
 class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
 
@@ -192,7 +193,6 @@ class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
 
     def __add__(self, vec):
         return CubeCoord(self.q + vec[0], self.r + vec[1], self.s + vec[2])
-
 
     def __sub__(self, vec):
         return CubeCoord(self.q - vec[0], self.r - vec[1], self.s - vec[2])
@@ -204,6 +204,11 @@ class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
             neighbours.append(neighbour)
         return neighbours
 
+    def distance(self, other):
+        other = CubeCoord.create(other)
+        vec = self - other
+        return (abs(vec.q) + abs(vec.r) + abs(vec.s)) / 2
+    
     def round(self):
         qi = int(round(self.q))
         ri = int(round(self.r))
@@ -220,12 +225,13 @@ class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
                 si = -qi - ri
         return CubeCoord(qi, ri, si)
 
-
     def to_pixel(self, size, origin):
         matrix = self.matrix
         cube_vector = np.array([[self.q, self.r]])
         coord = matrix.dot(cube_vector.T)
-        return board_position.Position(round(coord.item(0) * size[0] + origin[0]), round(coord.item(1) * size[1] + origin[1]))
+        return board_position.Position(
+            coord.item(0) * size[1] + origin[0], coord.item(1) * size[1] + origin[1]
+        )
 
     def to_offset(self):
         return OffsetPosition.from_cube(self)
@@ -240,8 +246,20 @@ class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
         return CubeCoord(q, r, -q - r)
 
     @classmethod
-    def from_position(cls, position):
-        return OffsetPosition(position[0], position[1]).to_cube()
+    def from_board_coordinates(cls, position):
+        return OffsetPosition.from_board_coordinates(position).to_cube()
+
+    @classmethod
+    def create(cls, position):
+        if type(position) == tuple and len(position) == 2:
+            return OffsetPosition(position[0], position[1]).to_cube()
+        elif isinstance(position, board_position.Position):
+            return OffsetPosition(position[0], position[1]).to_cube()
+        elif isinstance(position, (CubeCoord, miniworldmaker.CubeCoord)):
+            return position
+        else:
+            raise TypeError(f"position is {type(position)}, should be OffsetPosition, Position or CubeCoord")
+
 
 class OffsetPosition(board_position.Position):
     EVEN = 1
@@ -262,8 +280,8 @@ class OffsetPosition(board_position.Position):
         y = hex.r
         return cls(x, y)
 
-    def to_pixel(self, size, origin):
-        x = size[0] * math.sqrt(3) * (self.x + 0.6 * (self.y & 1)) + origin[0]
+    def to_pixel(self, size=(0, 0), origin=(0, 0)):
+        x = size[0] * math.sqrt(3) * (self.x + 0.5 * (self.y & 1)) + origin[0]
         y = size[1] * 3 / 2 * self.y + origin[1]
         return board_position.Position(x, y)
 
@@ -271,7 +289,7 @@ class OffsetPosition(board_position.Position):
         return board_position.Position(self.x, self.y)
 
     def on_board(self, board):
-        if self.x<0 or self.x >= board.columns or self.y<0 or self.y >= board.rows:
+        if self.x < 0 or self.x >= board.columns or self.y < 0 or self.y >= board.rows:
             return False
         else:
             return True

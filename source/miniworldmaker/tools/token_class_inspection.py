@@ -1,7 +1,6 @@
 import inspect
-import miniworldmaker
-from miniworldmaker.boards import board_base
-from miniworldmaker.tokens import token
+from boards import board_base
+from tokens import token
 from typing import Union, Type
 
 class TokenClassInspection:
@@ -13,7 +12,7 @@ class TokenClassInspection:
             generator: A instance of token or a token class
         """
         if not inspect.isclass(generator):
-            if isinstance(generator, miniworldmaker.BaseBoard) or isinstance(generator, board_base.BaseBoard):
+            if isinstance(generator, board_base.BaseBoard) or isinstance(generator, board_base.BaseBoard):
                 self.instance = generator.tokens.get_sprite(0)
                 self.token_class = generator.tokens.get_sprite(0).__class__
             else:
@@ -38,7 +37,7 @@ class TokenClassInspection:
         This is needed, so you can find all miniworldmaker token subclasses at runtime.
         """
         for tokencls in inspect.getmro(self.token_class):
-            if tokencls == miniworldmaker.Token or tokencls == token.Token:
+            if tokencls == token.Token or tokencls == token.Token:
                 return tokencls
 
     def get_subclasses_for_cls(self):
@@ -48,7 +47,7 @@ class TokenClassInspection:
         token_set.add(self.token_class)
         return token_set.union(all_subclasses(self.token_class))
 
-    def find_token_class_by_classname(self, classname: str) -> Union[None, Type["miniworldmaker.Token"]]:
+    def find_token_class_by_classname(self, classname: str) -> Union[None, Type["token.Token"]]:
         classname = classname.lower()
         for token_cls in self.get_all_token_classes():
             if token_cls.__name__.lower() == classname:

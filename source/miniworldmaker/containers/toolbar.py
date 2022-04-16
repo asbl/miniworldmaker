@@ -1,8 +1,14 @@
 import pygame
 from typing import Union
-from miniworldmaker.containers import container
-from miniworldmaker.containers import toolbar_widgets
-from miniworldmaker.app import app
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from containers import container
+from containers import toolbar_widgets
+from app import app
 import miniworldmaker
 
 
@@ -26,19 +32,23 @@ class Toolbar(container.Container):
         self.dirty = 1
         self.repaint_all = True # if True, the complete toolbar will be repaintet
 
-    def add_widget(self, widget: toolbar_widgets.ToolbarWidget) -> toolbar_widgets.ToolbarWidget:
-        """
-        Adds a widget to the toolbar
+    def add_widget(self, widget: toolbar_widgets.ToolbarWidget, key : str = None,) -> toolbar_widgets.ToolbarWidget:
+        """Adds a widget to the toolbar
 
         Args:
-            widget: the widget which should be added
+            widget : The Widget
+            key:A unique key
 
-        Returns: The widget which was added
-
+        Returns:
+            toolbar_widgets.ToolbarWidget: _description_
         """
+        if key is None:
+            key = widget.name
+        if key in self.widgets:
+            raise TypeError(f"Error: key {key} exists in Toolbar widgets")
         widget.clear()
         widget.parent = self
-        self.widgets[widget.name] = widget
+        self.widgets[key] = widget
         widget.height = self.row_height
         self.dirty = 1
         widget.dirty = 1
@@ -47,28 +57,38 @@ class Toolbar(container.Container):
         self.repaint_all = True
         return widget
 
-    def remove_widget(self, name):
+    def remove_widget(self, key):
         """
         Removes a widget from the toolbar. Warning: Be careful when calling this method in a loop.
 
         Args:
-            widget: The widget which should be removed
+            key: The key of widget which should be removed
         """
-        self.widgets.pop(name)
+        self.widgets.pop(key)
         self.dirty = 1
         self.repaint_all = True
 
-    def has_widget(self, name):
-        if name in self.widgets:
+    def has_widget(self, ke : str):
+        """Checks if self.widgets has key
+
+        Args:
+            key: The key of widget
+        """
+        if key in self.widgets:
             return True
         else:
             return False
 
-    def get_widget(self, name: str) -> Union["toolbar_widgets.ToolbarWidget", None]:
-        if name in self.widgets:
-            return self.widgets[name]
+    def get_widget(self, key: str) -> "toolbar_widgets.ToolbarWidget":
+        """Gets widget by key
+
+        Returns:
+            _type_: _description_
+        """
+        if key in self.widgets:
+            return self.widgets[key]
         else:
-            return None
+            raise TypeError(f"Error: Toolbar wirdgets does not contain key {key}")
 
     def remove_all_widgets(self):
         self.widgets = dict()

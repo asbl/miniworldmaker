@@ -7,8 +7,7 @@ class MWMInspection:
         self.instance = generator
 
     def get_instance_method(self, name):
-        """
-        If a (token-)object has method this returns the method by a given name
+        """If a (token-)object has method this returns the method by a given name
         """
         if hasattr(self.instance, name):
             if callable(getattr(self.instance, name)):

@@ -1,12 +1,13 @@
 import pygame
-from miniworldmaker.app import app
+
+
+from app import app
 
 
 class SoundManager:
-
-    def __init__(self, app : "miniworldmaker.App" ):
+    def __init__(self, app: "miniworldmaker.App"):
         self.sound_effects: dict = {}
-        self.app: "miniworldmaker.App"  = app
+        self.app: "miniworldmaker.App" = app
 
     def register_sound(self, path) -> pygame.mixer.Sound:
         """
@@ -15,7 +16,7 @@ class SoundManager:
         Args:
             path: The path to sound
 
-        Returns: 
+        Returns:
             the sound
 
         """
@@ -24,8 +25,7 @@ class SoundManager:
             self.sound_effects[path] = effect
             return effect
         except pygame.error:
-            raise FileExistsError(
-                "File '{0}' does not exist. Check your path to the sound.".format(path))
+            raise FileExistsError("File '{0}' does not exist. Check your path to the sound.".format(path))
 
     def play_sound(self, path: str):
         if path.endswith("mp3"):

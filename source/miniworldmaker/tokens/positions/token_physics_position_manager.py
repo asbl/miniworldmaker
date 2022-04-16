@@ -1,8 +1,14 @@
 from math import radians, degrees
 from typing import Union
-from miniworldmaker.tokens.positions import token_pixel_position_manager as pixel_position_manager
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from tokens.positions import token_pixel_position_manager as pixel_position_manager
+from board_positions import board_position
+from exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
 
 
 class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManager):

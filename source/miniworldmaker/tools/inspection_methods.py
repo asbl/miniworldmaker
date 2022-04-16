@@ -2,8 +2,8 @@ from typing import Union, Optional
 import inspect
 from inspect import signature
 from collections import defaultdict
-from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
-from miniworldmaker.tokens import token
+from exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
+from tokens import token
 
 
 class InspectionMethods:

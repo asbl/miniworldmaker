@@ -1,6 +1,13 @@
 import pygame
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardRectError
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+
+from board_positions import board_position
+from exceptions.miniworldmaker_exception import NoValidBoardRectError
 
 
 class BoardRectFactory:

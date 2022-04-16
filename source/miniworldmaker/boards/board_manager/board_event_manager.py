@@ -1,19 +1,25 @@
-from miniworldmaker.tools import mwminspection
-from miniworldmaker.tools import method_caller
-import miniworldmaker
 from collections import defaultdict
 from typing import Any
-from miniworldmaker.tools import keys
 import inspect
 
-from miniworldmaker.board_positions import board_position
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from board_positions import board_position
+import tokens.token as token
+import boards.board_base as board_base
+from tools import mwminspection
+from tools import method_caller
+from tools import keys
 
 
 class BoardEventHandler:
     """Processes Board Events
 
-      * Board Events which can be registered are stored self.events variable.
-      * Board Events which are registered are stored in the dict self.registered_events
+    * Board Events which can be registered are stored self.events variable.
+    * Board Events which are registered are stored in the dict self.registered_events
     """
 
     def __init__(self, board):
@@ -23,31 +29,50 @@ class BoardEventHandler:
         self.executed_events: set = set()
         self.board = board
         self.registered_events = defaultdict(set)
-        self.mouse_events = ["on_mouse_left", "on_mouse_right", "on_mouse_motion", "on_mouse_left_released", "on_mouse_right_released"]
+        self.mouse_events = [
+            "on_mouse_left",
+            "on_mouse_right",
+            "on_mouse_motion",
+            "on_mouse_left_released",
+            "on_mouse_right_released",
+        ]
         self.clicked_on_token_events = ["on_clicked", "on_clicked_left", "on_clicked_right"]
         self.key_events = ["on_key_down", "on_key_pressed", "on_key_up"]
         self.specific_key_events = []
         for key, value in keys.KEYS.items():
-            self.specific_key_events.append("on_key_down_"+value.lower())
-            self.specific_key_events.append("on_key_pressed_"+value.lower())
-            self.specific_key_events.append("on_key_up_"+value.lower())
+            self.specific_key_events.append("on_key_down_" + value.lower())
+            self.specific_key_events.append("on_key_pressed_" + value.lower())
+            self.specific_key_events.append("on_key_up_" + value.lower())
         self.message_event = ["on_message"]
         self.act_event = ["act"]
         self.started_event = ["on_started"]
         self.setup_events = ["on_setup", "on_board_loaded"]
-        self.border_events = ["on_sensing_borders", "on_sensing_left_border",
-                              "on_sensing_right_border", "on_sensing_top_border", "on_sensing_bottom_border"]
+        self.border_events = [
+            "on_sensing_borders",
+            "on_sensing_left_border",
+            "on_sensing_right_border",
+            "on_sensing_top_border",
+            "on_sensing_bottom_border",
+        ]
         self.on_board_events = ["on_sensing_on_board", "on_sensing_not_on_board"]
-        self.events = self.mouse_events + self.specific_key_events + self.key_events + \
-            self.clicked_on_token_events + self.message_event + \
-            self.act_event + self.border_events + self.on_board_events + self.setup_events + self.started_event
+        self.events = (
+            self.mouse_events
+            + self.specific_key_events
+            + self.key_events
+            + self.clicked_on_token_events
+            + self.message_event
+            + self.act_event
+            + self.border_events
+            + self.on_board_events
+            + self.setup_events
+            + self.started_event
+        )
         for event in self.events:
             self.registered_events[event] = set()
         self.register_events_for_board()
 
     def register_events_for_board(self):
-        """Registers all Board events.
-        """
+        """Registers all Board events."""
         self.register_events(self.setup_events, self.board)
         self.register_events(self.message_event, self.board)
         self.register_events(self.act_event, self.board)
@@ -57,7 +82,7 @@ class BoardEventHandler:
         self.register_events(self.specific_key_events, self.board)
         self.register_events(self.specific_key_events, self.board)
 
-    def register_events_for_token(self, token: "miniworldmaker.Token"):
+    def register_events_for_token(self, token: "token.Token"):
         """Registers all Token events
 
         Args:
@@ -75,13 +100,17 @@ class BoardEventHandler:
 
     def register_sensing_token_events(self, instance):
         members = dir(instance)
-        for member in (member for member in members if (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events):
+        for member in (
+            member
+            for member in members
+            if (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events
+        ):
             method = mwminspection.MWMInspection(instance).get_instance_method(member)
             if method and member.startswith("on_sensing_"):
                 self.register_class_method("on_sensing_token", instance, method)
             if method and member.startswith("on_not_sensing_"):
                 self.register_class_method("on_not_sensing_token", instance, method)
-            
+
     def register_events(self, events, instance):
         for event in events:
             method = mwminspection.MWMInspection(instance).get_instance_method(event)
@@ -125,17 +154,28 @@ class BoardEventHandler:
             instance: The instance (e.g. board or token)
             method ([type]): The method which should registered as handler for event.
         """
-        overwritten_methods = {name for name, method in vars(
-            instance.__class__).items() if callable(method)}
+        overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
         parents = inspect.getmro(instance.__class__)
-        if instance.__class__ not in [miniworldmaker.Token, miniworldmaker.Board] and method.__name__ in overwritten_methods:
+        if (
+            instance.__class__ not in [token.Token, board_base.BaseBoard]
+            and method.__name__ in overwritten_methods
+        ):
             self.registered_events[event].add(method)
         else:
             parent_overwritten_methods = set()
             for parent in parents:
-                if parent.__name__ not in ["object", "Board", "Container", "Sprite", "DirtySprite", "Token", instance.__class__.__name__]:
+                if parent.__name__ not in [
+                    "object",
+                    "Board",
+                    "Container",
+                    "Sprite",
+                    "DirtySprite",
+                    "Token",
+                    instance.__class__.__name__,
+                ]:
                     parent_overwritten_methods = parent_overwritten_methods.union(
-                        {name for name, method in vars(parent.__class__).items() if callable(method)})
+                        {name for name, method in vars(parent.__class__).items() if callable(method)}
+                    )
             parent_overwritten_methods = parent_overwritten_methods - overwritten_methods
             if method.__name__ in parent_overwritten_methods:
                 self.registered_events[event].add(method)
@@ -156,8 +196,6 @@ class BoardEventHandler:
         if event in self.registered_events:
             for method in self.registered_events[event].copy():
                 if type(data) in [list, str, tuple]:
-                    if type(data) == tuple and type(data[0]) == int and type(data[1]) == int: # type is position
-                        data = self.board.get_from_pixel(data)
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
         # handle global events
@@ -182,8 +220,7 @@ class BoardEventHandler:
 
     def handle_click_on_token_event(self, event, data):
         if event == "mouse_left":
-            on_click_methods = self.registered_events["on_clicked_left"].union(
-                self.registered_events["on_clicked"])
+            on_click_methods = self.registered_events["on_clicked_left"].union(self.registered_events["on_clicked"])
         else:
             on_click_methods = self.registered_events["on_clicked_right"]
         for method in on_click_methods.copy():
@@ -206,5 +243,7 @@ class BoardEventHandler:
         app.event_manager.event_queue.clear()
         app.board = new_board
         new_board.running = True
-        new_board.run(event="board_loaded", )
+        new_board.run(
+            event="board_loaded",
+        )
         return new_board

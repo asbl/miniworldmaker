@@ -1,8 +1,11 @@
-from miniworldmaker.tokens.positions import token_physics_position_manager as physicspositionmanager
-from miniworldmaker.boards.token_connectors import pixel_board_connector as pixelboard_connector
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens.physics import token_physics
-import miniworldmaker
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from tokens.positions import token_physics_position_manager as physicspositionmanager
+from boards.token_connectors import pixel_board_connector as pixelboard_connector
+from board_positions import board_position
 
 class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
 

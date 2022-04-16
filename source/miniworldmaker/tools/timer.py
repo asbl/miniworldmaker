@@ -1,4 +1,4 @@
-from miniworldmaker.tools import method_caller
+from tools import method_caller
 import miniworldmaker
 
 class Timed():

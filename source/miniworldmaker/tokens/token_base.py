@@ -1,21 +1,21 @@
 from __future__ import annotations
-from miniworldmaker.exceptions.miniworldmaker_exception import (
+from exceptions.miniworldmaker_exception import (
     NoValidBoardPositionError,
     TokenArgumentShouldBeTuple,
     NotImplementedOrRegisteredError,
     NoBoardError,
 )
 from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
-from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances import costume
-from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.exceptions.miniworldmaker_exception import (
+from appearances import appearance
+from appearances import costume
+from appearances import costumes_manager
+from board_positions import board_position
+from exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
     NoBoardError,
 )
-from miniworldmaker.tools import token_inspection
-from miniworldmaker.dialogs import ask
+from tools import token_inspection
+from dialogs import ask
 import miniworldmaker
 import pygame
 

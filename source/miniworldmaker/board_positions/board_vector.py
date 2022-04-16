@@ -1,9 +1,20 @@
-from miniworldmaker.tokens import token
+
 import math
-from miniworldmaker.board_positions import board_position
+
+
 import numpy as np
 import math
 import typing
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.tokens import token
+
+
 
 
 class Vector:

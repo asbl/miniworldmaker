@@ -1,6 +1,13 @@
-from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances import appearances_manager
-from miniworldmaker.appearances import background
+from typing import Union, List, Tuple
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from appearances import appearance
+from appearances import appearances_manager
+from appearances import background
 from typing import Union, List, Tuple
 import pygame
 

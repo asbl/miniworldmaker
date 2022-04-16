@@ -1,11 +1,16 @@
 import os
 
-from miniworldmaker.board_positions import board_position, board_rect_factory
-from miniworldmaker.containers import toolbar
-from miniworldmaker.containers.toolbar_widgets import SaveButton, LoadButton, ToolbarWidget, ToolbarLabel, ToolbarButton
-from miniworldmaker.tokens import token
-from miniworldmaker.containers.toolbar_widgets import ClearButton
-from miniworldmaker.exceptions import miniworldmaker_exception
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from board_positions import board_position, board_rect_factory
+from containers import toolbar
+from containers.toolbar_widgets import SaveButton, LoadButton, ToolbarWidget, ToolbarLabel, ToolbarButton
+from tokens import token
+from containers.toolbar_widgets import ClearButton
+from exceptions import miniworldmaker_exception
 
 class LevelDesignerToolbar(toolbar.Toolbar):
 

@@ -1,8 +1,15 @@
 from typing import Tuple, Union
 import pygame
 import math
-from miniworldmaker.exceptions.miniworldmaker_exception import SizeOnTiledBoardError
-import miniworldmaker.tokens.positions.token_position_manager as token_positionmanager
+
+import sys
+from miniworldmaker import conf
+from miniworldmaker.boards.elements import tile_elements
+
+sys.path.append(conf.ROOT_DIR)
+
+from exceptions.miniworldmaker_exception import SizeOnTiledBoardError
+import tokens.positions.token_position_manager as token_positionmanager
 
 
 class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
@@ -10,15 +17,18 @@ class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
         super().__init__(token, position)
         self._scaled_size = (1, 1)
 
-    def draw_position(self):
-        x = self.token.x * self.token.board.tile_size + (self.token.board.tile_size - self.size[0]) / 2
-        y = self.token.y * self.token.board.tile_size + (self.token.board.tile_size - self.size[1]) / 2
-        return (x, y)
-
-    @property
-    def rect(self):
-        pos = self.draw_position()
-        return pygame.Rect(pos[0], pos[1], self.size[0], self.size[1])
+    def get_rect(self):
+        if self.token.costume:
+            rect = self.token.costume.image.get_rect()
+        else:
+            rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
+        if self.token.board.is_tile(self.token.position):
+            rect.topleft = tile_elements.Tile.from_position(self.token.position).to_pixel()
+        if self.token.board.is_corner(self.token.position):
+            rect.center = tile_elements.Corner.from_position(self.token.position).to_pixel()
+        if self.token.board.is_edge(self.token.position):
+            rect.center = tile_elements.Edge.from_position(self.token.position).to_pixel()
+        return rect
 
     @property
     def size(self):

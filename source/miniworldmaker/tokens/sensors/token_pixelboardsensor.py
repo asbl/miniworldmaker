@@ -2,11 +2,15 @@ import math
 import pygame
 from typing import Union
 
+import sys
+from miniworldmaker import conf
 
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_rect_factory
-from miniworldmaker.tokens.sensors import token_boardsensor as boardsensor
-from miniworldmaker.tokens import token
+sys.path.append(conf.ROOT_DIR)
+
+from board_positions import board_position
+from board_positions import board_rect_factory
+from tokens.sensors import token_boardsensor as boardsensor
+from tokens import token
 
 
 class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):

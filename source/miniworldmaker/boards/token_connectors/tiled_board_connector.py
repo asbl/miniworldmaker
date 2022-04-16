@@ -1,8 +1,13 @@
-from miniworldmaker.tokens.sensors import token_tiledboardsensor as tiledboardsensor
-from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.tokens.positions import token_tiled_position_manager as tiledpositionmanager
-from miniworldmaker.boards.token_connectors import token_connector as token_connector
-from miniworldmaker.board_positions import board_position
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from tokens.sensors import token_tiledboardsensor as tiledboardsensor
+from appearances import costumes_manager
+from tokens.positions import token_tiled_position_manager as tiledpositionmanager
+from boards.token_connectors import token_connector as token_connector
+from board_positions import board_position
 
 
 class TiledBoardConnector(token_connector.TokenConnector):

@@ -4,18 +4,18 @@ import math
 import pygame.gfxdraw
 import math
 
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.appearances import shape_costume
-import miniworldmaker
-from miniworldmaker.exceptions.miniworldmaker_exception import (
+from board_positions import board_position
+from appearances import shape_costume
+from exceptions.miniworldmaker_exception import (
     EllipseWrongArgumentsError,
     LineFirstArgumentError,
     LineSecondArgumentError,
     RectFirstArgumentError,
 )
+from tokens import token
 
 
-class Shape(miniworldmaker.Token):
+class Shape(token.Token):
     """Shape is the parent class for various geometric objects that can be created.
 
     Each geometric object has the following properties:

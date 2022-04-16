@@ -1,9 +1,16 @@
-from miniworldmaker.appearances import appearance
-from miniworldmaker.appearances import costume
-from miniworldmaker.exceptions import miniworldmaker_exception
 from typing import Union, List, Tuple
 import pygame
 import miniworldmaker
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from appearances import appearance
+from appearances import costume
+from exceptions import miniworldmaker_exception
+
 
 class AppearancesManager:
     def __init__(self, parent, appearance = None):

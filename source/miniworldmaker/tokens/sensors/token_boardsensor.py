@@ -3,10 +3,16 @@ import inspect
 from typing import List
 import miniworldmaker
 from typing import Union
-from miniworldmaker.tokens import token
-from miniworldmaker.tools import token_class_inspection
-from miniworldmaker.tools import token_inspection
-from miniworldmaker.exceptions.miniworldmaker_exception import NotImplementedOrRegisteredError
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from tokens import token
+from tools import token_class_inspection
+from tools import token_inspection
+from exceptions.miniworldmaker_exception import NotImplementedOrRegisteredError
 
 
 class TokenBoardSensor():

@@ -63,7 +63,17 @@ class ToolbarWidget():
                 pygame.draw.rect(self.surface, self.background_color, border_rect, self.width)
         self.dirty = 0
 
+    @property
+    def text(self):
+        return self._text
+    
+    @text.setter
+    def text(self, value):
+        self.set_text(value)
+    
     def set_text(self, text):
+        if type(text) == int or type(text) == float:
+            text = str(text)
         self._text = text
         self.dirty = 1
 
@@ -162,6 +172,7 @@ class ClearButton(ToolbarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.app.board.clear()
+
 
 
 class CounterLabel(ToolbarWidget):

@@ -1,4 +1,9 @@
-from miniworldmaker.tokens import text_token
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from tokens import text_token
 
 
 class Number(text_token.TextToken):
@@ -30,6 +35,10 @@ class Number(text_token.TextToken):
     """
 
     def __init__(self, position=(0, 0), number = 0):
+        if type(position) == int or type(position) == float:
+            raise TypeError(f"Error on creating NumberToken. Position is int - Should be a position")
+        if type(number) not in [int, float]:
+            raise TypeError(f"Error on creating NumberToken. Number should be int or float")
         super().__init__(position)
         self.set_number(number)
         self.is_static = True

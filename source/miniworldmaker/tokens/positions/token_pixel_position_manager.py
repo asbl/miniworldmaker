@@ -1,8 +1,14 @@
 
 import pygame
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens.positions import token_position_manager as token_positionmanager
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
+
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from board_positions import board_position
+from tokens.positions import token_position_manager as token_positionmanager
+from exceptions.miniworldmaker_exception import NoValidBoardPositionError
 
 class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
     def __init__(self, token, position):
@@ -15,8 +21,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
         self.size=(40, 40)
 
     def get_rect(self) -> pygame.Rect:
-        """
-        Pixelboard-Rects are positioned at center of position
+        """Pixelboard-Rects are positioned at center of position
         """
         if self.token.costume:
             _rect = self.token.costume.image.get_rect()
@@ -34,8 +39,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
         return board_position.Position.create(pos)
     
     def set_position(self, value):
-        """
-        Because Pixelboard-Rects are positioned at center of position, newly created Objects are shifted down right.
+        """Because Pixelboard-Rects are positioned at center of position, newly created Objects are shifted down right.
 
         """
         if value:

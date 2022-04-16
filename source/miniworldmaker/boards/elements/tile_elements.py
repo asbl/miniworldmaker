@@ -1,8 +1,137 @@
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.app import app
-from typing import List
+from typing import List, Tuple, Dict
+from collections import OrderedDict
+import math
+from board_positions import board_position
+from tokens import token
+from app import app
 
-class Tile:
+
+class TileBase:
+    def __init__(self, position):
+        self.int_coord = self._internal_coordinates()
+        self.board = app.App.board
+        self.position = self.int_coord.from_board_coordinates(position)
+        self.positions = [(self.position)]
+
+    @classmethod
+    def from_pixel(cls, pixel_position) -> "TileBase":
+        min_value = math.inf
+        nearest_board_position = None
+        for board_pos, pixel in cls.get_position_pixel_dict().items():
+            distance = math.sqrt(pow(pixel_position[0] - pixel[0], 2) + pow(pixel_position[1] - pixel[1], 2))
+            if distance < min_value:
+                min_value = distance
+                nearest_board_position = board_pos
+        return cls.from_position(nearest_board_position)
+
+    @staticmethod
+    def get_local_center_coordinate():
+        board = app.App.board
+        return board_position.Position(board.tile_size / 2, board.tile_size / 2)
+
+    def _internal_coordinates(self):
+        return board_position.Position
+    
+    def to_pixel(self):
+       pass
+
+    def merge(self, other):
+        assert other.position == self.position
+        for pos in other.positions:
+            if pos not in self.positions:
+                self.positions.append(pos)
+
+    def create_token(self):
+        return token.Token(self.position)
+
+    def get_tokens(self):
+        tokens = []
+        for tkn in self.board.tokens:
+            if tkn.position == self.position:
+                tokens.append(tkn)
+        return tokens
+    
+    def add_token(self, token):
+        token.position = self.position
+
+    def get_neighbour_tiles(self) -> List["Tile"]:
+        if hasattr(self, "_tiles") and self._tiles: # cached at end of this function
+            return self._tiles
+        neighbours = []
+        for tile, vectors in self.tile_vectors.items():
+            for vector in vectors:
+                if self.board.is_tile(self.position + vector):
+                    neighbour = self.board.get_tile(self.position + vector)
+                    if neighbour and neighbour not in neighbours:
+                        neighbours.append(neighbour)
+        self._tiles = neighbours
+        return self._tiles
+        
+class TileDelimiter(TileBase):
+
+    angles: Dict[str, tuple] = dict()
+    direction_angles : Dict[str, int] = dict()
+
+    def __init__(self, position, direction):
+        super().__init__(position)
+        internal_coordinates = self.int_coord.create(position)
+        self.tile = self.board.get_tile(internal_coordinates)
+        self.direction = self.direction_vectors()[direction]
+        self.position = self.tile.position + self.direction
+        self.positions = [(self.position, self.direction)]
+        self.direction_str = direction
+        self.angle = self.direction_angles[self.direction_str]
+
+    def _get_direction_string(self, direction) -> str:
+        if type(direction) == tuple:
+            for dir_string, dir_vector in self.direction_vectors().items():
+                if direction == dir_vector:
+                    return dir_string
+        else:
+            raise TypeError("Direction must be tuple")
+
+    def get_local_coordinate_for_tile(self, tile):
+        tile_pos = tile.to_pixel()
+        delimiter_pos = self.to_pixel()
+        local = delimiter_pos - tile_pos
+        return local
+    
+    def get_local_coordinate_for_base_tile(self) -> "board_position.Position":
+        """Gets pixel offset based on tile
+
+        Returns:
+            Offset as position (x, y and y coordinate measured )
+        """
+        center = TileBase.get_local_center_coordinate()
+
+        if self.angles:
+            direction_tuple = self.direction
+            direction = self._get_direction_string(direction_tuple)
+            angle_nr = self.angles[direction]
+            base_size = self.board.tile_size
+            start_angle = self.start_angle()
+            angle = 2.0 * math.pi * (start_angle - angle_nr) / len(self.angles)
+            offset = board_position.Position(base_size / 2 * math.cos(angle), base_size / 2 * math.sin(angle))
+            return offset + center
+        else:
+            return board_position.Position(0, 0) + center
+
+    def to_pixel(self):
+        local = self.get_local_coordinate_for_base_tile()
+        tile_pos = self.tile.to_pixel()
+        return tile_pos + local
+
+    def direction_vectors(self):
+        return None
+
+    def start_angle(self):
+        pass
+
+    def get_angle(self, direction):
+        return self.angles[direction]
+
+
+class Tile(TileBase):
 
     tile_vectors = {
         "w": (+1, 0),
@@ -13,89 +142,138 @@ class Tile:
         "sw": (+1, -1),
     }
 
-    corner_vectors = {
-        "w": (+1, 0),
-        "nw": (+1, +1),
-        "no": (-1, +1),
-        "o": (-1, 0),
-        "so": (-1, -1),
-        "sw": (+1, -1), 
+    corner_vectors = OrderedDict(
+        [
+            ("nw", (+0.5, +0.5)),
+            ("no", (-0.5, +0.5)),
+            ("so", (-0.5, -0.5)),
+            ("sw", (+0.5, -0.5)),
+        ]
+    )
+
+    edge_vectors = {
+        "w": (-0.5, 0),
+        "o": (+0.5, 0),
+        "s": (0, +0.5),
+        "n": (0, -0.5),
     }
 
-    edge_vectors = {}
+    @classmethod
+    def from_position(cls, position):
+        board = app.App.board
+        return board.get_tile(position)
 
     def __init__(self, position):
-        self.position = position
+        super().__init__(position)
+        self.tiles = []
         self.corners = []
         self.edges = []
 
-    def get_neighbour_tiles(self) -> List["Tile"]:
-        if self.tiles:
-            return self.tiles
-        else: # fill tiles
-            neighbours = []
-            for tile, vector in self.neighbour_tiles.items():
-                neighbour = self.board.get_tile(self.position + vector)
-                if neighbour:
-                    neighbours.append(neighbour)
-            self.tiles = neighbours
-            return self.tiles
 
-    def get_neighbour_tiles(self) -> List["Corner"]:
+
+    def get_neighbour_corners(self) -> List["Corner"]:
         if self.corners:
             return self.corners
-        else: # fill tiles
+        else:
             neighbours = []
-            for tile, vector in self.corners.items():
+            for corner, vector in self.corner_vectors.items():
                 neighbour = self.board.get_corner(self.position + vector)
                 if neighbour:
                     neighbours.append(neighbour)
             self.corners = neighbours
             return self.corners
 
-    def get_neighbour(self, vector):
-        pass
+    def to_pixel(self):
+        x = self.position[0] * self.board.tile_size
+        y = self.position[1] * self.board.tile_size
+        return board_position.Position(x, y)
 
-    def get_edge(self, vector):
-        pass
+    @staticmethod
+    def get_position_pixel_dict():
+        board = app.App.board
+        return board.get_center_points()
+    
+    def to_center(self):
+        topleft = self.to_pixel()
+        return topleft + self.get_local_center_coordinate()
 
-    def get_neighbours_dict(self):
-        pass # "nw"-> Tile
 
-    def is_in_tile(pixel):
-        pass
+class Corner(TileDelimiter):
 
+    angles = {
+        "no": 0,
+        "nw": 1,
+        "sw": 2,
+        "so": 3,
+    }
+    
+    direction_angles = {
+        "no": 0,
+        "nw": 0,
+        "sw": 0,
+        "so": 0,
+    }
+
+    def direction_vectors(self):
+        return Tile.corner_vectors
+
+    @classmethod
+    def from_position(cls, position):
+        board = app.App.board
+        return board.get_corner(position)
+    
     @classmethod
     def from_pixel(cls, position):
         board = app.App.board
-        column = (position[0] // board.tile_size)
-        row = (position[1] // board.tile_size)
-        return column, row
+        min_value = math.inf
+        nearest_hex = None
+        corner_points = board.get_corner_points()
+        for corner_position, corner_pos in corner_points.items():
+            distance = math.sqrt(pow(position[0] - corner_pos[0], 2) + pow(position[1] - corner_pos[1], 2))
+            if distance < min_value:
+                min_value = distance
+                nearest_hex = corner_position
+        return cls.from_position(nearest_hex)
 
-    def to_pixel(self, position):
-        board = self.board
-        x = position[0] * board.tile_size
-        y = position[1] * board.tile_size
-        return x, y
+    def start_angle(self):
+        return 0.5
 
-class Corner:
-    def __init__(self, position, direction):     
-        self.position = (0,0)
-        self.positions = [(position, direction)]
 
-    def merge(self, corner):
-        assert corner.position == self.position
-        for pos in corner.positions:
-            if pos not in self.positions:
-                self.positions.append(pos)
+class Edge(TileDelimiter):
 
-class Edge:
-    def __init__(self, position, direction):     
-        self.position = (0,0)
-        self.positions = [(position, direction)]
+    tile_vectors = {
+        "w": [(-0.5, 0), (0.5, 0)],
+        "n": [(0, 0.5), (0, -0.5)],
+        "o": [(-0.5, 0), (0.5, 0)],
+        "s": [(0, 0.5), (0, -0.5)],
+    }
 
-    def merge(self, corner):
-        assert corner.position == self.position
-        for pos in corner.positions:
-            if pos not in self.positions:
-                self.positions.append(pos)
+    direction_angles = {
+        "o": 0,
+        "s": 90,
+        "w": 0,
+        "n": 90,
+    }
+
+    angles = {
+        "o": 0,
+        "s": 1,
+        "w": 2,
+        "n": 3,
+    }
+
+    def direction_vectors(self):
+        return Tile.edge_vectors
+
+    @staticmethod
+    def get_position_pixel_dict():
+        board = app.App.board
+        return board.get_edge_points()
+
+    @classmethod
+    def from_position(cls, position):
+        board = app.App.board
+        return board.get_edge(position)
+
+    def start_angle(self):
+        return 0

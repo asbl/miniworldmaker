@@ -1,10 +1,17 @@
 import miniworldmaker
-from miniworldmaker.boards import hex_board
-from miniworldmaker.boards.elements import hex_elements
-from miniworldmaker.app import app
-from miniworldmaker.appearances import hex_costume
 
-class HexToken(miniworldmaker.Token):
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
+from boards import hex_board
+from boards.elements import hex_elements
+from app import app
+from appearances import hex_costume
+from tokens import token
+
+class HexToken(token.Token):
     """Shape is the parent class for various geometric objects that can be created.
 
     Each geometric object has the following properties:
@@ -20,8 +27,6 @@ class HexToken(miniworldmaker.Token):
     """
 
     def __init__(self, position: hex_elements.CubeCoord = None):
-        if position == None:
-            position = (0, 0)
         super().__init__(position)
         self.costume = hex_costume.HexCostume(self)
         
@@ -33,8 +38,15 @@ class HexToken(miniworldmaker.Token):
         position = tile.position
         return cls(position)
 
-class HexBorder(miniworldmaker.Token):
-    def __init__(self, position, border_direction):
+
+class HexEdgeToken(token.Token):
+    def __init__(self, position : hex_elements.CubeCoord):
         super().__init__(position)
-        self.border_direction = border_direction
-        self.costume = hex_costume.HexBorderCostume(self, border_direction)
+        self.position = position
+        self.costume = hex_costume.HexEdgeCostume(self)
+
+    @classmethod
+    def from_tile(cls, position, direction):
+        edge = hex_elements.HexEdge(position, direction)
+        edge_tkn = HexEdgeToken(edge.position)
+        assert edge_tkn.board.get_edge(edge.direction) == edge

@@ -92,7 +92,7 @@ class Test116(unittest.TestCase):
         board.test_title = self.__class__.__name__
         
         
-    def test_108(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         

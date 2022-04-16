@@ -1,41 +1,51 @@
 import pkgutil
 from inspect import isclass
 
+import sys
+from miniworldmaker import conf
+
+sys.path.append(conf.ROOT_DIR)
+
 # manually import classes which should be accessible in outer scope.
 
-from miniworldmaker.boards.board_base import BaseBoard
-from miniworldmaker.boards.board import Board
-from miniworldmaker.boards.pixel_board import PixelBoard
-from miniworldmaker.boards.tiled_board import TiledBoard
-from miniworldmaker.boards.physics_board import PhysicsBoard
-from miniworldmaker.boards.hex_board import HexBoard
+from boards.board_base import BaseBoard
+from boards.board import Board
+from boards.pixel_board import PixelBoard
+from boards.tiled_board import TiledBoard
+from boards.physics_board import PhysicsBoard
+from boards.hex_board import HexBoard
 
-from miniworldmaker.tokens.token import Token
-from miniworldmaker.tokens.text_token import Text
-from miniworldmaker.tokens.number_token import Number
-from miniworldmaker.tokens.text_token import TextToken
-from miniworldmaker.tokens.number_token import NumberToken
+from tokens.token_base import BaseToken
+from tokens.token import Token
+from tokens.text_token import Text
+from tokens.number_token import Number
+from tokens.text_token import TextToken
+from tokens.number_token import NumberToken
 
-from miniworldmaker.tokens.shapes import Point
-from miniworldmaker.tokens.shapes import Line
-from miniworldmaker.tokens.shapes import Rectangle
-from miniworldmaker.tokens.shapes import Circle
-from miniworldmaker.tokens.shapes import Ellipse
-from miniworldmaker.tokens.shapes import Polygon
-from miniworldmaker.tokens.shapes import Triangle
-from miniworldmaker.tokens.shapes import Arc
+from tokens.shapes import Point
+from tokens.shapes import Line
+from tokens.shapes import Rectangle
+from tokens.shapes import Circle
+from tokens.shapes import Ellipse
+from tokens.shapes import Polygon
+from tokens.shapes import Triangle
+from tokens.shapes import Arc
 
-from miniworldmaker.appearances.appearance import Appearance
-from miniworldmaker.appearances.background import Background
-from miniworldmaker.appearances.costume import Costume
+from appearances import appearance_base
+from appearances.appearance import Appearance
+from appearances.appearance_base import AppearanceBase
+from appearances.background import Background
+from appearances.costume import Costume
 
-from miniworldmaker.tools.timer import timer
-from miniworldmaker.tools.timer import loop
+from tools.timer import timer
+from tools.timer import loop
 
-from miniworldmaker.board_positions.board_vector import Vector
-from miniworldmaker.board_positions.board_position import Position
+from board_positions.board_vector import Vector
+from board_positions.board_position import Position
 
-from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
+from exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
+
+
 
 import nest_asyncio
 nest_asyncio.apply()

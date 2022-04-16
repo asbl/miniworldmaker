@@ -1,6 +1,6 @@
 import pygame
 import math
-from miniworldmaker.appearances.managers import transformations_manager
+from appearances.managers import transformations_manager
 
 
 class TransformationsCostumeManager(transformations_manager.TransformationsManager):

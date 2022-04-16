@@ -1,5 +1,5 @@
-from miniworldmaker.containers import container as container_file
-from miniworldmaker.app import app
+from containers import container as container_file
+from app import app
 
 class ContainerManager():
 
