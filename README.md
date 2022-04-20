@@ -75,15 +75,15 @@ Physics
   Your browser does not support the video tag.
 </video>
 
-![[video](docs/source/_images/joints1.png)](docs/source/_static/joints.mp4)
+[![video](docs/source/_images/joints1.png)](docs/source/_static/joints.mp4)
 
 Angry-Birds-like
 
-![[video](docs/source/_images/angry_birds.png)](docs/source/_static/angry.mp4)
+[![video](docs/source/_images/angry_birds.png)](docs/source/_static/angry.mp4)
 
 NEW: Hex Boardgame:
 
-![[video](docs/source/_images/hexboard.png)](docs/source/_static/hex_boardgame_short.mp4)
+[![video](docs/source/_images/hexboard.png)](docs/source/_static/hex_boardgame_short.mp4)
 ### Links
 
 [Codeberg](https://codeberg.org/a_siebel/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) | [Cookbook](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/)
