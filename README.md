@@ -25,55 +25,33 @@ It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
 ### Features
 
-  * miniworldmaker supports pixel-based games as well as games with 
+* miniworldmaker supports pixel-based games as well as games with 
   tiles (e.g. Rogue-Likes)
-  
-  * Easy creation of animations
-  
-  * Music and sound effects
-  
-  * Integrated GUI elements like console for output, toolbar, ...
-    
-  * Load and Save to SQLite Databases
-  
-  * Integrated Physics-Engine based on Pymunk
-  
-  * Open Source
-  
-  * miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
+* Easy creation of animations
+* Music and sound effects
+* Integrated GUI elements like console for output, toolbar, ...
+* Load and Save to SQLite Databases
+* Integrated Physics-Engine based on Pymunk
+* Open Source  
+* miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
-Examples
-========
+### Examples
 
 Top-Down games
-  
-<video controls loop width=100%>
-<source src="_static/asteroids.webm" type="video/webm">
-  <source src="_static/asteroids.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+
+[![video](docs/source/_images/asteroids.png)](docs/source/_static/asteroids.mp4)
 
 Tile Based RPGs
 
-<video controls loop width=100%>
-<source src="_static/rpg1.webm" type="video/webm">
-  <source src="_static/rpg1.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![video](docs/source/_images/rpg.png)](docs/source/_static/rpg1.mp4)
 
 Image Processing
 
-.. image:: _images/sunflower6black.png
-  :width: 100%
-  :alt: Miniworldmaker
+![image](docs/source/_images/sunflower9_edge.png.png)]
 
 Physics
 
-<video controls loop width=100%>
-<source src="_static/physics_sim.webm" type="video/webm">
-  <source src="_static/physics_sim.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![video](docs/source/_images/physics_sim.png)](docs/source/_static/physics_sim.mp4)
 
 [![video](docs/source/_images/joints1.png)](docs/source/_static/joints.mp4)
 
