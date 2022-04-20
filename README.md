@@ -99,7 +99,9 @@ NEW: Hex Boardgame:
 </video>
 
 
-![Video](https://miniworldmaker.de/_static/hex_boardgame_short.mp4)
+[![video](docs/source/_images/hexboard.png)(https://miniworldmaker.de/_static/hex_boardgame_short.mp4)
+
+![Video]()
 
 [Source](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/objects_first/boardgame/boardgame.py)
 
