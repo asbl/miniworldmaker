@@ -93,6 +93,12 @@ Physics
 
 NEW: Hex Boardgame:
 
+<video controls loop width=100%>
+<source src="https://miniworldmaker.de/_static/hex_boardgame_short.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+
 ![Video](https://miniworldmaker.de/_static/hex_boardgame_short.mp4)
 
 [Source](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/objects_first/boardgame/boardgame.py)
