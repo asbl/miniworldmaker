@@ -126,7 +126,6 @@ def on_key_down_w(self):
 board.run()
 ```
 
-
 :::{note}
 Jede registrierte Methode benötigt als ersten Parameter
 das Schlüsselwort `self`.

@@ -1,4 +1,3 @@
-import logging
 from tkinter import filedialog
 import tkinter as tk
 import pygame

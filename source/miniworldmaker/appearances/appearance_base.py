@@ -1,21 +1,12 @@
 import asyncio
-import pygame
-import inspect
-from collections import defaultdict
-
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances.managers import font_manager
-from appearances.managers import image_manager
-from appearances.managers import transformations_manager
-from appearances.managers.image_manager import ImageManager
-
 from typing import Union, Tuple
-from tools import binding
+
+import miniworldmaker.appearances.managers.font_manager as font_manager
+import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
+import miniworldmaker.appearances.managers.image_manager as image_manager
+import pygame
+import miniworldmaker.tools.binding as binding
+import miniworldmaker.base.app as app
 
 
 class MetaAppearance(type):
@@ -26,7 +17,6 @@ class MetaAppearance(type):
 
 
 class AppearanceBase(metaclass=MetaAppearance):
-
     counter = 0
 
     def __init__(self):
@@ -155,7 +145,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         elif type(source) == int:
             return self.image_manager.set_image_index(source)
         elif type(source) == tuple:
-            surface = ImageManager.get_surface_from_color(source)
+            surface = image_manager.ImageManager.get_surface_from_color(source)
             self.image_manager.replace_image(surface)
 
     def update(self):
@@ -166,13 +156,13 @@ class AppearanceBase(metaclass=MetaAppearance):
 
     def __str__(self):
         return (
-            self.__class__.__name__
-            + "with ID ["
-            + str(self.id)
-            + "] for parent:["
-            + str(self.parent)
-            + "], images: "
-            + str(self.image_manager.images_list)
+                self.__class__.__name__
+                + "with ID ["
+                + str(self.id)
+                + "] for parent:["
+                + str(self.parent)
+                + "], images: "
+                + str(self.image_manager.images_list)
         )
 
     def rotated(self):
@@ -234,6 +224,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         bound_method = binding.bind_method(self, method)
         return bound_method
 
-    def draw_on_image(self, image, position, width, height):
-        surface = self.image_manager.load_image(image)
+    def draw_on_image(self, path, position, width, height):
+        file = self.image_manager.find_image_file(path)
+        surface = self.image_manager.load_image(file)
         self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))

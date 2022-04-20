@@ -1,14 +1,9 @@
 
 from typing import Union, List, Tuple
+import miniworldmaker.appearances. appearances_manager as appearances_manager
+import miniworldmaker.appearances.costume as costume
+import miniworldmaker.appearances.appearance as appearance
 
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances import appearances_manager
-from appearances import costume
-from appearances import appearance
 
 class CostumesManager(appearances_manager.AppearancesManager):
     @property

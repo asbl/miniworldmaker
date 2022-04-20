@@ -62,9 +62,3 @@ self.switch_costume()
 
 The statement jumps to the next costume. You can also specify as a parameter
 a number to jump to a specific costume.
-
-### Outlook
-
-- There are several ways to customize the appearance of your image,
-    e.g. whether it should be rotatable, automatically scaled, etc.
-- \--\> More information. See [Key Concepts: Costumes](../key_concepts/costumes)

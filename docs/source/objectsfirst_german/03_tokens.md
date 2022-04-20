@@ -17,7 +17,6 @@ board.add_background("images/grass.png")
 token = Token((0, 0))
 token = Token((100, 200))
 board.run()
-
 ```
 
 In der Zeile ``token = Token((0,0))`` wird ein Token an der Position x=0, y=0 erstellt, in der Zeile 

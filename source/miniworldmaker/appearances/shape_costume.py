@@ -1,9 +1,7 @@
-
 import pygame
 import math
 
-from appearances import costume
-
+import miniworldmaker.appearances.costume as costume
 
 
 class ShapeCostume(costume.Costume):
@@ -37,6 +35,7 @@ class EllipseCostume(ShapeCostume):
     def _outer_shape(self):
         return pygame.draw.ellipse, [pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), self.border]
 
+
 class ArcCostume(ShapeCostume):
     def _inner_shape(self):
         p = []
@@ -64,6 +63,7 @@ class LineCostume(ShapeCostume):
         # set in update_draw_shape
 
     def _update_draw_shape(self):
+        super()._update_draw_shape()
         box = self.parent.get_bounding_box()
         width, height = box[2], box[3]
         self.parent.size = (width, height)
@@ -75,7 +75,7 @@ class LineCostume(ShapeCostume):
         _x_end = self.parent.end_position[0] - box.topleft[0] - self.border
         _y_end = self.parent.end_position[1] - box.topleft[1] - self.border
         self.local_end_position = (_x_end, _y_end)
-        super()._update_draw_shape()
+
 
     def _inner_shape(self):
         return pygame.draw.line, [self.local_start_position, self.local_end_position, 0]

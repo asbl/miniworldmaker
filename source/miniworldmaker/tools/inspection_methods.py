@@ -1,9 +1,11 @@
-from typing import Union, Optional
 import inspect
-from inspect import signature
 from collections import defaultdict
-from exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
-from tokens import token
+from inspect import signature
+from typing import Union, Optional
+
+from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, \
+    WrongArgumentsError, NotNullError
+from miniworldmaker.tokens import token
 
 
 class InspectionMethods:

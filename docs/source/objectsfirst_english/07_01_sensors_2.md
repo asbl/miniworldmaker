@@ -89,8 +89,3 @@ def on_sensing_torch(self, torch):
     print("Sensing torch")
     # ...
 ```
-
-## view
-
-- [Complete
-    Example](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/07%20-%20sensors_2.py))

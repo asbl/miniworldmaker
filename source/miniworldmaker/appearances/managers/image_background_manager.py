@@ -1,4 +1,4 @@
-from appearances.managers import image_manager
+import miniworldmaker.appearances.managers.image_manager as image_manager
 
 
 class ImageBackgroundManager(image_manager.ImageManager):

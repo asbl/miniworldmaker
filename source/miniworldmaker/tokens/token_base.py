@@ -1,28 +1,27 @@
 from __future__ import annotations
-from exceptions.miniworldmaker_exception import (
+
+from typing import Union, Optional, Tuple
+
+import pygame
+
+import miniworldmaker.appearances.costumes_manager as costumes_manager
+import miniworldmaker.base.app as app
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.boards.board as board
+import miniworldmaker.dialogs.ask as ask
+import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
+import miniworldmaker.tokens.sensors.token_boardsensor as token_boardsensor
+from miniworldmaker.exceptions.miniworldmaker_exception import (
     NoValidBoardPositionError,
     TokenArgumentShouldBeTuple,
-    NotImplementedOrRegisteredError,
     NoBoardError,
 )
-from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
-from appearances import appearance
-from appearances import costume
-from appearances import costumes_manager
-from board_positions import board_position
-from exceptions.miniworldmaker_exception import (
-    NotImplementedOrRegisteredError,
-    NoBoardError,
-)
-from tools import token_inspection
-from dialogs import ask
-import miniworldmaker
-import pygame
+
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
         try:
-            instance = type.__call__(cls, *args, **kwargs) # create a new Token
+            instance = type.__call__(cls, *args, **kwargs)  # create a new Token
         except NoValidBoardPositionError:
             raise TokenArgumentShouldBeTuple()
         # Add token to board **after** init
@@ -30,24 +29,25 @@ class Meta(type):
         _token_connector.add_token_to_board(instance._position)
         return instance
 
+
 class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "miniworldmaker.Position"]] = None):
+    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = None):
         self._collision_type: str = ""
         self._layer: int = 0
         self._inner = 0
         self._managers: list = list()
         self.token_id: int = BaseToken.token_count + 1
         self.costume_manager: costumes_manager.CostumesManager = None
-        self.board_sensor: miniworldmaker.TokenBoardSensor = None
-        self.position_manager: miniworldmaker.TokenPositionManager = None
-        self.board: miniworldmaker.Board = miniworldmaker.App.board
+        self.board_sensor: token_boardsensor.TokenBoardSensor = None
+        self.position_manager: token_position_manager.TokenPositionManager = None
+        self.board: "board.Board" = app.App.board
         if not self.board:
             raise NoBoardError()
         _token_connector = self.board.get_token_connector(self)
-        _token_connector.add_token_managers(position)  
+        _token_connector.add_token_managers(position)
         pygame.sprite.DirtySprite.__init__(self)
         BaseToken.token_count += 1
         self.static: bool = False

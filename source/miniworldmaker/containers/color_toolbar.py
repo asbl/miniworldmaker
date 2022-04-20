@@ -1,10 +1,5 @@
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from containers import toolbar_widgets
-from containers import toolbar
+from miniworldmaker.containers import toolbar
+from miniworldmaker.containers import toolbar_widgets
 
 
 class ColorToolbar(toolbar.Toolbar):

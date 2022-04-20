@@ -31,8 +31,13 @@ def act(self):
 board.run()
 ```
 
-Die zweite `act()`-Methode enthält den Sensor. Die Anweisung `if token` ist äquivalent zu
+Die zweite `act()`-Methode enthält den Sensor. Mit der Methode `self.sensing.token` wird abgefragt, welche Tokens
+an der aktuellen Stelle gefunden wurde. Falls kein Token gefunden wird, gibt die Methode `None` zurück.
+
+:::{note}
+Die Anweisung `if token` ist äquivalent zu
 `if token != None`.
+:::
 
 Wenn das Rechteck mit seinen Sensoren ein anderes `Token` aufspürt, dann ändert sich die Farbe.
 

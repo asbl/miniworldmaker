@@ -1,13 +1,5 @@
 import pygame
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-
-from board_positions import board_position
-from exceptions.miniworldmaker_exception import NoValidBoardRectError
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardRectError
 
 
 class BoardRectFactory:
@@ -24,14 +16,14 @@ class BoardRectFactory:
         else:
             raise NoValidBoardRectError()
 
-    def from_position(self, position, dimensions = None):
+    def from_position(self, position, dimensions=None):
         if dimensions is None:
             new_rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)
         else:
             new_rect = pygame.Rect(0, 0, dimensions[0], dimensions[1])
         new_rect.topleft = position
         return new_rect
-    
+
     def from_rect_topleft(self, position=None, dimensions: pygame.Rect = None) -> pygame.Rect:
         if dimensions is None:
             new_rect = pygame.Rect(0, 0, self.board.tile_size, self.board.tile_size)

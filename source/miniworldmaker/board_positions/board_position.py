@@ -1,14 +1,10 @@
 import collections
 import pygame
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from exceptions.miniworldmaker_exception import NoValidBoardPositionError
-from app.app import App
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
+import miniworldmaker.base.app as app
 import numpy as np
+
+
 class Position(collections.namedtuple('Position', ['x', 'y'])):
     """
     A Position Object represents a position on a Board.
@@ -21,11 +17,11 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
     """
 
     def __str__(self):
-        return str("Pos(" + str(round(self.x,3)) + "," + str(round(self.y,3)) + ")")
+        return str("Pos(" + str(round(self.x, 3)) + "," + str(round(self.y, 3)) + ")")
 
     @classmethod
     def from_matrix(cls, matrix):
-        return cls(matrix.item(0,0), matrix.item(0,1))
+        return cls(matrix.item(0, 0), matrix.item(0, 1))
 
     @classmethod
     def from_vector(cls, vector):
@@ -36,7 +32,7 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
         x = position[0]
         y = position[1]
         return cls(x, y)
-    
+
     @classmethod
     def create(cls, value):
         if isinstance(value, tuple):
@@ -50,14 +46,14 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
 
     @classmethod
     def from_pixel(cls, position: tuple):
-        board = App.board
+        board = app.App.board
         position = board.get_from_pixel(position)
         return position[0], position[1]
 
     def to_pixel_from_tile(self):
-        board = App.board
-        x = self.x * board.tile_size  
-        y = self.y * board.tile_size 
+        board = app.App.board
+        x = self.x * board.tile_size
+        y = self.y * board.tile_size
         return Position(x, y)
 
     def up(self, value):
@@ -129,6 +125,14 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
             return Position(self.x - other.x, self.y - other.y)
         elif type(other) == tuple:
             return Position(self.x - other[0], self.y - other[1])
-    
+
+    def __neg__(self):
+        return Position(-self.x, -self.y)
+
     def to_int(self):
         return (int(self.x), int(self.y))
+
+
+class BoardPosition(Position):
+    # legacy
+    pass

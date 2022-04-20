@@ -1,18 +1,11 @@
 from collections import defaultdict
 from typing import Any
 import inspect
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-import tokens.token as token
-import boards.board_base as board_base
-from tools import mwminspection
-from tools import method_caller
-from tools import keys
+import miniworldmaker.tokens.token as token
+import miniworldmaker.boards.board_base as board_base
+import miniworldmaker.tools.mwminspection as mwminspection
+import miniworldmaker.tools.method_caller as method_caller
+import miniworldmaker.tools.keys as keys
 
 
 class BoardEventHandler:
@@ -56,16 +49,16 @@ class BoardEventHandler:
         ]
         self.on_board_events = ["on_sensing_on_board", "on_sensing_not_on_board"]
         self.events = (
-            self.mouse_events
-            + self.specific_key_events
-            + self.key_events
-            + self.clicked_on_token_events
-            + self.message_event
-            + self.act_event
-            + self.border_events
-            + self.on_board_events
-            + self.setup_events
-            + self.started_event
+                self.mouse_events
+                + self.specific_key_events
+                + self.key_events
+                + self.clicked_on_token_events
+                + self.message_event
+                + self.act_event
+                + self.border_events
+                + self.on_board_events
+                + self.setup_events
+                + self.started_event
         )
         for event in self.events:
             self.registered_events[event] = set()
@@ -101,9 +94,10 @@ class BoardEventHandler:
     def register_sensing_token_events(self, instance):
         members = dir(instance)
         for member in (
-            member
-            for member in members
-            if (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events
+                member
+                for member in members
+                if
+                (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events
         ):
             method = mwminspection.MWMInspection(instance).get_instance_method(member)
             if method and member.startswith("on_sensing_"):
@@ -127,6 +121,7 @@ class BoardEventHandler:
             if method:
                 self.registered_events["on_sensing_token"].add(method)
         elif event.startswith("on_touching_"):
+            print("register on_touching")
             method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
                 self.board.register_touching_method(method)
@@ -157,8 +152,8 @@ class BoardEventHandler:
         overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
         parents = inspect.getmro(instance.__class__)
         if (
-            instance.__class__ not in [token.Token, board_base.BaseBoard]
-            and method.__name__ in overwritten_methods
+                instance.__class__ not in [token.Token, board_base.BaseBoard]
+                and method.__name__ in overwritten_methods
         ):
             self.registered_events[event].add(method)
         else:

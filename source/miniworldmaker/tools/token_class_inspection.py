@@ -1,7 +1,9 @@
 import inspect
-from boards import board_base
-from tokens import token
 from typing import Union, Type
+
+import miniworldmaker.tokens.token as token
+from miniworldmaker.boards import board_base as board_base
+
 
 class TokenClassInspection:
 
@@ -12,7 +14,7 @@ class TokenClassInspection:
             generator: A instance of token or a token class
         """
         if not inspect.isclass(generator):
-            if isinstance(generator, board_base.BaseBoard) or isinstance(generator, board_base.BaseBoard):
+            if isinstance(generator, board_base.BaseBoard):
                 self.instance = generator.tokens.get_sprite(0)
                 self.token_class = generator.tokens.get_sprite(0).__class__
             else:
@@ -28,17 +30,11 @@ class TokenClassInspection:
         return methods
 
     def get_all_token_classes(self):
-        token_parent_class = self.get_token_parent_class() # get miniworldmaker.Token
+        token_parent_class = self.get_token_parent_class()  # get miniworldmaker.Token
         return TokenClassInspection(token_parent_class).get_subclasses_for_cls()
 
     def get_token_parent_class(self):
-        """Gets the class miniworldmaker.Token class for a specific token subclass. 
-
-        This is needed, so you can find all miniworldmaker token subclasses at runtime.
-        """
-        for tokencls in inspect.getmro(self.token_class):
-            if tokencls == token.Token or tokencls == token.Token:
-                return tokencls
+        return token.Token
 
     def get_subclasses_for_cls(self):
         def all_subclasses(cls):
@@ -47,10 +43,10 @@ class TokenClassInspection:
         token_set.add(self.token_class)
         return token_set.union(all_subclasses(self.token_class))
 
-    def find_token_class_by_classname(self, classname: str) -> Union[None, Type["token.Token"]]:
-        classname = classname.lower()
+    def find_token_class_by_classname(self, class_name: str) -> Union[None, Type["token.Token"]]:
+        class_name = class_name.lower()
         for token_cls in self.get_all_token_classes():
-            if token_cls.__name__.lower() == classname:
+            if token_cls.__name__.lower() == class_name:
                 return token_cls
         return None
 

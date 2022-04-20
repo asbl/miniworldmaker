@@ -75,7 +75,3 @@ create_wall(3,1)
 
 board.run()
 ```
-
-Output:
-
-![walls](../_images/walls.png)

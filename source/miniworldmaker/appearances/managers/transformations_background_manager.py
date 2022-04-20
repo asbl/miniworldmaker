@@ -1,5 +1,5 @@
 import pygame
-from appearances.managers import transformations_manager
+import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
 import traceback
 
 

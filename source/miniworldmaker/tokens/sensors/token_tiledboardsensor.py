@@ -1,13 +1,7 @@
 import math
 
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-from tokens.sensors import token_boardsensor as boardsensor
-from tokens import token
+import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
+import miniworldmaker.board_positions.board_position as board_position
 
 
 class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):

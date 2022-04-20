@@ -1,11 +1,11 @@
-import inspect
 from typing import Optional, Union
-from tokens import token
-from tools.mwminspection import MWMInspection
-from tools import method_caller
 
-class TokenInspection(MWMInspection):
+from miniworldmaker.tokens import token
+from miniworldmaker.tools import method_caller
+from miniworldmaker.tools import mwminspection
 
+
+class TokenInspection(mwminspection.MWMInspection):
 
     def call_instance_method(self, method: callable, args: Optional[Union[tuple, list]], allow_none=True):
         # Don't call method if tokens are already removed:

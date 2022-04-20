@@ -1,15 +1,8 @@
 import pygame
-from typing import Union
 
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from containers import container
-from containers import toolbar_widgets
-from app import app
-import miniworldmaker
+import miniworldmaker.base.app as app
+import miniworldmaker.containers.container as container
+import miniworldmaker.containers.toolbar_widgets as toolbar_widgets
 
 
 class Toolbar(container.Container):
@@ -19,7 +12,7 @@ class Toolbar(container.Container):
         Base class for toolbars.
         """
         super().__init__()
-        self.app = miniworldmaker.App
+        self.app = app.App
         self.widgets = dict()
         self.timed_widgets = dict()
         self.position = "right"
@@ -30,9 +23,9 @@ class Toolbar(container.Container):
         self.margin_left = 10
         self.margin_right = 10
         self.dirty = 1
-        self.repaint_all = True # if True, the complete toolbar will be repaintet
+        self.repaint_all = True  # if True, the complete toolbar will be repaintet
 
-    def add_widget(self, widget: toolbar_widgets.ToolbarWidget, key : str = None,) -> toolbar_widgets.ToolbarWidget:
+    def add_widget(self, widget: toolbar_widgets.ToolbarWidget, key: str = None, ) -> toolbar_widgets.ToolbarWidget:
         """Adds a widget to the toolbar
 
         Args:
@@ -68,7 +61,7 @@ class Toolbar(container.Container):
         self.dirty = 1
         self.repaint_all = True
 
-    def has_widget(self, ke : str):
+    def has_widget(self, ke: str):
         """Checks if self.widgets has key
 
         Args:

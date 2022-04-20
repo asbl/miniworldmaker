@@ -285,10 +285,3 @@ board = PixelBoard(800, 600)
 Rectangle((100, 100), 20, 100)
 board.run()
 ```
-
-## view
-
-- More information. See
-    [Key Concepts: Boards](../key_concepts/tokens)
-- [Further
-    Examples](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/1%20Costumes%20and%20Backgrounds)

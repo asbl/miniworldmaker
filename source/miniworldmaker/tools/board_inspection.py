@@ -1,8 +1,4 @@
-import inspect
-import miniworldmaker
-from typing import Optional, Union
-from tokens import token
-from tools.mwminspection import MWMInspection
+from miniworldmaker.tools import mwminspection
 
-class BoardInspection(MWMInspection):
+class BoardInspection(mwminspection.MWMInspection):
     pass

@@ -1,19 +1,15 @@
 from collections import defaultdict
 from typing import Union, Dict, Tuple
+
 import pygame
 
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-from boards import board
-from exceptions.miniworldmaker_exception import TiledBoardTooBigError
-from boards.token_connectors import tiled_board_connector
-import boards.elements.tile_elements as tile_elements
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.boards.board as board
+import miniworldmaker.board_positions.tile_elements as tile_elements
+import miniworldmaker.boards.token_connectors.tiled_board_connector as tiled_board_connector
 from miniworldmaker.exceptions import miniworldmaker_exception
- 
+from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
+
 
 class TiledBoard(board.Board):
     def __init__(self, columns: int = 20, rows: int = 16):
@@ -24,7 +20,7 @@ class TiledBoard(board.Board):
             rows: The number of rows
         """
         self.default_token_speed: int = 1
-        if columns  > 1000 or rows > 1000:
+        if columns > 1000 or rows > 1000:
             raise TiledBoardTooBigError(columns, rows, 40)
         super().__init__(columns=columns, rows=rows)
         self.tile_size = 40
@@ -43,14 +39,14 @@ class TiledBoard(board.Board):
         self.setup_tiles()
         self.setup_corners()
         self.setup_edges()
-        
+
     def _templates(self):
         return tile_elements.Tile, tile_elements.Edge, tile_elements.Corner
-       
+
     def add_tile_to_board(self, position):
         tile_cls, edge_cls, corner_cls = self._templates()
         tile_pos = board_position.Position(position[0], position[1])
-        tile =  tile_cls(tile_pos)
+        tile = tile_cls(tile_pos)
         self.tiles[tile.position] = tile
 
     def add_corner_to_board(self, position, direction):
@@ -61,7 +57,7 @@ class TiledBoard(board.Board):
             self.corners[corner_pos] = corner
         else:
             self.corners[corner_pos].merge(corner)
-        
+
     def add_edge_to_board(self, position, direction):
         tile_cls, edge_cls, corner_cls = self._templates()
         edge = edge_cls(position, direction)
@@ -70,7 +66,7 @@ class TiledBoard(board.Board):
             self.edges[edge_pos] = edge
         else:
             self.edges[edge_pos].merge(edge)
-        
+
     def setup_tiles(self):
         for x in range(self.columns):
             for y in range(self.rows):
@@ -81,22 +77,26 @@ class TiledBoard(board.Board):
         for position, tile in self.tiles.items():
             for direction in tile_cls.corner_vectors:
                 self.add_corner_to_board(tile.position, direction)
-                
+
     def setup_edges(self):
         tile_cls, edge_cls, corner_cls = self._templates()
         for position, tile in self.tiles.items():
             for direction in tile_cls.edge_vectors:
                 self.add_edge_to_board(tile.position, direction)
-            
-
 
     def get_tile(self, position):
-        return self.tiles[position[0], position[1]]
+        if self.is_tile(position):
+            return self.tiles[(position[0], position[1])]
+        else:
+            raise miniworldmaker_exception.NoTileFoundError(position)
 
     def get_corner(self, position):
-        return self.corners[position[0], position[1]]
-    
-    def get_token_connector(self, token) -> "key.TiledBoardConnector":
+        if self.is_corner(position):
+            return self.corners[(position[0], position[1])]
+        else:
+            raise miniworldmaker_exception.NoTileFoundError(position)
+
+    def get_token_connector(self, token):
         return tiled_board_connector.TiledBoardConnector(self, token)
 
     def is_position_on_board(self, position: "board_position.Position") -> bool:
@@ -162,14 +162,14 @@ class TiledBoard(board.Board):
         edge_points = dict()
         for position, edge in self.edges.items():
             edge_points[position] = edge.to_pixel()
-        return edge_points   
+        return edge_points
 
     def get_corner_points(self) -> Dict[Tuple, "board_position.Position"]:
         corner_points = dict()
         for position, corner in self.corners.items():
             corner_points[position] = corner.to_pixel()
-        return corner_points  
-     
+        return corner_points
+
     def is_edge(self, position):
         if position in self.edges:
             return True
@@ -181,32 +181,20 @@ class TiledBoard(board.Board):
             return True
         else:
             return False
-        
+
     def is_tile(self, position):
         if position in self.tiles:
             return True
         else:
             return False
-           
+
     def get_edge(self, position):
         if self.is_edge(position):
             return self.edges[(position[0], position[1])]
         else:
             raise miniworldmaker_exception.NoTileFoundError(position)
 
-    def get_tile(self, position):
-        if self.is_tile(position):
-            return self.tiles[(position[0], position[1])]
-        else:
-            raise miniworldmaker_exception.NoTileFoundError(position)
-
-    def get_corner(self, position):
-        if self.is_corner(position):
-            return self.corners[(position[0], position[1])]
-        else:
-            raise miniworldmaker_exception.NoTileFoundError(position)
-
-    def to_pixel(self, position, size = (0, 0), origin = (0,0)):
-        x = position[0] * board.tile_size + origin[0]  
-        y = position[1] * board.tile_size + origin[1]
-        return board_position(x, y)
+    def to_pixel(self, position, size=(0, 0), origin=(0, 0)):
+        x = position[0] * self.tile_size + origin[0]
+        y = position[1] * self.tile_size + origin[1]
+        return board_position.Position(x, y)

@@ -1,13 +1,6 @@
-
 import pygame
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-from board_positions import board_rect_factory
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.board_rect_factory as board_rect_factory
 
 
 class BoardPositionHandler:
@@ -65,10 +58,10 @@ class BoardPositionHandler:
         pos1 = board_position.Position.create(pos1)
         pos2 = board_position.Position.create(pos2)
         if (
-            pos1.x <= pos2.x + distance
-            and pos1.x >= pos2.x - distance
-            and pos1.y <= pos2.y + distance
-            and pos1.y >= pos2.y - distance
+                pos1.x <= pos2.x + distance
+                and pos1.x >= pos2.x - distance
+                and pos1.y <= pos2.y + distance
+                and pos1.y >= pos2.y - distance
         ):
             return True
         else:
@@ -137,5 +130,3 @@ class BoardPositionHandler:
                 if color not in colors:
                     colors.append(color)
         return colors
-
-    

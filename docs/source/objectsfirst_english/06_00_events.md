@@ -97,11 +97,3 @@ def on_message(self, message):
     if message == "Example message":
         do_something()
 ```
-
-## outlook
-
-* [Complete
-    Example](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py)
-* [More
-    Examples](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/05%20-%20events.py)
-* More information. See [Key Concepts: Events](../key_concepts/events)

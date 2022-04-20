@@ -1,8 +1,6 @@
-from typing import Tuple, Union
+import miniworldmaker.appearances.text_costume as text_costume
+import miniworldmaker.tokens.token as token
 
-from tokens import token
-from exceptions.miniworldmaker_exception import CantSetAutoFontSize, MiniworldMakerError
-from appearances import text_costume
 
 class Text(token.Token):
     """

@@ -1,13 +1,14 @@
-from typing import Union
+from typing import Type, Union
 
 import pygame
 
-from board_positions import board_position
-from boards.token_connectors.pixel_board_connector import PixelBoardConnector
-from boards import board_base
-from tools import color, timer
-from appearances import appearance, background
-from typing import List, Tuple, Type, Union
+import miniworldmaker.appearances.appearance as appearance
+import miniworldmaker.appearances.background as background
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.boards.board_base as board_base
+import miniworldmaker.boards.token_connectors.pixel_board_connector as pixel_board_connector
+import miniworldmaker.tools.color as color
+import miniworldmaker.tools.timer as timer
 
 
 class Board(board_base.BaseBoard):
@@ -237,8 +238,6 @@ class Board(board_base.BaseBoard):
         self._columns = value
         self.app.window.dirty = 1
         self.background.reload_transformations_after("all")
-
-
 
     @property
     def size(self) -> tuple:
@@ -661,7 +660,7 @@ class Board(board_base.BaseBoard):
         self.event_manager.handle_switch_board_event(new_board)
 
     def get_token_connector(self, token):
-        return PixelBoardConnector(self, token)
+        return pixel_board_connector.PixelBoardConnector(self, token)
 
     def get_color_from_pixel(self, position: "board_position.Position") -> tuple:
         """

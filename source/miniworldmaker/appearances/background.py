@@ -1,20 +1,9 @@
 from typing import Union, List, Tuple
 import pygame
-import miniworldmaker
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-
-from appearances import appearance
-from appearances.managers import (
-    image_background_manager,
-    image_manager,
-    transformations_background_manager,
-)
-from app import app
+import miniworldmaker.appearances.appearance as appearance
+import miniworldmaker.appearances.managers.image_background_manager as image_background_manager
+import miniworldmaker.appearances.managers.transformations_background_manager as transformations_background_manager
+import miniworldmaker.base.app as app
 
 
 class Background(appearance.Appearance):

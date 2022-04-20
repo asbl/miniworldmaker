@@ -1,44 +1,40 @@
 from __future__ import annotations
 
 import inspect
-from collections import defaultdict
-from typing import List, Tuple, Type, Union
+from typing import List, Tuple, Union
 
 import pygame
 
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from app import app
-from appearances import appearance, background, backgrounds_manager
-from board_positions import board_position, board_rect_factory
-from boards.board_manager import board_collision_manager as coll_manager
-from boards.board_manager import board_event_manager as event_manager
-from boards.board_manager import board_position_manager as pos_manager
-from boards.data import export_factory, import_factory
-from boards.token_connectors import token_connector
-from containers import container
-from dialogs import ask
-from exceptions.miniworldmaker_exception import (
+import miniworldmaker.appearances.background as background
+import miniworldmaker.appearances.backgrounds_manager as backgrounds_manager
+import miniworldmaker.base.app as app
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.board_rect_factory as board_rect_factory
+import miniworldmaker.boards.board_manager.board_collision_manager as coll_manager
+import miniworldmaker.boards.board_manager.board_event_manager as event_manager
+import miniworldmaker.boards.board_manager.board_position_manager as pos_manager
+import miniworldmaker.boards.data.export_factory as export_factory
+import miniworldmaker.boards.data.import_factory as import_factory
+import miniworldmaker.boards.token_connectors.token_connector as token_connector
+import miniworldmaker.containers.container as container
+import miniworldmaker.dialogs.ask as ask
+import miniworldmaker.tokens.token as token_module
+import miniworldmaker.tools.board_inspection as board_inspection
+from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardArgumentsError,
     BoardInstanceError,
     NotImplementedOrRegisteredError,
 )
-from tokens import token as token_module
-from tools import board_inspection, color, timer
 
 
 class BaseBoard(container.Container):
-
     subclasses = None
 
     def __init__(
-        self,
-        columns: Union[int, Tuple[int]] = 400,
-        rows: int = 400,
-        tile_size: int = 1,
+            self,
+            columns: Union[int, Tuple[int]] = 400,
+            rows: int = 400,
+            tile_size: int = 1,
     ):
         if self.__class__ == BaseBoard:
             raise BoardInstanceError()
@@ -146,7 +142,7 @@ class BaseBoard(container.Container):
         return self.backgrounds_manager.has_background
 
     @property
-    def window(self) -> miniworldmaker.App:
+    def window(self) -> "app.App":
         """
         Gets the parent window
 

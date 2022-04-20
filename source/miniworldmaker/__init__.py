@@ -1,72 +1,124 @@
-import pkgutil
-from inspect import isclass
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-# manually import classes which should be accessible in outer scope.
-
-from boards.board_base import BaseBoard
-from boards.board import Board
-from boards.pixel_board import PixelBoard
-from boards.tiled_board import TiledBoard
-from boards.physics_board import PhysicsBoard
-from boards.hex_board import HexBoard
-
-from tokens.token_base import BaseToken
-from tokens.token import Token
-from tokens.text_token import Text
-from tokens.number_token import Number
-from tokens.text_token import TextToken
-from tokens.number_token import NumberToken
-
-from tokens.shapes import Point
-from tokens.shapes import Line
-from tokens.shapes import Rectangle
-from tokens.shapes import Circle
-from tokens.shapes import Ellipse
-from tokens.shapes import Polygon
-from tokens.shapes import Triangle
-from tokens.shapes import Arc
-
-from appearances import appearance_base
-from appearances.appearance import Appearance
-from appearances.appearance_base import AppearanceBase
-from appearances.background import Background
-from appearances.costume import Costume
-
-from tools.timer import timer
-from tools.timer import loop
-
-from board_positions.board_vector import Vector
-from board_positions.board_position import Position
-
-from exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
-
-
-
 import nest_asyncio
+import os
+import inspect
+import sys
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 nest_asyncio.apply()
 
-# auto import all classes, so that every class is imported
-
-from pkgutil import extend_path
-__path__ = extend_path(__path__, __name__)
-
-
 __all__ = []
-for loader, module_name, is_pkg in pkgutil.walk_packages(__path__):
-    __all__.append(module_name)
-    _module = loader.find_module(module_name).load_module(module_name)
-    globals()[module_name] = _module
-    for attribute_name in dir(_module):
-        attribute = getattr(_module, attribute_name)
-        if isclass(attribute):  
-            globals()[attribute_name] = attribute
-            __all__.append(attribute.__name__)
 
+from miniworldmaker.boards.board import Board
+from miniworldmaker.boards.pixel_board import PixelBoard
+from miniworldmaker.boards.tiled_board import TiledBoard
+from miniworldmaker.boards.physics_board import PhysicsBoard as PhysicsBoard
+from miniworldmaker.boards.hex_board import HexBoard
+
+from miniworldmaker.tokens.token_base import BaseToken
+from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.text_token import Text
+from miniworldmaker.tokens.number_token import Number
+from miniworldmaker.tokens.text_token import TextToken
+from miniworldmaker.tokens.number_token import NumberToken
+
+from miniworldmaker.tokens.shapes import Point
+from miniworldmaker.tokens.shapes import Rectangle
+from miniworldmaker.tokens.shapes import Circle
+from miniworldmaker.tokens.shapes import Line
+from miniworldmaker.tokens.shapes import Ellipse
+from miniworldmaker.tokens.shapes import Polygon
+from miniworldmaker.tokens.shapes import Triangle
+from miniworldmaker.tokens.shapes import Arc
+
+from miniworldmaker.appearances.appearance import Appearance
+from miniworldmaker.appearances.appearance_base import AppearanceBase
+from miniworldmaker.appearances.background import Background
+from miniworldmaker.appearances.costume import Costume
+
+from miniworldmaker.tools.timer import timer
+from miniworldmaker.tools.timer import loop
+from miniworldmaker.tools.timer import ActionTimer
+from miniworldmaker.tools.timer import LoopActionTimer
+from miniworldmaker.tools.timer import Timer
+
+from miniworldmaker.containers.toolbar import Toolbar
+from miniworldmaker.containers.actionbar import ActionBar
+from miniworldmaker.containers.console import Console
+from miniworldmaker.containers.event_console import EventConsole
+from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
+from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
+from miniworldmaker.containers.toolbar_widgets import *
+
+from miniworldmaker.board_positions.board_vector import Vector
+from miniworldmaker.board_positions.board_position import Position
+
+from miniworldmaker.board_positions.hex_elements import HexEdge
+from miniworldmaker.board_positions.hex_elements import HexTile
+from miniworldmaker.board_positions.hex_elements import HexCorner
+
+from miniworldmaker.board_positions.hex_elements import CubeCoord
+
+from miniworldmaker.board_positions.tile_elements import Edge
+from miniworldmaker.board_positions.tile_elements import Tile
+from miniworldmaker.board_positions.tile_elements import Corner
+
+from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
+
+__all__.append(Board.__name__)
+__all__.append(PixelBoard.__name__)
+__all__.append(PhysicsBoard.__name__)
+__all__.append(TiledBoard.__name__)
+__all__.append(HexBoard.__name__)
+__all__.append(BaseToken.__name__)
+__all__.append(Token.__name__)
+__all__.append(Text.__name__)
+__all__.append(Number.__name__)
+__all__.append(TextToken.__name__)
+__all__.append(NumberToken.__name__)
+
+__all__.append(Point.__name__)
+__all__.append(Rectangle.__name__)
+__all__.append(Line.__name__)
+__all__.append(Ellipse.__name__)
+__all__.append(Polygon.__name__)
+__all__.append(Triangle.__name__)
+__all__.append(Arc.__name__)
+__all__.append(Circle.__name__)
+
+__all__.append(Appearance.__name__)
+__all__.append(AppearanceBase.__name__)
+__all__.append(Background.__name__)
+__all__.append(Costume.__name__)
+
+__all__.append(Vector.__name__)
+__all__.append(Position.__name__)
+
+__all__.append(Toolbar.__name__)
+__all__.append(ActionBar.__name__)
+__all__.append(Console.__name__)
+__all__.append(EventConsole.__name__)
+__all__.append(InspectActorToolbar.__name__)
+__all__.append(LevelDesignerToolbar.__name__)
+__all__.append(ToolbarLabel.__name__)
+__all__.append(ToolbarButton.__name__)
+__all__.append(ToolbarWidget.__name__)
+
+__all__.append(HexEdge.__name__)
+__all__.append(HexTile.__name__)
+__all__.append(HexCorner.__name__)
+__all__.append(CubeCoord.__name__)
+
+__all__.append(Corner.__name__)
+__all__.append(Tile.__name__)
+__all__.append(Edge.__name__)
 
 __all__.append(timer.__name__)
 __all__.append(loop.__name__)
+
+__all__.append(ActionTimer.__name__)
+__all__.append(LoopActionTimer.__name__)
+__all__.append(Timer.__name__)
+
+
+__all__.append(CostumeOutOfBoundsError.__name__)

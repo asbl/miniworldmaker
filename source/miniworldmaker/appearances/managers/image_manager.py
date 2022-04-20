@@ -1,10 +1,10 @@
 import pygame
 import os
 from pathlib import Path
-from app import file_manager
-from exceptions.miniworldmaker_exception import ImageIndexNotExistsError
+from miniworldmaker.base import file_manager
+from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExistsError
 from typing import List, Union, Tuple
-
+from pathlib import Path
 
 class ImageManager:
     """Handles loading and caching of images."""
@@ -75,9 +75,6 @@ class ImageManager:
         """is called on program start.
         Loads all images in folder path/images
         """
-        from pathlib import Path
-        from miniworldmaker.appearances import appearance
-
         jpgs = list(Path("./images/").rglob("*.[jJ][pP][gG]"))
         jpegs = list(Path("./images/w wwsdsdwasd").rglob("*.[jJ][pP][eE][gG]"))
         pngs = list(Path("./images/").rglob("*.[pP][nN][gG]"))

@@ -1,18 +1,17 @@
 from typing import Tuple
-import pygame
-import math
-import pygame.gfxdraw
-import math
 
-from board_positions import board_position
-from appearances import shape_costume
-from exceptions.miniworldmaker_exception import (
+import pygame
+import pygame.gfxdraw
+
+import miniworldmaker.appearances.shape_costume as shape_costume
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.tokens.token as token
+from miniworldmaker.exceptions.miniworldmaker_exception import (
     EllipseWrongArgumentsError,
     LineFirstArgumentError,
     LineSecondArgumentError,
     RectFirstArgumentError,
 )
-from tokens import token
 
 
 class Shape(token.Token):
@@ -146,10 +145,10 @@ class Ellipse(Shape):
     """
 
     def __init__(
-        self,
-        position=(0, 0),
-        width: float = 10,
-        height: float = 10,
+            self,
+            position=(0, 0),
+            width: float = 10,
+            height: float = 10,
     ):
         self.check_arguments(position, width, height)
         super().__init__(position)
@@ -190,7 +189,7 @@ class Arc(Ellipse):
     """
 
     def __init__(
-        self, position=(0, 0), width: float = 10, height: float = 10, start_angle: float = 0, end_angle: float = 0
+            self, position=(0, 0), width: float = 10, height: float = 10, start_angle: float = 0, end_angle: float = 0
     ):
         self._start_angle = start_angle
         self._end_angle = end_angle
@@ -264,7 +263,10 @@ class Line(Shape):
         if not start_position or not end_position:
             start_position = (0, 0)
             end_position = (0, 0)
-        self.check_arguments(start_position, end_position)
+        if type(start_position) not in [tuple, board_position.Position, None]:
+            raise LineFirstArgumentError(start_position)
+        if type(end_position) not in [tuple, board_position.Position, None]:
+            raise LineSecondArgumentError(end_position)
         self._start_position = start_position
         self._end_position = end_position
         super().__init__(start_position)
@@ -273,12 +275,6 @@ class Line(Shape):
         self.costume._update_draw_shape()
         box = self.get_bounding_box()
         self.position = box.topleft
-
-    def check_arguments(self, start_position, end_position):
-        if type(start_position) not in [tuple, board_position.Position, None]:
-            raise LineFirstArgumentError(start_position)
-        if type(end_position) not in [tuple, board_position.Position, None]:
-            raise LineSecondArgumentError(end_position)
 
     def set_physics_default_values(self):
         self.physics.shape_type = "line"
@@ -293,6 +289,10 @@ class Line(Shape):
             width,
             height,
         )
+        self.position = box[0], box[1]
+        width, height = box[2], box[3]
+        self.width = width
+        self.height = height
         return box
 
     @property
@@ -300,18 +300,18 @@ class Line(Shape):
         return self._start_position
 
     @start_position.setter
-    def start_position(self, value: int):
+    def start_position(self, value: Tuple):
         self._start_position = value
-        self.costume.reload_transformations_after("all")
+        self.costume._update_draw_shape()
 
     @property
     def end_position(self):
         return self._end_position
 
     @end_position.setter
-    def end_position(self, value: int):
+    def end_position(self, value: Tuple):
         self._end_position = value
-        self.costume.reload_transformations_after("all")
+        self.costume._update_draw_shape()
 
     @property
     def thickness(self):
@@ -347,10 +347,10 @@ class Rectangle(Shape):
     """
 
     def __init__(
-        self,
-        topleft=(0, 0),
-        width: float = 10,
-        height: float = 10,
+            self,
+            topleft=(0, 0),
+            width: float = 10,
+            height: float = 10,
     ):
         self.check_arguments(topleft, width, height)
         super().__init__(topleft)

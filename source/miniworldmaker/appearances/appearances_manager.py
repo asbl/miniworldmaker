@@ -1,20 +1,14 @@
-from typing import Union, List, Tuple
+from typing import Union
+
 import pygame
 import miniworldmaker
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances import appearance
-from appearances import costume
-from exceptions import miniworldmaker_exception
+import miniworldmaker.appearances.appearance as appearance
+import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
 
 
 class AppearancesManager:
     def __init__(self, parent, appearance = None):
-        if appearance != None:
+        if appearance is not None:
             self.appearances_list = [appearance]
         else:
             self.appearances_list = []
@@ -162,11 +156,11 @@ class AppearancesManager:
     def remove_last_costume(self, index):
         self.appearances_list.remove(-1)
 
-    def remove_appearance(self, source : Union[int, appearance.Appearance]=None):
+    def remove_appearance(self, source : Union[int, "appearance.Appearance"]=None):
         """Removes an appearance (costume or background) from manager
 
         Args:
-            index: The index of the new costume. Defaults to -1 (last costume)
+            source: The index of the new appearance or the Appearance which should be removed Defaults to -1 (last costume)
         """
         if type(source) == int:
             self._remove_appearance_at_index(source)
@@ -176,9 +170,9 @@ class AppearancesManager:
     def switch_appearance(self, source: Union[int, "appearance.Appearance"]) -> "appearance.Appearance":
         if type(source) == int:
             if source >= self.length():
-                raise miniworldmaker.CostumeOutOfBoundsError(self.token, self.length(), source)
+                raise miniworldmaker_exception.CostumeOutOfBoundsError(self.token, self.length(), source)
             new_appearance = self.get_appearance_at_index(source)
-        elif isinstance(source, appearance.Appearance):
+        elif isinstance(source, appearance.Appearance) or isinstance(source, miniworldmaker.Appearance):
             new_appearance = source
         self.appearance = new_appearance
         self.appearance.image_manager.end_animation(new_appearance)

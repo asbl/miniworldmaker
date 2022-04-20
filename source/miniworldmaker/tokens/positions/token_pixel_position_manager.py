@@ -1,14 +1,10 @@
 
 import pygame
 
-import sys
-from miniworldmaker import conf
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.tokens.positions.token_position_manager as token_positionmanager
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
 
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-from tokens.positions import token_position_manager as token_positionmanager
-from exceptions.miniworldmaker_exception import NoValidBoardPositionError
 
 class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
     def __init__(self, token, position):

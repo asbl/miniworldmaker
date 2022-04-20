@@ -1,11 +1,12 @@
 import pymunk as pymunk_engine
 import pymunk.pygame_util
 import sys
+import math
 from typing import Union
+from miniworldmaker.tokens import token as token
 
 
 class TokenPhysics:
-
     """
     The PhysicsProperty class describes all properties necessary to physically
     simulate an object using the pymunk engine.
@@ -57,8 +58,26 @@ class TokenPhysics:
         self._body: Union[pymunk_engine.Body, None] = None
         self._shape: Union[pymunk_engine.Shape, None] = None
         self.dirty: int = 1
-        self.model_setup_complete: bool = False
+        self.has_physics: bool = False
+        self._update_from_physics: bool = False  # is position/direction updated from physics_engine?
         self.size = (1, 1)  # scale factor for physics box model
+
+    def join(self, other: "token.Token", anchor_self=(0, 0), anchor_other=(0, 0)):
+        """joins two tokens
+        :param other: Other token
+        :param anchor_self: Local coordinate of joint in other
+        :param anchor_other: Local coordinate of joint in other
+        :return: Tuple with global joint points, can be used to create a line.
+        """
+        if not hasattr(other, "physics"):
+            raise TypeError("Other token has no attribute physics")
+        my_body = self._body
+        other_body = other.physics._body
+        anchor_self = anchor_self[0], - anchor_self[1]
+        anchor_other = anchor_other[0], - anchor_other[1]
+        pj = pymunk.PinJoint(my_body, other_body, anchor_self, anchor_other)
+        self.board.space.add(pj)
+        return self.token.position + anchor_self, other.position + anchor_other
 
     def start(self):
         """
@@ -84,7 +103,7 @@ class TokenPhysics:
             self.setup_physics_model()  # After on_setup
 
     def get_pymunk_shape(self):
-        # Sets the shape-type
+        # Sets the shape-type_update_from_physics
         if self.shape_type.lower() == "rect":
             shape = pymunk.Poly.create_box(self._body,
                                            (self.size[0] * self.token.width,
@@ -97,13 +116,14 @@ class TokenPhysics:
                                   (0, 0),
                                   )
         elif self.shape_type.lower() == "line":
-                shift_x = self.token.size[0] / 2 + self.token.position[0]
-                shift_y = self.token.size[1] / 2 + self.token.position[1]
-                start = pymunk.pygame_util.from_pygame(
-                    (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y), self.token.board.image)
-                end = pymunk.pygame_util.from_pygame(
-                    (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
-                shape = pymunk.Segment(self._body, start, end, self.token.border)
+            shift_x = self.token.size[0] / 2 + self.token.position[0]
+            shift_y = self.token.size[1] / 2 + self.token.position[1]
+            start = pymunk.pygame_util.from_pygame(
+                (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y),
+                self.token.board.image)
+            end = pymunk.pygame_util.from_pygame(
+                (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
+            shape = pymunk.Segment(self._body, start, end, self.token.border)
         else:
             raise AttributeError("No shape set!")
         return shape
@@ -111,6 +131,7 @@ class TokenPhysics:
     def setup_physics_model(self):
         if self.dirty and self.token.position:  # if token is on board
             # create body
+            self.has_physics = False
             self._body = pymunk_engine.Body(body_type=self.body_type)
             self.set_pymunk_position()
             self.set_pymunk_direction()
@@ -133,7 +154,7 @@ class TokenPhysics:
             if self.simulation == "static":
                 self.board.space.reindex_static()
             self.dirty = 1
-            self.model_setup_complete = True
+            self.has_physics = True
 
     def set_pymunk_position(self):
         pymunk_position = self.token.center[0], self.token.center[1]
@@ -144,9 +165,10 @@ class TokenPhysics:
         self._body.angle = self.token.position_manager.get_pymunk_direction_from_miniworldmaker()
 
     def set_mwm_token_position(self):
-        self.token.center = pymunk.pygame_util.from_pygame(
-            self._body.position, self.token.board.image)
-        self.dirty = 0
+        if self._body:
+            self.token.center = pymunk.pygame_util.from_pygame(
+                self._body.position, self.token.board.image)
+            self.dirty = 0
 
     def set_mwm_token_direction(self):
         self.token.position_manager.set_mwm_direction_from_pymunk()
@@ -156,14 +178,18 @@ class TokenPhysics:
         if self.started:
             self.dirty = 1
             # Remove shape and body from space
-            if self._body:
-                for shape in list(self._body.shapes):
-                    self.board.space.remove(shape)
-                self.board.space.remove(self._body)
+            self.remove_from_space()
             # Set new properties and reset to space
             self.setup_physics_model()
         else:
             self.dirty = 1
+
+    def remove_from_space(self):
+        if self._body:
+            for shape in list(self._body.shapes):
+                self.board.space.remove(shape)
+            if self._body in self.board.space.bodies:
+                self.board.space.remove(self._body)
 
     @property
     def simulation(self):
@@ -248,7 +274,7 @@ class TokenPhysics:
         self._elasticity = value
         self.dirty = 1
         self.reload()
-        
+
     @property
     def density(self):
         return self._density
@@ -272,14 +298,24 @@ class TokenPhysics:
             self.board.space.reindex_shapes_for_body(self._body)
             self.dirty = 0
 
+    def set_update_mode(self):
+        self._update_from_physics = True
+
+    def unset_update_mode(self):
+        self._update_from_physics = False
+
+    def unset_update_mode(self):
+        return self._update_from_physics
+
     def simulation_postprocess_token(self):
         """
         Reloads physics model from pygame data
         Returns:
 
         """
-        self.set_mwm_token_position()
-        self.set_mwm_token_direction()
+        if not math.isnan(self._body.position[0]):
+            self.set_mwm_token_position()
+            self.set_mwm_token_direction()
         if self._body and not self._body.body_type == pymunk_engine.Body.STATIC:
             self.velocity_x = self._body.velocity[0]
             self.velocity_y = self._body.velocity[1]

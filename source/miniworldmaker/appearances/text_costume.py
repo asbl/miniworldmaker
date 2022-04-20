@@ -1,11 +1,5 @@
 import pygame
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances import costume
+import miniworldmaker.appearances.costume as costume
 
 
 class TextCostume(costume.Costume):
@@ -19,7 +13,6 @@ class TextCostume(costume.Costume):
 
     def _outer_shape(self):
         return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), self.border]
-
 
     def _update_draw_shape(self):
         super()._update_draw_shape()

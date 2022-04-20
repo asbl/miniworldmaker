@@ -6,7 +6,22 @@ Es gibt verschiedene Arten von Bewegung:
 
 ## Setzen des Tokens an einer Position
 
+Mit `token.position`, `token.x` und `token.y` kannst du die Position eines Tokens direkt setzen.
 
+Beispiel:
+
+``` python
+from miniworldmaker import *
+
+board = TiledBoard()
+board.columns = 10
+board.rows = 10
+board.tile_size = 40
+
+t = Token((0,0))
+t.position = (3,4) # moves token to (3,4)
+t.y = 8# moves token (3, 8)
+```
 ## Verschieben des Tokens mit Drag and Drop
 
 Um ein Token zu verschieben, müssen die Events `on_mouse_left` sowie `on_mouse_left_released` registriert werden.

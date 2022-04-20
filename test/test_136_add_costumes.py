@@ -29,6 +29,7 @@ class Test136(unittest.TestCase):
         costume2 = token.add_costume((255,0,255))
         @token.register
         def act(self):
+            print(costume1, costume2)
             if self.costume == costume1:
                 self.switch_costume(costume2)
             else:

@@ -1,5 +1,6 @@
 import pygame
 
+
 class Container:
     """
     Base class for containers
@@ -36,7 +37,7 @@ class Container:
 
     def _add_to_window(self, app, dock, size=None):
         self._app = app
-        if size== None:
+        if size == None:
             self.container_size = self.default_size
         else:
             self.container_size = size
@@ -47,7 +48,7 @@ class Container:
     def update_width_and_height(self):
         if self.docking_position == "top_left":
             self.container_top_left_x = 0
-            self.container_top_left_y = 0     
+            self.container_top_left_y = 0
         elif self.docking_position == "right":
             self.container_top_left_y = 0
             self._container_height = self._app.window.height

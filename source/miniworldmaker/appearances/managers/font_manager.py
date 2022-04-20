@@ -1,6 +1,6 @@
 import pygame
 
-from appearances import appearance
+from miniworldmaker.appearances import appearance
 
 
 class FontManager:

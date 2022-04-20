@@ -126,11 +126,3 @@ The program above has the output:
 It is counted up very slowly, because exactly one frame per second is played and every 3. frame
 (so every 3 seconds) the function `act()` is called.
 
-
-
-## Outlook
-
-- [Complete
-    Example](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tutorial/03%20-%20actions.py)
-- [More
-    Examples](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/2%20Movement)

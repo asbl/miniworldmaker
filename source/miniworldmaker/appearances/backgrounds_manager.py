@@ -1,15 +1,5 @@
-from typing import Union, List, Tuple
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances import appearance
-from appearances import appearances_manager
-from appearances import background
-from typing import Union, List, Tuple
-import pygame
+import miniworldmaker.appearances.appearances_manager as appearances_manager
+import miniworldmaker.appearances.background as background
 
 
 class BackgroundsManager(appearances_manager.AppearancesManager):
@@ -43,7 +33,6 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
     def get_default_appearance(self):
         new_background = background.Background(self.board)
         return new_background
-
 
     def switch_background(self, source):
         background = super().switch_appearance(source)

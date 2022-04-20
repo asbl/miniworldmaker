@@ -1,12 +1,7 @@
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from tokens.sensors import token_pixelboardsensor as pixelboardsensor
-from tokens.positions import token_pixel_position_manager as pixelpositionmanager
-from boards.token_connectors import token_connector as token_connector
-from board_positions import board_position
+from miniworldmaker.tokens.sensors import token_pixelboardsensor as pixelboardsensor
+from miniworldmaker.tokens.positions import token_pixel_position_manager as pixelpositionmanager
+from miniworldmaker.boards.token_connectors import token_connector as token_connector
+from miniworldmaker.board_positions import board_position
 
 
 class PixelBoardConnector(token_connector.TokenConnector):

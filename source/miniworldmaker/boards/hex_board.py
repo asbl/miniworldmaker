@@ -1,21 +1,10 @@
 from typing import Union, Tuple, Dict
-from collections import defaultdict
-
-import sys
-from miniworldmaker import conf
-sys.path.append(conf.ROOT_DIR)
-
-from boards import tiled_board
-from board_positions import board_position
-from boards.token_connectors import hex_board_connector
-from boards.elements import hex_elements
+import miniworldmaker.boards.tiled_board as tiled_board
+import miniworldmaker.board_positions.board_position as board_position
+from miniworldmaker.boards.token_connectors import hex_board_connector
+from miniworldmaker.board_positions import hex_elements
 from miniworldmaker.exceptions import miniworldmaker_exception
-from app import app
-import collections
 import math
-
-import numpy as np
-
 
 # Template: https://www.redblobgames.com/grids/hexagons/codegen/output/lib.py
 

@@ -1,20 +1,14 @@
 from math import radians, degrees
-from typing import Union
 
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from tokens.positions import token_pixel_position_manager as pixel_position_manager
-from board_positions import board_position
-from exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.tokens.positions.token_pixel_position_manager as pixel_position_manager
+from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
 
 
 class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManager):
     def __init__(self, token, position):
         super().__init__(token, position)
-        if not self.size:
+        if self.size:
             self.size = (40, 40)
         self.token.register(self.impulse)
         self.token.register(self.force)
@@ -27,6 +21,9 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         pos = super().set_position(value)
         if hasattr(self.token, "physics"):
             self.token.physics.dirty = 1
+        if hasattr(self.token, "physics") and self.token.physics.has_physics and not self.token.physics._update_from_physics:
+            self.token.physics.dirty = 0
+            self.token.physics.reload()
         return pos
 
     def set_center(self, value):
@@ -43,16 +40,16 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
     def move_to(self, position: "board_position.Position"):
         self.center = position
         if hasattr(self.token, "physics"):
-            self.token.physics.reload()     
+            self.token.physics.reload()
 
     def get_direction(self):
-            return self._direction
+        return self._direction
 
     def set_direction(self, value):
         if self.token.physics._body:
             pymunk_direction = self.get_pymunk_direction(value)
-            self.token.physics._body.angle = pymunk_direction 
-            super().set_direction((value + 360 ) % 360)
+            self.token.physics._body.angle = pymunk_direction
+            super().set_direction((value + 360) % 360)
         else:
             super().set_direction(value)
 
@@ -61,13 +58,13 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         return self.get_pymunk_direction(mwm_direction)
 
     def get_pymunk_direction(self, value):
-        mwm_direction  = (value + 360) % 360 
-        direction = radians(mwm_direction)  
+        mwm_direction = (value + 360) % 360
+        direction = radians(mwm_direction)
         return direction
 
     def set_mwm_direction_from_pymunk(self):
         pymunk_dir_in_degrees = degrees(self.token.physics._body.angle)
-        mwm_direction = (pymunk_dir_in_degrees + 360  ) % 360  
+        mwm_direction = (pymunk_dir_in_degrees + 360) % 360
         super().set_direction(mwm_direction)
 
     def impulse(self, direction=float, power=int):
@@ -79,6 +76,7 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
     def set_simulation(self, simulation_type: str):
         if simulation_type in ["simulated", "manual", "static", None]:
             self.token.physics.simulation = simulation_type
+            self.token.physics.reload()
         else:
             raise PhysicsSimulationTypeError()
 
@@ -89,4 +87,7 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         self.token.physics.velocity_x = value
 
     def set_velocity(self, value):
-        self.token.physics.velocity_x, self.token.physics.velocity_y  = value[0], value[1]
+        self.token.physics.velocity_x, self.token.physics.velocity_y = value[0], value[1]
+
+    def self_remove(self):
+        self.token.physics.remove_from_space()

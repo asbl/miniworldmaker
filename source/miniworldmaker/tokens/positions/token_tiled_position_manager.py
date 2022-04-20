@@ -1,18 +1,13 @@
-from typing import Tuple, Union
-import pygame
 import math
+from typing import Tuple, Union
 
-import sys
-from miniworldmaker import conf
-from miniworldmaker.boards.elements import tile_elements
+import pygame
 
-sys.path.append(conf.ROOT_DIR)
-
-from exceptions.miniworldmaker_exception import SizeOnTiledBoardError
-import tokens.positions.token_position_manager as token_positionmanager
+import miniworldmaker.board_positions.tile_elements as tile_elements
+import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
 
 
-class TiledBoardPositionManager(token_positionmanager.TokenPositionManager):
+class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
     def __init__(self, token, position):
         super().__init__(token, position)
         self._scaled_size = (1, 1)

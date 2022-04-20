@@ -1,9 +1,13 @@
-from exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, WrongArgumentsError, NotNullError, TokenClassNotFound
 from inspect import signature
+
+from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, \
+    WrongArgumentsError, NotNullError
+
 
 def get_signature(method: callable, arguments: tuple, allow_none=True):
     check_signature(method, arguments, allow_none)
     return signature(method)
+
 
 def check_signature(method: callable, arguments: tuple, allow_none=False):
     if not type(callable(method)):
@@ -21,7 +25,8 @@ def check_signature(method: callable, arguments: tuple, allow_none=False):
         if param.default == param.empty and i >= len(arguments):
             raise WrongArgumentsError(method, arguments)
         i = i + 1
-        
+
+
 def call_method(method: callable, arguments: tuple, allow_none=True):
     check_signature(method, arguments, allow_none=True)
     if arguments == None:

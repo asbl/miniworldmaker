@@ -1,20 +1,7 @@
-
-import math
-
-
 import numpy as np
 import math
 import typing
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens import token
-
-
+import miniworldmaker.board_positions.board_position as board_position
 
 
 class Vector:
@@ -176,6 +163,10 @@ class Vector:
         else:
             return angle + 180
 
+    def get_normal(self):
+        self.vec = np.array([- self.vec[1], self.vec[0]])
+        return self
+
     def normalize(self) -> "Vector":
         """sets length of vector to 1
 
@@ -280,7 +271,7 @@ class Vector:
         return board_position.Position.create((self.x + position.x, self.y + position.y))
 
     def __str__(self):
-        return f"({round(self.x,3)},{round(self.y,3)})"
+        return f"({round(self.x, 3)},{round(self.y, 3)})"
 
     def __neg__(self):
         return self.neg()

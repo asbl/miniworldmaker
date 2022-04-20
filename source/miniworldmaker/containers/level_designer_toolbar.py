@@ -1,16 +1,12 @@
 import os
 
-import sys
-from miniworldmaker import conf
+import miniworldmaker.tokens.token as token
+from miniworldmaker.board_positions import board_rect_factory
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.containers import toolbar
+from miniworldmaker.containers import toolbar_widgets
+from miniworldmaker.exceptions import miniworldmaker_exception
 
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position, board_rect_factory
-from containers import toolbar
-from containers.toolbar_widgets import SaveButton, LoadButton, ToolbarWidget, ToolbarLabel, ToolbarButton
-from tokens import token
-from containers.toolbar_widgets import ClearButton
-from exceptions import miniworldmaker_exception
 
 class LevelDesignerToolbar(toolbar.Toolbar):
 
@@ -22,22 +18,22 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.dummy = None
         self.registered_events.add("all")
         self.registered_events.add("debug")
-        self.add_widget(ToolbarLabel("Left Click to add Tokens"))
-        self.add_widget(ToolbarLabel("Right Click or Wheel to change direction"))
-        self.add_widget(ToolbarLabel("SHIFT + Right Click to delete token"))
+        self.add_widget(toolbar_widgets.ToolbarLabel("Left Click to add Tokens"))
+        self.add_widget(toolbar_widgets.ToolbarLabel("Right Click or Wheel to change direction"))
+        self.add_widget(toolbar_widgets.ToolbarLabel("SHIFT + Right Click to delete token"))
         self.prototypes = dict()
         for cls in token_classes:
-            prototype = cls((-100,-100))
+            prototype = cls((-100, -100))
             prototype.export = False
             self.prototypes[cls.__name__] = prototype
             self.add_widget(TokenButton(cls, board, self, self.prototypes[cls.__name__]))
         db_file = file
-        self.add_widget(SaveButton(board=self.app.board, text="Save", filename=db_file))
+        self.add_widget(toolbar_widgets.SaveButton(board=self.app.board, text="Save", filename=db_file))
         if os.path.exists(db_file):
-            self.add_widget(LoadButton(board=self.app.board, text="Load", filename=db_file))
-        self.add_widget(ClearButton(board=self.app.board, text="Clear"))
+            self.add_widget(toolbar_widgets.LoadButton(board=self.app.board, text="Load", filename=db_file))
+        self.add_widget(toolbar_widgets.ClearButton(board=self.app.board, text="Clear"))
 
-    def _add_token_to_mouse_position(self, position,):
+    def _add_token_to_mouse_position(self, position, ):
         if self.selected_token_type:
             prototype = self.prototypes[self.selected_token_type.__name__]
             size = prototype.size
@@ -92,19 +88,18 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                 self._change_direction_at_mouse_position(token, "left")
         self._update_dummy(position)
 
-
     def _update_dummy(self, data):
         position = board_position.Position.create(data)
         if self.dummy:
             self.dummy.position = position
-            rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(self.dummy.position, self.dummy.size)
+            rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(self.dummy.position,
+                                                                                     self.dummy.size)
             tokens = self.dummy.sensing_tokens()
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
             if tokens:
                 self.dummy.switch_costume(1)
             else:
-                print(self.dummy.costumes)
                 self.dummy.switch_costume(0)
 
     def get_event(self, event, data):
@@ -112,16 +107,17 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         if type(data) == tuple and self.app.board.is_in_container(data[0], data[1]):
             self.handle_board_event(event, data)
 
+
 class Dummy(token.Token):
     def on_setup(self):
-        self.add_costume((0,0,0,100))
+        self.add_costume((0, 0, 0, 100))
         print("dummy", self.costumes)
-        self.add_costume((255,0,0,100))
+        self.add_costume((255, 0, 0, 100))
         print("dummy", self.costumes, self.costume.image_manager.images_list)
         self.export = False
 
 
-class TokenButton(ToolbarWidget):
+class TokenButton(toolbar_widgets.ToolbarWidget):
 
     def __init__(self, token_type, board, parent, prototype):
         super().__init__("Button")
@@ -142,7 +138,7 @@ class TokenButton(ToolbarWidget):
             prototype = self.parent.prototypes[self.parent.selected_token_type.__name__]
             if self.parent.dummy:
                 self.parent.dummy.remove()
-            self.parent.dummy = Dummy((0,0))
+            self.parent.dummy = Dummy((0, 0))
             try:
                 self.parent.dummy.size = prototype.size
             except miniworldmaker_exception.SizeOnTiledBoardError:

@@ -1,16 +1,12 @@
 import math
-import pygame
 from typing import Union
 
-import sys
-from miniworldmaker import conf
+import pygame
 
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-from board_positions import board_rect_factory
-from tokens.sensors import token_boardsensor as boardsensor
-from tokens import token
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.board_rect_factory as board_rect_factory
+import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
+import miniworldmaker.tokens.token as token
 
 
 class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
@@ -65,7 +61,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         x_spacing = (target[0] - start[0]) / (sampling_rate + 1)
         y_spacing = (target[1] - start[1]) / (sampling_rate + 1)
         return [board_position.Position.create((start[0] + i * x_spacing, start[1] + i * y_spacing) for i in
-                range(1, sampling_rate + 1))]
+                                               range(1, sampling_rate + 1))]
 
     def get_destination(self, start, direction, distance) -> "board_position.Position":
         exact_position_x = start[0] + math.sin(math.radians(direction)) * distance

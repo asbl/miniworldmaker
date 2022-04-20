@@ -166,7 +166,3 @@ is printed: `Borders are here! ['right', 'top']`
 
   If the `print` statement is not called, then the sensor does not work.
   the sensor does not work.
-
-## Outlook
-
-* More information. See [Key Concepts: Sensors](../key_concepts/sensors>)

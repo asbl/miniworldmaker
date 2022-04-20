@@ -1,19 +1,9 @@
-import pygame
+from typing import Union, Tuple
 
-from typing import Union, Tuple, List
+import miniworldmaker.appearances.appearance_base as appearance_base
 import numpy
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from tools import binding
-from board_positions import board_position
-from exceptions.miniworldmaker_exception import ColorException
-from tools import binding
-from tools import color
-from appearances import appearance_base
+import pygame
+import miniworldmaker.tools.color as color
 
 
 class Appearance(appearance_base.AppearanceBase):

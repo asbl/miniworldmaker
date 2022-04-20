@@ -4,7 +4,7 @@ import os
 import unittest
 
 TEST_FRAMES = [1]
-QUIT_FRAME = 25
+QUIT_FRAME = 2
     
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)

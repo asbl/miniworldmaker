@@ -1,9 +1,4 @@
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from tokens import text_token
+import miniworldmaker.tokens.text_token as text_token
 
 
 class Number(text_token.TextToken):

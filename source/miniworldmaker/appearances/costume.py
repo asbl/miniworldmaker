@@ -1,13 +1,6 @@
-import math
 import pygame
-
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances import appearance as appear
-from appearances.managers import transformations_costume_manager
+import miniworldmaker.appearances.appearance as appear
+import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
 
 
 class Costume(appear.Appearance):
@@ -101,8 +94,8 @@ class Costume(appear.Appearance):
         else:
             color = self.fill_color
         return [
-            color,
-        ] + self._inner_shape()[1]
+                   color,
+               ] + self._inner_shape()[1]
 
     def _outer_shape_arguments(self):
         if not self.border_color:
@@ -110,5 +103,5 @@ class Costume(appear.Appearance):
         else:
             color = self.border_color
         return [
-            color,
-        ] + self._outer_shape()[1]
+                   color,
+               ] + self._outer_shape()[1]

@@ -154,14 +154,3 @@ board.run()
   <source src="../_static/move_in_circle.webm" type="video/webm">
   Your browser does not support the video tag.
 </video>
-
-
-
-
-
-## Outlook
-
-* More information. See [Key Concepts: Movement](../key_concepts/movement).
-* More information. See [Key Concepts: Directions](../key_concepts/directions)
-* [Full Example](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tutorial/04%20-%20movement%20and%20direction.py)
-* [More examples](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/examples/tests/2%20Movement)

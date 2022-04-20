@@ -1,13 +1,7 @@
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from containers import console
+from miniworldmaker.containers import console
 
 
 class EventConsole(console.Console):
-
     event_id = 0
 
     def __init__(self):
@@ -15,7 +9,6 @@ class EventConsole(console.Console):
         self.registered_events.add("all")
         self.registered_events.add("debug")
         self.default_size = 600
-
 
     def get_event(self, event, data):
         text = "Event {0}: {1}, Data: {2}".format(self.event_id, str(event), str(data))

@@ -1,16 +1,12 @@
-import pygame
 import math
 from typing import Union
 
-import sys
-from miniworldmaker import conf
+import pygame
 
-sys.path.append(conf.ROOT_DIR)
-
-from board_positions import board_position
-from exceptions.miniworldmaker_exception import NoCostumeSetError
-from exceptions.miniworldmaker_exception import MoveInDirectionTypeError
-from board_positions.board_vector import Vector
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.board_vector as board_vector
+from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
+from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 
 
 class TokenPositionManager:
@@ -126,12 +122,7 @@ class TokenPositionManager:
 
     @center_x.setter
     def center_x(self, value):
-        if self.costume is None:
-            raise NoCostumeSetError(self.token)
-        self.last_position = self.position
-        rect = pygame.Rect.copy(self.rect)
-        rect.centerx = value
-        self.x = rect.topleft[0]
+        self.set_center((value, self.center_y))
 
     @property
     def center_y(self):
@@ -143,10 +134,7 @@ class TokenPositionManager:
     def center_y(self, value):
         if self.costume is None:
             raise NoCostumeSetError(self.token)
-        self.last_position = self.position
-        rect = pygame.Rect.copy(self.rect)
-        rect.centery = value
-        self.y = rect.topleft[1]
+        self.set_center((self.center_x, value))
 
     @center.setter
     def center(self, value):
@@ -155,6 +143,10 @@ class TokenPositionManager:
     def get_center(self):
         return board_position.Position.create((self.center_x, self.center_y))
 
+    @property
+    def local_center(self) -> "board_position.Position":
+        return board_position.Position.create((self.center_x - self.topleft[0], self.center_y - self.topleft[1]))
+
     def set_center(self, value):
         if self.token.costume is None:
             raise NoCostumeSetError(self.token)
@@ -162,7 +154,7 @@ class TokenPositionManager:
         rect = pygame.Rect.copy(self.rect)
         rect.centerx = value[0]
         rect.centery = value[1]
-        self.position = rect.topleft
+        self.set_position(rect.topleft)
 
     @property
     def topleft(self) -> "board_position.Position":
@@ -171,7 +163,7 @@ class TokenPositionManager:
     @topleft.setter
     def topleft(self, value):
         self.last_position = self.position
-        self.position = value[0], value[1]
+        self.set_position((value[0], value[1]))
 
     def move(self, distance: int = 0):
         if distance == 0:
@@ -224,7 +216,7 @@ class TokenPositionManager:
             value = self.direction
         elif value == "back":
             value = 360 - self.direction
-        elif isinstance(value, Vector):
+        elif isinstance(value, board_vector.Vector):
             value = value.to_direction() % 360
         else:
             value = value % 360
@@ -262,13 +254,13 @@ class TokenPositionManager:
         """
         angle = self.direction
         if "top" in borders and (
-            self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
+                self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
         ):
             self.point_in_direction(0)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
         elif "bottom" in borders and (
-            (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
+                (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
         ):
             self.point_in_direction(180)
             incidence = self.direction - angle

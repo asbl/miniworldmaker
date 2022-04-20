@@ -1,23 +1,22 @@
 from __future__ import annotations
-from tokens import token_base
-from tokens import token_aliases
-from typing import Tuple, Union, Type, TypeVar, List, Optional, Tuple
-from appearances import appearance
-from appearances import costume
-from appearances import costumes_manager
-from board_positions import board_position
-from exceptions.miniworldmaker_exception import (
+
+from typing import Union, List, Tuple
+
+import miniworldmaker.appearances.appearance as appearance
+import miniworldmaker.appearances.costume as costume
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.tools.token_inspection as token_inspection
+from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
-    NoBoardError,
 )
-from tools import token_inspection
-from dialogs import ask
+import miniworldmaker.tokens.token_aliases as token_aliases
+import miniworldmaker.tokens.token_base as token_base
 
 
 class Token(token_base.BaseToken, token_aliases.TokenAliases):
-    """Tokens are objects on your board. Tokens can :doc:`move <../key_concepts/movement>` around the board and have :doc:`sensors <../key_concepts/sensors>` to detect other tokens.
+    """Tokens are objects on your board. Tokens can move around the board and have sensors to detect other tokens.
 
-    The appearance of a token is determined by its :doc:`Costume <../key_concepts/costumes>`.
+    The appearance of a token is determined by its costume.
 
     Examples:
 
@@ -362,21 +361,21 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.costume_manager.add_costume(source)
 
-    def remove_costume(self, costume: int = None):
+    def remove_costume(self, source: Union[int, "costume.Costume"] = None):
         """Removes a costume from token
 
         Args:
-            index: The index of the new costume. Defaults to -1 (last costume)
+            source: The index of the new costume or costume-object. Defaults to actual costume
         """
-        if costume is None:
-            costume = self.costume
-        return self.costume_manager.remove_appearance(costume)
+        if source is None:
+            source = self.costume
+        return self.costume_manager.remove_appearance(source)
 
-    def switch_costume(self, costume: Union[int, Type["appearance.Appearance"]]) -> "costume.Costume":
+    def switch_costume(self, source: Union[int, "appearance.Appearance"]) -> "costume.Costume":
         """Switches the costume of token
 
         Args:
-            next: If next is True, the next costume will be selected
+            source: Number of costume or Costume object
 
         Examples:
 
@@ -401,7 +400,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Returns:
             The new costume
         """
-        self.costume_manager.switch_costume(costume)
+        self.costume_manager.switch_costume(source)
 
     def next_costume(self):
         """Switches to the next costume of token
@@ -874,6 +873,11 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     @property
     def center(self) -> "board_position.Position":
         return self.position_manager.center
+
+    @property
+    def local_center(self):
+        """x-value of token center-position"""
+        return self.position_manager.local_center
 
     @center_x.setter
     def center_x(self, value: float):
@@ -1820,7 +1824,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def fill_color(self):
         """The fill color of token as rgba value, e.g. (255, 0, 0) for red.
         
-        When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume (See: :py:attr:`miniworldmaker.appearances.appearance.Appearance.is_filled`) is set to ``True``.
+        When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume (See: :py:attr:.appearances.appearance.Appearance.is_filled`) is set to ``True``.
         
         .. note::
 

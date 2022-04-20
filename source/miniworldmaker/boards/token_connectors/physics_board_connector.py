@@ -1,14 +1,11 @@
-import sys
-from miniworldmaker import conf
+import miniworldmaker.base.app as app
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.boards.token_connectors.pixel_board_connector as pixelboard_connector
+import miniworldmaker.tokens.physics.token_physics as token_physics
+import miniworldmaker.tokens.positions.token_physics_position_manager as physicspositionmanager
 
-sys.path.append(conf.ROOT_DIR)
-
-from tokens.positions import token_physics_position_manager as physicspositionmanager
-from boards.token_connectors import pixel_board_connector as pixelboard_connector
-from board_positions import board_position
 
 class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
-
     count_tokens = 0
 
     def __init__(self, board, token):
@@ -16,7 +13,7 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
 
     def add_token_to_board(self, position: "board_position.Position"):
         # add token.physics attribute with physics properties to token
-        self.token.physics = token_physics.TokenPhysics(self.token, miniworldmaker.App.board)
+        self.token.physics = token_physics.TokenPhysics(self.token, app.App.board)
         if hasattr(self.token, "set_physics_default_values"):
             self.token.set_physics_default_values()
         super().add_token_to_board(position)
@@ -25,7 +22,7 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         self.board.physics_tokens.append(self.token)
         if hasattr(self.token, "on_begin_simulation"):
             self.token.on_begin_simulation()
-            
+
     def add_position_manager_to_token(self, token, position):
         token.position_manager = physicspositionmanager.PhysicsBoardPositionManager(
             token, position)
@@ -43,4 +40,3 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         """
         super().register_token_method(token, method)
         # Register physic collision methods
-    

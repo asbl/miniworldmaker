@@ -100,8 +100,3 @@ There are several child classes of board
 
 These different boards are intended for different purposes. Choose the right board for your miniworld.
 ```
-
-## View
-
-* For more information, see [Key Concepts: Boards](/key_concepts/boards)
-* [More examples](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/tests/1%20Costumes%20and%20Backgrounds)

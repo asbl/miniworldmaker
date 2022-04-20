@@ -1,9 +1,10 @@
-# Kostüme
-
-## Tokens und Kostüme
+# Kostüme und Hintergrund
 
 Jedes Token verfügt über ein oder mehrere Kostüme. Kostüme verfügen über
 mehrere Bilder, mit denen Animationen beschrieben werden können.
+
+Die Beziehung zwischen der Klasse `Token` und der Klasse `Costume` kann folgendermaßen 
+veranschaulicht werden:
 
 ```{mermaid}
 classDiagram
@@ -30,6 +31,11 @@ classDiagram
     }
 ```
 
+:::{note}
+Wenn du in der *api*  nach den Attributen und Methoden der Klasse `Costume` schaust, so findest
+du diese in der Klasse `Appearance`- Dies ist die Vaterklasse von `Costume` und `Background`, da 
+sich der Hintergrund der Spielfläche und die Kostüme der Tokens viele Eigenschaften teilen.
+:::
 ## Das erste Kostüm
 
 Mit der Funktion

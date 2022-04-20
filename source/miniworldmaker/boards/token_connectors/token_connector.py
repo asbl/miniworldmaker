@@ -1,10 +1,5 @@
-import sys
-from miniworldmaker import conf
-
-sys.path.append(conf.ROOT_DIR)
-
-from appearances import costumes_manager
-from appearances import costume
+from miniworldmaker.appearances import costumes_manager
+from miniworldmaker.appearances import costume
 
 
 class TokenConnector:
