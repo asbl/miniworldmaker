@@ -55,7 +55,6 @@ class TokenPhysics:
         self.size = (1, 1)  # scale factor for physics box model
         self.joints = []
 
-
     def join(self, other: "token.Token"):
         """joins two tokens at their center points
         """
@@ -63,7 +62,7 @@ class TokenPhysics:
             raise TypeError("Other token has no attribute physics")
         my_body = self._body
         other_body = other.physics._body
-        pj = pymunk.PinJoint(my_body, other_body,(0, 0), (0, 0))
+        pj = pymunk.PinJoint(my_body, other_body, (0, 0), (0, 0))
         self.board.space.add(pj)
         return self.token.position, other.position
 
@@ -74,7 +73,7 @@ class TokenPhysics:
             raise TypeError("Other token has no attribute physics")
         my_body = self._body
         other_body = other.physics._body
-        pj = pymunk.PinJoint(my_body, other_body,(0, 0), (0, 0))
+        pj = pymunk.PinJoint(my_body, other_body, (0, 0), (0, 0))
         self.joints.append(pj)
         self.board.space.add(pj)
         return self.token.position, other.position
@@ -306,9 +305,13 @@ class TokenPhysics:
     def size(self):
         """Sets size of physics_object in relation to object
 
-        1: Physics object size equals token size
-        < 1: Physics object is smaller than token
-        > 1: Physics object is larger than token.
+        * 1: Physics object size equals token size
+        * < 1: Physics object is smaller than token
+        * > 1: Physics object is larger than token.
+
+        .. warning::
+
+            Token is re-added to physics space after this operation - Velocity and impulses are lost.
         """
         return self._size
 
@@ -327,6 +330,10 @@ class TokenPhysics:
           * "circle": Circle
 
         (Planned for future relases: autogeometry)
+
+        .. warning::
+
+            Token is re-added to physics space after this operation - Velocity and impulses are lost.
 
         Examples:
 
@@ -364,6 +371,11 @@ class TokenPhysics:
     @property
     def friction(self):
         """Sets friction of token
+
+        .. warning::
+
+            Token is re-added to physics space after this operation - Velocity and impulses are lost.
+
         """
         return self._friction
 
@@ -376,6 +388,11 @@ class TokenPhysics:
     @property
     def elasticity(self):
         """Sets elasticity of token
+
+        .. warning::
+
+            Token is re-added to physics space after this operation - Velocity and impulses are lost.
+
         """
         return self._elasticity
 
@@ -388,6 +405,11 @@ class TokenPhysics:
     @property
     def density(self):
         """Sets density of token
+
+        .. warning::
+
+            Token is re-added to physics space after this operation - Velocity and impulses are lost.
+
         """
         return self._density
 
@@ -435,8 +457,6 @@ class TokenPhysics:
                 options = pymunk.pygame_util.DrawOptions(self.token.board.image)
                 options.collision_point_color = (255, 20, 30, 40)
                 self.board.space.debug_draw(options)
-
-
 
     @property
     def velocity_x(self):
@@ -507,7 +527,8 @@ class TokenPhysics:
             direction: pymunk direction
         """
         impulse = pymunk.Vec2d(1, 0)
-        impulse = impulse.rotated_degrees(360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction) )
+        impulse = impulse.rotated_degrees(
+            360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction))
         impulse = power * 1000 * impulse.normalized()
         self._body.apply_impulse_at_local_point(impulse)
 
@@ -520,6 +541,7 @@ class TokenPhysics:
             direction: pymunk direction
         """
         force = pymunk.Vec2d(1, 0)
-        force = force.rotated_degrees(360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction) )
+        force = force.rotated_degrees(
+            360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction))
         force = power * 10000 * force.normalized()
         self._body.apply_force_at_local_point(force, (0, 0))
