@@ -21,7 +21,8 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         pos = super().set_position(value)
         if hasattr(self.token, "physics"):
             self.token.physics.dirty = 1
-        if hasattr(self.token, "physics") and self.token.physics.has_physics and not self.token.physics._update_from_physics:
+        if hasattr(self.token,
+                   "physics") and self.token.physics.has_physics and not self.token.physics._is_in_update_mode() and value != pos:
             self.token.physics.dirty = 0
             self.token.physics.reload()
         return pos
@@ -67,11 +68,11 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         mwm_direction = (pymunk_dir_in_degrees + 360) % 360
         super().set_direction(mwm_direction)
 
-    def impulse(self, direction=float, power=int):
-        self.token.physics.impulse_in_direction(180 + direction, power)
+    def impulse(self, direction:float, power:int):
+        self.token.physics.impulse_in_direction(direction, power)
 
-    def force(self, direction=float, power=int):
-        self.token.physics.force_in_direction(180 + direction, power)
+    def force(self, direction:float, power:int):
+        self.token.physics.force_in_direction(direction, power)
 
     def set_simulation(self, simulation_type: str):
         if simulation_type in ["simulated", "manual", "static", None]:
@@ -90,4 +91,4 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         self.token.physics.velocity_x, self.token.physics.velocity_y = value[0], value[1]
 
     def self_remove(self):
-        self.token.physics.remove_from_space()
+        self.token.physics._remove_from_space()

@@ -18,7 +18,7 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
             self.token.set_physics_default_values()
         super().add_token_to_board(position)
         self.board.register_all_physics_collision_managers_for_token(self.token)
-        self.token.physics.start()
+        self.token.physics._start()
         self.board.physics_tokens.append(self.token)
         if hasattr(self.token, "on_begin_simulation"):
             self.token.on_begin_simulation()

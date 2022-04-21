@@ -7,36 +7,28 @@ from miniworldmaker.tokens import token as token
 
 
 class TokenPhysics:
-    """
-    The PhysicsProperty class describes all properties necessary to physically
+    """The PhysicsProperty class describes all properties necessary to physically
     simulate an object using the pymunk engine.
 
-    The properties are defined in the method setup_physics().
-    You can override this method if you want your class to have different physical properties.
-
-    For an object to be physically simulated,
-    the method start_physics() must first be called.
+    If you use a physics board, you can access token-physics properties with ``token_name.physics.property``
 
     Examples:
-        >>> class Player(Token):
-        >>>
-        >>> def on_setup(self):
-        >>>    pass # setup Object
-        >>>
-        >>> def setup_physics(self):
-        >>>     self.physics.size = (0.8, 0.8)
-        >>>     self.physics.shape_type = "circle"
 
-        Creates a Physics Player. By creating the method setup_physics, the object will be run by physics engine.
+        .. code-block:: python
 
-    Attributes:
-        friction (int): Friction is the force resisting the relative motion of solid surfaces,
-            fluid layers, and material elements sliding against each other.
-            Friction has a value > 0
-        elasticity (int): continuum mechanics of bodies that deform reversibly under stress
-        density: The density of an object. Default: 10
-        gravity: Defines if the object affected by gravity
-        shape_type: line, circle or rect
+            from miniworldmaker import *
+
+            board = PhysicsBoard((800, 600))
+
+            a = Circle()
+            a.position = (75, 200)
+            a.color = (255,0,0)
+            a.physics.simulation = "simulated"
+            a.direction = 180
+            a.physics.shape_type = "circle"
+            a.impulse(45, 1500)
+
+            board.run()
     """
 
     def __init__(self, token, board):
@@ -61,48 +53,102 @@ class TokenPhysics:
         self.has_physics: bool = False
         self._update_from_physics: bool = False  # is position/direction updated from physics_engine?
         self.size = (1, 1)  # scale factor for physics box model
+        self.joints = []
 
-    def join(self, other: "token.Token", anchor_self=(0, 0), anchor_other=(0, 0)):
-        """joins two tokens
-        :param other: Other token
-        :param anchor_self: Local coordinate of joint in other
-        :param anchor_other: Local coordinate of joint in other
-        :return: Tuple with global joint points, can be used to create a line.
+
+    def join(self, other: "token.Token"):
+        """joins two tokens at their center points
         """
         if not hasattr(other, "physics"):
             raise TypeError("Other token has no attribute physics")
         my_body = self._body
         other_body = other.physics._body
-        anchor_self = anchor_self[0], - anchor_self[1]
-        anchor_other = anchor_other[0], - anchor_other[1]
-        pj = pymunk.PinJoint(my_body, other_body, anchor_self, anchor_other)
+        pj = pymunk.PinJoint(my_body, other_body,(0, 0), (0, 0))
         self.board.space.add(pj)
-        return self.token.position + anchor_self, other.position + anchor_other
+        return self.token.position, other.position
 
-    def start(self):
+    def join(self, other: "token.Token"):
+        """joins two tokens at their center points
         """
-        Starts the physcis-simulation for this object. If you want to use Physics-Sumulation with your object,
-        you have to use this method.
+        if not hasattr(other, "physics"):
+            raise TypeError("Other token has no attribute physics")
+        my_body = self._body
+        other_body = other.physics._body
+        pj = pymunk.PinJoint(my_body, other_body,(0, 0), (0, 0))
+        self.joints.append(pj)
+        self.board.space.add(pj)
+        return self.token.position, other.position
 
-        WARNING: This method should be called AFTER all changes of attributes but BEFORE you add an impulse to the object
-        If you implement a setup_physics()-Method in an token, you don't have to call this method.
+    def remove_join(self, other: "token.Token"):
+        """Remove a joint between two tokens.
+
+        Removes a joint between two tokens, if a joint exists.
 
         Examples:
-            >>> # These attributes are changed BEFORE start_physics()
-            >>> self.physics.size = 0.7, 0.7
-            >>> self.physics.shape_type = "circle"
-            >>> self.physics.is_rotatable = False
-            >>> # The physics simulation is started
-            >>> self.start_physics()
-            >>> # The impulse is applied to the object AFTER starting the physics simulation
-            >>> self.physics.velocity_x = 1500
-            >>> self.physics.velocity_y = - self.board.arrow.direction * 50
+
+            Add and remove a joint on key_down:
+
+            .. code-block:: python
+
+                import random
+                from miniworldmaker import *
+                board = PhysicsBoard((400, 200))
+                connected = False
+                line = None
+                anchor = Rectangle()
+                anchor.size = (20,20)
+                anchor.center = (100, 20)
+                anchor.physics.simulation = "manual"
+                other_side = Line((250,100),(500,200))
+                def add_line(obj1, obj2):
+                    l = Line(obj1.center, obj2.center)
+                    l.physics.simulation = None
+                    @l.register
+                    def act(self):
+                        self.start_position = obj1.center
+                        self.end_position = obj2.center
+                    return l
+                c = Circle()
+                @c.register
+                def on_key_down(self, key):
+                    global connected
+                    global line
+                    if not connected:
+                        print("not connected")
+                        self.physics.join(anchor)
+                        line = add_line(self, anchor)
+                        connected = True
+                    else:
+                        print("connected")
+                        self.physics.remove_join(anchor)
+                        line.remove()
+
+                board.run()
+
+
+            .. raw:: html
+
+                <video loop autoplay muted width=400>
+                <source src="../_static/jointsremove1.webm" type="video/webm">
+                <source src="../_static/jointsremove1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                </video>
+        """
+        print(self.joints)
+        for join in self.joints:
+            if other.physics._body == join.b:
+                self.board.space.remove(join)
+
+    def _start(self):
+        """Starts the physics-simulation
+
+        Called in board-connector
         """
         if self.started == False:
             self.started = True
-            self.setup_physics_model()  # After on_setup
+            self._setup_physics_model()  # After on_setup
 
-    def get_pymunk_shape(self):
+    def _get_pymunk_shape(self):
         # Sets the shape-type_update_from_physics
         if self.shape_type.lower() == "rect":
             shape = pymunk.Poly.create_box(self._body,
@@ -128,13 +174,13 @@ class TokenPhysics:
             raise AttributeError("No shape set!")
         return shape
 
-    def setup_physics_model(self):
+    def _setup_physics_model(self):
         if self.dirty and self.token.position:  # if token is on board
             # create body
             self.has_physics = False
             self._body = pymunk_engine.Body(body_type=self.body_type)
-            self.set_pymunk_position()
-            self.set_pymunk_direction()
+            self._set_pymunk_position()
+            self._set_pymunk_direction()
             self._body.size = (self.size[0] * self.token.width, self.size[1] * self.token.height)
             # disable velocity for tokens if token has no gravity
             if self.simulation == "static":
@@ -143,7 +189,7 @@ class TokenPhysics:
                 self._body.velocity = self.velocity_x, self._velocity_y
             # Adds object to space
             if self._simulation != None:
-                self._shape = self.get_pymunk_shape()
+                self._shape = self._get_pymunk_shape()
                 self._shape.density = self.density
                 self._shape.friction = self.friction
                 self._shape.elasticity = self.elasticity
@@ -156,47 +202,64 @@ class TokenPhysics:
             self.dirty = 1
             self.has_physics = True
 
-    def set_pymunk_position(self):
+    def _set_pymunk_position(self):
         pymunk_position = self.token.center[0], self.token.center[1]
         self._body.position = pymunk.pygame_util.from_pygame(
             pymunk_position, self.token.board.image)
 
-    def set_pymunk_direction(self):
+    def _set_pymunk_direction(self):
         self._body.angle = self.token.position_manager.get_pymunk_direction_from_miniworldmaker()
 
-    def set_mwm_token_position(self):
+    def _set_mwm_token_position(self):
         if self._body:
             self.token.center = pymunk.pygame_util.from_pygame(
                 self._body.position, self.token.board.image)
             self.dirty = 0
 
-    def set_mwm_token_direction(self):
+    def _set_mwm_token_direction(self):
         self.token.position_manager.set_mwm_direction_from_pymunk()
         self.dirty = 0
 
     def reload(self):
+        """Removes token from space and reloads physics_model
+
+        :return:
+        """
         if self.started:
             self.dirty = 1
             # Remove shape and body from space
-            self.remove_from_space()
+            self._remove_from_space()
             # Set new properties and reset to space
-            self.setup_physics_model()
+            self._setup_physics_model()
         else:
             self.dirty = 1
 
-    def remove_from_space(self):
+    def _remove_from_space(self):
         if self._body:
             for shape in list(self._body.shapes):
                 self.board.space.remove(shape)
             if self._body in self.board.space.bodies:
                 self.board.space.remove(self._body)
 
+    def remove(self):
+        """Removes an object from physics-space
+        """
+        self._remove_from_space()
+
     @property
     def simulation(self):
+        """Sets simulation type for token (static, manual, simulated or None)
+
+        Sets simulation type for token:
+          * simulated: Token is fully simulated by physics engine.
+          * manual: Token is not affected by gravity.
+          * static: Token is not moved by physics engine, but tokens can collide with token.
+          * None: Token is not moved by physics engine and other tokens can't collige with token.
+        """
         return self._simulation
 
     @simulation.setter
-    def simulation(self, value: str):
+    def simulation(self, value: Union[str, None]):
         # Sets the body type:
         # dynamic: Influenced by physic (e.g. actors)
         # static: not influenced by physics (e.g. plattforms)
@@ -228,6 +291,10 @@ class TokenPhysics:
 
     @property
     def body_type(self):
+        """Returns body type of token
+
+        Must not be used from outside - Use property simulation instead.
+        """
         if self.simulation is None or self.simulation == "static":
             return pymunk.Body.STATIC
         elif self.simulation == "manual":
@@ -237,6 +304,12 @@ class TokenPhysics:
 
     @property
     def size(self):
+        """Sets size of physics_object in relation to object
+
+        1: Physics object size equals token size
+        < 1: Physics object is smaller than token
+        > 1: Physics object is larger than token.
+        """
         return self._size
 
     @size.setter
@@ -247,6 +320,39 @@ class TokenPhysics:
 
     @property
     def shape_type(self):
+        """Sets shape type of object:
+
+        Shape Types:
+          * "rect": Rectangle
+          * "circle": Circle
+
+        (Planned for future relases: autogeometry)
+
+        Examples:
+
+            Demonstrate different shape types:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = PhysicsBoard(600,300)
+                Line((0,100),(100,150))
+                t = Token((0,50))
+                t.physics.shape_type = "rect"
+                Line((200,100),(300,150))
+                t = Token((200,50))
+                t.physics.shape_type = "circle"
+                board.run()
+
+            .. raw:: html
+
+                <video loop autoplay muted width=400>
+                <source src="../_static/shape_types.webm" type="video/webm">
+                <source src="../_static/shape_types.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+                </video>
+        """
         return self._shape_type
 
     @shape_type.setter
@@ -257,6 +363,8 @@ class TokenPhysics:
 
     @property
     def friction(self):
+        """Sets friction of token
+        """
         return self._friction
 
     @friction.setter
@@ -267,6 +375,8 @@ class TokenPhysics:
 
     @property
     def elasticity(self):
+        """Sets elasticity of token
+        """
         return self._elasticity
 
     @elasticity.setter
@@ -277,6 +387,8 @@ class TokenPhysics:
 
     @property
     def density(self):
+        """Sets density of token
+        """
         return self._density
 
     @density.setter
@@ -285,7 +397,7 @@ class TokenPhysics:
         self.dirty = 1
         self.reload()
 
-    def simulation_preprocess_token(self):
+    def _simulation_preprocess_token(self):
         """
         Updates the physics model in every frame
 
@@ -293,29 +405,29 @@ class TokenPhysics:
 
         """
         if (self._body and not self._body.body_type == pymunk_engine.Body.STATIC) and self.dirty:
-            self.set_pymunk_position()
-            self.set_pymunk_direction()
+            self._set_pymunk_position()
+            self._set_pymunk_direction()
             self.board.space.reindex_shapes_for_body(self._body)
             self.dirty = 0
 
-    def set_update_mode(self):
+    def _set_update_mode(self):
         self._update_from_physics = True
 
-    def unset_update_mode(self):
+    def _unset_update_mode(self):
         self._update_from_physics = False
 
-    def unset_update_mode(self):
+    def _is_in_update_mode(self):
         return self._update_from_physics
 
-    def simulation_postprocess_token(self):
+    def _simulation_postprocess_token(self):
         """
         Reloads physics model from pygame data
         Returns:
 
         """
         if not math.isnan(self._body.position[0]):
-            self.set_mwm_token_position()
-            self.set_mwm_token_direction()
+            self._set_mwm_token_position()
+            self._set_mwm_token_direction()
         if self._body and not self._body.body_type == pymunk_engine.Body.STATIC:
             self.velocity_x = self._body.velocity[0]
             self.velocity_y = self._body.velocity[1]
@@ -324,17 +436,13 @@ class TokenPhysics:
                 options.collision_point_color = (255, 20, 30, 40)
                 self.board.space.debug_draw(options)
 
-    def remove(self):
-        """
-        Removes an object from physics-space
-        """
-        if self._body:
-            for shape in list(self._body.shapes):
-                self.board.space.remove(shape)
-            self.board.space.remove(self._body)
+
 
     @property
     def velocity_x(self):
+        """Sets velocity in x-direction
+        :return:
+        """
         return self._velocity_x
 
     @velocity_x.setter
@@ -345,6 +453,9 @@ class TokenPhysics:
 
     @property
     def velocity_y(self):
+        """Sets velocity in y-direction
+        :return:
+        """
         return self._velocity_y
 
     @velocity_y.setter
@@ -355,6 +466,8 @@ class TokenPhysics:
 
     @property
     def is_rotatable(self):
+        """defines, if token will be rotated by physics-engine?
+        """
         return self._is_rotatable
 
     @is_rotatable.setter
@@ -365,12 +478,36 @@ class TokenPhysics:
         """
         Adds an impulse in token-direction
 
+        Examples:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+
+                board = PhysicsBoard(300, 200)
+
+                rect = Rectangle((280,120), 20, 80)
+                rect.physics.simulation = "manual"
+                ball = Circle((50,50),20)
+
+                @rect.register
+                def act(self):
+                    rect.x -= 1
+                    if rect.x == 0:
+                        rect.x = 280
+
+                @ball.register
+                def on_key_down(self, key):
+                    self.physics.impulse_in_direction(0, 5000)
+                board.run()
+
+
         Args:
             power: The power-value of the impulse.
             direction: pymunk direction
         """
         impulse = pymunk.Vec2d(1, 0)
-        impulse = impulse.rotated_degrees(direction)
+        impulse = impulse.rotated_degrees(360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction) )
         impulse = power * 1000 * impulse.normalized()
         self._body.apply_impulse_at_local_point(impulse)
 
@@ -383,6 +520,6 @@ class TokenPhysics:
             direction: pymunk direction
         """
         force = pymunk.Vec2d(1, 0)
-        force = force.rotated_degrees(direction)
+        force = force.rotated_degrees(360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction) )
         force = power * 10000 * force.normalized()
         self._body.apply_force_at_local_point(force, (0, 0))

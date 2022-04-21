@@ -1,32 +1,21 @@
 miniworldmaker
----------
+==============
 
 miniworldmaker allows you to create 2D mini worlds and games. 
 
 It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 
-<kbd>
-<img src="example.png" alt="example"></img>
-</kbd>
+![example.png]
+## Tutorial
 
-### Tutorial
+* [English](https://miniworldmaker.de/objectsfirst_english/index.html)
+* [German - Objects First](https://miniworldmaker.de/objectsfirst_german/index.html) 
+* [German - Processing](https://miniworldmaker.de/processing_german/index.html)
 
-[English](https://miniworldmaker.de/objectsfirst_english/01_installation.html) | [German](https://miniworldmaker.de/objectsfirst_german/01_installation.html) 
-
-
-### Examples
-
-  * [Angry Birds](https://replit.com/@a_siebel/miniworldmaker-Angry-birds): This demonstrates the physics engine. It runs somewhat slowly on repl.it, should buy smoothly on modern computers without problems.
-
-  * [Kara](https://replit.com/@a_siebel/Kara-in-miniworldmaker"): Kara Prototype
- 
-  * [RPG Framework](https://replit.com/@a_siebel/RPG-Framework-for-miniworldmaker): Framework for simple RPGs and Textadventures
-
-
-### Features
+## Features
 
 * miniworldmaker supports pixel-based games as well as games with 
-  tiles (e.g. Rogue-Likes)
+  tiles (e.g. Rogue-Likes), hexboards and processing-like graphics
 * Easy creation of animations
 * Music and sound effects
 * Integrated GUI elements like console for output, toolbar, ...
@@ -35,7 +24,7 @@ It is a 2D engine inspired by greenfoot and gamegrid based on pygame.
 * Open Source  
 * miniworldmaker is a 2D Engine based on Python 3, pygame and pymunk.
 
-### Examples
+## Examples
 
 Top-Down games
 
@@ -62,6 +51,6 @@ Angry-Birds-like
 NEW: Hex Boardgame:
 
 [![video](docs/source/_images/hexboard.png)](docs/source/_static/hex_boardgame_short.mp4)
-### Links
+## Links
 
 [Codeberg](https://codeberg.org/a_siebel/miniworldmaker) | [Documentation](http://miniworldmaker.de/) | [PyPi](https://pypi.org/project/miniworldmaker/) | [Cookbook](https://codeberg.org/a_siebel/miniworldmaker_cookbook/src/branch/main/)
