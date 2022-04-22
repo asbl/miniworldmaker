@@ -53,12 +53,17 @@ from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.board_positions.board_vector import Vector
 from miniworldmaker.board_positions.board_position import Position
 
+from miniworldmaker.board_positions.tile_factory import TileFactory
+from miniworldmaker.board_positions.tile_factory import HexTileFactory
+
+from miniworldmaker.board_positions.hex_elements import HexBase
 from miniworldmaker.board_positions.hex_elements import HexEdge
 from miniworldmaker.board_positions.hex_elements import HexTile
 from miniworldmaker.board_positions.hex_elements import HexCorner
 
 from miniworldmaker.board_positions.hex_elements import CubeCoord
 
+from miniworldmaker.board_positions.tile_elements import TileBase
 from miniworldmaker.board_positions.tile_elements import Edge
 from miniworldmaker.board_positions.tile_elements import Tile
 from miniworldmaker.board_positions.tile_elements import Corner
@@ -104,11 +109,16 @@ __all__.append(ToolbarLabel.__name__)
 __all__.append(ToolbarButton.__name__)
 __all__.append(ToolbarWidget.__name__)
 
+__all__.append(TileFactory.__name__)
+__all__.append(HexTileFactory.__name__)
+
+__all__.append(HexBase.__name__)
 __all__.append(HexEdge.__name__)
 __all__.append(HexTile.__name__)
 __all__.append(HexCorner.__name__)
 __all__.append(CubeCoord.__name__)
 
+__all__.append(TileBase.__name__)
 __all__.append(Corner.__name__)
 __all__.append(Tile.__name__)
 __all__.append(Edge.__name__)

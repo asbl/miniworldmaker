@@ -1,22 +1,25 @@
-from typing import Union, Tuple, Dict
-import miniworldmaker.boards.tiled_board as tiled_board
-import miniworldmaker.board_positions.board_position as board_position
-from miniworldmaker.boards.token_connectors import hex_board_connector
-from miniworldmaker.board_positions import hex_elements
-from miniworldmaker.exceptions import miniworldmaker_exception
 import math
+from typing import Union, Tuple, Dict
 
-# Template: https://www.redblobgames.com/grids/hexagons/codegen/output/lib.py
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.hex_elements as hex_elements
+import miniworldmaker.board_positions.tile_factory as tile_factory
+import miniworldmaker.boards.tiled_board as tiled_board
+import miniworldmaker.boards.token_connectors.hex_board_connector as hex_board_connector
+from miniworldmaker.exceptions import miniworldmaker_exception
 
 
 class HexBoard(tiled_board.TiledBoard):
-    def __init__(self, columns: int = 20, rows: int = 16):
-        super().__init__(columns, rows)
+    def __init__(self, columns: int = 20, rows: int = 16, empty=False):
+        super().__init__(columns, rows, empty)
         self.lookup_table = []
+
+    def _get_tile_factory(self):
+        return tile_factory.HexTileFactory()
 
     def _templates(self):
         return hex_elements.HexTile, hex_elements.HexEdge, hex_elements.HexCorner
-    
+
     def get_type(self, position):
         if self.is_tile(position):
             return hex_elements.HexTile
@@ -24,20 +27,20 @@ class HexBoard(tiled_board.TiledBoard):
             return hex_elements.HexCorner
         elif self.is_edge(position):
             return hex_elements.HexEdge
-        
+
     def is_tile(self, position):
         position = hex_elements.CubeCoord.create(position)
         if (position[0], position[1], position[2]) in self.tiles:
             return True
         else:
             return False
-        
+
     def get_tile(self, position):
         position = hex_elements.CubeCoord.create(position)
         if self.is_tile(position):
             return self.tiles[position]
         else:
-            raise miniworldmaker_exception.NoTileFoundError(position)
+            raise miniworldmaker_exception.TileNotFoundError(position)
 
     def is_corner(self, position):
         position = hex_elements.CubeCoord.create(position)
@@ -45,13 +48,13 @@ class HexBoard(tiled_board.TiledBoard):
             return True
         else:
             return False
-        
+
     def get_corner(self, position):
         position = hex_elements.CubeCoord.create(position)
         if self.is_tile(position):
             return self.corners[(position[0], position[1], position[2])]
         else:
-            raise miniworldmaker_exception.NoTileFoundError(position)
+            raise miniworldmaker_exception.TileNotFoundError(position)
 
     def is_edge(self, position):
         position = hex_elements.CubeCoord.create(position)
@@ -59,14 +62,13 @@ class HexBoard(tiled_board.TiledBoard):
             return True
         else:
             return False
-        
+
     def get_edge(self, position):
         position = hex_elements.CubeCoord.create(position)
         if self.is_edge(position):
             return self.edges[(position[0], position[1], position[2])]
         else:
-            raise miniworldmaker_exception.NoTileFoundError(position)
-
+            raise miniworldmaker_exception.TileNotFoundError(position)
 
     def get_tile_from_pixel(self, position):
         return hex_elements.HexTile.from_pixel(position)
@@ -86,10 +88,11 @@ class HexBoard(tiled_board.TiledBoard):
         else:
             raise Exception(f"{position} not in self.corners")
 
-    def get_corner_from_tile(self, position: Union["board_position.Position", "hex_elements.CubeCoord"], direction: str):
+    def get_corner_from_tile(self, position: Union["board_position.Position", "hex_elements.CubeCoord"],
+                             direction: str):
         position = hex_elements.CubeCoord.create(position)
         return self.tiles[position].get_corner(direction)
-    
+
     def get_edge_from_tile(self, position: Union["board_position.Position", "hex_elements.CubeCoord"], direction: str):
         position = hex_elements.CubeCoord.create(position)
         return self.tiles[position].get_edge(direction)
@@ -109,7 +112,6 @@ class HexBoard(tiled_board.TiledBoard):
     def get_hex_size(self):
         return (self.get_tile_width() / 2, self.get_tile_height() / 2)
 
-    
     def get_center_points(self) -> Dict[Tuple, "board_position.Position"]:
         center_points = dict()
         for position, tile in self.tiles.items():
@@ -122,13 +124,13 @@ class HexBoard(tiled_board.TiledBoard):
         for position, corner in self.corners.items():
             corner_points[position] = corner.to_pixel()
         return corner_points
-    
+
     def get_edge_points(self) -> Dict[Tuple, "board_position.Position"]:
         edge_points = dict()
         for position, edge in self.edges.items():
             edge_points[position] = edge.to_pixel()
-        return edge_points    
-    
+        return edge_points
+
     def get_from_pixel(self, pixel):
         return hex_elements.HexTile.from_pixel(pixel)
 

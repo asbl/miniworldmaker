@@ -11,10 +11,12 @@ class NoRunError(MiniworldMakerError):
         self.message = "[boardname].run() was not found in your code. This must be the last line in your code \ne.g.:\nboard.run()\n if your board-object is named board."
         super().__init__(self.message)
 
+
 class MoveInDirectionTypeError(MiniworldMakerError):
     def __init__(self, direction):
         self.message = f"`direction` should be a direction (int, str) or a position (Position, tuple). Found {type(direction)}"
         super().__init__(self.message)
+
 
 class BoardInstanceError(MiniworldMakerError):
     def __init__(self):
@@ -30,7 +32,7 @@ class BoardArgumentsError(MiniworldMakerError):
 
 class TiledBoardTooBigError(MiniworldMakerError):
     def __init__(self, columns, rows, tile_size):
-        self.message = f'The playing field is too large ({rows} , {columns}) - The size must be specified in tiles, not pixels.\nDid you mean ({int(rows/tile_size)}, {int(rows/tile_size)})?'
+        self.message = f'The playing field is too large ({rows} , {columns}) - The size must be specified in tiles, not pixels.\nDid you mean ({int(rows / tile_size)}, {int(rows / tile_size)})?'
         super().__init__(self.message)
 
 
@@ -106,59 +108,81 @@ class SizeOnTiledBoardError(MiniworldMakerError):
         self.message = f"You can't set size for tokens on a tiled board (size is always (1,1)"
         super().__init__(self.message)
 
+
 class TokenArgumentShouldBeTuple(MiniworldMakerError):
     def __init__(self):
         self.message = f"First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets?"
         super().__init__(self.message)
+
 
 class PhysicsSimulationTypeError(MiniworldMakerError):
     def __init__(self):
         self.message = f"Physics simulation should be `None`, `static`, `manual` or `simulated`(default)"
         super().__init__(self.message)
 
+
 class TokenClassNotFound(MiniworldMakerError):
     def __init__(self, name):
         self.message = f"Token class `{name}` not found"
         super().__init__(self.message)
+
 
 class CantSetAutoFontSize(MiniworldMakerError):
     def __init__(self):
         self.message = f"Can't set font-size because auto_font_size is set. Use token.auto_size = False or token.auto_size = 'token'"
         super().__init__(self.message)
 
+
 class NotImplementedOrRegisteredError(MiniworldMakerError):
     def __init__(self, method):
         self.message = f"Method {method} is not overwritten or registered"
+
 
 class EllipseWrongArgumentsError(MiniworldMakerError):
     def __init__(self):
         self.message = f"Wrong arguments for Ellipse (position: tuple, width: float, height: float"
         super().__init__(self.message)
 
+
 class RectFirstArgumentError(MiniworldMakerError):
     def __init__(self, start_position):
         self.message = f"Error: First argument `position` of Rectangle should be tuple or Position, value. Found {start_position}, type: {type(start_position)}"
         super().__init__(self.message)
+
 
 class LineFirstArgumentError(MiniworldMakerError):
     def __init__(self, start_position):
         self.message = f"Error: First argument `start_position` of Line should be tuple , value. Found {start_position}, type: {type(start_position)}"
         super().__init__(self.message)
 
+
 class LineSecondArgumentError(MiniworldMakerError):
     def __init__(self, end_position):
         self.message = f"Error: Second argument 'end_position' of Line should be tuple, value. Found {end_position}, type: {type(end_position)}"
         super().__init__(self.message)
+
 
 class NoBoardError(MiniworldMakerError):
     def __init__(self):
         self.message = f"Error: Create a board befor you place Tokens"
         super().__init__(self.message)
 
+
 class ImageIndexNotExistsError(MiniworldMakerError):
     def __init__(self, appearance, index):
         self.message = f"Error: Image index {index} does not exist for {appearance}.\n You can't set costume or background -image to a non-existing image"
-        
-class NoTileFoundError(MiniworldMakerError):
+
+
+class TileNotFoundError(MiniworldMakerError):
     def __init__(self, position):
         self.message = f"No valid Tile found for position {position}"
+
+
+class CornerNotFoundError(MiniworldMakerError):
+    def __init__(self, position):
+        self.message = f"No valid Corner found for position {position}"
+
+
+class EdgeNotFoundError(MiniworldMakerError):
+    def __init__(self, position):
+        self.message = f"No valid Edge found for position {position}"

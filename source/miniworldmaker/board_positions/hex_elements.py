@@ -1,13 +1,14 @@
 from collections import OrderedDict
-from miniworldmaker.base import app
-from miniworldmaker.board_positions import tile_elements
-from miniworldmaker.board_positions import board_position
+import miniworldmaker.base.app as app
+import miniworldmaker.board_positions.tile_elements as tile_elements
+import miniworldmaker.board_positions.board_position as board_position
 
 import collections
 from typing import Union, List
 import math
 import numpy as np
 import miniworldmaker.board_positions.board_position as board_position
+
 
 class HexBase(tile_elements.TileBase):
     @staticmethod
@@ -54,7 +55,15 @@ class HexTile(HexBase, tile_elements.Tile):
         "sw": (0.5, 1, 0.5),
     }
 
-    def is_in_tile(self, pixel_position : "board_position.BoardPosition") -> bool:
+    @staticmethod
+    def _get_corner_cls():
+        return HexCorner
+
+    @staticmethod
+    def _get_edge_cls():
+        return HexEdge
+
+    def is_in_tile(self, pixel_position: "board_position.BoardPosition") -> bool:
         """Returns True, if coordinate is in tile.
         :param pixel_position: board position in pixels
         :return: True, if coordinate is in tile
@@ -174,7 +183,7 @@ class HexEdge(HexBase, tile_elements.Edge):
         return edge_str
 
     @classmethod
-    def from_tile(cls, tile:"board_position.BoardPosition", direction:str) -> "HexEdge":
+    def from_tile(cls, tile: "board_position.BoardPosition", direction: str) -> "HexEdge":
         """
         gets a Edge from tile-position and direction
         :param tile: External coordinates for tile

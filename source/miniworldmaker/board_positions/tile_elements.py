@@ -11,7 +11,16 @@ class TileBase:
         self.int_coord = self._internal_coordinates()
         self.board = app.App.board
         self.position = self.int_coord.from_board_coordinates(position)
+        self._board_position = position
         self.positions = [(self.position)]
+
+    @staticmethod
+    def _get_corner_cls():
+        return Corner
+
+    @staticmethod
+    def _get_edge_cls():
+        return Edge
 
     @classmethod
     def from_pixel(cls, pixel_position) -> "TileBase":
@@ -67,6 +76,15 @@ class TileBase:
                         neighbours.append(neighbour)
         self._tiles = neighbours
         return self._tiles
+
+    def get_local_corner_points(self):
+        points = []
+        tile_pos = self.to_pixel()
+        for corner_str, vector in self.corner_vectors.items():
+            corner = self._get_corner_cls()(self._board_position, corner_str)
+            offset = corner.get_local_coordinate_for_tile(self)
+            points.append(offset)
+        return points
 
 
 class TileDelimiter(TileBase):
@@ -189,7 +207,7 @@ class Tile(TileBase):
                     neighbours.append(neighbour)
             self.corners = neighbours
             return self.corners
-
+    
     def to_pixel(self):
         x = self.position[0] * self.board.tile_size
         y = self.position[1] * self.board.tile_size
