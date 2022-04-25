@@ -49,10 +49,11 @@ class ExportBoardToDBFactory(ExportFactory, ExportDBFactory, ExportBoardFactory)
                         `board_class`   TEXT,
                         `tile_size`		INTEGER,
                         `height`		INTEGER,
-                        `width`		    INTEGER,
+                        `width`		    INTEGER
                         );
                         """
         cur = self.db.cursor
+        print(query_board)
         cur.execute(query_board)
         self.db.commit()
         board_dict = {"board_class": self.board.__class__.__name__,

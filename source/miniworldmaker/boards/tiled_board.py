@@ -51,6 +51,7 @@ class TiledBoard(board.Board):
 
             board.run()
 
+
         .. image:: /_images/tilecorneredge.png
             :alt: Placing Tokens on a Tile, on a Corner or in a Edge
     """
@@ -73,7 +74,7 @@ class TiledBoard(board.Board):
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens: set = set()  # Set with all dynamic actors
         self.static_tokens_dict: defaultdict = defaultdict(list)
-        self.fixed_size = True
+        self.tokens_fixed_size = True
         self.rotatable_tokens = True
         self.empty = empty
         self.tiles = defaultdict()
@@ -84,13 +85,70 @@ class TiledBoard(board.Board):
     def _get_tile_factory(self):
         return tile_factory.TileFactory()
 
-    def clear_board(self):
+    def clear_tiles(self):
+        """Removes all tiles, coners and edges from Board
+
+        Instead of clearing the board, you can add the parameter empty to Board to create a new Board from scratch.
+
+        Examples:
+
+            Clear and re-create board:
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+                board = HexBoard(8, 8)
+
+                @board.register
+                def on_setup(self):
+                    self.clear_tiles()
+                    center = HexTile((4, 4))
+                    for x in range(self.columns):
+                        for y in range(self.rows):
+                            if center.position.distance((x, y)) < 2:
+                                tile = self.add_tile_to_board((x, y))
+                                tile.create_token()
+
+
+                board.run()
+
+
+            Create a new board from scratch
+
+            .. note::
+
+                This variant is faster, because Tiles are not created twice
+
+            .. code-block:: python
+
+                from miniworldmaker import *
+                board = HexBoard(8, 8, empty=True)
+
+                @board.register
+                def on_setup(self):
+                    center = HexTile((4, 4))
+                    for x in range(self.columns):
+                        for y in range(self.rows):
+                            if center.position.distance((x, y)) < 2:
+                                tile = self.add_tile_to_board((x, y))
+                                tile.create_token()
+
+
+                board.run()
+
+
+
+
+
+        """
         self.tiles.clear()
         self.corners.clear()
         self.edges.clear()
 
     def setup_board(self):
         """In this method, corners and edges are created.
+
+
         """
         if not self.empty:
             self._setup_tiles()
@@ -235,7 +293,7 @@ class TiledBoard(board.Board):
         :param direction: if direction is not None, position is interpreted as tile-board-position
         :return: Corner on Posiiton, if position exists
         """
-        tile_cls, edge_cls, corner_cls = self._templates()
+        corner_cls = self.tile_factory.corner_cls
         if direction is not None:
             position = corner_cls(position, direction).position
         if self.is_corner(position):
@@ -278,7 +336,7 @@ class TiledBoard(board.Board):
         :param position: Position on Board
         :return: Edge on Posiiton, if position exists
         """
-        tile_cls, edge_cls, corner_cls = self._templates()
+        edge_cls = self.tile_factory.edge_cls
         if direction is not None:
             position = edge_cls(position, direction).position
         if self.is_edge(position):
@@ -286,8 +344,9 @@ class TiledBoard(board.Board):
         else:
             raise miniworldmaker_exception.TileNotFoundError(position)
 
-    def get_token_connector(self, token):
-        return tiled_board_connector.TiledBoardConnector(self, token)
+    @staticmethod
+    def _get_token_connector_class():
+        return tiled_board_connector.TiledBoardConnector
 
     def is_position_on_board(self, position: "board_position.Position") -> bool:
         """
@@ -350,38 +409,21 @@ class TiledBoard(board.Board):
     def grid(self, value):
         self.background.grid = value
 
-    def get_board_position_from_pixel(self, pixel):
-        """Gets board position from pixel coordinates
-
-        Examples:
-
-            Mark a corner from pixel-coordinates:
-
-            .. code-block:: python
-
-            @board.register
-            def on_mouse_motion(self, mouse_pos):
-                global last_corner
-                if last_corner:
-                    for token in last_corner.get_tokens():
-                        if hasattr(token, "marker") and token.marker:
-                            token.remove()
-
-                corner = Corner.from_pixel(mouse_pos)
-                h = corner.create_token()
-                h.border = 1
-                h.fill_color = (255,255,255)
-                h.is_filled = True
-                h.size = 0.8, 0.4
-                h.direction = edge.angle
-                h.marker = True
-                last_corner = corner
-        """
-        return board_position.Position.from_pixel(pixel)
-
     def draw_on_image(self, image, position):
         position = self.to_pixel(position)
         self.background.draw_on_image(image, position, self.tile_size, self.tile_size)
+
+    def get_board_position_from_pixel(self, pixel):
+        """Alias for get_from_pixel"""
+        return self.get_from_pixel(pixel)
+
+    def get_from_pixel(self, position):
+        """Gets board position from pixel coordinates
+        """
+        if position[0] > self.columns or position[1] > self.rows:
+            return None
+        else:
+            return self.get_tile_from_pixel(position).position
 
     def get_tile_from_pixel(self, position):
         """Gets nearest Tile from pixel

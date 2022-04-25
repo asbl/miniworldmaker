@@ -6,6 +6,15 @@ class TokenConnector:
     def __init__(self, board, token):
         self.board = board
         self.token = token
+        self.board_sensor = None
+        self.position_manager = None
+
+    def get_board_sensor(self, position):
+        return None
+
+    @staticmethod
+    def get_position_manager_class(self):
+        return None
 
     def add_token_managers(self, position):
         self.add_position_manager_to_token(self.token, position)
@@ -22,16 +31,12 @@ class TokenConnector:
             self.token.board.event_manager.register_events_for_token(self.token)
 
     def add_position_manager_to_token(self, token, position):
-        """
-        Implemented in subclasses
-        """
-        pass
-
+        token.position_manager = self.get_position_manager_class()(token, position)
+        token._managers.append(token.position_manager)
+        
     def add_board_sensor_to_token(self, token):
-        """
-        Implemented in subclasses
-        """
-        pass
+        token.board_sensor = self.board_sensor
+        token._managers.append(token.board_sensor)
 
     def add_board_costume_manager_to_token(self, token):
         token._costume = costume.Costume(token)

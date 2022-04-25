@@ -26,7 +26,7 @@ class InspectActorToolbar(toolbar.Toolbar):
 
     def get_active_token_from_board_position(self, pos):
         # Test an token was clicked and set the active token
-        tokens = self.board.get_tokens_by_pixel(pos)
+        tokens = self.board.get_tokens_from_pixel(pos)
         if tokens:
             i = 0
             # Find the token under the currently selected token.

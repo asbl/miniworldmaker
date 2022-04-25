@@ -9,10 +9,10 @@ import miniworldmaker.appearances.background as background
 import miniworldmaker.appearances.backgrounds_manager as backgrounds_manager
 import miniworldmaker.base.app as app
 import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.board_positions.board_rect_factory as board_rect_factory
+import miniworldmaker.board_positions.board_rect as board_rect
 import miniworldmaker.boards.board_manager.board_collision_manager as coll_manager
 import miniworldmaker.boards.board_manager.board_event_manager as event_manager
-import miniworldmaker.boards.board_manager.board_position_manager as pos_manager
+import miniworldmaker.boards.board_manager.board_mouse_manager as mouse_manager
 import miniworldmaker.boards.data.export_factory as export_factory
 import miniworldmaker.boards.data.import_factory as import_factory
 import miniworldmaker.boards.token_connectors.token_connector as token_connector
@@ -52,7 +52,7 @@ class BaseBoard(container.Container):
         self.backgrounds_manager: "backgrounds_manager.BackgroundsManager" = backgrounds_manager.BackgroundsManager(
             self
         )
-        self.position_manager: "pos_manager.BoardPositionHandler" = pos_manager.BoardPositionHandler(self)
+        self.mouse_manager: "mouse_manager.BoardMouseManager" = mouse_manager.BoardMouseManager(self)
         self.ask: "ask.Ask" = ask.Ask(self)
         pygame.init()
         self._is_setup: bool = False
@@ -79,12 +79,16 @@ class BaseBoard(container.Container):
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.dynamic_tokens = set()
-        self.fixed_size = False
+        self.tokens_fixed_size = False
         self._container_width = self.columns * self.tile_size
         self._container_height = self.rows * self.tile_size
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
-        return token_connector.TokenConnector(self, token)
+        return self._get_token_connector_class()(self, token)
+
+    @staticmethod
+    def _get_token_connector_class():
+        return token_connector.TokenConnector
 
     def load_board_from_db(self, file: str):
         """
@@ -188,10 +192,6 @@ class BaseBoard(container.Container):
     def blit_surface_to_window_surface(self):
         self.app.window.surface.blit(self.background.surface, self.rect)
 
-    def get_colors_at_position(self, position: tuple):
-        position = board_position.Position.create(position)
-        return self.position_manager.get_color(position)
-
     def get_colors_at_line(self, line: list):
         """
         Gets all colors in a line. A line is a list of board_positions
@@ -214,7 +214,7 @@ class BaseBoard(container.Container):
     def get_color_at_rect(self, rect: pygame.Rect, directions=None) -> list:
         return rect.colors()
 
-    def get_tokens_by_pixel(self, pixel: tuple) -> list:
+    def get_tokens_from_pixel(self, pixel: tuple) -> list:
         """Gets all tokens by Pixel.
 
         Args:
@@ -233,10 +233,12 @@ class BaseBoard(container.Container):
               tokens = board.get_tokens_by_pixel(position)
 
         """
-        return [token for token in self.tokens if token.rect.collidepoint(pixel)]
+        return [token for token in self.tokens if token.sensing_point(pixel)]
 
     def get_tokens_at_position(self, position) -> list:
-        return [token for token in self.tokens if token.rect.collidepoint(position)]
+        """Alias for ``get_tokens_from_pixel``
+        """
+        return self.get_tokens_from_pixel(position)
 
     @property
     def image(self) -> pygame.Surface:
@@ -253,8 +255,8 @@ class BaseBoard(container.Container):
 
         Returns: all tokens in the area
         """
-        board_rect = board_rect_factory.BoardRectFactory(self).create(rect)
-        tokens = self.get_tokens_at_rect(board_rect)
+        rect = board_rect.Rect(self).create(rect)
+        tokens = self.get_tokens_at_rect(rect)
         for token in tokens:
             if token is not None:
                 [token.remove() for token in BaseBoard.filter_actor_list(tokens, token_class)]
@@ -287,7 +289,7 @@ class BaseBoard(container.Container):
                 self.act_all()
                 self._run_next_line_in_started_method()
             self.collision_manager.handle_all_collisions()
-            self.position_manager.update_positions()
+            self.mouse_manager.update_positions()
             # run animations
             self.background._update_all_costumes()
             self.background.update()
@@ -326,14 +328,8 @@ class BaseBoard(container.Container):
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.backgrounds_manager.find_colors(rect, color, threshold)
 
-    def get_board_position_from_pixel(self, pixel):
-        return board_position.Position.from_pixel(pixel)
-
     def _update_event_handling(self):
         self.event_manager.update_event_handling()
-
-    def is_position_on_board(self, position: board_position.Position) -> bool:
-        return self.position_manager.is_position_on_board(position)
 
     def register(self, method: callable) -> callable:
         """
@@ -425,3 +421,4 @@ class BaseBoard(container.Container):
         self._tile_size = value
         self.app.window.dirty = 1
         self.background.reload_transformations_after("all")
+

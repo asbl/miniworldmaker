@@ -65,11 +65,11 @@ class ToolbarWidget():
     @property
     def text(self):
         return self._text
-    
+
     @text.setter
     def text(self, value):
         self.set_text(value)
-    
+
     def set_text(self, text):
         if type(text) == int or type(text) == float:
             text = str(text)
@@ -163,7 +163,7 @@ class LoadButton(ToolbarWidget):
 
 class ClearButton(ToolbarWidget):
 
-    def __init__(self, board, text,  img_path=None, ):
+    def __init__(self, board, text, img_path=None, ):
         super().__init__(text)
         self.set_text(text)
         self.app = board.app
@@ -171,7 +171,6 @@ class ClearButton(ToolbarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.app.board.clear()
-
 
 
 class CounterLabel(ToolbarWidget):

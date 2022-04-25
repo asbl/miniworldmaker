@@ -1,7 +1,7 @@
 import os
 
 import miniworldmaker.tokens.token as token
-from miniworldmaker.board_positions import board_rect_factory
+from miniworldmaker.board_positions import board_rect as board_rect
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers import toolbar_widgets
@@ -12,6 +12,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 
     def __init__(self, board, token_classes, file):
         super().__init__()
+        self.board = board
         self.default_size = 400
         self.app = board.app
         self.selected_token_type = None
@@ -26,21 +27,25 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             prototype = cls((-100, -100))
             prototype.export = False
             self.prototypes[cls.__name__] = prototype
-            self.add_widget(TokenButton(cls, board, self, self.prototypes[cls.__name__]))
+            button = TokenButton(token_type=cls, board=board, parent=self, prototype=prototype)
+            self.add_widget(button, cls.__name__)
         db_file = file
         self.add_widget(toolbar_widgets.SaveButton(board=self.app.board, text="Save", filename=db_file))
         if os.path.exists(db_file):
             self.add_widget(toolbar_widgets.LoadButton(board=self.app.board, text="Load", filename=db_file))
         self.add_widget(toolbar_widgets.ClearButton(board=self.app.board, text="Clear"))
 
-    def _add_token_to_mouse_position(self, position, ):
+    def _add_token_to_mouse_position(self, mouse_pixel_pos):
+        position = board_position.Position.from_pixel(mouse_pixel_pos)
         if self.selected_token_type:
             prototype = self.prototypes[self.selected_token_type.__name__]
-            size = prototype.size
-            rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(position, size)
-            tokens = [token for token in self.app.board.tokens if token.rect.colliderect(rect)]
+            rect = board_rect.Rect.from_token(prototype)
+            rect.topleft = mouse_pixel_pos
+            tokens = [token for token in self.app.board.tokens if token.sensing_rect(rect)]
+            # remove dummy
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
+            # add tokens if no tokens are at current position
             if tokens:
                 print("Can't create overlapping tokens")
             else:
@@ -60,21 +65,24 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 
     def handle_board_event(self, event, data):
         # preprocess - Get Position and token at position (max: 1)
+        pixel_position = data
         position = board_position.Position.from_pixel(data)
         keys = self.app.board.app.event_manager.get_keys()
-        tokens = self.app.board.get_tokens_by_pixel(position)
+        tokens = self.app.board.get_tokens_at_position(position)
+        # remove dummy from tokens
         if self.dummy in tokens:
             tokens.remove(self.dummy)
+        # select token at position, if there is a token
         if not tokens:
             token = None
         elif len(tokens) == 1:
             token = tokens[0]
         else:
-            raise Exception()
+            raise Exception(f"tokens is {tokens}, should be None or should have len 1")
         # Event handling
         if "mouse_left" in event:
             if not tokens and not keys:
-                self._add_token_to_mouse_position(position)
+                self._add_token_to_mouse_position(pixel_position)
             else:
                 self._select_token(token)
         elif "wheel_up" in event:
@@ -88,12 +96,9 @@ class LevelDesignerToolbar(toolbar.Toolbar):
                 self._change_direction_at_mouse_position(token, "left")
         self._update_dummy(position)
 
-    def _update_dummy(self, data):
-        position = board_position.Position.create(data)
+    def _update_dummy(self, position):
         if self.dummy:
             self.dummy.position = position
-            rect = board_rect_factory.BoardRectFactory(self.app.board).from_position(self.dummy.position,
-                                                                                     self.dummy.size)
             tokens = self.dummy.sensing_tokens()
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
@@ -111,9 +116,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 class Dummy(token.Token):
     def on_setup(self):
         self.add_costume((0, 0, 0, 100))
-        print("dummy", self.costumes)
         self.add_costume((255, 0, 0, 100))
-        print("dummy", self.costumes, self.costume.image_manager.images_list)
         self.export = False
 
 
@@ -139,10 +142,8 @@ class TokenButton(toolbar_widgets.ToolbarWidget):
             if self.parent.dummy:
                 self.parent.dummy.remove()
             self.parent.dummy = Dummy((0, 0))
-            try:
+            if not self.board.tokens_fixed_size:
                 self.parent.dummy.size = prototype.size
-            except miniworldmaker_exception.SizeOnTiledBoardError:
-                print("Set autosize on tiled board")
             for widget in self.parent.widgets:
                 if widget.__class__ == TokenButton:
                     widget.background_color = (180, 180, 180, 255)

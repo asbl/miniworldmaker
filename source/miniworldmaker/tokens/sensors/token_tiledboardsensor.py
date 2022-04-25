@@ -12,7 +12,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
     def __init__(self, token, board):
         super().__init__(token, board)
         self.token.fps = token.board.default_token_speed
-        
+
     def get_destination(self, start, direction, distance) -> "board_position.Position":
         x = start[0] + round(math.sin(math.radians(direction)) * distance)
         y = start[1] - round(math.cos(math.radians(direction)) * distance)
@@ -29,10 +29,10 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
         """
         target = self.get_destination(self.token.position, self.token.direction, distance)
-        on_board = self.token.board.position_manager.is_position_on_board(target)
+        on_board = self.is_position_on_board(target)
         return on_board
 
-    def sensing_borders(self, distance = 0):
+    def sensing_borders(self, distance=0):
         """
         Checks if token is touching borders
 
@@ -46,7 +46,6 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         rect = (target.x, target.y, self.board.tile_size, self.board.tile_size)
         return self.token.board.position_manager.get_borders_from_rect(rect)
 
-
     def sensing_tokens(self, token_filter=None, distance: int = 0) -> list:
         """
         Senses tokens at current position
@@ -59,8 +58,8 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
         """
         target_position = self.get_destination(self.token.position, self.token.direction, distance)
-        token_list : list = list()
-        if self.board.is_position_on_board(target_position):
+        token_list: list = list()
+        if self.is_position_on_board(target_position):
             token_list = self.board.sensing_tokens(target_position)
         if not token_list:
             token_list = []
@@ -97,3 +96,6 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
     def self_remove(self):
         self.remove_from_board()
+
+    def sensing_point(self, pixel_position):
+        return self.token.position == self.board.get_from_pixel(pixel_position)

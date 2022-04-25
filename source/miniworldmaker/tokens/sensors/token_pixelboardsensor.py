@@ -4,7 +4,7 @@ from typing import Union
 import pygame
 
 import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.board_positions.board_rect_factory as board_rect_factory
+import miniworldmaker.board_positions.board_rect as board_rect
 import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
 import miniworldmaker.tokens.token as token
 
@@ -19,7 +19,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
 
     def sensing_on_board(self, distance=0) -> bool:
         target_rect = self.get_destination_rect(distance)
-        return self.board.position_manager.is_rect_completly_on_board(target_rect)
+        return self.is_rect_completly_on_board(target_rect)
 
     def sensing_borders(self, distance: int = 0) -> list:
         """
@@ -49,8 +49,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
     def get_destination_rect(self, distance: int) -> pygame.Rect:
         destination_pos = self.get_destination(self.token.position, self.token.direction, distance)
         destination_pos = board_position.Position.create(destination_pos)
-        rect = board_rect_factory.BoardRectFactory(self.token.board).from_position(
-            destination_pos, dimensions=self.token.size)
+        rect = board_rect.Rect.from_position(destination_pos, dimensions=self.token.size)
         return rect
 
     def get_line_in_direction(self, start, direction, distance):

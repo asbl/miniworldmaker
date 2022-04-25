@@ -56,7 +56,6 @@ class TokenPositionManager:
 
     @direction.setter
     def direction(self, value: int):
-        self.token.dirty = 1
         self.set_direction(value)
 
     def get_direction(self):

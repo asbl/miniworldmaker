@@ -5,21 +5,19 @@ from miniworldmaker.board_positions import board_position as board_position
 
 
 class TiledBoardConnector(token_connector.TokenConnector):
+
+    def __init__(self, board, token):
+        super().__init__(board, token)
+        self.board_sensor = tiledboardsensor.TokenTiledBoardSensor(token, board)
+
+    def get_position_manager_class(self):
+        return tiledpositionmanager.TiledBoardPositionManager
+
     def add_token_to_board(self, position: "board_position.Position"):
         super().add_token_to_board(position)
-        # self.token.costume_manager.set_size()
-
-    def add_board_sensor_to_token(self, token):
-        token.board_sensor = tiledboardsensor.TokenTiledBoardSensor(token, self.board)
-        token._managers.append(token.board_sensor)
-
-    def add_position_manager_to_token(self, token, position):
-        token.position_manager = tiledpositionmanager.TiledBoardPositionManager(token, position)
-        token._managers.append(token.position_manager)
 
     def remove_token_from_board(self, token):
-        """
-        Implemented in subclasses
+        """ Implemented in subclasses
         """
         self.remove_static_token()
         self.remove_dynamic_token()

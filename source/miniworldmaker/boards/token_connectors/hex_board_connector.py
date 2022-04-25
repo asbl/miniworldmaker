@@ -6,13 +6,12 @@ import miniworldmaker.boards.token_connectors.tiled_board_connector as tiled_boa
 
 
 class HexBoardConnector(tiled_board_connector.TiledBoardConnector):
-    def add_board_sensor_to_token(self, token):
-        token.board_sensor = tiledboardsensor.TokenTiledBoardSensor(token, self.board)
-        token._managers.append(token.board_sensor)
 
-    def add_position_manager_to_token(self, token, position):
-        token.position_manager = hexpositionmanager.HexBoardPositionManager(token, position)
-        token._managers.append(token.position_manager)
+    def __init__(self, board, token):
+        super().__init__(board, token)
+
+    def get_position_manager_class(self):
+        return hexpositionmanager.HexBoardPositionManager
 
     def remove_token_from_board(self, token):
         """

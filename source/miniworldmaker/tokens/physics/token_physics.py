@@ -133,7 +133,6 @@ class TokenPhysics:
                 Your browser does not support the video tag.
                 </video>
         """
-        print(self.joints)
         for join in self.joints:
             if other.physics._body == join.b:
                 self.board.space.remove(join)

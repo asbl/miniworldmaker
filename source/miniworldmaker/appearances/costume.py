@@ -59,13 +59,6 @@ class Costume(appear.Appearance):
         if self.token.position_manager:
             self._update_draw_shape()
 
-    def get_token_rect(self):
-        if self.token.dirty == 1:
-            self._rect = self._reload_token_rect_from_costume()
-            return self._rect
-        else:
-            return self._rect
-
     def _reload_dirty_image(self):
         self._update_shape()
         super()._reload_dirty_image()

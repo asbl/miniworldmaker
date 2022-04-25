@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Union, List, Tuple
 
+import pygame.rect
+
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume
 import miniworldmaker.board_positions.board_position as board_position
@@ -102,8 +104,6 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     Args:
         position: The topleft position of the token as tuple,. e.g. (200,200)
     """
-
-
 
     @property
     def collision_type(self) -> str:
@@ -1152,7 +1152,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         return self.board_sensor.sensing_on_board(distance=distance)
 
     def sensing_tokens(
-        self, token_filter: str = None, distance: int = 0, collision_type: str = "default"
+            self, token_filter: str = None, distance: int = 0, collision_type: str = "default"
     ) -> List[Token]:
         """Senses if tokens are on tokens position.
         Returns a list of tokens.
@@ -1171,7 +1171,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         return self.board_sensor.sensing_tokens(token_filter, distance)
 
     def sensing_token(
-        self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default"
+            self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default"
     ) -> List[Token]:
         """Senses if tokens are on tokens position.
         Returns the first found token.
@@ -1313,7 +1313,12 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Returns:
             True if point is below token
         """
-        return self.rect.collidepoint(board_position)
+        return self.board_sensor.sensing_point(board_position)
+
+    def sensing_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
+        """Is the token colliding with a rect?"""
+        return self.board_sensor.sensing_rect(rect)
+        return self.board_sensor.sensing_rect(rect)
 
     def register(self, method: callable):
         """This method is used for the @register decorator. It adds a method to an object
@@ -1382,7 +1387,6 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
                 board.run()
         """
         self.costume.is_animated = False
-
 
     def send_message(self, message: str):
         """Sends a message to board.
@@ -1818,7 +1822,6 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def static(self, value):
         _token_connector = self.board.get_token_connector(self)
         _token_connector.set_static(value)
-
 
     @property
     def fill_color(self):

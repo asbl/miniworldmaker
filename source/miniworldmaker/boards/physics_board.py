@@ -73,12 +73,9 @@ class PhysicsBoard(board.Board):
         if event == "separate":
             handler.separate = self.pymunk_separation_collision_listener
 
-    def get_token_connector(self, token):
-        """Gets connector to PhysicsBoard
-
-        :meta private:
-        """
-        return physics_board_connector.PhysicsBoardConnector(self, token)
+    @staticmethod
+    def _get_token_connector_class():
+        return physics_board_connector.PhysicsBoardConnector
 
     def get_physics_collision_methods_for_token(self, token):
         """Gets all collision methods for token

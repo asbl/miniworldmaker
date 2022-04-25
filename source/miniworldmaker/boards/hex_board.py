@@ -42,51 +42,48 @@ class HexBoard(tiled_board.TiledBoard):
         else:
             raise miniworldmaker_exception.TileNotFoundError(position)
 
-    def is_corner(self, position):
+    def is_corner(self, position, direction=None):
+        corner_cls = self.tile_factory.corner_cls
+        if direction is not None:
+            position = corner_cls(position, direction).position
         position = hex_elements.CubeCoord.create(position)
         if (position[0], position[1], position[2]) in self.corners:
             return True
         else:
             return False
 
-    def get_corner(self, position):
+    def get_corner(self, position, direction=None):
+        corner_cls = self.tile_factory.corner_cls
+        if direction is not None:
+            position = corner_cls(position, direction).position
         position = hex_elements.CubeCoord.create(position)
-        if self.is_tile(position):
+        if position in self.corners:
             return self.corners[(position[0], position[1], position[2])]
         else:
-            raise miniworldmaker_exception.TileNotFoundError(position)
+            raise miniworldmaker_exception.CornerNotFoundError(position)
 
-    def is_edge(self, position):
+    def is_edge(self, position, direction=None):
+        edge_cls = self.tile_factory.edge_cls
+        if direction is not None:
+            position = edge_cls(position, direction).position
         position = hex_elements.CubeCoord.create(position)
         if (position[0], position[1], position[2]) in self.edges:
             return True
         else:
             return False
 
-    def get_edge(self, position):
+    def get_edge(self, position, direction=None):
+        edge_cls = self.tile_factory.edge_cls
+        if direction is not None:
+            position = edge_cls(position, direction).position
         position = hex_elements.CubeCoord.create(position)
         if self.is_edge(position):
             return self.edges[(position[0], position[1], position[2])]
         else:
-            raise miniworldmaker_exception.TileNotFoundError(position)
+            raise miniworldmaker_exception.EdgeNotFoundError(position)
 
     def get_tile_from_pixel(self, position):
         return hex_elements.HexTile.from_pixel(position)
-
-    def get_corner(self, position: "hex_elements.CubeCoord") -> "hex_elements.HexCorner":
-        """Gets corner from cubecoord
-
-        Args:
-            position (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        position = hex_elements.CubeCoord.create(position)
-        if position in self.corners:
-            return self.corners[position]
-        else:
-            raise Exception(f"{position} not in self.corners")
 
     def get_corner_from_tile(self, position: Union["board_position.Position", "hex_elements.CubeCoord"],
                              direction: str):
@@ -150,8 +147,9 @@ class HexBoard(tiled_board.TiledBoard):
         position = self.to_pixel(position)
         self.background.draw_on_image(image, position, self.get_tile_width(), self.get_tile_height())
 
-    def get_token_connector(self, token) -> "hex_board_connector.HexBoardConnector":
-        return hex_board_connector.HexBoardConnector(self, token)
+    @staticmethod
+    def _get_token_connector_class():
+        return hex_board_connector.HexBoardConnector
 
     def set_tile_size(self, value):
         super().set_tile_size(value)

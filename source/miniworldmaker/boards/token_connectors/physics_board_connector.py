@@ -11,6 +11,9 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
     def __init__(self, board, token):
         super().__init__(board, token)
 
+    def get_position_manager_class(self):
+        return physicspositionmanager.PhysicsBoardPositionManager
+
     def add_token_to_board(self, position: "board_position.Position"):
         # add token.physics attribute with physics properties to token
         self.token.physics = token_physics.TokenPhysics(self.token, app.App.board)
@@ -22,11 +25,6 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         self.board.physics_tokens.append(self.token)
         if hasattr(self.token, "on_begin_simulation"):
             self.token.on_begin_simulation()
-
-    def add_position_manager_to_token(self, token, position):
-        token.position_manager = physicspositionmanager.PhysicsBoardPositionManager(
-            token, position)
-        token._managers.append(token.position_manager)
 
     def register_token_method(self, token, method: callable):
         """

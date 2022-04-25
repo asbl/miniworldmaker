@@ -207,7 +207,7 @@ class Tile(TileBase):
                     neighbours.append(neighbour)
             self.corners = neighbours
             return self.corners
-    
+
     def to_pixel(self):
         x = self.position[0] * self.board.tile_size
         y = self.position[1] * self.board.tile_size
@@ -221,6 +221,13 @@ class Tile(TileBase):
     def to_center(self):
         topleft = self.to_pixel()
         return topleft + self.get_local_center_coordinate()
+
+    @classmethod
+    def from_pixel(cls, pixel_position) -> "TileBase":
+        board = app.App.board
+        x = pixel_position[0] // board.tile_size
+        y = pixel_position[1] // board.tile_size
+        return cls((x, y))
 
 
 class Corner(TileDelimiter):

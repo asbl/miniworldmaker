@@ -3,6 +3,10 @@ import miniworldmaker.tools.token_class_inspection as token_class_inspection
 
 
 class BoardCollisionHandler:
+    """The class handles all collisions of tokens.
+
+    The method ``handle_all_collisions`` is called every frame (in BaseBoard.update())
+    """
     def __init__(self, board):
         self.board = board
 

@@ -38,6 +38,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         self._collision_type: str = ""
         self._layer: int = 0
         self._inner = 0
+        self._dirty = 1
         self._managers: list = list()
         self.token_id: int = BaseToken.token_count + 1
         self.costume_manager: costumes_manager.CostumesManager = None
@@ -83,13 +84,12 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
             int: 1 if token is dirty/0 otherwise
         """
-        if self.costume_manager:
-            return self.costume_manager.dirty
+        return self._dirty
 
     @dirty.setter
     def dirty(self, value: int):
-        if self.costume_manager:
-            self.costume_manager.dirty = value
+        self._dirty = value
+
 
     @property
     def rect(self) -> pygame.Rect:

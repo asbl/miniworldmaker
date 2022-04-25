@@ -1,4 +1,4 @@
-from typing import Type, Union
+from typing import Type, Union, Tuple
 
 import pygame
 
@@ -252,7 +252,7 @@ class Board(board_base.BaseBoard):
             board = miniworldmaker.PixelBoard()
             board.size = (800, 600)
         """
-        return (self.columns, self.rows)
+        return self.columns, self.rows
 
     @size.setter
     def size(self, value: tuple):
@@ -604,25 +604,25 @@ class Board(board_base.BaseBoard):
 
 
         """
-        return self.position_manager.mouse_position
+        return self.mouse_manager.mouse_position
 
     def get_mouse_x(self) -> int:
         """Gets x-coordinate of mouse-position"""
-        if self.position_manager.mouse_position:
-            return self.position_manager.mouse_position[0]
+        if self.mouse_manager.mouse_position:
+            return self.mouse_manager.mouse_position[0]
         else:
             return 0
 
     def get_mouse_y(self) -> int:
         """Gets y-coordinate of mouse-position"""
-        if self.position_manager.mouse_position:
-            return self.position_manager.mouse_position[1]
+        if self.mouse_manager.mouse_position:
+            return self.mouse_manager.mouse_position[1]
         else:
             return 0
 
     def get_prev_mouse_position(self):
         """gets mouse-position of last frame"""
-        return self.position_manager.prev_mouse_position
+        return self.mouse_manager.prev_mouse_position
 
     def is_mouse_pressed(self) -> bool:
         """Returns True, if mouse is pressed"""
@@ -659,8 +659,9 @@ class Board(board_base.BaseBoard):
         """
         self.event_manager.handle_switch_board_event(new_board)
 
-    def get_token_connector(self, token):
-        return pixel_board_connector.PixelBoardConnector(self, token)
+    @staticmethod
+    def _get_token_connector_class():
+        return pixel_board_connector.PixelBoardConnector
 
     def get_color_from_pixel(self, position: "board_position.Position") -> tuple:
         """
@@ -698,10 +699,28 @@ class Board(board_base.BaseBoard):
         position = board_position.Position.create(position)
         return self.app.window.surface.get_at(position.to_int())
 
-    def get_from_pixel(self, position):
+    def get_from_pixel(self, position : Union["board_position.Position", Tuple]) -> "board_position.Position":
+        """Gets Position from pixel
+
+        PixelBoard: the pixel position is returned
+        TiledBoard: the tile-position is returned
+
+        :param position: Position as pixel coordinates
+        :return: The pixel position, if position is on board, None if position is not on Board.
+        """
         column = position[0]
         row = position[1]
-        return column, row
+        position = board_position.Position(column, row)
+        if column < self.container_width and row < self.container_height:
+            return position
+        else:
+            return None
+
+    def get_board_position_from_pixel(self, pixel):
+        """
+        Alias for get_from_pixel
+        """
+        return self.get_from_pixel(pixel)
 
     def to_pixel(self, position):
         x = position[0]

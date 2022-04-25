@@ -48,10 +48,12 @@ from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.event_console import EventConsole
 from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
 from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
+from miniworldmaker.containers.color_toolbar import ColorToolbar
 from miniworldmaker.containers.toolbar_widgets import *
 
 from miniworldmaker.board_positions.board_vector import Vector
 from miniworldmaker.board_positions.board_position import Position
+from miniworldmaker.board_positions.board_rect import Rect
 
 from miniworldmaker.board_positions.tile_factory import TileFactory
 from miniworldmaker.board_positions.tile_factory import HexTileFactory
@@ -98,6 +100,7 @@ __all__.append(Costume.__name__)
 
 __all__.append(Vector.__name__)
 __all__.append(Position.__name__)
+__all__.append(Rect.__name__)
 
 __all__.append(Toolbar.__name__)
 __all__.append(ActionBar.__name__)
@@ -105,6 +108,7 @@ __all__.append(Console.__name__)
 __all__.append(EventConsole.__name__)
 __all__.append(InspectActorToolbar.__name__)
 __all__.append(LevelDesignerToolbar.__name__)
+__all__.append(ColorToolbar.__name__)
 __all__.append(ToolbarLabel.__name__)
 __all__.append(ToolbarButton.__name__)
 __all__.append(ToolbarWidget.__name__)

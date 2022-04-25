@@ -107,6 +107,10 @@ class HexTile(HexBase, tile_elements.Tile):
         else:
             return False
 
+    @staticmethod
+    def get_position_pixel_dict():
+        board = app.App.board
+        return board.get_center_points()
 
 class HexCorner(HexBase, tile_elements.Corner):
     angles = {"n": 2, "no": 3, "so": 4, "s": 5, "sw": 0, "nw": 1}
