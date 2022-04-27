@@ -1,10 +1,12 @@
 import pygame
 import os
 from pathlib import Path
+import miniworldmaker.base.app as app
 from miniworldmaker.base import file_manager
 from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExistsError
 from typing import List, Union, Tuple
 from pathlib import Path
+
 
 class ImageManager:
     """Handles loading and caching of images."""
@@ -12,6 +14,7 @@ class ImageManager:
     _images_dict = {}  # dict with key: image_path, value: loaded image
 
     def __init__(self, appearance):
+        self.board = app.App.board
         self.animation_frame = 0
         self.current_animation_images = None
         self.image_index = 0  # current_image index (for animations) in self.image_lists
@@ -197,10 +200,10 @@ class ImageManager:
         * processes transformations pipeline if neccessary
         """
         if self.appearance.is_animated:
-            self.animation_frame += 1
-            if self.animation_frame == self.appearance.animation_speed:
+            #self.animation_frame += 1
+            if self.board.frame != 0 and self.board.frame % self.appearance.animation_speed == 0:
                 await self.next_image()
-                self.animation_frame = 0
+                # self.animation_frame = 0
         self.appearance._reload_image()
 
     async def next_image(self):
@@ -213,6 +216,7 @@ class ImageManager:
                     self.appearance.is_animated = False
                     self.appearance.after_animation()
                 self.image_index = 0
+            self.appearance.dirty = 1
             self.appearance.parent.dirty = 1
             self.appearance.reload_transformations_after("all")
 
@@ -244,7 +248,7 @@ class ImageManager:
     def load_surface(self) -> pygame.Surface:
         if not self.appearance.surface_loaded:
             image = pygame.Surface((self.appearance.parent.width, self.appearance.parent.height), pygame.SRCALPHA)
-            #image.fill(self.appearance.fill_color)
+            # image.fill(self.appearance.fill_color)
             image.set_alpha(255)
             return image
 
@@ -259,7 +263,5 @@ class ImageManager:
         self.set_image(-1)
         self.appearance.reload_transformations_after("all")
 
-
     def remove_image(self, appearance):
         pass
-

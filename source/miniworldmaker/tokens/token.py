@@ -40,7 +40,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
             :width: 100px
             :alt: Create a token
 
-        Create a token with a image:
+        Create a token with an image:
 
         .. code-block:: python
 
@@ -101,8 +101,6 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         * See: :doc:`Token <../api/token>`
         * See: :doc:`Shapes <../api/token.shape>`
         * See: :doc:`TextTokens and NumberTokens <../api/token.texttoken>`
-    Args:
-        position: The topleft position of the token as tuple,. e.g. (200,200)
     """
 
     @property
@@ -188,11 +186,12 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     @property
     def is_flipped(self) -> bool:
         """
-        If a token is flipped, it is mirrored via the y-axis. You can use this property in 2d-plattformers to change the direction of token.
+        If a token is flipped, it is mirrored via the y-axis. You can use this property in 2d-plattformers
+        to change the direction of token.
 
         .. note::
 
-            It may be neccessary to set ``is_rotatable = True``
+            It may be necessary to set ``is_rotatable = True``
 
         Examples:
 
@@ -237,7 +236,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         self.costume.is_flipped = value
 
     def flip_x(self) -> int:
-        """Flips the actor by 180° degrees. The costume is flipped and the tokens direction changed by 180 degrees.
+        """Flips the actor by 180° degrees. The costume is flipped and the token's direction changed by 180 degrees.
 
         .. image:: ../_images/flip_x.png
 
@@ -400,13 +399,10 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Returns:
             The new costume
         """
-        self.costume_manager.switch_costume(source)
+        return self.costume_manager.switch_costume(source)
 
     def next_costume(self):
         """Switches to the next costume of token
-
-        Args:
-            next: If next is True, the next costume will be selected
 
         Returns:
             The new costume
@@ -459,7 +455,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
         Sets direction of the token.
 
-        You can use a integer or a string to describe the direction
+        You can use an integer or a string to describe the direction
 
         Options
             * ``0``, ``"up"`` - Look up
@@ -541,7 +537,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
     @property
     def direction_at_unit_circle(self) -> int:
-        """Gets the direction as value in unit circle (0° right, 90° top, 180° left...
+        """Gets the direction as value in unit circle (0° right, 90° top, 180° left...)
         """
         return self.position_manager.dir_to_unit_circle(self.direction)
 
@@ -596,7 +592,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.turn_left(degrees)
 
-    def turn_right(self, degrees: float = 90):
+    def turn_right(self, degrees: Union[int, float] = 90):
         """Turns token by *degrees* degrees right
 
         .. image:: ../_images/turn_right.png
@@ -639,7 +635,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.turn_right(degrees)
 
-    def point_in_direction(self, direction: Union[str, float]) -> float:
+    def point_in_direction(self, direction: Union[str, int, float]) -> float:
         """Token points in given direction.
 
         You can use a integer or a string to describe the direction
@@ -674,7 +670,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.point_in_direction(direction)
 
-    def point_towards_position(self, destination: int) -> int:
+    def point_towards_position(self, destination: Union[tuple, board_position.BoardPosition]) -> Union[int, float]:
         """
         Token points towards a given position
 
@@ -822,7 +818,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
     @property
     def x(self) -> float:
-        """The x-value of an token"""
+        """The x-value of a token"""
         return self.position_manager.x
 
     @x.setter
@@ -831,7 +827,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
     @property
     def y(self) -> float:
-        """The y-value of an token"""
+        """The y-value of a token"""
         return self.position_manager.y
 
     @y.setter
@@ -959,6 +955,9 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.move_back()
 
+    def move_towards(self, position):
+        return self.position_manager.move_towards_position(position)
+
     def move_in_direction(self, direction: Union[int, str, tuple, "board_position.Position"], distance=1):
         """Moves token *distance* steps into a *direction* or towards a position
 
@@ -974,6 +973,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
         Args:
             direction: Direction as angle
+            distance: Senses obj "distance" steps in front of current token.
 
         Returns:
             The token itself
@@ -1031,12 +1031,12 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         for manager in self._managers:
             manager.self_remove()
             del manager
-        self.board
         self.kill()
 
     @property
     def is_rotatable(self) -> bool:
-        """Defines if the costume of a token should be rotatable. The token can still be rotated with the ``direction`` property, but its costume won't be changed
+        """Defines if the costume of a token should be rotatable. The token can still be rotated with
+        the ``direction`` property, but its costume won't be changed
 
         .. note::
 
@@ -1172,7 +1172,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
     def sensing_token(
             self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default"
-    ) -> List[Token]:
+    ) -> Union["Token", None]:
         """Senses if tokens are on tokens position.
         Returns the first found token.
 
@@ -1316,8 +1316,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         return self.board_sensor.sensing_point(board_position)
 
     def sensing_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
-        """Is the token colliding with a rect?"""
-        return self.board_sensor.sensing_rect(rect)
+        """Is the token colliding with a static rect?"""
         return self.board_sensor.sensing_rect(rect)
 
     def register(self, method: callable):
@@ -1338,7 +1337,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def animate(self, speed: int = 10):
         self.costume_manager.animate(speed)
 
-    def animate_costume(self, costume: costume.Costume, speed: int = 10):
+    def animate_costume(self, costume: "costume.Costume", speed: int = 10):
         self.costume_manager.animate_costume(costume, speed)
 
     def animate_loop(self, speed: int = 10):
@@ -1391,7 +1390,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def send_message(self, message: str):
         """Sends a message to board.
 
-        The message can received with the ``on_message``-event
+        The message can be received with the ``on_message``-event
 
         Examples:
 
@@ -1428,7 +1427,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
         .. note::
             Instead of **on_key_down** you can use **on_key_down_letter**, e.g. **on_key_down_a** or **on_key_down_w**
-            , if you want to handle a on_key_down event for a specific letter.
+            , if you want to handle an on_key_down event for a specific letter.
 
         Examples:
 
@@ -1460,7 +1459,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_key_down)
 
     def on_key_pressed(self, key: list):
         """**on_key_pressed** is called when while key is pressed. If you hold the key, on_key_pressed
@@ -1468,7 +1467,8 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
         .. note::
 
-            Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]` (e.g. `on_key_pressed_w(self)`).
+            Like `on_key_down` the method can be called in the variant `on_key_pressed_[letter]`
+            (e.g. `on_key_pressed_w(self)`).
 
         Examples:
 
@@ -1488,22 +1488,25 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
                     print("pressed s")
 
         Args:
-            key (list): The typed key as list (e.g. ['C', 'c', 'D', 'd']) containing both uppercase and lowercase of typed letter.
+            key (list): The typed key as list (e.g. ['C', 'c', 'D', 'd']) containing both uppercase and lowercase
+            of typed letter.
 
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_key_pressed)
 
     def on_key_up(self, key):
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_key_up)
 
     def on_mouse_left(self, position: tuple):
-        """Method is called when left mouse button was pressed. You must *register* or *implement* this method as an event.
+        """Method is called when left mouse button was pressed.
+        You must *register* or *implement* this method as an event.
 
         .. note::
 
-            The event is triggered, when mouse-left was clicked, even when the current mouse position is not related to token position.
+            The event is triggered, when mouse-left was clicked, even when the current mouse position
+            is not related to token position.
 
             You can use :py:meth:`Token.sensing_point` to check, if the mouse_position is *inside* the token.
 
@@ -1533,7 +1536,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
 
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_mouse_left)
 
     def on_mouse_right(self, position: tuple):
         """Method is called when right mouse button was pressed. You must *register* or *implement* this method as an event.
@@ -1554,14 +1557,15 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_mouse_right)
 
     def on_mouse_motion(self, position: tuple):
         """Method is called when mouse moves. You must *register* or *implement* this method as an event.
 
         .. note::
 
-            The event is triggered, when mouse is moved, even when the current mouse position is not related to token position.
+            The event is triggered, when mouse is moved, even when the current mouse position
+            is not related to token position.
 
             You can use :py:meth:`Token.sensing_point` to check, if the mouse_position is *inside* the token.
 
@@ -1590,7 +1594,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_mouse_motion)
 
     def on_mouse_left_released(self, position: tuple):
         """Method is called when left mouse key is released. 
@@ -1637,7 +1641,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_mouse_left_released)
 
     def on_mouse_right_released(self, position: tuple):
         """Method is called when right mouse key is released. See :py:meth:`Token.on_mouse_left_released`.
@@ -1649,14 +1653,15 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_mouse_right_released)
 
     def on_message(self, message: str):
         """Messages are used to allow objects to communicate with each other.
 
         Send a message:
 
-        * A token and the board can send a message to all tokens and the board with the command: self.send_message(“message_string”)
+        * A token and the board can send a message to all tokens and the board with the command:
+        self.send_message(“message_string”)
 
         Process a message:
 
@@ -1679,7 +1684,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_message)
 
     def on_clicked_left(self, position: tuple):
         """The mouse is on top of a token and mouse was clicked.
@@ -1703,7 +1708,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_clicked_left)
 
     def on_clicked_right(self, position):
         """The mouse is on top of a token and mouse was clicked.
@@ -1727,10 +1732,10 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_clicked_right)
 
     def on_sensing_on_board(self):
-        """*on_sensing_on_board* is called, when token is on board"
+        """*on_sensing_on_board* is called, when token is on board
 
         Examples:
 
@@ -1746,10 +1751,10 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
 
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_sensing_on_board)
 
     def on_sensing_not_on_board(self):
-        """*on_sensing_not_on_board* is called, when token is not on board"
+        """*on_sensing_not_on_board* is called, when token is not on board.
 
         Examples:
 
@@ -1764,13 +1769,13 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_sensing_not_on_board)
 
-    def on_sensing_borders(self, str: List(str)):
+    def on_sensing_borders(self, borders: List[str]):
         """*on_sensing_border* is called, when token is near a border
 
         Args:
-            str (List): A list of strings with found borders, e.g.: ['left', 'top']
+            borders (List): A list of strings with found borders, e.g.: ['left', 'top']
 
         Examples:
 
@@ -1786,7 +1791,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_sensing_borders)
 
     def on_sensing_token(self, token: "Token"):
         """*on_sensing_token* is called, when token is sensing a token on same position
@@ -1809,7 +1814,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError()
+        raise NotImplementedOrRegisteredError(self.on_sensing_token)
 
     @property
     def static(self):
@@ -1827,7 +1832,8 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def fill_color(self):
         """The fill color of token as rgba value, e.g. (255, 0, 0) for red.
         
-        When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume (See: :py:attr:.appearances.appearance.Appearance.is_filled`) is set to ``True``.
+        When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume
+        (See: :py:attr:.appearances.appearance.Appearance.is_filled`) is set to ``True``.
         
         .. note::
 
@@ -1835,9 +1841,10 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
         .. warning:: 
         
-            If you fill a costume with an image, the image will be completly overwritten, even if `fill_color` is transparent. 
+            If you fill a costume with an image, the image will be completely overwritten,
+            even if `fill_color` is transparent.
         
-            This behaviour may change in later relases!
+            This behaviour may change in later releases!
 
         Examples:
 
@@ -1906,7 +1913,10 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
 
         The border-color is a rgba value, for example (255, 0, 0) for red, (0, 255, 0) for green and (255, 0, 0, 100).
 
-        If the color-value has 4 values, the last value defines the transparency: 0: Full transparent, 255: No transparency.
+        If the color-value has 4 values, the last value defines the transparency:
+          * 0: Full transparent,
+          * 255: No transparency
+
 
         .. note:: 
 

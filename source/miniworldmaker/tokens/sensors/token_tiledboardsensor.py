@@ -2,6 +2,8 @@ import math
 
 import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
 import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.tokens.token as token_module
+import miniworldmaker.boards.tiled_board as board_module
 
 
 class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
@@ -9,11 +11,13 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
     The TiledBoardConnector connects a token to a tiled_board
     """
 
-    def __init__(self, token, board):
+    def __init__(self, token: "token_module.Token", board: "board_module.TiledBoard"):
         super().__init__(token, board)
+        self.board = board
         self.token.fps = token.board.default_token_speed
 
-    def get_destination(self, start, direction, distance) -> "board_position.Position":
+    @staticmethod
+    def get_destination(start, direction, distance) -> "board_position.Position":
         x = start[0] + round(math.sin(math.radians(direction)) * distance)
         y = start[1] - round(math.cos(math.radians(direction)) * distance)
         return board_position.Position(x, y)
@@ -39,7 +43,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         Args:
             distance: If distance > 0, it will be checked, if the token is touching borders, if moved two steps forward
 
-        Returns: A listed of touched borders, e.g. ["left", "top"]
+        Returns: A List of touched borders, e.g. ["left", "top"]
 
         """
         target = self.get_destination(self.token.position, self.token.direction, distance)
@@ -51,7 +55,8 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         Senses tokens at current position
 
         Args:
-            distance: If distance > 0, it will be checked, if the token is touching other tokens, if moved two steps forward
+            distance: If distance > 0, it will be checked, if the token is touching other tokens,
+            if moved two steps forward
             token_filter: Filters by token_type. token_type is a Class of token.
 
         Returns: A list of tokens at token position
@@ -67,12 +72,13 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         token_list = self.filter_token_list(token_list, token_filter)
         return token_list
 
-    def sensing_token(self, token_filter=None, distance: int = 0) -> list:
+    def sensing_token(self, token_filter=None, distance: int = 0) -> "token_module.Token":
         """
         Senses tokens at current position. The method is faster than sensing_tokens.
 
         Args:
-            distance: If distance > 0, it will be checked, if the token is touching other tokens, if moved two steps forward
+            distance: If distance > 0, it will be checked, if the token is touching other tokens,
+            if moved two steps forward
             token_filter: Filters by token_type. token_type is a Class of token.
 
         Returns: The first token at current position or None.

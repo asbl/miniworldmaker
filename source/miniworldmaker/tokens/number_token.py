@@ -9,10 +9,9 @@ class Number(text_token.TextToken):
     the complete text can be seen.
 
     Args:
-        position: Top-Left position of Number
+        position: Top-Left position of Number.
         number: The initial number
         font-size: The size of the font (default: 80)
-        color: The color of the font (default: white)
 
     Examples:
         Sets a new NumberToken to display the score.::
@@ -29,7 +28,7 @@ class Number(text_token.TextToken):
         
     """
 
-    def __init__(self, position=(0, 0), number = 0):
+    def __init__(self, position=(0, 0), number=0):
         if type(position) == int or type(position) == float:
             raise TypeError(f"Error on creating NumberToken. Position is int - Should be a position")
         if type(number) not in [int, float]:
@@ -78,6 +77,7 @@ class Number(text_token.TextToken):
         """
         self.costume.reload_transformations_after("text changed")
         return int(self.costume.text)
+
 
 class NumberToken(Number):
     """Alias for legacy code"""

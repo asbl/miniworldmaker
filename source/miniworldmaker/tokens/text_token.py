@@ -10,10 +10,8 @@ class Text(token.Token):
     the complete text can be seen.
 
     Args:
-        position: Top-Left position of Text
+        position: Top-Left position of Text.
         text: The initial text
-        font-size: The size of the font (default: 80)
-        color: The color of the font (default: white)
 
     Examples:
 
@@ -24,14 +22,14 @@ class Text(token.Token):
 
     """
 
-    def __init__(self, position=None, t=" "):
+    def __init__(self, position=None, text=" "):
         super().__init__(position)
         self.costume = text_costume.TextCostume(self)
         self.costume.font_size = 24
         self.costume.is_scaled = True
         self.costume.text = ""
         self.is_static: bool = True
-        self.set_text(t)
+        self.set_text(text)
 
     @property
     def font_size(self):
@@ -64,7 +62,7 @@ class Text(token.Token):
     @property
     def text(self):
         """changes the text."""
-        self.get_text()
+        return self.get_text()
 
     @text.setter
     def text(self, value):
@@ -72,6 +70,7 @@ class Text(token.Token):
             value = " "
         self.set_text(value)
         self.costume._update_draw_shape()
+
 
 class TextToken(Text):
     """Alias for legacy code"""

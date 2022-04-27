@@ -2,15 +2,16 @@ from miniworldmaker import *
 import imgcompare
 import os
 import unittest
+import random
 
-TEST_FRAMES = [41, 81, 161]
-QUIT_FRAME = 1
+TEST_FRAMES = [1, 10, 30, 40, 50, 60, 90, 120, 150, 180, 210, 240, 270]
+QUIT_FRAME = 270
     
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test124(unittest.TestCase):
+class Test216(unittest.TestCase):
 
     def setUp(self):
         """ Programmcode here:
@@ -21,35 +22,29 @@ class Test124(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
-        board = Board()
-        token = Token()
 
-        board.add_background("images/1.png")
-        board.add_background((255, 0, 0, 255))
-        board.add_background("images/2.png")
 
-        @timer(frames = 40)
-        def switch():
-            board.switch_background(0)
+        board = PixelBoard()
+        board.columns = 400
+        board.rows = 400
+        player = Token()
+        player.add_costume("images/player_1.png")
+        player.position = (200,200)
 
-        @timer(frames = 80)
-        def switch():
-            board.switch_background(1)
-            
-        @timer(frames = 160)
-        def switch():
-            board.switch_background(2)
+        @player.register
+        def act(self):
+            self.move_in_direction((360, 360))
 
         """ here act and init - delete if used in testcode"""
         
         @board.register
         def on_setup(self):
-            self.init_test()
+            self.init_test()            
             
         @board.register
         def act(self):
             self.test()
-        
+            
         """ end of setUp - code up here""" 
         
         self.board = board
@@ -71,7 +66,7 @@ class Test124(unittest.TestCase):
                 if path != "":
                     path =  path + "/"
                 file_test = path + f'output/{self.test_title}_test_{self.test_frame}.png'
-                file_output = path + f"output/{self.test_title}_{self.test_frame.png"
+                file_output = path + f"output/{self.test_title}_{self.test_frame}.png"
                 if not os.path.isfile(file_test):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
@@ -84,7 +79,7 @@ class Test124(unittest.TestCase):
         board.test_title = self.__class__.__name__
         
         
-    def test_108(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         

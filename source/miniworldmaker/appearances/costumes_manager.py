@@ -1,7 +1,7 @@
 
 from typing import Union, List, Tuple
 import miniworldmaker.appearances. appearances_manager as appearances_manager
-import miniworldmaker.appearances.costume as costume
+import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.appearances.appearance as appearance
 
 
@@ -25,7 +25,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
     def get_costume_at_index(self, index):
         return super().get_appearance_at_index(index)
 
-    def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = None) -> "costume.Costume":
+    def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = None) -> "costume_mod.Costume":
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
@@ -43,7 +43,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
         return new_costume
 
     def get_default_appearance(self):
-        new_costume = costume.Costume(self.token)
+        new_costume = costume_mod.Costume(self.token)
         return new_costume
 
     @property
@@ -63,3 +63,6 @@ class CostumesManager(appearances_manager.AppearancesManager):
     @has_costume.setter
     def has_costume(self, value):
         self.has_appearance = value
+
+    def next_costume(self) -> "costume_mod.Costume":
+        return self.next_appearance()

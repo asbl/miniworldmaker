@@ -1,18 +1,18 @@
 from typing import Union, Tuple
 
-import miniworldmaker.appearances.appearance_base as appearance_base
 import numpy
 import pygame
+
+import miniworldmaker.appearances.appearance_base as appearance_base
 import miniworldmaker.tools.color as color
 
 
 class Appearance(appearance_base.AppearanceBase):
     """Base class of token costumes and board backgrounds
 
-    The class contains all methods and attributes to display and animate images of the objects, render text on the images or display overlays.
-
+    The class contains all methods and attributes to display and animate images of the objects, render text
+    on the images or display overlays.
     """
-
     @property
     def font_size(self):
         return self.font_manager.font_size
@@ -319,7 +319,6 @@ class Appearance(appearance_base.AppearanceBase):
     def fill_color(self, value):
         self._fill_color = value
         self.reload_transformations_after("all")
-        
 
     @property
     def coloring(self):
@@ -379,14 +378,12 @@ class Appearance(appearance_base.AppearanceBase):
     @alpha.setter
     def alpha(self, value):
         self._alpha = value
-        if value > 0 and value < 1:
+        if 0 < value < 1:
             value = value * 255
         if value == 255:
             self.transparency = False
         else:
             self.transparency = True
-
-
 
     def get_text_width(self):
         return self.font_manager.get_font_width()
@@ -415,7 +412,7 @@ class Appearance(appearance_base.AppearanceBase):
                 board.run()
 
         """
-        super().add_image(source)
+        return super().add_image(source)
 
     def add_images(self, sources: list):
         """Adds multiple images to background/costume. 
@@ -519,7 +516,6 @@ class Appearance(appearance_base.AppearanceBase):
         """
         pass
 
-
     def reset(self):
         self.image_manager.reset()
 
@@ -527,7 +523,7 @@ class Appearance(appearance_base.AppearanceBase):
         """Sets the displayed image of costume/background to selected index
 
         Args:
-            index (int): The image index
+            source: The image index or an image.
 
         Returns:
             True, if image index exists
@@ -582,7 +578,7 @@ class Appearance(appearance_base.AppearanceBase):
         """
         return pygame.surfarray.array3d(self.image)
 
-    def from_array(self, arr : numpy.ndarray):
+    def from_array(self, arr: numpy.ndarray):
         """Create a background or costume from array. The array must be a ``numpy.ndarray, 
         which can be created with ``.to_colors_array``
 
@@ -619,8 +615,6 @@ class Appearance(appearance_base.AppearanceBase):
     def from_appearance(self, appearance, index):
         self.image_manager.add_image_from_surface(index)
 
-
-
     """def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.background.count_pixels_by_color(rect, color, threshold)
     """
@@ -636,14 +630,6 @@ class Appearance(appearance_base.AppearanceBase):
         self._fill_color = value
         # self.reload_costume()
 
-    @property
-    def fill_color(self):
-        return self._fill_color
-
-    @fill_color.setter
-    def fill_color(self, value):
-        """fill color of token"""
-        self.color = value
 
     def fill(self, value):
         """Set default fill color for borders and lines"""
@@ -681,7 +667,7 @@ class Appearance(appearance_base.AppearanceBase):
         return self._border_color
 
     @border_color.setter
-    def border_color(self, value : int):
+    def border_color(self, value: int):
         if value != None:
             self._border_color = value
             self.reload_transformations_after("all")

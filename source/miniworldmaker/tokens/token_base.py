@@ -39,6 +39,9 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         self._layer: int = 0
         self._inner = 0
         self._dirty = 1
+        self._size = (0, 0)
+        self._static = False
+        self._position: "board_position.Position" = position
         self._managers: list = list()
         self.token_id: int = BaseToken.token_count + 1
         self.costume_manager: costumes_manager.CostumesManager = None
@@ -49,20 +52,35 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
             raise NoBoardError()
         _token_connector = self.board.get_token_connector(self)
         _token_connector.add_token_managers(position)
+        # properties defined in subclasses
+        # end
         pygame.sprite.DirtySprite.__init__(self)
         BaseToken.token_count += 1
-        self.static: bool = False
         self.speed: int = 1
-        self._position: "board_position.Position" = position
         self.ask: "ask.Ask" = ask.Ask(self.board)
+
+    @property
+    def position(self) -> "board_position.BoardPosition":
+        """implemented in subclass"""
+        return board_position.Position(0, 0)
+
+    @property
+    def size(self) -> Tuple:
+        """implemented in subclass"""
+        return self._size
+
+    @property
+    def static(self) -> bool:
+        """implemented in subclass"""
+        return self._static
 
     def __str__(self):
         if self.board and hasattr(self.board, "position_manager"):
             return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
-                self.class_name, self.token_id, self.position, self.size
+                self.__class__.__name__, self.token_id, self.position, self.size
             )
         else:
-            return "**: {0}; ID: {1}".format(self.class_name, self.token_id)
+            return "**: {0}; ID: {1}".format(self.__class__.__name__, self.token_id)
 
     @property
     def image(self) -> pygame.Surface:
@@ -89,7 +107,6 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     @dirty.setter
     def dirty(self, value: int):
         self._dirty = value
-
 
     @property
     def rect(self) -> pygame.Rect:

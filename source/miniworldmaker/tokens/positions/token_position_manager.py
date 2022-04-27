@@ -5,6 +5,7 @@ import pygame
 
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.board_vector as board_vector
+import miniworldmaker.board_positions.board_direction as board_direction
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 
@@ -171,16 +172,25 @@ class TokenPositionManager:
         self.position = destination
         return self
 
+    def move_towards_position(self, position):
+        tkn_position = board_position.Position.create(self.token.position)
+        if tkn_position.is_close(position):
+            tkn_position = position
+            return self
+        else:
+            direction = board_direction.Direction.create_from_token(self.token, position).value
+            self.set_direction(direction)
+            self.move()
+            return self
+
     def move_in_direction(self, direction: Union[int, str, "board_position.Position", tuple], distance=1):
         if type(direction) in [int, str]:
-            direction = self._value_to_direction(direction)
+            direction = board_direction.Direction.create_from_token(self.token, direction).value
             self.set_direction(direction)
-        elif type(direction) in [board_position.Position, tuple]:
-            self.point_towards_position(direction)
+            self.move(distance)
+            return self
         else:
-            raise MoveInDirectionTypeError(direction)
-        self.move(distance)
-        return self
+            return self.move_towards_position(direction)
 
     def move_back(self):
         self.position = self.last_position
@@ -347,6 +357,11 @@ class TokenPositionManager:
             The new direction
 
         """
+        direction = board_direction.Direction.create((self.token.center, destination))
+        print(direction.value)
+        self.set_direction(direction.value)
+        return direction.value
+        """
         pos = self.token.center
         x = destination[0] - pos[0]
         y = destination[1] - pos[1]
@@ -367,3 +382,4 @@ class TokenPositionManager:
             else:
                 self.token.direction = 0
                 return self.token.direction
+        """

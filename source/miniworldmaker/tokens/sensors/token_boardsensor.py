@@ -1,7 +1,7 @@
 from typing import List, Union
 
-import miniworldmaker.boards.board as board
-import miniworldmaker.tokens.token as token
+import miniworldmaker.boards.board as board_mod
+import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
 import miniworldmaker.base.app as app
 import miniworldmaker.board_positions.board_position as board_position
@@ -9,12 +9,12 @@ from miniworldmaker.exceptions.miniworldmaker_exception import NotImplementedOrR
 import miniworldmaker.board_positions.board_rect as board_rect
 
 
-class TokenBoardSensor():
+class TokenBoardSensor:
 
-    def __init__(self, token: "token.Token", board: "board.Board"):
+    def __init__(self, token: "token_mod.Token", board: "board_mod.Board"):
         super().__init__()
-        self.token: "token.Token" = token
-        self.board: "board.Board" = board
+        self.token: "token_mod.Token" = token
+        self.board: "board_mod.Board" = board
 
     def remove_from_board(self):
         """Removes a token from board
@@ -28,21 +28,23 @@ class TokenBoardSensor():
         """
         pass
 
-    def filter_token_list(self, token_list: Union[List["token.Token"], None], token_filter) -> List["token.Token"]:
-        # if token_list is None, return empty lsit
-        if token_list == None:
+    def filter_token_list(self, token_list: Union[List["token_mod.Token"], None], token_filter) -> List[
+            "token_mod.Token"]:
+        # if token_list is None, return empty list
+        if token_list is None:
             return []
-        # Filter tokens by classname
+        # Filter tokens by class name
         if type(token_filter) == str:
             token_list = self.filter_tokens_by_classname(token_list, token_filter)
         # if
-        if token_class_inspection.TokenClassInspection.inherits_from(token_filter.__class__, token.Token):
+        if token_class_inspection.TokenClassInspection.inherits_from(token_filter.__class__, token_mod.Token):
             token_list = self.filter_tokens_by_instance(token_list, token_filter)
         return token_list
 
-    def filter_tokens_by_classname(self, token_list: List["token.Token"], token_filter: str) -> List["token.Token"]:
+    def filter_tokens_by_classname(self, token_list: List["token_mod.Token"], token_filter: str) -> List[
+            "token_mod.Token"]:
         token_type = token_class_inspection.TokenClassInspection(self.token).find_token_class_by_classname(token_filter)
-        if token_type == None:
+        if token_type is None:
             return token_list
         if token_type:
             token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
@@ -50,22 +52,38 @@ class TokenBoardSensor():
         else:
             return token_list
 
-    def filter_tokens_by_instance(self, token_list: List["token.Token"], token_filter):
+    @staticmethod
+    def filter_tokens_by_instance(token_list: List["token_mod.Token"], token_filter):
         for token in token_list:
             if token == token_filter:
                 return [token]
         return []
 
-    def remove_self_from_token_list(self, token_list: List["token.Token"]):
+    def remove_self_from_token_list(self, token_list: List["token_mod.Token"]):
         if token_list and self.token in token_list:
             token_list.remove(self.token)
         return token_list
 
-    def sensing_token(self, token_filter=None, distance: int = 0) -> Union["token.Token", None]:
-        raise NotImplementedOrRegisteredError()
+    def sensing_token(self, token_filter=None, distance: int = 0) -> Union["token_mod.Token", None]:
+        raise NotImplementedOrRegisteredError(self.sensing_token)
 
-    def sensing_tokens(self, token_filter=None, distance: int = 0) -> Union["token.Token", None]:
-        raise NotImplementedOrRegisteredError()
+    def sensing_tokens(self, token_filter=None, distance: int = 0) -> List["token_mod.Token"]:
+        raise NotImplementedOrRegisteredError(self.sensing_tokens)
+
+    def sensing_point(self, pixel_position):
+        return self.token.rect.collidepoint(pixel_position)
+
+    def sensing_rect(self, rect):
+        return self.token.rect.colliderect(rect)
+
+    def sensing_on_board(self, distance):
+        raise NotImplementedOrRegisteredError(self.sensing_on_board)
+
+    def sensing_borders(self, distance):
+        raise NotImplementedOrRegisteredError(self.sensing_borders)
+
+    def sensing_colors(self, colors, distance):
+        raise NotImplementedOrRegisteredError(self.sensing_colors)
 
     @staticmethod
     def is_position_on_board(pos):
@@ -83,34 +101,10 @@ class TokenBoardSensor():
 
     @classmethod
     def is_rect_completly_on_board(cls, rect):
-        board = app.App.board
         rect = board_rect.Rect.create(rect)
         topleft_on_board = cls.is_position_on_board(rect.topleft)
         bottom_right_on_board = TokenBoardSensor.is_position_on_board(rect.bottomright)
         return topleft_on_board or bottom_right_on_board
-
-    def get_colors_in_rect(self, rect, rect_borders=None):
-        colors = []
-        rect = board_rect.Rect.create(rect)
-        for x in range(self.width):
-            if rect_borders is None or "left" in rect_borders:
-                color = self.board.background.get_color_from_pixel((rect.x + x, rect.y))
-                if color not in colors:
-                    colors.append(color)
-            if rect_borders is None or "right" in rect_borders:
-                color = self.board.background.get_color_from_pixel((rect.x + x, rect.y + rect.height))
-                if color not in colors:
-                    colors.append(color)
-        for y in range(self.height):
-            if rect_borders is None or "top" in rect_borders:
-                color = self.board.background.get_color_from_pixel((rect.x, rect.y + y))
-                if color not in colors:
-                    colors.append(color)
-            if rect_borders is None or "bottom" in rect_borders:
-                color = self.board.background.get_color_from_pixel((rect.x + rect.width, rect.y + y))
-                if color not in colors:
-                    colors.append(color)
-        return colors
 
     def get_borders_from_rect(self, rect):
         """
@@ -144,9 +138,3 @@ class TokenBoardSensor():
             return self.board.background.get_color_from_pixel(position)
         else:
             return ()
-
-    def sensing_point(self, pixel_position):
-        return self.token.rect.collidepoint(pixel_position)
-
-    def sensing_rect(self, rect):
-        return self.token.rect.colliderect(rect)

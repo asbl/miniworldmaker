@@ -6,7 +6,6 @@ import miniworldmaker.appearances.managers.transformations_manager as transforma
 import miniworldmaker.appearances.managers.image_manager as image_manager
 import pygame
 import miniworldmaker.tools.binding as binding
-import miniworldmaker.base.app as app
 
 
 class MetaAppearance(type):
@@ -178,9 +177,6 @@ class AppearanceBase(metaclass=MetaAppearance):
             "all",
         )
 
-    def repaint():
-        pass
-
     def register(self, method: callable):
         """
         Register method for decorator. Registers method to token or background.
@@ -216,13 +212,6 @@ class AppearanceBase(metaclass=MetaAppearance):
     @property
     def images(self):
         return self.image_manager.images_list
-
-    def register(self, method: callable):
-        """
-        Register method for decorator. Registers method to token or background.
-        """
-        bound_method = binding.bind_method(self, method)
-        return bound_method
 
     def draw_on_image(self, path, position, width, height):
         file = self.image_manager.find_image_file(path)

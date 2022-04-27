@@ -10,6 +10,13 @@ from miniworldmaker.exceptions import miniworldmaker_exception
 
 
 class HexBoard(tiled_board.TiledBoard):
+    """
+    A hexboard is a board that consists of hexagonal tiles.
+
+    Each token can be positioned either at a tile, at an edge or at a corner.
+
+    
+    """
     def __init__(self, columns: int = 20, rows: int = 16, empty=False):
         super().__init__(columns, rows, empty)
         self.lookup_table = []

@@ -2,12 +2,12 @@ from typing import Union
 
 import pygame
 import miniworldmaker
-import miniworldmaker.appearances.appearance as appearance
+import miniworldmaker.appearances.appearance as appearance_mod
 import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
 
 
 class AppearancesManager:
-    def __init__(self, parent, appearance = None):
+    def __init__(self, parent, appearance=None):
         if appearance is not None:
             self.appearances_list = [appearance]
         else:
@@ -46,7 +46,6 @@ class AppearancesManager:
             appearance.add_image(source)
             return self._add_appearance_to_manager(appearance)
 
-
     def _add_first_appearance(self, source):
         if self.appearances_list:
             first = self.appearances_list.pop(-1)
@@ -83,17 +82,18 @@ class AppearancesManager:
     def remove(self, index):
         del self.appearances_list[index]
 
-    def next(self, appearance):
-        index = self.get_appearance_at_index(self.costume)
+    def next_appearance(self):
+        index = self.get_index_for_appearance(self.appearance)
         if index < self.length() - 1:
             index += 1
         else:
             index = 0
+        return self.switch_appearance(index)
 
     def length(self):
         return len(self.appearances_list)
 
-    def get_appearance_at_index(self, index) -> "appearance.Appearance":
+    def get_appearance_at_index(self, index) -> "appearance_mod.Appearance":
         return self.appearances_list[index]
 
     def get_index_for_appearance(self, appearance):
@@ -150,29 +150,31 @@ class AppearancesManager:
                 if index == 0:
                     self.has_costume = False
                     self._add_default_appearance()
-                self.switch_appearance(self.get_appearance_at_index(index -1))
+                self.switch_appearance(self.get_appearance_at_index(index - 1))
             self.appearances_list.remove(appearance)
 
     def remove_last_costume(self, index):
         self.appearances_list.remove(-1)
 
-    def remove_appearance(self, source : Union[int, "appearance.Appearance"]=None):
+    def remove_appearance(self, source: Union[int, "appearance_mod.Appearance"] = None):
         """Removes an appearance (costume or background) from manager
 
         Args:
-            source: The index of the new appearance or the Appearance which should be removed Defaults to -1 (last costume)
+            source: The index of the new appearance or the Appearance which should be removed Defaults to -1
+            (last costume)
         """
         if type(source) == int:
             self._remove_appearance_at_index(source)
-        elif isinstance(source, appearance.Appearance):
+        elif isinstance(source, appearance_mod.Appearance):
             self._remove_appearance_from_manager(source)
 
-    def switch_appearance(self, source: Union[int, "appearance.Appearance"]) -> "appearance.Appearance":
+    def switch_appearance(self, source: Union[int, "appearance_mod.Appearance"]) -> "appearance_mod.Appearance":
+        print("switch appearance", source)
         if type(source) == int:
             if source >= self.length():
-                raise miniworldmaker_exception.CostumeOutOfBoundsError(self.token, self.length(), source)
+                raise miniworldmaker_exception.CostumeOutOfBoundsError(self.parent, self.length(), source)
             new_appearance = self.get_appearance_at_index(source)
-        elif isinstance(source, appearance.Appearance) or isinstance(source, miniworldmaker.Appearance):
+        elif isinstance(source, appearance_mod.Appearance) or isinstance(source, miniworldmaker.Appearance):
             new_appearance = source
         self.appearance = new_appearance
         self.appearance.image_manager.end_animation(new_appearance)
@@ -185,7 +187,7 @@ class AppearancesManager:
 
     def animate_appearance(self, appearance, speed):
         if appearance is None:
-            raise miniworldmaker.CostumeIsNoneError()
+            raise miniworldmaker_exception.CostumeIsNoneError()
         self.switch_appearance(appearance)
         self.costume.animation_speed = speed
         self.costume.animate()

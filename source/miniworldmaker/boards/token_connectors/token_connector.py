@@ -23,6 +23,7 @@ class TokenConnector:
 
     def add_token_to_board(self, position):
         self.board.tokens.add(self.token)
+        self.set_static(self.token.static)
         self.token.costume.reload_transformations_after("all")
         if hasattr(self.token, "on_setup"):
             self.token.on_setup()
@@ -66,4 +67,5 @@ class TokenConnector:
             self.board.dynamic_tokens.remove(self.token)
 
     def add_dynamic_token(self):
-        self.board.dynamic_tokens.add(self.token)
+        if self.token not in self.board.dynamic_tokens:
+            self.board.dynamic_tokens.add(self.token)

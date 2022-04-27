@@ -44,7 +44,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
             pos = (value[0] + shift_x, value[1] + shift_y)
             return super().set_position(pos)
         else:
-            raise NoValidBoardPositionError()
+            raise NoValidBoardPositionError(value)
 
     def get_center(self):
         # Default position is center

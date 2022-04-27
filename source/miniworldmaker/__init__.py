@@ -54,6 +54,7 @@ from miniworldmaker.containers.toolbar_widgets import *
 from miniworldmaker.board_positions.board_vector import Vector
 from miniworldmaker.board_positions.board_position import Position
 from miniworldmaker.board_positions.board_rect import Rect
+from miniworldmaker.board_positions.board_direction import Direction
 
 from miniworldmaker.board_positions.tile_factory import TileFactory
 from miniworldmaker.board_positions.tile_factory import HexTileFactory

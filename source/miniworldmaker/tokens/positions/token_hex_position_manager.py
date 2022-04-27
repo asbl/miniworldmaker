@@ -3,6 +3,9 @@ import pygame
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.hex_elements as hex_elements
 import miniworldmaker.tokens.positions.token_tiled_position_manager as tiled_positionmanager
+import miniworldmaker.board_positions.board_direction as board_direction
+from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
+from typing import Union
 
 
 class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
@@ -55,3 +58,11 @@ class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
         self._direction = direction
         if self.last_direction != self._direction:
             self.token.costume.reload_transformations_after("all")
+
+    def move_in_direction(self, direction: Union[int, str, "board_position.Position", tuple], distance=1):
+        old_direction = self.token.direction
+        direction = board_direction.Direction.create_from_token(self.token, direction).value
+        self.set_direction(direction)
+        self.move(distance)
+        self.direction = old_direction
+        return self
