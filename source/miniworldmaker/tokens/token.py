@@ -7,15 +7,13 @@ import pygame.rect
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume
 import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.tools.token_inspection as token_inspection
+import miniworldmaker.tokens.token_base as token_base
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
 )
-import miniworldmaker.tokens.token_aliases as token_aliases
-import miniworldmaker.tokens.token_base as token_base
 
 
-class Token(token_base.BaseToken, token_aliases.TokenAliases):
+class Token(token_base.BaseToken):
     """Tokens are objects on your board. Tokens can move around the board and have sensors to detect other tokens.
 
     The appearance of a token is determined by its costume.
@@ -90,7 +88,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
                 Token(self.get_mouse_position())
 
             board.run()
-
+surface
         .. image:: ../_images/token3.png
             :width: 100px
             :alt: Create a token at mouse position
@@ -1136,7 +1134,7 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.position_manager.bounce_from_border(borders)
 
-    def sensing_on_board(self, distance: int = 0) -> bool:
+    def sensing_board(self, distance: int = 0) -> bool:
         """
         Is the token on board if it is moving distance steps forward?
 
@@ -1151,38 +1149,36 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.board_sensor.sensing_on_board(distance=distance)
 
-    def sensing_tokens(
-            self, token_filter: str = None, distance: int = 0, collision_type: str = "default"
-    ) -> List[Token]:
-        """Senses if tokens are on tokens position.
+    # Aliases
+
+    sensing_on_board = sensing_board  #: Alias of :meth:`Token.sensing_board`
+
+    def sensing_tokens(self, token_filter: str = None) -> List[Token]:
+        """Detects if tokens are on token position.
         Returns a list of tokens.
 
         .. image:: ../_images/sensing_tokens.png
 
         Args:
             token_filter: filter by token type. Enter a class_name of tokens to look for here
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
-            collision_type: The type of collision which should be checked:
 
         Returns:
             All tokens found by Sensor
 
         """
-        return self.board_sensor.sensing_tokens(token_filter, distance)
+        return self.board_sensor.sensing_tokens(token_filter)
 
-    def sensing_token(
-            self, token_filter: Union[str, "Token"] = None, distance: int = 0, collision_type: str = "default"
-    ) -> Union["Token", None]:
-        """Senses if tokens are on tokens position.
+    get_touching_tokens = sensing_tokens  #: Alias of :meth:`Token.sensing_tokens`
+    detect_tokens = sensing_tokens  #: Alias of :meth:`Token.sensing_tokens`
+
+    def sensing_token(self, token_filter: str = None) -> Union["Token", None]:
+        """Senses if tokens are on token position.
         Returns the first found token.
 
         .. image:: ../_images/sensing_token.png
 
         Args:
-
-            token_filter: filter by token type or by token instance
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
-            collision_type: The type of collision which should be checked:
+            token_filter: filter by token type. Enter a class_name of tokens to look for here
 
         Returns:
 
@@ -1223,10 +1219,11 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
                 <source src="../_static/pushing.webm" type="video/webm">
                 Your browser does not support the video tag.
                 </video>
-
-
         """
-        return self.board_sensor.sensing_token(token_filter, distance)
+        return self.board_sensor.sensing_token(filter)
+
+    get_touching_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
+    detect_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
 
     def sensing_borders(self, distance: int = 0) -> bool:
         """
@@ -1245,91 +1242,130 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
         """
         return self.board_sensor.sensing_borders(distance)
 
-    def sensing_left_border(self, distance: int = 0) -> bool:
-        """Senses borders
+    get_touching_borders = sensing_borders  #: Alias of :meth:`Token.sensing_borders`
+    detect_borders = sensing_borders  #: Alias of :meth:`Token.detect_borders`
 
-        Args:
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
-
-        Returns:
-            True if border was found.
-
-        """
-        return "left" in self.board_sensor.sensing_borders(distance)
-
-    def sensing_right_border(self, distance: int = 0) -> bool:
-        """Senses borders
-
-        Args:
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+    def sensing_left_border(self) -> bool:
+        """Does the token touch the left border?
 
         Returns:
             True if border was found.
 
         """
-        return "right" in self.board_sensor.sensing_borders(distance)
+        return "left" in self.board_sensor.sensing_borders(0)
 
-    def sensing_top_border(self, distance: int = 0) -> bool:
-        """Senses borders
+    is_sensing_left_border = sensing_left_border  #: Alias of :meth:`Token.sensing_left_border`
+    is_touching_left_border = sensing_left_border  #: Alias of :meth:`Token.sensing_left_border`
 
-        Args:
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
-
-        Returns:
-            True if border was found.
-
-        """
-        return "top" in self.board_sensor.sensing_borders(distance)
-
-    def sensing_bottom_border(self, distance: int = 0) -> bool:
-        """Senses borders
-
-        Args:
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+    def sensing_right_border(self) -> bool:
+        """Does the token touch the right border?
 
         Returns:
             True if border was found.
 
         """
-        return "bottom" in self.board_sensor.sensing_borders(distance)
+        return "right" in self.board_sensor.sensing_borders(0)
 
-    def sensing_colors(self, colors: Tuple, distance: int) -> tuple:
+    is_sensing_right_border = sensing_right_border  #: Alias of :meth:`Token.sensing_right_border`
+    is_touching_right_border = sensing_right_border  #: Alias of :meth:`Token.sensing_right_border`
+
+    def sensing_top_border(self) -> bool:
+        """Does the token touch the lower border?
+
+        Returns:
+            True if border was found.
+
+        """
+        return "top" in self.board_sensor.sensing_borders(0)
+
+    is_sensing_top_border = sensing_top_border  #: Alias of :meth:`Token.sensing_top_border`
+    is_touching_top_border = sensing_top_border  #: Alias of :meth:`Token.sensing_top_border`
+
+    def sensing_bottom_border(self) -> bool:
+        """Does the token touch the lower border?
+
+        Returns:
+            True if border was found.
+
+        """
+        return "bottom" in self.board_sensor.sensing_borders(0)
+
+    is_sensing_bottom_border = sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
+    is_touching_bottom_border = sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
+
+    def sensing_color(self, color: Union[Tuple, List] = None) -> tuple:
         """Senses colors in board-background at token-position
 
         Args:
-            colors: colors as tuple
+            color: colors as tuple
+            
+        Returns:
+            All colors found by Sensor
+
+        """
+        color = self.board_sensor.sensing_color(color, )
+        return color
+
+    def sensing_color_at(self, direction: int = 0, distance: int = 0) -> Union[Tuple, List]:
+        """Detects colors in board-background at token-position
+
+        Args:
+            direction: Specifies the direction where the sensor is searching.
             distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
         Returns:
             All colors found by Sensor
 
         """
-        colors = self.board_sensor.sensing_colors(colors, distance)
-        return colors
+        color = self.board_sensor.sense_color_at(direction, distance)
+        return color
 
-    def sensing_point(self, board_position: Union["board_position.Position", Tuple]) -> bool:
+    detect_color_at = sensing_color_at  #: Alias of :meth:`Token.sensing_color_at`
+    sense_color_at = sensing_color_at  #: Alias of :meth:`Token.sensing_color_at`
+
+    def sensing_tokens_at(self, direction: int = 0, distance: int = 0) -> list:
+        """Detects a token in given direction and distance.
+
+        Examples:
+
+          .. code-block:: python
+
+            from miniworldmaker import *
+            board = Board()
+            wall=Rectangle((200,0))
+            wall.size = (20, 400)
+
+            for i in range(7):
+                token = Circle((10,i*60 + 20))
+                token.range = i * 10
+                @token.register
+                def act(self):
+                    if not self.detect_tokens_at(self.direction, self.range):
+                        self.direction = "right"
+                        self.move()
+
+            board.run()
+
+
+        :param direction: The direction in which tokens should be detected.
+        :param distance:  The distance in which tokens should be detected (Start-Point is token.center)
+        :return: A list of tokens
+        """
+        return self.board_sensor.sensing_tokens_at(direction, distance)
+
+    detect_tokens_at = sensing_tokens_at  #: Alias of :meth:`Token.sensing_tokens_at`
+
+    def sensing_point(self, position: Union["board_position.Position", Tuple]) -> bool:
         """Is the token colliding with a specific (global) point?
 
         Returns:
             True if point is below token
         """
-        return self.board_sensor.sensing_point(board_position)
+        return self.board_sensor.sensing_point(position)
 
     def sensing_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
         """Is the token colliding with a static rect?"""
         return self.board_sensor.sensing_rect(rect)
-
-    def register(self, method: callable):
-        """This method is used for the @register decorator. It adds a method to an object
-
-        Args:
-            method (callable): The method which should be added to the token
-        """
-        bound_method = token_inspection.TokenInspection(self).bind_method(method)
-        if method.__name__ == "on_setup":
-            self.on_setup()
-        self.board.event_manager.register_event(method.__name__, self)
-        return bound_method
 
     def bounce_from_token(self, other: "Token"):
         self.position_manager.bounce_from_token(other)
@@ -1894,6 +1930,9 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     def fill_color(self, value):
         self.costume.fill(value)
 
+    # Alias
+    color = fill_color
+
     def fill(self, value):
         """Set fill color for borders and lines"""
         self.costume.fill(value)
@@ -1935,6 +1974,10 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     @border_color.setter
     def border_color(self, value):
         self.costume.border_color = value
+
+    # Alias
+
+    stroke_color = border_color
 
     @property
     def border(self):
@@ -1983,3 +2026,13 @@ class Token(token_base.BaseToken, token_aliases.TokenAliases):
     @border.setter
     def border(self, value):
         self.costume.border = value
+        
+    def hide(self):
+        """Hides a token (the token will be invisible)
+        """
+        self.visible = False
+    
+    def show(self):
+        """Displays a token ( an invisible token will be visible)
+        """
+        self.visible = True

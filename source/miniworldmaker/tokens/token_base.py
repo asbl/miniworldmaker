@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Union, Optional, Tuple
 
 import pygame
+import functools
 
 import miniworldmaker.appearances.costumes_manager as costumes_manager
 import miniworldmaker.base.app as app
@@ -10,6 +11,7 @@ import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.boards.board as board
 import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
+import miniworldmaker.tools.token_inspection as token_inspection
 import miniworldmaker.tokens.sensors.token_boardsensor as token_boardsensor
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     NoValidBoardPositionError,
@@ -35,7 +37,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     class_image: str = ""
 
     def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = None):
-        self._collision_type: str = ""
+        self._collision_type: str = "rect"
         self._layer: int = 0
         self._inner = 0
         self._dirty = 1
@@ -118,3 +120,15 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def get_rect(self) -> pygame.Rect:
         return self.position_manager.rect
+
+    def register(self, method: callable):
+        """This method is used for the @register decorator. It adds a method to an object
+
+        Args:
+            method (callable): The method which should be added to the token
+        """
+        bound_method = token_inspection.TokenInspection(self).bind_method(method)
+        if method.__name__ == "on_setup":
+            self.on_setup()
+        self.board.event_manager.register_event(method.__name__, self)
+        return bound_method

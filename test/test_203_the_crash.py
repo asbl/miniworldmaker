@@ -45,7 +45,7 @@ class Test203(unittest.TestCase):
 
             def act(self):
                 self.move()
-                other = self.sensing_token(distance = 0, token_filter=Robot)
+                other = self.sensing_token(token_filter=Robot)
                 if other:
                     print("sensed")
                     explosion = Explosion(position=self.position)

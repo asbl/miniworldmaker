@@ -153,11 +153,11 @@ class AppearancesManager:
                 self.switch_appearance(self.get_appearance_at_index(index - 1))
             self.appearances_list.remove(appearance)
 
-    def remove_last_costume(self, index):
-        self.appearances_list.remove(-1)
-
-    def remove_appearance(self, source: Union[int, "appearance_mod.Appearance"] = None):
+    def remove_appearance(self, source: Union[int, "appearance_mod.Appearance"] = -1):
         """Removes an appearance (costume or background) from manager
+        
+        Defaults:
+            Removes last costume.
 
         Args:
             source: The index of the new appearance or the Appearance which should be removed Defaults to -1
@@ -193,6 +193,7 @@ class AppearancesManager:
         self.costume.animate()
 
     def self_remove(self):
+        """Implemented in subclasses"""
         pass
 
     def count(self):

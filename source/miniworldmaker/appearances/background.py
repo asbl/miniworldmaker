@@ -1,5 +1,7 @@
-from typing import Union, List, Tuple
+from typing import Union, Tuple
+
 import pygame
+
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.managers.image_background_manager as image_background_manager
 import miniworldmaker.appearances.managers.transformations_background_manager as transformations_background_manager
@@ -10,7 +12,7 @@ class Background(appearance.Appearance):
     """
     The class describes the background of a board.
 
-    A ``background`` can be an image or an color:
+    A ``background`` can be an image or a color:
 
     Each board has one or more backgrounds that can be switched between.
     In addition, each background also has several pictures (or colors) between which you can switch.
@@ -52,7 +54,7 @@ class Background(appearance.Appearance):
         self.board = board
         # Register image actions which you can be triggered
         self._grid = False
-        self._grid_color = (255,0, 255)
+        self._grid_color = (255, 0, 255)
         self.surface = None
         self._is_scaled_to_tile = False
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
@@ -60,10 +62,10 @@ class Background(appearance.Appearance):
         self.is_scaled = True
         self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
         self.image_manager = image_background_manager.ImageBackgroundManager(self)
-        
+
     def add_image(self, source: Union[str, pygame.Surface, Tuple] = None) -> int:
         super().add_image(source)
-        self.parent.app.window.display_update()
+        return self.parent.app.window.display_update()
 
     def show_grid(self):
         self.grid = True
@@ -122,7 +124,7 @@ class Background(appearance.Appearance):
         ...
         """
         super().reload_transformations_after(value)
-        
+
     def _update_all_costumes(self):
         """updates costumes for all tokens on board"""
         [token.costume.update() for token in self.reload_costumes_queue]

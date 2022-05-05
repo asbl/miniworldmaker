@@ -626,11 +626,16 @@ class Board(board_base.BaseBoard):
 
     def is_mouse_pressed(self) -> bool:
         """Returns True, if mouse is pressed"""
-        if pygame.mouse.get_pressed()[0]:
-            return True
-        else:
-            return False
+        return self.mouse_manager.mouse_left_is_clicked() or self.mouse_manager.mouse_left_is_clicked()
 
+    def is_mouse_left_pressed(self) -> bool:
+        """Returns True, if mouse left button is pressed"""
+        return self.mouse_manager.mouse_left_is_clicked() 
+    
+    def is_mouse_right_pressed(self) -> bool:
+        """Returns True, if mouse right button is pressed"""
+        return self.mouse_manager.mouse_right_is_clicked()
+                
     def send_message(self, message, data=None):
         """Sends broadcast message
 

@@ -1,7 +1,11 @@
 from inspect import signature
 
-from miniworldmaker.exceptions.miniworldmaker_exception import FirstArgumentShouldBeSelfError, NotCallableError, \
-    WrongArgumentsError, NotNullError
+from miniworldmaker.exceptions.miniworldmaker_exception import (
+    FirstArgumentShouldBeSelfError,
+    NotCallableError,
+    WrongArgumentsError,
+    NotNullError,
+)
 
 
 def get_signature(method: callable, arguments: tuple, allow_none=True):

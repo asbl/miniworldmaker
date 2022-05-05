@@ -43,27 +43,3 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
     @property
     def backgrounds(self):
         return self.appearances_list
-
-    """
-    
-
-    def init_background(self, background_image):
-        if background_image is not None:
-            self.add_background(background_image)
-            self.has_background = True
-        else:
-            self.add_background(None)
-            self.has_background = False
-
-
-    def switch_background(self, value : Union["appearance.Appearance", int]):
-        if type(value) == int:
-            background = self.backgrounds.get_background_at_index(value)
-        elif type(value) == appearance.Appearance:
-            index = self.backgrounds.get_appearance_at_index(value)
-        self.background = background
-        for token in self.board.tokens:
-            token.dirty = 1
-        return self.background
-
-    """

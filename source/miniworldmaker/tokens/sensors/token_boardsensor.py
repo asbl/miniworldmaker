@@ -1,12 +1,13 @@
+import math
 from typing import List, Union
 
+import miniworldmaker.base.app as app
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.board_rect as board_rect
 import miniworldmaker.boards.board as board_mod
 import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
-import miniworldmaker.base.app as app
-import miniworldmaker.board_positions.board_position as board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import NotImplementedOrRegisteredError
-import miniworldmaker.board_positions.board_rect as board_rect
 
 
 class TokenBoardSensor:
@@ -29,7 +30,7 @@ class TokenBoardSensor:
         pass
 
     def filter_token_list(self, token_list: Union[List["token_mod.Token"], None], token_filter) -> List[
-            "token_mod.Token"]:
+        "token_mod.Token"]:
         # if token_list is None, return empty list
         if token_list is None:
             return []
@@ -42,7 +43,7 @@ class TokenBoardSensor:
         return token_list
 
     def filter_tokens_by_classname(self, token_list: List["token_mod.Token"], token_filter: str) -> List[
-            "token_mod.Token"]:
+        "token_mod.Token"]:
         token_type = token_class_inspection.TokenClassInspection(self.token).find_token_class_by_classname(token_filter)
         if token_type is None:
             return token_list
@@ -64,10 +65,10 @@ class TokenBoardSensor:
             token_list.remove(self.token)
         return token_list
 
-    def sensing_token(self, token_filter=None, distance: int = 0) -> Union["token_mod.Token", None]:
+    def sensing_token(self, token_filter=None) -> Union["token_mod.Token", None]:
         raise NotImplementedOrRegisteredError(self.sensing_token)
 
-    def sensing_tokens(self, token_filter=None, distance: int = 0) -> List["token_mod.Token"]:
+    def sensing_tokens(self, token_filter=None) -> List["token_mod.Token"]:
         raise NotImplementedOrRegisteredError(self.sensing_tokens)
 
     def sensing_point(self, pixel_position):
@@ -82,8 +83,27 @@ class TokenBoardSensor:
     def sensing_borders(self, distance):
         raise NotImplementedOrRegisteredError(self.sensing_borders)
 
-    def sensing_colors(self, colors, distance):
-        raise NotImplementedOrRegisteredError(self.sensing_colors)
+    def sensing_color(self, color: tuple) -> list:
+        return self.sense_color_at(0,0) == color
+
+    def sensing_tokens_at(self, direction: int = 0, distance: int = 1) -> list:
+        if direction == 0:
+            direction = self.token.direction
+        destination = self.get_destination(self.token.center, direction, distance)
+        return self.get_tokens_at_position(destination)
+
+    def sense_color_at(self,direction: int = 0, distance: int = 1) -> list:
+        if direction == 0:
+            direction = self.token.direction
+        destination = self.get_destination(self.token.center, direction, distance)
+        return self.board.background.get_color(destination)
+
+    @staticmethod
+    def get_destination(start, direction, distance) -> "board_position.Position":
+        exact_position_x = start[0] + math.sin(math.radians(direction)) * distance
+        exact_position_y = start[1] - math.cos(math.radians(direction)) * distance
+        pos = board_position.Position.create((exact_position_x, exact_position_y))
+        return pos
 
     @staticmethod
     def is_position_on_board(pos):

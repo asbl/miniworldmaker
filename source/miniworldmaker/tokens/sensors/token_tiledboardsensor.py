@@ -1,9 +1,9 @@
 import math
 
-import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
 import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.tokens.token as token_module
 import miniworldmaker.boards.tiled_board as board_module
+import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
+import miniworldmaker.tokens.token as token_module
 
 
 class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
@@ -50,7 +50,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         rect = (target.x, target.y, self.board.tile_size, self.board.tile_size)
         return self.token.board.position_manager.get_borders_from_rect(rect)
 
-    def sensing_tokens(self, token_filter=None, distance: int = 0) -> list:
+    def sensing_tokens(self, token_filter=None) -> list:
         """
         Senses tokens at current position
 
@@ -62,7 +62,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         Returns: A list of tokens at token position
 
         """
-        target_position = self.get_destination(self.token.position, self.token.direction, distance)
+        target_position = self.token.position
         token_list: list = list()
         if self.is_position_on_board(target_position):
             token_list = self.board.sensing_tokens(target_position)
@@ -72,7 +72,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         token_list = self.filter_token_list(token_list, token_filter)
         return token_list
 
-    def sensing_token(self, token_filter=None, distance: int = 0) -> "token_module.Token":
+    def sensing_token(self, token_filter=None) -> "token_module.Token":
         """
         Senses tokens at current position. The method is faster than sensing_tokens.
 
@@ -84,7 +84,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         Returns: The first token at current position or None.
 
         """
-        token_list = self.sensing_tokens(token_filter, distance)
+        token_list = self.sensing_tokens(token_filter=token_filter)
         token_list = self.remove_self_from_token_list(token_list)
         token_list = self.filter_token_list(token_list, token_filter)
         if token_list:
@@ -105,3 +105,10 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
 
     def sensing_point(self, pixel_position):
         return self.token.position == self.board.get_from_pixel(pixel_position)
+
+    def sense_color_at(self, direction: int = 0, distance: int = 1) -> list:
+        if direction == 0:
+            direction = self.token.direction
+        destination = self.get_destination(self.token.position, direction, distance)
+        destination = self.board.to_pixel(destination)
+        return self.board.background.get_color(destination)

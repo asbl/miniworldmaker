@@ -5,10 +5,10 @@ import pygame
 
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.board_rect as board_rect
+import miniworldmaker.boards.board as board_mod
 import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
 import miniworldmaker.tokens.token as token_mod
-import miniworldmaker.boards.board as board_mod
-
+import miniworldmaker.tools.token_inspection as token_inspection
 
 class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
     """Sensor for Tokens on PixelBoard.
@@ -35,15 +35,11 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
             else:
                 return []
 
-    def sensing_colors(self, colors: Union[tuple, list] = (), distance: int = 0) -> list:
-        if type(colors) == tuple:
-            colors = [colors]
-        line = self.get_line_in_direction(self.token.center, self.token.direction, distance)
-        colorlist = self.board.get_colors_at_line(line)
-        if not colors:
-            return colorlist
-        intersections = [value for value in colorlist if value in colors]
-        return intersections
+    def sense_color_at(self, direction: int = 0, distance: int = 1) -> list:
+        if direction == 0:
+            direction = self.token.direction
+        destination = self.get_destination(self.token.center, direction, distance)
+        return self.board.background.get_color(destination)
 
     def get_destination_rect(self, distance: int) -> "board_rect.Rect":
         destination_pos = self.get_destination(self.token.position, self.token.direction, distance)
@@ -62,39 +58,31 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
                                                range(1, sampling_rate + 1))]
 
     @staticmethod
-    def get_destination(start, direction, distance) -> "board_position.Position":
-        exact_position_x = start[0] + math.sin(math.radians(direction)) * distance
-        exact_position_y = start[1] - math.cos(math.radians(direction)) * distance
-        pos = board_position.Position.create((exact_position_x, exact_position_y))
-        return pos
-
-    @staticmethod
     def filter_actor_list(a_list, actor_type):
         return [actor for actor in a_list if type(token_mod.Token) == actor_type]
 
-    def sensing_tokens(self, token_filter=None, distance: int = 0, collision_type="default") -> list:
-        destination_rect = self.get_destination_rect(distance=distance)
-        tokens = self.get_tokens_at_rect(destination_rect)
-        if collision_type == "default":
+    def sensing_tokens(self, token_filter=None) -> list:
+        tokens = self.get_tokens_at_rect(self.token.rect)
+        tokens_list = []
+        if self.token.collision_type == "default":
             collision_type = "mask"
         else:
             collision_type = self.token.collision_type
         if collision_type == "circle":
-            tokenlist = [
+            tokens_list = [
                 token for token in tokens if pygame.sprite.collide_circle(self.token, token)]
         elif collision_type == "rect" or collision_type == "static-rect":
-            tokenlist = [
+            tokens_list = [
                 token for token in tokens if pygame.sprite.collide_rect(self.token, token)]
         elif collision_type == "mask":
-            tokenlist = [
+            tokens_list = [
                 token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
-        tokenlist = self.remove_self_from_token_list(tokenlist)
-        tokenlist = self.filter_token_list(tokenlist, token_filter)
-        return tokenlist
+        tokens_list = self.remove_self_from_token_list(tokens_list)
+        tokens_list = self.filter_token_list(tokens_list, token_filter)
+        return tokens_list
 
-    def sensing_token(self, token_filter=None, distance: int = 0) -> Union["token_mod.Token", None]:
-        destination_rect = self.get_destination_rect(distance)
-        tokens = [self.get_single_token_at_rect(destination_rect)]
+    def sensing_token(self, token_filter=None) -> Union["token_mod.Token", None]:
+        tokens = [self.get_single_token_at_rect(self.token.rect)]
         tokens = self.filter_token_list(tokens, token_filter)
         if self.token.collision_type == "default":
             collision_type = "mask"
@@ -111,6 +99,21 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
             if collision_type == "mask" and pygame.sprite.collide_mask(self.token, token):
                 return token
         return tokens[0]
+
+    def sensing_tokens_at(self, direction: int = 0, distance: int = 1) -> list:
+        if direction == 0:
+            direction = self.token.direction
+        destination = self.get_destination(self.token.center, direction, distance)
+        return self.get_tokens_at_position(destination)
+
+    def get_tokens_at_position(self, position):
+        tokens = []
+        for token in self.board.tokens:
+            if token.rect.collidepoint(position[0], position[1]):
+                tokens.append(token)
+        if self.token in tokens:
+            tokens.remove(self.token)
+        return tokens
 
     def get_single_token_at_rect(self, rect: pygame.Rect) -> Optional["token_mod.Token"]:
         # Get first colliding token

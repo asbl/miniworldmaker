@@ -615,10 +615,6 @@ class Appearance(appearance_base.AppearanceBase):
     def from_appearance(self, appearance, index):
         self.image_manager.add_image_from_surface(index)
 
-    """def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.background.count_pixels_by_color(rect, color, threshold)
-    """
-
     @property
     def color(self):
         """->See fill color"""
@@ -688,4 +684,33 @@ class Appearance(appearance_base.AppearanceBase):
     @border.setter
     def border(self, value):
         self._border = value
+        self.reload_transformations_after("all")
+
+    def get_color(self, position):
+        x = int(position[0])
+        y = int(position[1])
+        if 0 <= x < self.image.get_width() and 0 <= y < self.image.get_height():
+            return self.image.get_at((x,y))
+        else:
+            return None
+
+    def find_color_in_rect(self, rect, color, threshold=(20, 20, 20, 20)):
+        return self.background.count_pixels_by_color(rect, color, threshold)
+
+    def draw(self, source, position, width, height):
+        if type(source) == str:
+            self.draw_on_image(source, position, width, height)
+        elif type(source) == tuple:
+            self.draw_color_on_image(source, position, width, height)
+
+    def draw_on_image(self, path, position, width, height):
+        file = self.image_manager.find_image_file(path)
+        surface = self.image_manager.load_image(file)
+        self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
+        self.reload_transformations_after("all")
+
+    def draw_color_on_image(self, color, position, width, height):
+        surface = pygame.Surface((width, height))
+        surface.fill(color)
+        self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
         self.reload_transformations_after("all")

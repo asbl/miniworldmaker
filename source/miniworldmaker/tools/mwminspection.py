@@ -49,13 +49,3 @@ class MWMInspection:
             self.call_instance_method(method, args)
         elif errors:
             raise Exception("Method not found")
-
-    def all_subclasses(cls):
-        def rec_all_subs(base_cls) -> set:
-            if cls.subclasses is None:
-                return set(base_cls.__subclasses__()).union(
-                    [s for c in base_cls.__subclasses__() for s in rec_all_subs(c)])
-            else:
-                return cls.subclasses
-
-        return rec_all_subs(cls)

@@ -1,9 +1,11 @@
-from miniworldmaker.tools import method_caller
 from miniworldmaker.base import app
+from miniworldmaker.tools import method_caller
+
 
 class Timed():
     """Base class for all timers
     """
+
     def __init__(self):
         self.board = app.App.board
         self.board.timed_objects.append(self)
@@ -17,7 +19,7 @@ class Timed():
         """
         if self in self.board.timed_objects:
             self.board.timed_objects.remove(self)
-        del(self)
+        del (self)
 
 
 class Timer(Timed):
@@ -64,7 +66,7 @@ class ActionTimer(Timer):
             arguments ([type], optional): Arguments for the method.
         """
         super().__init__(time)
-        self.method : callable = method
+        self.method: callable = method
         if arguments or arguments == 0:
             self.arguments = [arguments]
         else:
@@ -113,9 +115,11 @@ def timer(*args, **kwargs):
             def moving():
                 player.move()
     """
+
     def inner(method):
         timer = ActionTimer(kwargs["frames"], method)
         return timer
+
     return inner
 
 
@@ -128,7 +132,9 @@ def loop(*args, **kwargs):
             def moving():
                 player.move()
     """
+
     def inner(method):
         timer = LoopActionTimer(kwargs["frames"], method)
         return timer
+
     return inner

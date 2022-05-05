@@ -9,11 +9,9 @@ from miniworldmaker.tokens import token
 
 
 class InspectionMethods:
-
     token_class_ids = defaultdict()  # class_name -> id
     token_classes = defaultdict()  # class_name as string -> class
     token_class_id_counter = 0
-
 
     @staticmethod
     def has_parent_with_name(instance, name):
@@ -68,7 +66,7 @@ class InspectionMethods:
             raise Exception("Method not found")
 
     @staticmethod
-    def call_instance_method(instance, method: callable, args: Optional[Union[tuple, list]], allow_none = True):
+    def call_instance_method(instance, method: callable, args: Optional[Union[tuple, list]], allow_none=True):
         # Don't call method if tokens are already removed:
         method = getattr(instance, method.__name__)
         if issubclass(instance.__class__, token.Token) and not instance.board:
@@ -104,7 +102,7 @@ class InspectionMethods:
 
     @staticmethod
     def call_method(method: callable, arguments: tuple, allow_none=True):
-        InspectionMethods.check_signature(method, arguments, allow_none = True)
+        InspectionMethods.check_signature(method, arguments, allow_none=True)
         if arguments == None:
             method()
         else:

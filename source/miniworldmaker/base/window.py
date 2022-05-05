@@ -72,7 +72,6 @@ class Window:
         if self.fullscreen:
             self._surface = pygame.display.set_mode((self.width, self.height), pygame.SCALED)
         elif self.fit_desktop:
-            infoObject = pygame.display.Info()
             self._surface = pygame.display.set_mode((0, 0))
         elif self.replit:
             self._surface = pygame.display.set_mode((800, 600), pygame.SCALED)

@@ -1,9 +1,11 @@
-import pymunk as pymunk_engine
 import sys
+
+import pymunk as pymunk_engine
+
 import miniworldmaker.boards.board as board
 import miniworldmaker.boards.token_connectors.physics_board_connector as physics_board_connector
-import miniworldmaker.tools.token_inspection as token_inspection
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
+import miniworldmaker.tools.token_inspection as token_inspection
 
 
 class PhysicsBoard(board.Board):

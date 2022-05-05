@@ -39,6 +39,7 @@ class TokenClassInspection:
     def get_subclasses_for_cls(self):
         def all_subclasses(cls):
             return set(cls.__subclasses__()).union([s for c in cls.__subclasses__() for s in all_subclasses(c)])
+
         token_set = set()
         token_set.add(self.token_class)
         return token_set.union(all_subclasses(self.token_class))

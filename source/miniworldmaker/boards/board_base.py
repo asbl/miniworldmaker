@@ -179,40 +179,17 @@ class BaseBoard(container.Container):
         self.get_token_connector(token).remove_token_from_board(token)
 
     def add_to_board(self, token, position: tuple):
-        """
-        Adds a Token to the board.
+        """Adds a Token to the board.
         Is called in __init__-Method if position is set.
 
         Args:
-            board: The board, the actor should be added
+            token: The token, which should be added to the board.
             position: The position on the board where the actor should be added.
         """
         self.get_token_connector(token).add_token_to_board(token, position)
 
     def blit_surface_to_window_surface(self):
         self.app.window.surface.blit(self.background.surface, self.rect)
-
-    def get_colors_at_line(self, line: list):
-        """
-        Gets all colors in a line. A line is a list of board_positions
-
-        Args:
-            line: the line
-
-        Returns:
-            A list of all colors found at the line
-
-        """
-        colors = []
-        for pos in line:
-            pos = board_position.Position.create(pos)
-            color_at_pos = self.get_colors_at_position(pos)
-            if color_at_pos not in colors:
-                colors.append(color_at_pos)
-        return colors
-
-    def get_color_at_rect(self, rect: pygame.Rect, directions=None) -> list:
-        return rect.colors()
 
     def get_tokens_from_pixel(self, pixel: tuple) -> list:
         """Gets all tokens by Pixel.
@@ -249,7 +226,7 @@ class BaseBoard(container.Container):
         """Removes all tokens in an area
 
         Args:
-            rect: A rectangle or a tuple (which is automated converted to a rectangle with tile_size
+            rect: A rectangle or a tuple (which is automated converted to a rectangle with tile_size).
             token_class: The class of the tokens which should be removed
             exclude: A token which should not be removed e.g. the actor itself
 
@@ -304,7 +281,8 @@ class BaseBoard(container.Container):
             if on_started_method and self.frame % self.speed == 0 and self.frame != 0:
                 self._run_line(on_started_method, line_number)
 
-    def _run_line(self, method: callable, line_number: int):
+    @staticmethod
+    def _run_line(method: callable, line_number: int):
         method_source = inspect.getsourcelines(method)[0]
         if line_number < len(method_source):
             exec(method_source[line_number].strip())
@@ -357,7 +335,7 @@ class BaseBoard(container.Container):
 
         Examples:
 
-        Registering a on_started-Method
+        Registering an on_started-Method
 
         .. code-block:: python
 
@@ -379,7 +357,7 @@ class BaseBoard(container.Container):
         Args:
             rect: The rect
 
-        Returns: A list of borders, e.g. ["left", "top", if rect is touching the left an top border.
+        Returns: A list of borders, e.g. ["left", "top", if rect is touching the left a top border.
 
         """
         pass
@@ -393,7 +371,7 @@ class BaseBoard(container.Container):
         if type(token_type) == str:  # is token_type a string
             token_type = self.find_token_class_for_name(token_type)
         # single token --> list
-        if isinstance(token_type, token_module.Token):  # is_token_type a object?
+        if isinstance(token_type, token_module.Token):  # is_token_type an object?
             token_list = [token_type]
         # filter
         if token_type:
@@ -421,4 +399,3 @@ class BaseBoard(container.Container):
         self._tile_size = value
         self.app.window.dirty = 1
         self.background.reload_transformations_after("all")
-

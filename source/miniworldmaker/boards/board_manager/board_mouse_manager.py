@@ -30,8 +30,8 @@ class BoardMouseManager:
     def prev_mouse_position(self):
         return self._prev_mouse_position
 
-
-
-
-
-
+    def mouse_left_is_clicked(self):
+        return pygame.mouse.get_pressed()[0]
+    
+    def mouse_right_is_clicked(self):
+        return pygame.mouse.get_pressed()[0]

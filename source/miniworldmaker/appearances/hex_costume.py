@@ -21,13 +21,7 @@ class HexCostume(costume.Costume):
         board = self.token.board
         if board.is_tile(self.token.position):
             tile = self.token.board.get_tile(self.token.position)
-            #for corner in tile.get_neighbour_corners():
-            #    offset = corner.get_local_coordinate_for_tile(tile)
-            #    if offset:
-            #        self.mod_pointlist.append(offset)
             self.mod_pointlist = tile.get_local_corner_points()
-        else:
-            pass
         super()._update_draw_shape()
 
     def _inner_shape(self):
