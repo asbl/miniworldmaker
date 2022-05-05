@@ -248,7 +248,6 @@ class ImageManager:
     def load_surface(self) -> pygame.Surface:
         if not self.appearance.surface_loaded:
             image = pygame.Surface((self.appearance.parent.width, self.appearance.parent.height), pygame.SRCALPHA)
-            # image.fill(self.appearance.fill_color)
             image.set_alpha(255)
             return image
 

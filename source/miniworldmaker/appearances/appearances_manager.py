@@ -169,7 +169,6 @@ class AppearancesManager:
             self._remove_appearance_from_manager(source)
 
     def switch_appearance(self, source: Union[int, "appearance_mod.Appearance"]) -> "appearance_mod.Appearance":
-        print("switch appearance", source)
         if type(source) == int:
             if source >= self.length():
                 raise miniworldmaker_exception.CostumeOutOfBoundsError(self.parent, self.length(), source)

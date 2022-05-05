@@ -128,7 +128,7 @@ class Background(appearance.Appearance):
     def _update_all_costumes(self):
         """updates costumes for all tokens on board"""
         [token.costume.update() for token in self.reload_costumes_queue]
-        self.board.reload_costumes_queue = []
+        self.reload_costumes_queue = []
         if hasattr(self.board, "dynamic_tokens"):
             [token.costume.update() for token in self.board.dynamic_tokens]
 
