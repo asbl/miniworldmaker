@@ -86,6 +86,16 @@ class TokenPositionManager:
                 self.token.costume.reload_transformations_after("all")
         return self._size
 
+    def set_width(self, value):
+        if value < 0:
+            raise ValueError("token width must be >= 0")
+        self.set_size((value, self.token.size[1]))
+
+    def set_height(self, value):
+        if value < 0:
+            raise ValueError("token height must be >= 0")
+        self.set_size((self.token.size[0], value))
+
     @property
     def position(self) -> "board_position.Position":
         """
@@ -175,7 +185,6 @@ class TokenPositionManager:
     def move_towards_position(self, position):
         tkn_position = board_position.Position.create(self.token.position)
         if tkn_position.is_close(position):
-            tkn_position = position
             return self
         else:
             direction = board_direction.Direction.create_from_token(self.token, position).value
@@ -263,13 +272,13 @@ class TokenPositionManager:
         """
         angle = self.direction
         if "top" in borders and (
-                self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
+            self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
         ):
             self.point_in_direction(0)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
         elif "bottom" in borders and (
-                (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
+            (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
         ):
             self.point_in_direction(180)
             incidence = self.direction - angle
@@ -361,25 +370,3 @@ class TokenPositionManager:
         print(direction.value)
         self.set_direction(direction.value)
         return direction.value
-        """
-        pos = self.token.center
-        x = destination[0] - pos[0]
-        y = destination[1] - pos[1]
-        if x != 0:
-            m = y / x
-            if x < 0:
-                # destination is left
-                self.token.direction = math.degrees(math.atan(m)) - 90
-            else:
-                # destination is right
-                self.token.direction = math.degrees(math.atan(m)) + 90
-            return self.token.direction
-        else:
-            m = 0
-            if destination[1] > self.token.position[1]:
-                self.token.direction = 180
-                return self.token.direction
-            else:
-                self.token.direction = 0
-                return self.token.direction
-        """

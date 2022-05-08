@@ -107,10 +107,3 @@ class InspectionMethods:
             method()
         else:
             method(*arguments)
-
-    @staticmethod
-    def inherits_from(child, parent):
-        if inspect.isclass(child):
-            if parent.__name__ in [c.__name__ for c in inspect.getmro(child)] or parent.__name__ == child.__name__:
-                return True
-        return False

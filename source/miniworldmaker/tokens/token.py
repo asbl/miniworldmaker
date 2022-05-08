@@ -755,6 +755,9 @@ surface
 
     @width.setter
     def width(self, value):
+        self.position_manager.set_width(value)
+        
+    def scale_width(self, value):
         old_width = self.size[0]
         old_height = self.size[1]
         scale_factor = value / old_width
@@ -798,6 +801,9 @@ surface
 
     @height.setter
     def height(self, value):
+        self.position_manager.set_height(value)
+
+    def scale_height(self, value):
         old_width = self.size[0]
         old_height = self.size[1]
         scale_factor = value / old_height

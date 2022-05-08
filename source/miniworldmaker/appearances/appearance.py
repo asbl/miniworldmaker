@@ -682,7 +682,11 @@ class Appearance(appearance_base.AppearanceBase):
         return self._border
 
     @border.setter
-    def border(self, value):
+    def border(self, value : Union[int, None]):
+        if not value:
+            value = 0
+        if type(value) != int:
+            raise TypeError("border value should be of type int")
         self._border = value
         self.reload_transformations_after("all")
 

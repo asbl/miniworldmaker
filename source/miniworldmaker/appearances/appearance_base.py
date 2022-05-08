@@ -213,21 +213,3 @@ class AppearanceBase(metaclass=MetaAppearance):
     @property
     def images(self):
         return self.image_manager.images_list
-
-    def draw(self, source, position, width, height):
-        if type(source) == str:
-            self.draw_on_image(source, position, width, height)
-        elif type(source) == tuple:
-            self.draw_color_on_image(source, position, width, height)
-
-    def draw_on_image(self, path, position, width, height):
-        file = self.image_manager.find_image_file(path)
-        surface = self.image_manager.load_image(file)
-        self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
-        self.reload_transformations_after("all")
-
-    def draw_color_on_image(self, color, position, width, height):
-        surface = pygame.Surface((width, height))
-        surface.fill(color)
-        self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
-        self.reload_transformations_after("all")

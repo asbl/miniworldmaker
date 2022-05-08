@@ -30,7 +30,7 @@ class TokenClassInspection:
         return methods
 
     def get_all_token_classes(self):
-        token_parent_class = self.get_token_parent_class()  # get miniworldmaker.Token
+        token_parent_class = token.Token
         return TokenClassInspection(token_parent_class).get_subclasses_for_cls()
 
     def get_token_parent_class(self):
@@ -50,10 +50,3 @@ class TokenClassInspection:
             if token_cls.__name__.lower() == class_name:
                 return token_cls
         return None
-
-    @staticmethod
-    def inherits_from(child, parent):
-        if inspect.isclass(child):
-            if parent.__name__ in [c.__name__ for c in inspect.getmro(child)] or parent.__name__ == child.__name__:
-                return True
-        return False

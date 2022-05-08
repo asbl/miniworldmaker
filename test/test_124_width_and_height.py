@@ -37,11 +37,11 @@ class Test124(unittest.TestCase):
         t1 = create_token(50,0)
         t1.height = 400
         assert(t1.height==400)
-        assert(t1.width==400)
+        assert(t1.width==40)
         t2 = create_token(300,0)
         t2.width = 180
         assert(t2.width==180)
-        assert(t2.height==180)
+        assert(t2.height==40)
 
         t = Token((600,50))
         t.add_costume("images/alien1.png")

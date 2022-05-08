@@ -361,7 +361,11 @@ class Rectangle(Shape):
     def check_arguments(self, topleft, width, height):
         if type(topleft) != tuple and type(topleft) != board_position.Position:
             raise RectFirstArgumentError(topleft)
-
+        if type(width) not in [int, float]:
+            raise TypeError("width of Rectangle should be int or float " + str(type(width)))
+        if type(height) not in [int, float]:
+            raise TypeError("height of Rectangle should be int or float but is " + str(type(height)))
+        
     def set_physics_default_values(self):
         self.physics.shape_type = "rect"
         self.physics.stable = False

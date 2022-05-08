@@ -1,5 +1,5 @@
 import math
-from typing import List, Union
+from typing import List, Union, Type
 
 import miniworldmaker.base.app as app
 import miniworldmaker.board_positions.board_position as board_position
@@ -11,15 +11,13 @@ from miniworldmaker.exceptions.miniworldmaker_exception import NotImplementedOrR
 
 
 class TokenBoardSensor:
-
     def __init__(self, token: "token_mod.Token", board: "board_mod.Board"):
         super().__init__()
         self.token: "token_mod.Token" = token
         self.board: "board_mod.Board" = board
 
     def remove_from_board(self):
-        """Removes a token from board
-        """
+        """Removes a token from board"""
         self.board.tokens.remove(self.token)
         self.token.board = None
 
@@ -29,29 +27,41 @@ class TokenBoardSensor:
         """
         pass
 
-    def filter_token_list(self, token_list: Union[List["token_mod.Token"], None], token_filter) -> List[
-        "token_mod.Token"]:
+    def filter_token_list(
+        self, token_list: Union[List["token_mod.Token"], None], token_filter : Union[str, "token_mod.Token", Type["token_mod.Token"] ]
+    ) -> List["token_mod.Token"]:
         # if token_list is None, return empty list
         if token_list is None:
             return []
         # Filter tokens by class name
+        if not token_filter:
+            return token_list
         if type(token_filter) == str:
             token_list = self.filter_tokens_by_classname(token_list, token_filter)
-        # if
-        if token_class_inspection.TokenClassInspection.inherits_from(token_filter.__class__, token_mod.Token):
+        elif isinstance(token_mod.Token, token_filter):
             token_list = self.filter_tokens_by_instance(token_list, token_filter)
+        elif issubclass(token_mod.Token, token_filter):
+            token_list = self.filter_tokens_by_class(token_list, token_filter)
         return token_list
 
-    def filter_tokens_by_classname(self, token_list: List["token_mod.Token"], token_filter: str) -> List[
-        "token_mod.Token"]:
-        token_type = token_class_inspection.TokenClassInspection(self.token).find_token_class_by_classname(token_filter)
-        if token_type is None:
+    def filter_tokens_by_class(
+        self, token_list: List["token_mod.Token"], token_filter: Union[Type["token_mod.Token"], None]
+    ) -> List["token_mod.Token"]:
+        if token_filter is None:
             return token_list
-        if token_type:
-            token_list = [token for token in token_list if issubclass(token.__class__, token_type)]
+        if token_filter:
+            token_list = [token for token in token_list if issubclass(token.__class__, token_filter)]
             return token_list
         else:
             return token_list
+        
+    def filter_tokens_by_classname(
+        self, token_list: List["token_mod.Token"], token_filter: str
+    ) -> List["token_mod.Token"]:
+        token_type = token_class_inspection.TokenClassInspection(self.token).find_token_class_by_classname(
+            token_filter
+        )
+        return self.filter_tokens_by_class(token_list, token_type)
 
     @staticmethod
     def filter_tokens_by_instance(token_list: List["token_mod.Token"], token_filter):
@@ -77,14 +87,14 @@ class TokenBoardSensor:
     def sensing_rect(self, rect):
         return self.token.rect.colliderect(rect)
 
-    def sensing_on_board(self, distance):
+    def sensing_on_board(self, distance: int) -> bool:
         raise NotImplementedOrRegisteredError(self.sensing_on_board)
 
-    def sensing_borders(self, distance):
+    def sensing_borders(self, distance: int) -> list:
         raise NotImplementedOrRegisteredError(self.sensing_borders)
 
-    def sensing_color(self, color: tuple) -> list:
-        return self.sense_color_at(0,0) == color
+    def sensing_color(self, color: tuple) -> bool:
+        return self.sense_color_at(0, 0) == color
 
     def sensing_tokens_at(self, direction: int = 0, distance: int = 1) -> list:
         if direction == 0:
@@ -92,7 +102,7 @@ class TokenBoardSensor:
         destination = self.get_destination(self.token.center, direction, distance)
         return self.get_tokens_at_position(destination)
 
-    def sense_color_at(self,direction: int = 0, distance: int = 1) -> list:
+    def sense_color_at(self, direction: int = 0, distance: int = 1) -> tuple:
         if direction == 0:
             direction = self.token.direction
         destination = self.get_destination(self.token.center, direction, distance)
