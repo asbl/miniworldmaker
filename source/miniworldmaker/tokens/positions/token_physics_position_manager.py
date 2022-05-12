@@ -1,12 +1,12 @@
 from math import radians, degrees
-
+from typing import Union
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.positions.token_pixel_position_manager as pixel_position_manager
 from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulationTypeError
-
+from miniworldmaker.tokens import token as token_mod
 
 class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManager):
-    def __init__(self, token, position):
+    def __init__(self, token : "token_mod.Token", position):
         super().__init__(token, position)
         if self.size:
             self.size = (40, 40)
@@ -17,7 +17,7 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         self.token.register(self.set_velocity_y)
         self.token.register(self.set_velocity)
 
-    def set_position(self, value):
+    def set_position(self, value : Union[tuple, "board_position.BoardPosition"]) -> "board_position.BoardPosition":
         pos = super().set_position(value)
         if hasattr(self.token, "physics"):
             self.token.physics.dirty = 1

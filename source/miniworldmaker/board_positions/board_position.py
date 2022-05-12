@@ -60,7 +60,7 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
         elif type(value) == Position:
             return value
         elif type(value) == pygame.Rect:
-            return value.topleft
+            return cls(value.topleft)
         else:
             raise NoValidBoardPositionError(value)
 

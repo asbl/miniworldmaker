@@ -11,6 +11,10 @@ from typing import Union
 class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
     def __init__(self, token, position):
         super().__init__(token, position)
+        if position is not None:
+            self._position = hex_elements.CubeCoord.create(position)
+        else:
+            self._position = hex_elements.CubeCoord.create((0, 0))
 
     def get_rect(self):
         if self.token.costume:
@@ -49,12 +53,25 @@ class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
         self._scaled_size = value
         self.token.costume.reload_transformations_after("all")
 
-    def get_position(self) -> "board_position.Position":
+    def get_position(self) -> "hex_elements.CubeCoord":
+        """Position is stores as CubeCoord on HexBoard
+        """
         return self._position
+    
+
+    def set_position(self, value : Union[tuple, "board_position.BoardPosition"]) -> "hex_elements.CubeCoord":
+        self.last_position = self.position
+        self.last_direction = self.direction
+        self._position = hex_elements.CubeCoord.create(value)
+        if self.last_position != self._position:
+            self.token.dirty = 1
+            if self.token.board:
+                self.token.board.app.event_manager.send_event_to_containers("token_moved", self.token)
+        return self.position
 
     def set_direction(self, value):
         self.last_direction = self.direction
-        direction = self._value_to_direction(value)
+        direction = board_direction.Direction.create(value)
         self._direction = direction
         if self.last_direction != self._direction:
             self.token.costume.reload_transformations_after("all")

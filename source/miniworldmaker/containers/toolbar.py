@@ -61,7 +61,7 @@ class Toolbar(container.Container):
         self.dirty = 1
         self.repaint_all = True
 
-    def has_widget(self, ke: str):
+    def has_widget(self, key: str):
         """Checks if self.widgets has key
 
         Args:

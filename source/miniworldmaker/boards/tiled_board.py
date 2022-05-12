@@ -413,18 +413,16 @@ class TiledBoard(board.Board):
         position = self.to_pixel(position)
         self.background.draw_on_image(image, position, self.tile_size, self.tile_size)
 
-    def get_board_position_from_pixel(self, pixel):
-        """Alias for get_from_pixel"""
-        return self.get_from_pixel(pixel)
-
     def get_from_pixel(self, position):
         """Gets board position from pixel coordinates
         """
-        if position[0] > self.columns or position[1] > self.rows:
+        if position[0] > self.container_width or position[1] > self.container_height:
             return None
         else:
             return self.get_tile_from_pixel(position).position
 
+    get_board_position_from_pixel = get_from_pixel
+    
     def get_tile_from_pixel(self, position):
         """Gets nearest Tile from pixel
         """

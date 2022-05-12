@@ -1,17 +1,19 @@
 import math
-from typing import Union
+from tokenize import Token
+from typing import Union, Tuple
 
 import pygame
 
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.board_vector as board_vector
 import miniworldmaker.board_positions.board_direction as board_direction
+import miniworldmaker.board_positions.board_rect as board_rect
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
-
+from miniworldmaker.tokens import token as token_mod
 
 class TokenPositionManager:
-    def __init__(self, token, position):
+    def __init__(self, token : "token_mod.Token", position):
         self.token = token
         self.last_position = (0, 0)
         self.last_direction = 90
@@ -23,21 +25,22 @@ class TokenPositionManager:
         self._direction = 0
         self._initial_direction = 0
         if position is not None:
-            self._position = position
+            self._position = board_position.Position.create(position)
         else:
-            self._position = (0, 0)
+            self._position = board_position.Position.create((0, 0))
 
-    def move_vector(self, vector):
+    def move_vector(self, vector : "board_vector.Vector") -> "token_mod.Token":
         position = self.get_position()
         position = vector.add_to_position(position)
         self.set_position(position)
+        return self.token
 
     @property
     def rect(self):
         return self.get_rect()
 
-    def get_rect(self):
-        return pygame.Rect(self.token.position[0], self.token.position[1], self.size[0], self.size[1])
+    def get_rect(self) -> "board_rect.Rect":
+        return board_rect.Rect(self.token.position[0], self.token.position[1], self.size[0], self.size[1])
 
     @classmethod
     def from_center(cls, center_position: "board_position.Position"):
@@ -63,9 +66,11 @@ class TokenPositionManager:
         direction = (self._direction + 180) % 360 - 180
         return direction
 
-    def set_direction(self, value):
+    def set_direction(self, value : Union[int, float, str, board_direction.Direction]):
+        if type(value) not in [int, float, str, board_direction.Direction, board_vector.Vector]:
+            raise ValueError(f"Direction must be int, float, Direction or Vector but is {type(value)}")
         self.last_direction = self.direction
-        direction = self._value_to_direction(value)
+        direction = board_direction.Direction.create(value)
         self._direction = direction
         if self.last_direction != self._direction:
             self.token.costume.rotated()
@@ -75,17 +80,49 @@ class TokenPositionManager:
         return self._size
 
     @size.setter
-    def size(self, value: tuple):
+    def size(self, value: Union[int, float, tuple]):
         self.set_size(value)
 
-    def set_size(self, value):
-        if value != self._size:
-            self._old_size = self._size
-            self._size = value
-            if self.token.costume:
-                self.token.costume.reload_transformations_after("all")
-        return self._size
+    def set_size(self, value : Union[int, float, tuple]):
+        """Sets size of token
 
+        Args:
+            value (Union[int, float, tuple]): 
+                An int or float will be converted to tuple (e.g. 2 => (2,2) )
+
+        Raises:
+            ValueError: Raises ValueError, if type not in [int, float, tuple]
+
+        Returns:
+            The token with changed values
+        """
+        if type(value) in [int, float]:
+            if value < 0:
+                raise ValueError("token.size must be >= 0")
+            else:
+                value = (value, value)
+        if type(value) == tuple:                
+            if value != self._size:
+                self._old_size = self._size
+                self._size = value
+                if self.token.costume:
+                    self.token.costume.reload_transformations_after("all")
+        else:
+            raise ValueError("token size must be int, float or tuple")
+        return self.token
+
+    def scale_width(self, value):
+        old_width = self.token.size[0]
+        old_height = self.token.size[1]
+        scale_factor = value / old_width
+        self.set_size((value, old_height * scale_factor))
+
+    def scale_height(self, value):
+        old_width = self.token.size[0]
+        old_height = self.token.size[1]
+        scale_factor = value / old_height
+        self.set_size((old_width * scale_factor, value))
+                
     def set_width(self, value):
         if value < 0:
             raise ValueError("token width must be >= 0")
@@ -110,10 +147,10 @@ class TokenPositionManager:
     def get_position(self) -> "board_position.Position":
         return board_position.Position.create(self._position)
 
-    def set_position(self, value):
+    def set_position(self, value : Union[tuple, "board_position.BoardPosition"]) -> "board_position.BoardPosition":
         self.last_position = self.position
         self.last_direction = self.direction
-        self._position = value
+        self._position = board_position.Position.create(value)
         if self.last_position != self._position:
             self.token.dirty = 1
             if self.token.board:
@@ -157,23 +194,26 @@ class TokenPositionManager:
     def local_center(self) -> "board_position.Position":
         return board_position.Position.create((self.center_x - self.topleft[0], self.center_y - self.topleft[1]))
 
-    def set_center(self, value):
+    def set_center(self, value :  Union[tuple, "board_position.Position"] ) -> "token_mod.Token":
         if self.token.costume is None:
             raise NoCostumeSetError(self.token)
+        new_center = board_position.Position(value)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.rect)
-        rect.centerx = value[0]
-        rect.centery = value[1]
+        rect.center = new_center
+        # rect.centerx = value[0]
+        # rect.centery = value[1]
         self.set_position(rect.topleft)
+        return self.token
 
     @property
     def topleft(self) -> "board_position.Position":
-        return board_position.Position.create((self.rect.topleft[0], self.rect.topleft[1]))
+        return board_position.Position.create(self.rect.topleft)
 
     @topleft.setter
     def topleft(self, value):
         self.last_position = self.position
-        self.set_position((value[0], value[1]))
+        self.set_position(value)
 
     def move(self, distance: int = 0):
         if distance == 0:
@@ -206,39 +246,9 @@ class TokenPositionManager:
         self.direction = self.last_direction
         return self
 
-    def move_to(self, new_center_position: board_position.Position):
+    def move_to(self, new_center_position: Union[Tuple, "board_position.Position"]):
         self.center = new_center_position
         return self
-
-    def _value_to_direction(self, value) -> int:
-        """
-        Transforms a string value ("top", "left", "right", "bottom)
-        into a position
-
-        Args:
-            value: The String value ("top", "left", "right", or "bottom)
-
-        Returns:
-            The position as scratch-style deegrees
-
-        """
-        if value == "top" or value == "up":
-            value = 0
-        elif value == "left":
-            value = 270
-        elif value == "right":
-            value = 90
-        elif value == "down":
-            value = 180
-        elif value == "forward":
-            value = self.direction
-        elif value == "back":
-            value = 360 - self.direction
-        elif isinstance(value, board_vector.Vector):
-            value = value.to_direction() % 360
-        else:
-            value = value % 360
-        return value
 
     @staticmethod
     def dir_to_unit_circle(direction: float):
@@ -308,11 +318,11 @@ class TokenPositionManager:
         self.token.turn_left(180 - incidence)
         return self.token
 
-    def turn_left(self, degrees: int = 90) -> int:
+    def turn_left(self, degrees: float = 90) -> int:
         self.direction = self.direction - degrees
         return self.direction
 
-    def turn_right(self, degrees: int = 90):
+    def turn_right(self, degrees: float = 90):
         self.direction = self.direction + degrees
         return self.direction
 
@@ -326,8 +336,8 @@ class TokenPositionManager:
         self.token.costume.flip(not self.token.costume.is_flipped)
         return self.direction
 
-    def point_in_direction(self, direction: int) -> int:
-        self.direction = self._value_to_direction(direction)
+    def point_in_direction(self, direction: Union[int, float, board_direction.Direction, str]) -> "board_direction.Direction":
+        self.direction = board_direction.Direction.create(direction)
         return self.direction
 
     def self_remove(self):
@@ -355,7 +365,7 @@ class TokenPositionManager:
     def draw_position(self):
         return (self.x, self.y)
 
-    def point_towards_position(self, destination) -> float:
+    def point_towards_position(self, destination : Union[int, float, str, board_direction.Direction]) -> "board_direction.Direction":
         """
         Token points towards a given position
 
@@ -367,6 +377,5 @@ class TokenPositionManager:
 
         """
         direction = board_direction.Direction.create((self.token.center, destination))
-        print(direction.value)
         self.set_direction(direction.value)
-        return direction.value
+        return self.direction

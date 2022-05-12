@@ -286,11 +286,13 @@ class OffsetPosition(board_position.Position):
     ODD = -1
 
     def to_cube(self):
+        if type(self.x) != int or type(self.y) != int:
+            raise ValueError(f"x and y must be int. Found: {self.x}, {self.y} ; {type(self.x)}, {type(self.y)}")
         if self.y % 2 == 0:
             offset = OffsetPosition.EVEN
         else:
             offset = OffsetPosition.ODD
-        q = self.x - (self.y - (self.y & 1)) / 2
+        q = self.x - (self.y - (self.y & 1)) // 2
         r = self.y
         return CubeCoord(q, r, -q - r)
 
