@@ -22,10 +22,11 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
-        try:
-            instance = type.__call__(cls, *args, **kwargs)  # create a new Token
-        except NoValidBoardPositionError:
-            raise TokenArgumentShouldBeTuple()
+        if len(args) >= 2 and type(args[0]) == int and type(args[1]) == int:
+            first = (args[0], args[1])
+            last_args = [args[n] for n in range(2, len(args))]
+            args = [first] + last_args
+        instance = type.__call__(cls, *args, **kwargs)  # create a new Token
         # Add token to board **after** init
         _token_connector = instance.board.get_token_connector(instance)
         _token_connector.add_token_to_board(instance._position)

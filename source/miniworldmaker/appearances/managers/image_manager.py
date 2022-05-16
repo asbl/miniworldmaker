@@ -191,7 +191,6 @@ class ImageManager:
 
     def reset_image_index(self):
         if self.current_animation_images:
-            _rect = self.token.costume.image.get_rect()
             self.image_index = len(self.images_list) - 1
 
     async def update(self):
@@ -200,10 +199,8 @@ class ImageManager:
         * processes transformations pipeline if neccessary
         """
         if self.appearance.is_animated:
-            #self.animation_frame += 1
             if self.board.frame != 0 and self.board.frame % self.appearance.animation_speed == 0:
                 await self.next_image()
-                # self.animation_frame = 0
         self.appearance._reload_image()
 
     async def next_image(self):

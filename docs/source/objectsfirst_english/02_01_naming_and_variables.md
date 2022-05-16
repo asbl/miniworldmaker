@@ -35,7 +35,7 @@ c = a + a
 
 Results e.g. in 4, because the value 3 is overwritten in the second line and is lost.
 
-## The board object
+## The Board-object
 
 The board is an object and brings along different attributes and methods,
 that you can access, e.g. `rows`, `columns` and `tile_size`.

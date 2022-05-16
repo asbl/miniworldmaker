@@ -1,5 +1,5 @@
 from miniworldmaker.containers import toolbar
-from miniworldmaker.containers import toolbar_widgets
+from miniworldmaker.containers import widgets
 
 
 class ColorToolbar(toolbar.Toolbar):
@@ -22,7 +22,7 @@ class ColorToolbar(toolbar.Toolbar):
             self.color_label.set_color(self.board.get_color_from_pixel(data))
 
 
-class ColorLabel(toolbar_widgets.ToolbarLabel):
+class ColorLabel(widgets.ToolbarLabel):
     def __init__(self, text):
         super().__init__(text)
 

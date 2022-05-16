@@ -36,7 +36,7 @@ def act(self):
 board.run()
 ```
 
- <video controls loop width=100%>
+<video controls loop width=100%>
   <source src="../_static/pixel_move1.webm" type="video/webm">
   Your browser does not support the video tag.
 </video> 

@@ -1,6 +1,7 @@
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.containers.toolbar as toolbar
-from miniworldmaker.containers.toolbar_widgets import *
+from miniworldmaker.containers.widgets import ToolbarLabel
+from miniworldmaker.containers.widgets import ToolbarButton
 
 
 class InspectActorToolbar(toolbar.Toolbar):

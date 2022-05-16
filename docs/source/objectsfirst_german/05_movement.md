@@ -1,6 +1,7 @@
 # Position, Ausrichtung und Bewegung
 
 In diesem Kapitel lernst du, wie du Position und Ausrichtung eines Tokens verändern kannst, um es zu bewegen.
+
 ## move() und position
 
 Es gibt zwei Möglichkeiten ein Token zu bewegen:
@@ -56,7 +57,7 @@ def act(self):
     self.x = 100 # places token at x = 100.
 ```
 
-### Beispiel
+**Beispiel:**
 
 ``` python
 from miniworldmaker import *
@@ -98,7 +99,8 @@ def act(self):
     self.turn_left(30) # turns 30° left
     self.move()
 ```
-### Beispiel
+
+**Beispiel:**
 
 Das Token schaut nach rechts und bewegt sich dann einen Schritt vor:
 

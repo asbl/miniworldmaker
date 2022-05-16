@@ -43,13 +43,20 @@ from miniworldmaker.tools.timer import LoopActionTimer
 from miniworldmaker.tools.timer import Timer
 
 from miniworldmaker.containers.toolbar import Toolbar
+
+from miniworldmaker.containers.widgets import Widget
+from miniworldmaker.containers.widgets import Button
+from miniworldmaker.containers.widgets import Label
+from miniworldmaker.containers.widgets import ToolbarButton
+from miniworldmaker.containers.widgets import ToolbarLabel
+
+
 from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.event_console import EventConsole
 from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
 from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
 from miniworldmaker.containers.color_toolbar import ColorToolbar
-from miniworldmaker.containers.toolbar_widgets import *
 
 from miniworldmaker.board_positions.board_vector import Vector
 from miniworldmaker.board_positions.board_position import Position
@@ -110,9 +117,11 @@ __all__.append(EventConsole.__name__)
 __all__.append(InspectActorToolbar.__name__)
 __all__.append(LevelDesignerToolbar.__name__)
 __all__.append(ColorToolbar.__name__)
-__all__.append(ToolbarLabel.__name__)
-__all__.append(ToolbarButton.__name__)
-__all__.append(ToolbarWidget.__name__)
+__all__.append("ToolbarLabel")
+__all__.append("ToolbarButton")
+__all__.append(Label.__name__)
+__all__.append(Button.__name__)
+__all__.append(Widget.__name__)
 
 __all__.append(TileFactory.__name__)
 __all__.append(HexTileFactory.__name__)

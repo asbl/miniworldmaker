@@ -4,7 +4,7 @@ import miniworldmaker.tokens.token as token
 from miniworldmaker.board_positions import board_rect as board_rect
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.containers import toolbar
-from miniworldmaker.containers import toolbar_widgets
+from miniworldmaker.containers import widgets
 from miniworldmaker.exceptions import miniworldmaker_exception
 
 
@@ -19,9 +19,9 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         self.dummy = None
         self.registered_events.add("all")
         self.registered_events.add("debug")
-        self.add_widget(toolbar_widgets.ToolbarLabel("Left Click to add Tokens"))
-        self.add_widget(toolbar_widgets.ToolbarLabel("Right Click or Wheel to change direction"))
-        self.add_widget(toolbar_widgets.ToolbarLabel("SHIFT + Right Click to delete token"))
+        self.add_widget(widgets.ToolbarLabel("Left Click to add Tokens"))
+        self.add_widget(widgets.ToolbarLabel("Right Click or Wheel to change direction"))
+        self.add_widget(widgets.ToolbarLabel("SHIFT + Right Click to delete token"))
         self.prototypes = dict()
         for cls in token_classes:
             prototype = cls((-100, -100))
@@ -30,10 +30,10 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             button = TokenButton(token_type=cls, board=board, parent=self, prototype=prototype)
             self.add_widget(button, cls.__name__)
         db_file = file
-        self.add_widget(toolbar_widgets.SaveButton(board=self.app.board, text="Save", filename=db_file))
+        self.add_widget(widgets.SaveButton(board=self.app.board, text="Save", filename=db_file))
         if os.path.exists(db_file):
-            self.add_widget(toolbar_widgets.LoadButton(board=self.app.board, text="Load", filename=db_file))
-        self.add_widget(toolbar_widgets.ClearButton(board=self.app.board, text="Clear"))
+            self.add_widget(widgets.LoadButton(board=self.app.board, text="Load", filename=db_file))
+        self.add_widget(widgets.ClearButton(board=self.app.board, text="Clear"))
 
     def _add_token_to_mouse_position(self, mouse_pixel_pos):
         position = board_position.Position.from_pixel(mouse_pixel_pos)
@@ -120,7 +120,7 @@ class Dummy(token.Token):
         self.export = False
 
 
-class TokenButton(toolbar_widgets.ToolbarWidget):
+class TokenButton(widgets.Widget):
 
     def __init__(self, token_type, board, parent, prototype):
         super().__init__("Button")

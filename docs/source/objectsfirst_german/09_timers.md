@@ -18,7 +18,9 @@ Verzögerung zu Seiteneffekten führen kann.
 Einen Timer kannst du z.B. so starten:
 
 ``` python
-miniworldmaker.ActionTimer(24, player.move)
+from miniworldmaker import *
+
+ActionTimer(24, player.move)
 ```
 
 ![UML](/_images/actiontimer.png)
@@ -38,7 +40,9 @@ Der ActionTimer ruft nach einer vorgegebenen Zeit eine Methode mit
 Argumenten auf und entfernt sich danach selbst.
 
 ``` python
-miniworldmaker.ActionTimer(24, player.move, None)
+from miniworldmaker import *
+
+ActionTimer(24, player.move, None)
 ```
 
 Nach 24 Frames wird der Timer aufgerufen und führt dann einmalig die Funktion
@@ -53,7 +57,7 @@ wird die Aktion mit gleichen Abständen immer wieder wiederholt.
 So erstellst du einen Loop-Actiontimer:
 
 ``` python
-loopactiontimer = miniworldmaker.LoopActionTimer(24, player.move)
+LoopActionTimer(24, player.move)
 ```
 
 Alle 24 Frames wird die Funktion `move` des Objekts `player` aufgerufen.
@@ -61,6 +65,10 @@ Alle 24 Frames wird die Funktion `move` des Objekts `player` aufgerufen.
 So kannst du einen LoopActionTimer wieder entfernen:
 
 ``` python
+from miniworldmaker import *
+...
+loopactiontimer = LoopActionTimer(24, player.move)
+...
 loopactiontimer.unregister()
 ```
 
@@ -74,7 +82,7 @@ ein Timer Event reagieren.
 So eine Methode kann z.B. so aussehen:
 
 ``` python
-@miniworldmaker.timer(frames = 24)
+@timer(frames = 24)
 def moving():
     player.move()
 ``` 
@@ -84,7 +92,7 @@ An frame 24 wird die Methode `moving` aufgerufen.
 Mit einem Looptimer kann die Funktion so registriert werden:
 
 ``` python
-@miniworldmaker.loop(frames = 48)
+@loop(frames = 48)
 def moving():
     player.turn_left()
     player.move(2)

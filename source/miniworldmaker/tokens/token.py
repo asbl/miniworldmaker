@@ -88,7 +88,7 @@ class Token(token_base.BaseToken):
                 Token(self.get_mouse_position())
 
             board.run()
-surface
+
         .. image:: ../_images/token3.png
             :width: 100px
             :alt: Create a token at mouse position
@@ -1703,7 +1703,7 @@ surface
         Send a message:
 
         * A token and the board can send a message to all tokens and the board with the command:
-        self.send_message(“message_string”)
+          `self.send_message(“message_string”)`
 
         Process a message:
 
@@ -1711,9 +1711,9 @@ surface
 
         Examples:
 
-            Receive a message
+            Receive a message:
 
-            .. code-block::
+            .. code-block:: python
 
                 @player.register
                 def on_message(self, message):

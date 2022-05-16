@@ -14,14 +14,12 @@ from miniworldmaker import *
 board = Board(200, 100)
 
 r = Rectangle((10,10),50,100)
-
 c = Circle((200,50),20)
 
 @c.register
 def act(self):
     self.move_left()
 
-    
 @r.register
 def act(self):
     token = self.sensing_token()
@@ -59,14 +57,12 @@ from miniworldmaker import *
 board = Board(200, 100)
 
 r = Rectangle((10,10),50,100)
-
 c = Circle((200,50),20)
 
 @c.register
 def act(self):
     self.move_left()
-
-    
+ 
 @r.register
 def on_sensing_token(self, other):
     self.color = (255,0,0)
@@ -134,6 +130,7 @@ Der Ansatz mit dem hier auf Variablen aus anderen Programmteilen
 zugegriffen wird ist zwar einfach und intuitiv - Im Tutorial `classes_first`
 wirst du lernen, wie man dies vermeiden kann.
 ```
+
 ### Wände
 
 Der folgende Code zeigt, wie du verhindern kannst, dass sich Objekte durch Wände hindurch bewegen können.

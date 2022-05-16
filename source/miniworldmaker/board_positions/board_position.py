@@ -48,12 +48,9 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
         """Creates a board position from value
 
         If value is ...
-          * Tuple: A new Position-object will be created
-          * Position: The position object itself is returned
-          * pygame.Rect: The position is created from topleft corner of Rect
-
-        :param value:
-        :return:The Position
+        * Tuple: A new Position-object will be created
+        * Position: The position object itself is returned
+        * pygame.Rect: The position is created from topleft corner of Rect
         """
         if isinstance(value, tuple):
             return cls(value[0], value[1])

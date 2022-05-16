@@ -27,7 +27,7 @@ board.columns = 20
 board.rows = 8
 board.tile_size = 42
 board.add_background("images/soccer_green.jpg")
-player = token()
+player = Token()
 player.add_costume("images/player_1.png")
 player.direction = 90
 @player.register

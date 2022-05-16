@@ -4,6 +4,7 @@ Ein **Token** ist ein Spielstein auf deinem Board.
 
 Alle Objekte auf deinem Board sind `Tokens`, die auf dem ``Board`` bewegt
 werden können und die miteinander kommunizieren können.
+
 ## Ein Token erstellen
 
 Nachdem du das `Board` erstellt hast, wird nun ein `Token`, *(d.h. eine
@@ -26,8 +27,7 @@ Die Tokens haben noch kein Kostüm, daher werden sie zunächst als lila Rechteck
 
 ![Add tokens](../_images/pixel_tokens.png)
 
-
-Beachte, dass der *Ursprung* des Koordinatensystems oben links liegt.
+Beachte, dass der *Ursprung* des Koordinatensystems *oben links* liegt.
 
 ![Add tokens](../_images/pixel_coordinates.png)
 
@@ -133,7 +133,7 @@ Die `Position` eines Tokens kannst du mit Hilfe des Attributs `position` ändern
 
 Beispiel:
 
-```
+``` python
 from miniworldmaker import *
 
 board = TiledBoard()
