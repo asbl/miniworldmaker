@@ -155,7 +155,7 @@ class AppearancesManager:
 
     def remove_appearance(self, source: Union[int, "appearance_mod.Appearance"] = -1):
         """Removes an appearance (costume or background) from manager
-        
+
         Defaults:
             Removes last costume.
 

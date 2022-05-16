@@ -358,6 +358,11 @@ class Token(token_base.BaseToken):
         """
         return self.costume_manager.add_costume(source)
 
+    def add_costumes(self, sources : list) -> costume.Costume:
+        """Adds multiple costumes
+        """
+        return self.costume_manager.add_costumes(sources)
+
     def remove_costume(self, source: Union[int, "costume.Costume"] = None):
         """Removes a costume from token
 

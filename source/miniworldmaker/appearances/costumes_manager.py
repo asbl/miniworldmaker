@@ -1,6 +1,5 @@
-
 from typing import Union, List, Tuple
-import miniworldmaker.appearances. appearances_manager as appearances_manager
+import miniworldmaker.appearances.appearances_manager as appearances_manager
 import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.appearances.appearance as appearance
 
@@ -41,6 +40,10 @@ class CostumesManager(appearances_manager.AppearancesManager):
         self.costume._update_shape()
         self.costume.dirty = 1
         return new_costume
+
+    def add_costumes(self, source_list):
+        for source in source_list:
+            self.add_costume(source)
 
     def get_default_appearance(self):
         new_costume = costume_mod.Costume(self.token)

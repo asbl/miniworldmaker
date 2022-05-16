@@ -3,7 +3,7 @@ from typing import Union
 import tkinter as tk
 import pygame
 from miniworldmaker.tools import mwminspection
-
+from miniworldmaker.base import file_manager
 
 class Widget:
     """A Widget which can be placed in the Toolbar.
@@ -203,7 +203,8 @@ class Widget:
             self.surface.fill(self.background_color)
             if self._img_source is not None:
                 if type(self._img_source) == str:
-                    image = pygame.image.load(self._img_source)
+                    source = file_manager.FileManager.get_image_path(self._img_source)
+                    image = pygame.image.load(source)
                 if type(self._img_source) == tuple:
                     image = pygame.Surface((1, 1))
                     image.fill(self._img_source)

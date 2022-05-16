@@ -5,7 +5,7 @@ Toolbar Widgets
 ToolbarWidget
 ---------------
 
-.. autoclass:: miniworldmaker.containers.toolbar_widgets.ToolbarWidget
+.. autoclass:: miniworldmaker.containers.widgets.Widget
    :members:
 
    .. autoclasstoc::
@@ -14,7 +14,7 @@ ToolbarButton
 ---------------
 
 
-.. autoclass:: miniworldmaker.containers.toolbar_widgets.ToolbarButton
+.. autoclass:: miniworldmaker.containers.widgets.Button
    :members:
 
    .. autoclasstoc::
@@ -22,7 +22,7 @@ ToolbarButton
 ToolbarLabel
 ---------------
 
-.. autoclass:: miniworldmaker.containers.toolbar_widgets.ToolbarLabel
+.. autoclass:: miniworldmaker.containers.widgets.Label
    :members:
 
    .. autoclasstoc::

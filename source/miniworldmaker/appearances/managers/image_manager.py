@@ -7,6 +7,8 @@ from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExis
 from typing import List, Union, Tuple
 from pathlib import Path
 
+from miniworldmaker.base import file_manager
+
 
 class ImageManager:
     """Handles loading and caching of images."""
@@ -62,16 +64,7 @@ class ImageManager:
         Returns:
             str: the corrected path
         """
-        canonicalized_path = file_manager.FileManager.relative_to_absolute_path(path)
-        if Path(canonicalized_path).is_file():
-            return Path(canonicalized_path)
-        else:
-            if not file_manager.FileManager.has_ending:
-                return file_manager.FileManager.get_path_with_file_ending(path, ["jpg", "jpeg", "png"])
-            else:
-                return file_manager.FileManager.get_path_with_file_ending(
-                    canonicalized_path.split(".")[0], ["jpg", "jpeg", "png"]
-                )
+        return file_manager.FileManager.get_image_path(path)
 
     @staticmethod
     def cache_images_in_image_folder():
@@ -79,7 +72,7 @@ class ImageManager:
         Loads all images in folder path/images
         """
         jpgs = list(Path("./images/").rglob("*.[jJ][pP][gG]"))
-        jpegs = list(Path("./images/w wwsdsdwasd").rglob("*.[jJ][pP][eE][gG]"))
+        jpegs = list(Path("./images/").rglob("*.[jJ][pP][eE][gG]"))
         pngs = list(Path("./images/").rglob("*.[pP][nN][gG]"))
         images = jpgs + jpegs + pngs
         for img_path in images:

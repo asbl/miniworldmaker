@@ -7,7 +7,7 @@ def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test107(unittest.TestCase):
+class Test106_1(unittest.TestCase):
     def setUp(self):
         board = PixelBoard(400,300)
         self.board = board
@@ -87,7 +87,7 @@ class Test107(unittest.TestCase):
         board.setup_environment(self)
         
         
-    def test_102(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         
