@@ -63,7 +63,7 @@ class Container:
         return self._container_width, self._container_height
 
     def repaint(self):
-        """ 
+        """
         Implemented in subclasses
         """
         pass
@@ -72,7 +72,7 @@ class Container:
         self._app.window.surface.blit(self.surface, self.rect)
 
     def remove(self):
-        """ 
+        """
         Implemented in subclasses
         """
         pass
@@ -81,17 +81,20 @@ class Container:
         self.get_event(event, data)
 
     def get_event(self, event, data):
-        """ 
+        """
         Implemented in subclasses
         """
         pass
 
-    def is_in_container(self, x, y):
+    def is_in_container(self, x, y) -> bool:
         if self.rect.collidepoint((x, y)):
             return True
         else:
             return False
 
+    def position_is_in_container(self, pos: tuple) -> bool:
+        return self.is_in_container(pos[0], pos[1])
+    
     @property
     def rect(self):
         return pygame.Rect(self.container_top_left_x, self.container_top_left_y, self.width, self.height)
@@ -101,7 +104,7 @@ class Container:
         return self.docking_position
 
     def update(self):
-        """ 
+        """
         Implemented in subclasses
         """
         pass
@@ -113,3 +116,8 @@ class Container:
     @property
     def height(self):
         return self._container_height
+
+    def get_local_position(self, position: tuple) -> tuple:
+        x = position[0] - self.container_top_left_x
+        y = position[1] - self.container_top_left_y
+        return (x, y)

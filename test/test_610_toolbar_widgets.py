@@ -79,11 +79,12 @@ class Test610(unittest.TestCase):
         label.padding_bottom = 0
         label.margin_right = 10
         label.margin_left = 0
-        label.img_width = 80
+        label.img_width = 40
 
         label = ToolbarLabel("status")
         toolbar.add_widget(label)
         label.set_image((0,255,0))
+        label.background_color = (255,255,255)
         label.padding_left = 0
         label.padding_right = 0
         label.padding_top = 0
@@ -100,8 +101,7 @@ class Test610(unittest.TestCase):
             if percent < 100:
                 percent += 10
 
-        board.add_container(toolbar, "right")
-
+        board.add_container(toolbar, "right", size = 200)
 
 
         """ here act and init - delete if used in testcode"""

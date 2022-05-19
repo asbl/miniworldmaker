@@ -5,6 +5,7 @@ import pygame
 from miniworldmaker.tools import mwminspection
 from miniworldmaker.base import file_manager
 
+
 class Widget:
     """A Widget which can be placed in the Toolbar.
 
@@ -18,11 +19,11 @@ class Widget:
         self._text = ""
         self.speed = 1
         self._image = None
-
         self.surface = None
         self.timed = False
         self._dirty = 1
         # size and position
+        self._topleft = (0, 0) # Set in Toolbar repaint
         self._width = 0  # Set in Toolbar repaint
         self._height = 30
         self._margin_bottom = 10
@@ -36,10 +37,10 @@ class Widget:
         self.clear()
         # text
         self._text_padding_left = 5
-        self._text_padding_top = 5
-        self._text_align = "img"
+        self._text_padding_top = 0
+        self._text_align = "image"
         # background
-        self._background_color = (200, 220, 220)
+        self._background_color = (200, 200, 200)
         # background-image
         self._img_width = 22
         self._img_source = None
@@ -47,7 +48,27 @@ class Widget:
         self._border = False
         self._border_width = 1
         self._border_color = (0, 0, 0, 255)
+        self.dirty = 1
+        self._repaint()
         self.on_setup()
+
+    def get_local_pos(self, position):
+        x = position[0] - self._topleft[0]
+        y = position[1] - self._topleft[1]
+        return x, y
+        
+    @property
+    def text_align(self):
+        "should text be aligned left, oder next to the image?"
+        if not self._img_source:
+            return "left"
+        else:
+            return self._text_align
+
+    @text_align.setter
+    def text_align(self, value):
+        self._text_align = value
+        self.dirty = 1
 
     def on_setup(self):
         """Overwrite this method if you want to add custom setup-code"""
@@ -55,16 +76,6 @@ class Widget:
 
     def on_mouse_left(self, mouse_pos):
         pass
-
-    @property
-    def text_align(self) -> str:
-        """text_align, 'img' or 'left'" """
-        return self._text_align
-
-    @text_align.setter
-    def text_align(self, value: str):
-        self._text_align = value
-        self.dirty = 1
 
     @property
     def text_padding_left(self) -> int:
@@ -187,7 +198,7 @@ class Widget:
             self.parent.dirty = value
 
     def clear(self):
-        self.surface = pygame.Surface((self.width, self.height))
+        self.surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         self.dirty = 1
         return self.surface
 
@@ -217,7 +228,7 @@ class Widget:
                 pygame.draw.rect(self.surface, self._border_color, border_rect, self._border_width)
             # Blit text to surface
             label = self.myfont.render(self._text, 1, (0, 0, 0))
-            if self.text_align == "img":
+            if self.text_align == "img" or self.text_align == "image":
                 self.surface.blit(
                     label,
                     (
@@ -466,3 +477,62 @@ class FPSLabel(Widget):
     def update(self):
         self.value = self.board.clock.get_fps()
         self.set_text("{0} : {1}".format(self.text, str(self.value)))
+
+
+class ContainerWidget(Widget):
+    """Widget containing multiple widgets.
+
+    The widgets inside of this widget are displayed from left to right.
+    """
+
+    def __init__(self, widgets):
+        for widget in widgets:
+            widget.parent = self
+        self.widgets = widgets
+        self.inner_padding = 5
+        super().__init__()
+        self.dirty = 1
+
+    def _repaint(self):
+        self.clear()
+        if self.dirty == 1:
+            actual_x = 0
+            self.surface.fill(self.background_color)
+            for widget in self.widgets:
+                widget._width = self.width / len(self.widgets)
+                widget.dirty = 1
+                widget._repaint()
+                self.surface.blit(widget.surface, (actual_x, 0))
+                actual_x += widget._width + self.inner_padding
+
+
+class YesNoButton(ContainerWidget):
+    def __init__(self, yes_text, no_text):
+        self.yes = Button(yes_text)
+        self.no = Button(no_text)
+        super().__init__([self.yes, self.no])
+        self.background_color = (255, 255, 255, 0)
+        self.dirty = 1
+        
+    def get_widget(self, pos):
+        local_pos = self.get_local_pos(pos)
+        actual_x = 0
+        for widget in self.widgets:
+            if actual_x <= local_pos[0] <= actual_x + widget.width:
+                return widget
+            actual_x += widget._width + self.inner_padding
+
+
+    def on_mouse_left(self, mouse_pos):
+        widget = self.get_widget(mouse_pos)
+        if widget:
+            widget.on_mouse_left(mouse_pos)
+        
+    def send_message(self, text):
+        self.parent.send_message(text)
+        
+    def get_yes_button(self):
+        return self.yes
+    
+    def get_no_button(self):
+        return self.no

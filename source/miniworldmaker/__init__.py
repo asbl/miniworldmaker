@@ -2,6 +2,7 @@ import nest_asyncio
 import os
 import inspect
 import sys
+
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -49,7 +50,7 @@ from miniworldmaker.containers.widgets import Button
 from miniworldmaker.containers.widgets import Label
 from miniworldmaker.containers.widgets import ToolbarButton
 from miniworldmaker.containers.widgets import ToolbarLabel
-
+from miniworldmaker.containers.widgets import YesNoButton
 
 from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.console import Console
@@ -119,6 +120,7 @@ __all__.append(LevelDesignerToolbar.__name__)
 __all__.append(ColorToolbar.__name__)
 __all__.append("ToolbarLabel")
 __all__.append("ToolbarButton")
+__all__.append(YesNoButton.__name__)
 __all__.append(Label.__name__)
 __all__.append(Button.__name__)
 __all__.append(Widget.__name__)

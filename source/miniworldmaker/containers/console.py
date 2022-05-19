@@ -1,49 +1,19 @@
 import pygame
 
 from miniworldmaker.containers import container
+from miniworldmaker.containers import toolbar
+from miniworldmaker.containers import widgets
 
-
-class Console(container.Container):
+class Console(toolbar.Toolbar):
     """
     A console.
 
     You can write text into the console
     """
-
-    def __init__(self, lines=5):
+    
+    def __init__(self):
         super().__init__()
-        self._lines = lines
-        self._height = self._lines * 20
-        self._text_queue = []
-        self.margin_first = 10
-        self.margin_last = 5
-        self.row_height = 25
-        self.row_margin = 10
-        self.margin_left = 10
-        self.margin_right = 10
-        self.dirty = 1
-
-    def repaint(self):
-        self.surface = pygame.Surface((self._container_width, self._container_height))
-        if self.dirty:
-            self.surface.fill((255, 255, 255))
-            myfont = pygame.font.SysFont("monospace", 15)
-            for i, text in enumerate(self._text_queue):
-                row = pygame.Surface(
-                    (self.width - (self.margin_left + self.margin_right), self.row_height))
-                row.fill((200, 200, 200))
-                label = myfont.render(text, 1, (0, 0, 0))
-                row.blit(label, (10, 5))
-                self.surface.blit(row, (self.margin_left, self.margin_first +
-                                  i * self.row_height + i * self.row_margin))
-        self._app.window.repaint_areas.append(self.rect)
-        self.dirty = 1
-
-    def max_height(self):
-        width = self.margin_first
-        for widget in self.widgets:
-            width += widget.width + 5
-        return width - 5
+        self.max_lines = 2
 
     @property
     def lines(self):
@@ -52,7 +22,14 @@ class Console(container.Container):
         return self._lines
 
     def newline(self, text):
-        self._text_queue.append(text)
-        if len(self._text_queue) > self.lines:
-            self._text_queue.pop(0)
-        self.dirty = 1
+        self.add_widget(widgets.Label(text))
+        if len(self.widgets) > self.max_widgets:
+            self.first +=1
+
+    @property 
+    def max_lines(self):
+        return self.widgets
+
+    @max_lines.setter
+    def max_lines(self, value):
+        self.max_widgets = value

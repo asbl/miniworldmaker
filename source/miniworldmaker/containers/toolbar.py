@@ -2,6 +2,7 @@ from multiprocessing.sharedctypes import Value
 import pygame
 from typing import Union, List
 from collections import OrderedDict
+import itertools
 
 import miniworldmaker.base.app as app
 import miniworldmaker.containers.container as container
@@ -65,6 +66,8 @@ class Toolbar(container.Container):
         self._background_color = (255,255,255,255)
         self.dirty = 1
         self.repaint_all = True  # if True, the complete toolbar will be repainted
+        self.first = 0
+        self.max_widgets = 0
 
     @property
     def background_color(self):
@@ -198,15 +201,22 @@ class Toolbar(container.Container):
             self.repaint_all = False
         self.dirty = 1  # Always dirty so that timed widgets can run
 
+    def widget_iterator(self):
+        if self.max_widgets == 0:
+            return self.widgets.items()
+        else:
+            return itertools.islice(self.widgets.items(), self.first, self.first + self.max_widgets)        
+        
     def _paint_widgets(self):
         if self.widgets:
             actual_height = self.margin_top
-            for name, widget in self.widgets.items():
+            for name, widget in self.widget_iterator():
                 actual_height += widget.margin_top
                 if widget.dirty == 1:
                     widget._width = self._container_width - self.margin_left - self.margin_right - widget.margin_left - widget.margin_right
                     widget._repaint()
-                    rect = pygame.Rect(self.rect.left + self.margin_left + widget.margin_left, actual_height, widget.width, widget.height)
+                    widget._topleft = (self.rect.left + self.margin_left + widget.margin_left, actual_height)
+                    rect = pygame.Rect(widget._topleft[0], widget._topleft[1], widget.width, widget.height)
                     self.app.window.repaint_areas.append(rect)
                 self.surface.blit(widget.surface, (self.margin_left + widget.margin_left, actual_height))
                 actual_height += widget.height + widget.margin_bottom
@@ -226,13 +236,15 @@ class Toolbar(container.Container):
 
     def get_widget_by_position(self, pos):
         actual_height = self.margin_top
-        if not self.is_in_container(pos[0], pos[1]) or pos[1] > self._widgets_total_height():
+        local_pos = self.get_local_position(pos)
+        #print(local_pos)
+        if not self.position_is_in_container(pos) or local_pos[1] > self._widgets_total_height():
             return None
         # y pos
         for name, widget in self.widgets.items():
-            if  actual_height + widget.margin_top < pos[1] < actual_height + widget.margin_top + widget.height:
+            if  actual_height + widget.margin_top < local_pos[1] < actual_height + widget.margin_top + widget.height:
                 # x pos
-                internal_x = pos[0] - self.rect.left
+                internal_x = local_pos[0]
                 if self.margin_left + widget.margin_left < internal_x < self.margin_left + widget.margin_left + widget.width:
                     return widget
                 else:
