@@ -1,5 +1,5 @@
 from inspect import signature
-
+from collections.abc import Iterable
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     FirstArgumentShouldBeSelfError,
     NotCallableError,
@@ -36,4 +36,7 @@ def call_method(method: callable, arguments: tuple, allow_none=True):
     if arguments == None:
         method()
     else:
-        method(*arguments)
+        if isinstance(arguments, Iterable):
+            method(*arguments)
+        else:
+            method(arguments)

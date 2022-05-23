@@ -731,3 +731,8 @@ class Board(board_base.BaseBoard):
         x = position[0]
         y = position[1]
         return x, y
+
+    def on_setup(self):
+        """Overwrite or register this method to call on_setup-Actions
+        """
+        pass

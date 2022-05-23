@@ -121,7 +121,6 @@ class BoardEventHandler:
             if method:
                 self.registered_events["on_sensing_token"].add(method)
         elif event.startswith("on_touching_"):
-            print("register on_touching")
             method = mwminspection.MWMInspection(instance).get_instance_method(event)
             if method:
                 self.board.register_touching_method(method)
@@ -189,10 +188,12 @@ class BoardEventHandler:
             self.handle_click_on_token_event(event, data)
         event = "on_" + event
         if event in self.registered_events:
-            for method in self.registered_events[event].copy():
+            registered_events = self.registered_events[event].copy()
+            for method in registered_events:
                 if type(data) in [list, str, tuple]:
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
+            del(registered_events)
         # handle global events
         if event in ["reset"]:
             self.handle_reset_event()
@@ -209,9 +210,11 @@ class BoardEventHandler:
             self.registered_events[event].remove(method)
 
     def act_all(self):
+        registered_act_methods = self.registered_events["act"].copy()
         # acting
-        for method in self.registered_events["act"].copy():
+        for method in registered_act_methods:
             method_caller.call_method(method, None, False)
+        del(registered_act_methods)
 
     def handle_click_on_token_event(self, event, data):
         if event == "mouse_left":

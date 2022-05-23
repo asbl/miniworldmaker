@@ -130,7 +130,9 @@ class Background(appearance.Appearance):
         [token.costume.update() for token in self.reload_costumes_queue]
         self.reload_costumes_queue = []
         if hasattr(self.board, "dynamic_tokens"):
-            [token.costume.update() for token in self.board.dynamic_tokens]
+            dynamic_tokens = self.board.dynamic_tokens.copy()
+            [token.costume.update() for token in dynamic_tokens]
+            del(dynamic_tokens)
 
     def _reload_dirty_image(self):
         super()._reload_dirty_image()

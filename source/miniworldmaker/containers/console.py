@@ -33,3 +33,9 @@ class Console(toolbar.Toolbar):
     @max_lines.setter
     def max_lines(self, value):
         self.max_widgets = value
+        
+    def insert(self, widget):
+        self.add_widget(widget)
+        if len(self.widgets) > self.max_widgets:
+            self.first +=1
+    

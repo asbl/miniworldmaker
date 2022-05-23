@@ -51,6 +51,9 @@ class TokenConnector:
         self.board.event_manager.unregister_instance(token)
         if self in self.board.background.reload_costumes_queue:
             self.board.background.reload_costumes_queue.remove(self)
+        if not self.token._static:
+            _token_connector = self.board.get_token_connector(self.token)
+            _token_connector.remove_dynamic_token()
         self.board.tokens.remove(token)
 
     def set_static(self, value):

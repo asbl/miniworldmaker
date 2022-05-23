@@ -57,17 +57,36 @@ class Toolbar(container.Container):
         """
         super().__init__()
         self.app = app.App
-        self.widgets : OrderedDict["widgets.Widget"] = OrderedDict()
+        self.widgets: OrderedDict["widgets.Widget"] = OrderedDict()
         self.timed_widgets = dict()
         self.position = "right"
         self._margin_top = 10
         self._margin_left = 10
         self._margin_right = 10
-        self._background_color = (255,255,255,255)
+        self._background_color = (255, 255, 255, 255)
         self.dirty = 1
         self.repaint_all = True  # if True, the complete toolbar will be repainted
-        self.first = 0
+        self._first = 0
         self.max_widgets = 0
+        self._pagination = False
+        self._pagination_widget = None
+
+    @property
+    def first(self):
+        return self._first
+
+    @first.setter
+    def first(self, value):
+        self._first = value
+        self.repaint_all = True
+
+    @property
+    def pagination(self):
+        return self._pagination
+
+    @pagination.setter
+    def pagination(self, value):
+        self._pagination = value
 
     @property
     def background_color(self):
@@ -78,7 +97,7 @@ class Toolbar(container.Container):
     def background_color(self, value):
         self._background_color = value
         self.dirty = 1
-        
+
     @property
     def margin_left(self):
         """Defines left margin"""
@@ -201,19 +220,26 @@ class Toolbar(container.Container):
             self.repaint_all = False
         self.dirty = 1  # Always dirty so that timed widgets can run
 
-    def widget_iterator(self):
+    def widget_iterator(self) -> list:
         if self.max_widgets == 0:
-            return self.widgets.items()
+            return self.widgets.values()
         else:
-            return itertools.islice(self.widgets.items(), self.first, self.first + self.max_widgets)        
-        
+            if len(self.widgets) > self.first + self.max_widgets:
+                last_item = self.first + self.max_widgets
+            else:
+                last_item = len(self.widgets)
+        widgets = itertools.islice(self.widgets.values(), self.first, last_item)
+        if self.pagination:
+            widgets = [self.pagination] + list(widgets)
+        return widgets
+
     def _paint_widgets(self):
         if self.widgets:
             actual_height = self.margin_top
-            for name, widget in self.widget_iterator():
+            for widget in self.widget_iterator():
                 actual_height += widget.margin_top
                 if widget.dirty == 1:
-                    widget._width = self._container_width - self.margin_left - self.margin_right - widget.margin_left - widget.margin_right
+                    self._set_widget_width(widget)
                     widget._repaint()
                     widget._topleft = (self.rect.left + self.margin_left + widget.margin_left, actual_height)
                     rect = pygame.Rect(widget._topleft[0], widget._topleft[1], widget.width, widget.height)
@@ -234,23 +260,33 @@ class Toolbar(container.Container):
             if widget:
                 return widget.on_mouse_left(data)
 
+    def _set_widget_width(self, widget):
+        widget._width = (
+            self._container_width - self.margin_left - self.margin_right - widget.margin_left - widget.margin_right
+        )
+        if widget._width < 0:
+            widget._width = 0
+
     def get_widget_by_position(self, pos):
         actual_height = self.margin_top
         local_pos = self.get_local_position(pos)
-        #print(local_pos)
         if not self.position_is_in_container(pos) or local_pos[1] > self._widgets_total_height():
             return None
         # y pos
-        for name, widget in self.widgets.items():
-            if  actual_height + widget.margin_top < local_pos[1] < actual_height + widget.margin_top + widget.height:
+        for widget in self.widget_iterator():
+            if actual_height + widget.margin_top < local_pos[1] < actual_height + widget.margin_top + widget.height:
                 # x pos
+                self._set_widget_width(widget)
                 internal_x = local_pos[0]
-                if self.margin_left + widget.margin_left < internal_x < self.margin_left + widget.margin_left + widget.width:
+                if (
+                    self.margin_left + widget.margin_left
+                    < internal_x
+                    < self.margin_left + widget.margin_left + widget.width
+                ):
                     return widget
                 else:
                     return None
             actual_height += widget.margin_bottom + widget.height + widget.margin_top
-        
 
     def update(self):
         for widget in self.timed_widgets:

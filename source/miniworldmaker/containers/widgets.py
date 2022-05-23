@@ -23,7 +23,7 @@ class Widget:
         self.timed = False
         self._dirty = 1
         # size and position
-        self._topleft = (0, 0) # Set in Toolbar repaint
+        self._topleft = (0, 0)  # Set in Toolbar repaint
         self._width = 0  # Set in Toolbar repaint
         self._height = 30
         self._margin_bottom = 10
@@ -56,7 +56,7 @@ class Widget:
         x = position[0] - self._topleft[0]
         y = position[1] - self._topleft[1]
         return x, y
-        
+
     @property
     def text_align(self):
         "should text be aligned left, oder next to the image?"
@@ -505,15 +505,6 @@ class ContainerWidget(Widget):
                 self.surface.blit(widget.surface, (actual_x, 0))
                 actual_x += widget._width + self.inner_padding
 
-
-class YesNoButton(ContainerWidget):
-    def __init__(self, yes_text, no_text):
-        self.yes = Button(yes_text)
-        self.no = Button(no_text)
-        super().__init__([self.yes, self.no])
-        self.background_color = (255, 255, 255, 0)
-        self.dirty = 1
-        
     def get_widget(self, pos):
         local_pos = self.get_local_pos(pos)
         actual_x = 0
@@ -522,17 +513,50 @@ class YesNoButton(ContainerWidget):
                 return widget
             actual_x += widget._width + self.inner_padding
 
-
     def on_mouse_left(self, mouse_pos):
         widget = self.get_widget(mouse_pos)
         if widget:
             widget.on_mouse_left(mouse_pos)
-        
+
     def send_message(self, text):
         self.parent.send_message(text)
-        
+
+class YesNoButton(ContainerWidget):
+    def __init__(self, yes_text, no_text):
+        self.yes = Button(yes_text)
+        self.no = Button(no_text)
+        super().__init__([self.yes, self.no])
+        self.background_color = (255, 255, 255, 0)
+        self.dirty = 1
+
     def get_yes_button(self):
         return self.yes
-    
+
     def get_no_button(self):
         return self.no
+
+
+class SimplePagination(ContainerWidget):
+    def __init__(self, container, next_text, last_text, ):
+        self.next = Button(next_text)
+        self.last = Button(last_text)
+        self.container = container
+        self.next.container = container
+        self.last.container = container
+        super().__init__([self.last, self.next])
+        self.background_color = (255, 255, 255, 0)
+        
+        def on_mouse_left(self, pos):
+            new_first = self.container.first + self.container.max_widgets
+            if new_first <= len(self.container.widgets):
+                self.container.first = new_first
+        self.next.register(on_mouse_left)
+
+        def on_mouse_left(self, pos):
+            new_first = self.container.first - self.container.max_widgets
+            if new_first >= 0:
+                self.container.first = new_first
+            else:
+                self.container.first = 0
+        self.last.register(on_mouse_left)                
+        self.dirty = 1

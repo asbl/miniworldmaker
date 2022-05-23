@@ -75,16 +75,9 @@ class ActionTimer(Timer):
     def act(self):
         self._call_method()
         self.unregister()
-        self.success()
-
+        
     def _call_method(self):
         method_caller.call_method(self.method, self.arguments, allow_none=False)
-
-    def success(self, method=None, arguments=None):
-        if method is not None and arguments is None:
-            method()
-        if method is not None and arguments is not None:
-            method(arguments)
 
 
 class LoopActionTimer(ActionTimer):

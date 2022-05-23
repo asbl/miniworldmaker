@@ -51,6 +51,7 @@ from miniworldmaker.containers.widgets import Label
 from miniworldmaker.containers.widgets import ToolbarButton
 from miniworldmaker.containers.widgets import ToolbarLabel
 from miniworldmaker.containers.widgets import YesNoButton
+from miniworldmaker.containers.widgets import SimplePagination
 
 from miniworldmaker.containers.actionbar import ActionBar
 from miniworldmaker.containers.console import Console
@@ -121,6 +122,7 @@ __all__.append(ColorToolbar.__name__)
 __all__.append("ToolbarLabel")
 __all__.append("ToolbarButton")
 __all__.append(YesNoButton.__name__)
+__all__.append(SimplePagination.__name__)
 __all__.append(Label.__name__)
 __all__.append(Button.__name__)
 __all__.append(Widget.__name__)

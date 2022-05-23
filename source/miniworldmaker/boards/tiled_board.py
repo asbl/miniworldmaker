@@ -135,11 +135,6 @@ class TiledBoard(board.Board):
 
 
                 board.run()
-
-
-
-
-
         """
         self.tiles.clear()
         self.corners.clear()
@@ -147,8 +142,6 @@ class TiledBoard(board.Board):
 
     def setup_board(self):
         """In this method, corners and edges are created.
-
-
         """
         if not self.empty:
             self._setup_tiles()
@@ -470,3 +463,13 @@ class TiledBoard(board.Board):
         x = position[0] * self.tile_size + origin[0]
         y = position[1] * self.tile_size + origin[1]
         return board_position.Position(x, y)
+    
+    @property
+    def container_width(self) -> int:
+        """The width of the container"""
+        return self.columns * self.tile_size
+
+    @property
+    def container_height(self) -> int:
+        """The height of the container"""
+        return self.rows * self.tile_size
