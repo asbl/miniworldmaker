@@ -43,6 +43,9 @@ class MWMInspection:
         setattr(self.instance, method.__name__, bound_method)
         return bound_method
 
+    def unbind_method(self, method):
+        delattr(self.instance, method.__name__, method)
+    
     def get_and_call_method(self, name, args, errors=False):
         method = self.get_instance_method(name)
         if method:

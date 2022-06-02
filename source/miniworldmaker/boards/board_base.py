@@ -79,6 +79,7 @@ class BaseBoard(container.Container):
         self.timed_objects: list = []
         self.app.event_manager.send_event_to_containers("setup", self)
         self.dynamic_tokens = set()
+        self._registered_methods = []
         self.tokens_fixed_size = False
         self._container_width = self.columns * self.tile_size
         self._container_height = self.rows * self.tile_size
@@ -238,22 +239,6 @@ class BaseBoard(container.Container):
             if token is not None:
                 [token.remove() for token in BaseBoard.filter_actor_list(tokens, token_class)]
 
-    def reset(self):
-        """Resets the board
-        Creates a new board with init-function - recreates all tokens and actors on the board.
-
-        Examples:
-
-            Restarts flappy the bird game after collision with pipe:
-
-            .. code-block:: python
-
-              def on_sensing_collision_with_pipe(self, other, info):
-                  self.board.is_running = False
-                  self.board.reset()
-        """
-        self.app.event_manager.send_event_to_containers("reset", self)
-
     def repaint(self):
         self.background.repaint()  # called 1/frame in container.repaint()
 
@@ -316,10 +301,15 @@ class BaseBoard(container.Container):
         @register
         def method...
         """
+        self._registered_methods.append(method)
         bound_method = board_inspection.BoardInspection(self).bind_method(method)
         self.event_manager.register_event(method.__name__, self)
         return bound_method
 
+    def unregister(self, method: callable):
+        self._registered_methods.remove(method)
+        board_inspection.BoardInspection(self).unbind_method(method)
+        
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)
 

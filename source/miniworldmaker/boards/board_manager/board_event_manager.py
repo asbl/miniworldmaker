@@ -194,11 +194,6 @@ class BoardEventHandler:
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
             del(registered_events)
-        # handle global events
-        if event in ["reset"]:
-            self.handle_reset_event()
-        if event in ["switch_board"]:
-            self.handle_switch_board_event(*data)
 
     def unregister_instance(self, instance):
         awaiting_remove = defaultdict()
@@ -226,22 +221,3 @@ class BoardEventHandler:
             if token.sensing_point(data):
                 method_caller.call_method(method, [data])
 
-    def handle_reset_event(self):
-        self.board.app.event_manager.event_queue.clear()
-        for token in self.board.tokens:
-            token.remove()
-        self.board.app.board = self.board.__class__(self.board.width, self.board.height)
-        self.board.app.board.run()
-        board = self.app.board
-        board.event_queue.clear()
-        return board
-
-    def handle_switch_board_event(self, new_board):
-        app = self.board.app
-        app.event_manager.event_queue.clear()
-        app.board = new_board
-        new_board.running = True
-        new_board.run(
-            event="board_loaded",
-        )
-        return new_board

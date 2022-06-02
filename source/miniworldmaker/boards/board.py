@@ -379,6 +379,11 @@ class Board(board_base.BaseBoard):
         return self._tokens
 
     @property
+    def backgrounds(self):
+        """Returns the background of board."""
+        return self.backgrounds_manager.backgrounds
+    
+    @property
     def background(self):
         """Returns the background of board."""
         return self.backgrounds_manager.background
@@ -656,13 +661,42 @@ class Board(board_base.BaseBoard):
         """quits app and closes the window"""
         self.app.quit(exit_code)
 
+    def reset(self):
+        """Resets the board
+        Creates a new board with init-function - recreates all tokens and actors on the board.
+
+        Examples:
+
+            Restarts flappy the bird game after collision with pipe:
+
+            .. code-block:: python
+
+              def on_sensing_collision_with_pipe(self, other, info):
+                  self.board.is_running = False
+                  self.board.reset()
+        """
+        self.app.event_manager.event_queue.clear()
+        self.clear()
+        for background in self.backgrounds:
+            self.remove_background(background)
+        if hasattr(self, "on_setup"):
+            self.on_setup()
+
+
     def switch_board(self, new_board: "board_base.BaseBoard"):
         """Switches to another board
 
         Args:
             new_board (board_base.BaseBoard): _description_
         """
-        self.event_manager.handle_switch_board_event(new_board)
+        app = self.app
+        app.event_manager.event_queue.clear()
+        app.board = new_board
+        new_board.running = True
+        new_board.run(
+            event="board_loaded",
+        )
+        return new_board
 
     @staticmethod
     def _get_token_connector_class():

@@ -196,7 +196,7 @@ class AppearancesManager:
         pass
 
     def count(self):
-        if self.has_costume:
+        if self.has_appearance:
             return len(self.appearances_list)
         else:
             return 0
