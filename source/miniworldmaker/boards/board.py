@@ -676,7 +676,7 @@ class Board(board_base.BaseBoard):
                   self.board.reset()
         """
         self.app.event_manager.event_queue.clear()
-        self.clear()
+        self.clean()
         for background in self.backgrounds:
             self.remove_background(background)
         if hasattr(self, "on_setup"):
@@ -700,6 +700,8 @@ class Board(board_base.BaseBoard):
 
     @staticmethod
     def _get_token_connector_class():
+        """needed by get_token_connector in parent class
+        """
         return pixel_board_connector.PixelBoardConnector
 
     def get_color_from_pixel(self, position: "board_position.Position") -> tuple:

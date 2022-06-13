@@ -126,8 +126,7 @@ class TokenButton(widgets.Widget):
         super().__init__("Button")
         self.parent = parent
         self.board = board
-        if prototype.costume.image_paths:
-            self._img_path = prototype.costume.image_paths[0]
+        self._img_path = prototype.costume.image_manager.get_source_from_current_image()
         self._text_padding = 30
         self.set_text("Add " + token_type.__name__)
         self.token_type = token_type

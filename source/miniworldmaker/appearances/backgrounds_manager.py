@@ -5,8 +5,8 @@ import miniworldmaker.appearances.background as background
 
 
 class BackgroundsManager(appearances_manager.AppearancesManager):
-    def __init__(self, parent, appearance=None):
-        super().__init__(parent, appearance)
+    def __init__(self, parent):
+        super().__init__(parent)
         self.repaint_all: int = 1
 
     @property
@@ -32,7 +32,7 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
         new_background = self.add_new_appearance(source)
         return new_background
 
-    def get_default_appearance(self):
+    def create_appearance(self) -> "background.Background":
         new_background = background.Background(self.board)
         return new_background
 

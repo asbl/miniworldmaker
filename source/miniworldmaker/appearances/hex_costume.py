@@ -7,15 +7,18 @@ class HexCostume(costume.Costume):
     def __init__(self, token: "token.HexToken"):
         super().__init__(token)
         self.set_image((0, 0, 0, 0))
+        self.mod_pointlist = []
+        
+
+    def _set_token_default_values(self):
         self.is_scaled = True
         self.is_upscaled = False
         self.is_filled = True
-        self.mod_pointlist = []
+        self.is_rotatable = True
         self.fill_color = (180, 180, 180, 255)
         self.border = 1
         self.border_color = (100, 100, 100, 255)
-        self._update_draw_shape()
-
+        
     def _update_draw_shape(self):
         self.mod_pointlist = []
         board = self.token.board

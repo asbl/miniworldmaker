@@ -135,6 +135,10 @@ class Background(appearance.Appearance):
             del(dynamic_tokens)
 
     def _reload_dirty_image(self):
+        """ Reloads dirty image
+        
+        Called by property `image`, if image is dirty.
+        """
         super()._reload_dirty_image()
         self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
         self.surface.blit(self.image, self.surface.get_rect())

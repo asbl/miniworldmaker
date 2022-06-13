@@ -8,12 +8,11 @@ class PixelBoardConnector(token_connector.TokenConnector):
 
     def __init__(self, board, token):
         super().__init__(board, token)
-        self.board_sensor = pixelboardsensor.TokenPixelBoardSensor(token, board)
 
-    def get_position_manager_class(self):
+    @staticmethod
+    def get_position_manager_class():
         return pixelpositionmanager.PixelBoardPositionManager
-
-    def add_token_to_board(self, position: "board_position.Position"):
-        super().add_token_to_board(position)
-
-
+    
+    @staticmethod
+    def get_board_sensor_class():
+        return pixelboardsensor.TokenPixelBoardSensor

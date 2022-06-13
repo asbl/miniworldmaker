@@ -3,7 +3,7 @@ from typing import Any
 import inspect
 import miniworldmaker.tokens.token as token
 import miniworldmaker.boards.board_base as board_base
-import miniworldmaker.tools.mwminspection as mwminspection
+import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.method_caller as method_caller
 import miniworldmaker.tools.keys as keys
 
@@ -99,7 +99,7 @@ class BoardEventHandler:
                 if
                 (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events
         ):
-            method = mwminspection.MWMInspection(instance).get_instance_method(member)
+            method = inspection.Inspection(instance).get_instance_method(member)
             if method and member.startswith("on_sensing_"):
                 self.register_class_method("on_sensing_token", instance, method)
             if method and member.startswith("on_not_sensing_"):
@@ -107,25 +107,25 @@ class BoardEventHandler:
 
     def register_events(self, events, instance):
         for event in events:
-            method = mwminspection.MWMInspection(instance).get_instance_method(event)
+            method = inspection.Inspection(instance).get_instance_method(event)
             if method:
                 self.register_class_method(event, instance, method)
 
     def register_event(self, event, instance):
         if event in self.events:
-            method = mwminspection.MWMInspection(instance).get_instance_method(event)
+            method = inspection.Inspection(instance).get_instance_method(event)
             if method:
                 self.register_custom_method(event, instance, method)
         elif event.startswith("on_sensing_"):
-            method = mwminspection.MWMInspection(instance).get_instance_method(event)
+            method = inspection.Inspection(instance).get_instance_method(event)
             if method:
                 self.registered_events["on_sensing_token"].add(method)
         elif event.startswith("on_touching_"):
-            method = mwminspection.MWMInspection(instance).get_instance_method(event)
+            method = inspection.Inspection(instance).get_instance_method(event)
             if method:
                 self.board.register_touching_method(method)
         elif event.startswith("on_separation_from_"):
-            method = mwminspection.MWMInspection(instance).get_instance_method(event)
+            method = inspection.Inspection(instance).get_instance_method(event)
             if method:
                 self.board.register_separate_method(method)
 

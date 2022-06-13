@@ -2,7 +2,7 @@ from tkinter import filedialog
 from typing import Union
 import tkinter as tk
 import pygame
-from miniworldmaker.tools import mwminspection
+from miniworldmaker.tools import inspection
 from miniworldmaker.base import file_manager
 
 
@@ -292,7 +292,7 @@ class Widget:
         @register
         def method...
         """
-        bound_method = mwminspection.MWMInspection(self).bind_method(method)
+        bound_method = inspection.Inspection(self).bind_method(method)
         return bound_method
 
 

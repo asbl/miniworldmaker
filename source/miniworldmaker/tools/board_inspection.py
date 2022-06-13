@@ -1,4 +1,4 @@
-from miniworldmaker.tools import mwminspection
+from miniworldmaker.tools import inspection
 
-class BoardInspection(mwminspection.MWMInspection):
+class BoardInspection(inspection.Inspection):
     pass

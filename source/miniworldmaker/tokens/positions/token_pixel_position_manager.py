@@ -7,13 +7,10 @@ from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPosit
 
 
 class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
-    def __init__(self, token, position):
-        super().__init__(token, position)
+    def __init__(self, token, board):
+        super().__init__(token, board)
         self.size = (0, 0)
-        if position:
-            self.set_position(position)
-        else:
-            self.set_position((0, 0))
+        self.set_position((0, 0))
         self.size=(40, 40)
 
     def get_rect(self) -> pygame.Rect:

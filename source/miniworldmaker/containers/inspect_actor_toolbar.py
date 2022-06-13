@@ -97,8 +97,7 @@ class TokenButton(ToolbarButton):
     def __init__(self, token, toolbar):
         super().__init__(text=str(token.__class__.__name__) + " at " + str(token.position))
         self.token = token
-        if token.costume.image_paths:
-            self._img_path = token.costume.image_paths[0]
+        self._img_path = token.costume.image_manager.get_source_from_current_image()
         self.toolbar = toolbar
         self._text_padding = 30
 

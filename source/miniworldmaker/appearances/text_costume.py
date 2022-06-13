@@ -6,8 +6,16 @@ class TextCostume(costume.Costume):
     def __init__(self, token):
         super().__init__(token)
         self.set_image((0, 0, 0, 0))
-        self.fill_color = (255, 255, 255, 255)
+        
 
+    def _set_token_default_values(self):
+        self.fill_color = (255, 255, 255, 255)
+        self.border = 0
+        self.is_rotatable = True
+        self.border_color = (100, 100, 100, 255)
+        self.border = 0
+        
+    
     def _inner_shape(self):
         return None
 

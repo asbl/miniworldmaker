@@ -4,9 +4,10 @@ import os
 import unittest
 import random
 
-TEST_FRAMES = [40]
-QUIT_FRAME = 40
-
+TEST_FRAMES = [1,20,21, 40, 41]
+QUIT_FRAME = 80
+init_test_called = False
+    
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
@@ -22,33 +23,26 @@ class Test159(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
-
-
         board = Board(400,600)
+        
+        
 
         @board.register
         def on_setup(self):
+            self.init_test()     
             self.add_background((0,255,0,255))
             self.token = Token((10,10))
 
         @board.register
         def act(self):
+            self.test()
             if self.frame == 20:
                 self.token.x += 100
             if self.frame == 40:
                 self.reset()
-        
-
-
-        """ here act and init - delete if used in testcode"""
-        
-        @board.register
-        def on_setup(self):
-            self.init_test()            
             
-        @board.register
-        def act(self):
-            self.test()
+            
+                   
             
         """ end of setUp - code up here""" 
         
@@ -56,9 +50,12 @@ class Test159(unittest.TestCase):
            
         @board.register
         def init_test(self):
-            print("setup test")
-            board.test_frame = 0
-        
+            global init_test_called
+            if not init_test_called:
+                print("setup test")
+                board.test_frame = 0
+            init_test_called = True
+            
         @board.register
         def test(self):
             global TEST_FRAMES
@@ -90,5 +87,6 @@ class Test159(unittest.TestCase):
         
 if __name__ == '__main__':
     unittest.main()
+
 
 

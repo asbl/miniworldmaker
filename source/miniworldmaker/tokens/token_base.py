@@ -1,4 +1,5 @@
 from __future__ import annotations
+from shelve import Shelf
 
 from typing import Union, Optional, Tuple
 
@@ -27,7 +28,6 @@ class Meta(type):
             last_args = [args[n] for n in range(2, len(args))]
             args = [first] + last_args
         instance = type.__call__(cls, *args, **kwargs)  # create a new Token
-        # Add token to board **after** init
         _token_connector = instance.board.get_token_connector(instance)
         _token_connector.add_token_to_board(instance._position)
         return instance
@@ -37,7 +37,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = None):
+    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0,0)):
         self._collision_type: str = "rect"
         self._layer: int = 0
         self._inner = 0
@@ -47,25 +47,65 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         self._position: "board_position.Position" = position
         self._managers: list = list()
         self.token_id: int = BaseToken.token_count + 1
-        self.costume_manager: costumes_manager.CostumesManager = None
-        self.board_sensor: token_boardsensor.TokenBoardSensor = None
-        self.position_manager: token_position_manager.TokenPositionManager = None
         self.board: "board.Board" = app.App.board
+        self._board_sensor: token_boardsensor.TokenBoardSensor = self._init_board_sensor()
+        self._position_manager: token_position_manager.TokenPositionManager = self._init_position_manager()
+        self._costume_manager: costumes_manager.CostumesManager = self._init_costume_manager()
         if not self.board:
             raise NoBoardError()
-        _token_connector = self.board.get_token_connector(self)
-        _token_connector.add_token_managers(position)
-        # properties defined in subclasses
-        # end
         pygame.sprite.DirtySprite.__init__(self)
         BaseToken.token_count += 1
         self.speed: int = 1
         self.ask: "ask.Ask" = ask.Ask(self.board)
+        
+    def _get_new_costume(self):
+        return self.board.get_token_connector(self).create_costume()
+        
+    def _init_board_sensor(self):
+        self._board_sensor = self.board.get_token_connector(self).create_board_sensor()
+        self._managers.append(self._board_sensor)
+        return self._board_sensor
+
+    def _init_costume_manager(self):
+        self._costume_manager = self.board.get_token_connector(self).create_costume_manager()
+        self._costume_manager._add_default_appearance()
+        self._managers.append(self._costume_manager)
+        return self._costume_manager
+
+    def _init_position_manager(self):
+        self._position_manager = self.board.get_token_connector(self).create_position_manager()
+        self._position_manager.position = self._position
+        self._managers.append(self._position_manager)
+        return self._position_manager
 
     @property
-    def position(self) -> "board_position.BoardPosition":
-        """implemented in subclass"""
-        return board_position.Position(0, 0)
+    def position_manager(self):
+        if not hasattr(self, "_position_manager") or not self._position_manager:
+            self._init_position_manager()
+        return self._position_manager
+
+    @property
+    def board_sensor(self):
+        if not hasattr(self, "_position_manager") or not self._board_sensor:
+            self._init_board_sensor()
+        return self._board_sensor
+    
+    @property
+    def costume_manager(self):
+        if not hasattr(self, "_position_manager") or not self._costume_manager:
+            self._init_costume_manager()
+        return self._costume_manager
+
+    @property
+    def position(self) -> "board_position.Position":
+        """
+        The position of the token as Position (x, y)
+        """
+        return self.position_manager.position
+
+    @position.setter
+    def position(self, value: Union["board_position.Position", tuple]):
+        self.position_manager.position = value
 
     @property
     def size(self) -> Tuple:

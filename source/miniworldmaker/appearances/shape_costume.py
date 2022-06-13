@@ -8,20 +8,30 @@ class ShapeCostume(costume.Costume):
     def __init__(self, token):
         super().__init__(token)
         self.set_image((0, 0, 0, 0))
+        
+    def after_init(self):
+        super().after_init()
+
+    def _set_token_default_values(self):
+        self._info_overlay = False
+        self._is_rotatable = True
         self.is_scaled = True
         self.is_upscaled = False
         self.is_filled = True
         self.fill_color = (255, 255, 255, 50)
-        self.border = 1
         self.border_color = (100, 100, 100, 255)
-
-
+        self.border = 1
+        
 class CircleCostume(ShapeCostume):
     def _inner_shape(self):
         return pygame.draw.circle, [(self.parent.size[0] / 2, self.parent.size[0] / 2), self.parent.radius, 0]
 
     def _outer_shape(self):
-        return pygame.draw.circle, [(self.parent.size[0] / 2, self.parent.size[0] / 2), self.parent.radius, self.border]
+        return pygame.draw.circle, [
+            (self.parent.size[0] / 2, self.parent.size[0] / 2),
+            self.parent.radius,
+            self.border,
+        ]
 
     def _update_draw_shape(self):
         self.parent.size = (self.parent.radius * 2, self.parent.radius * 2)
@@ -76,7 +86,6 @@ class LineCostume(ShapeCostume):
         _y_end = self.parent.end_position[1] - box.topleft[1] - self.border
         self.local_end_position = (_x_end, _y_end)
 
-
     def _inner_shape(self):
         return pygame.draw.line, [self.local_start_position, self.local_end_position, 0]
 
@@ -85,7 +94,6 @@ class LineCostume(ShapeCostume):
 
 
 class RectangleCostume(ShapeCostume):
-
     def _inner_shape(self):
         return pygame.draw.rect, [pygame.Rect(0, 0, self.token.size[0], self.token.size[1]), 0]
 

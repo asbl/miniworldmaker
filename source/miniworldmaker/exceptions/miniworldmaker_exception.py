@@ -3,7 +3,7 @@ from inspect import signature
 
 class MiniworldMakerError(RuntimeError):
     def __init__(self, message):
-        super().__init__(self.message)
+        super().__init__(message)
 
 
 class NoRunError(MiniworldMakerError):

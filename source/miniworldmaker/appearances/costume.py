@@ -1,4 +1,5 @@
 import pygame
+from typing import List, Tuple
 import miniworldmaker.appearances.appearance as appear
 import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
 
@@ -14,21 +15,32 @@ class Costume(appear.Appearance):
 
     def __init__(self, token):
         super().__init__()
-        self._fill_color = (255, 0, 255, 100)
-        self._border_color = (100, 100, 100)
         self.parent = token  #: the parent of a costume is the associated token.
         self.board = token.board
         self.token = self.parent
-        self._info_overlay = False
-        self._is_rotatable = True
+        self.info_overlay = False
+        self.is_rotatable = False
+        self.fill_color = None
+        self.border_color = None
         self.transformations_manager = transformations_costume_manager.TransformationsCostumeManager(self)
 
     def after_init(self):
+        # Called in metaclass
         super().after_init()
-        self.set_default_color_values()
-        self._update_shape()
-
-    def set_default_color_values(self):
+        self._set_default_color_values()
+        self._update_draw_shape()
+        
+    def _set_default_color_values(self):
+        self._set_token_default_values()
+        self._set_board_default_values()
+        
+    def _set_token_default_values(self):
+        self._info_overlay = False
+        self._is_rotatable = True
+        self.fill_color = (255, 0, 255, 100)
+        self.border_color = (100, 100, 100)
+        
+    def _set_board_default_values(self):
         if self.token.board.default_fill_color:
             self.fill_color = self.board.default_fill_color
         if self.token.board.default_is_filled:
@@ -55,46 +67,62 @@ class Costume(appear.Appearance):
             "all",
         )
 
-    def _update_shape(self):
-        if self.token.position_manager:
-            self._update_draw_shape()
-
     def _reload_dirty_image(self):
-        self._update_shape()
+        """Reloads a dirty image. 
+        
+        Called by property `image`, if image is dirty.
+        
+        called by ...
+        """
+        self._update_draw_shape()
         super()._reload_dirty_image()
 
     def set_image(self, source) -> bool:
         super().set_image(source)
 
-    def _inner_shape(self):
+    def _inner_shape(self) -> pygame.Rect:
+        """Returns inner shape of costume
+
+        Returns:
+            pygame.Rect: Inner shape (Rectangle with size of token)
+        """
         return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), 0]
 
-    def _outer_shape(self):
+    def _outer_shape(self) -> pygame.Rect:
+        """Returns outer shape of costume
+
+        Returns:
+            pygame.Rect: Outer shape (Rectangle with size of tokens without filling.)
+        """
         return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), self.border]
 
     def _update_draw_shape(self):
         self.draw_shapes = []
         if self._inner_shape():
-            if self.is_filled:
+            if self.is_filled and not self.image_manager.is_image():
                 self.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
-        if self._outer_shape():
-            if self.border:
-                self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
+        if self._outer_shape() and self.border:
+            self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
 
-    def _inner_shape_arguments(self):
-        if not self.fill_color:
-            color = (255, 0, 255)
-        else:
-            color = self.fill_color
-        return [
-                   color,
-               ] + self._inner_shape()[1]
+    def _inner_shape_arguments(self) -> List:
+        """Gets arguments for inner shape
 
-    def _outer_shape_arguments(self):
-        if not self.border_color:
-            color = (255, 0, 255)
-        else:
-            color = self.border_color
+        Returns:
+            List[]: List of arguments
+        """
+        
+        color = self.fill_color
         return [
-                   color,
-               ] + self._outer_shape()[1]
+            color,
+        ] + self._inner_shape()[1]
+
+    def _outer_shape_arguments(self) -> List:
+        """Gets arguments for outer shape
+
+        Returns:
+            List[]: List of arguments
+        """
+        color = self.border_color
+        return [
+            color,
+        ] + self._outer_shape()[1]

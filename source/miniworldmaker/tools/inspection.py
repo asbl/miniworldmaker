@@ -1,7 +1,7 @@
 import inspect
 
 
-class MWMInspection:
+class Inspection:
 
     def __init__(self, generator):
         self.instance = generator
@@ -18,25 +18,6 @@ class MWMInspection:
                 return None
         else:
             return None
-
-    def has_parent_with_name(self, name):
-        parents = self.instance__class__.__bases__
-        for parent in parents:
-            if parent.__name__ == name:
-                return True
-        return False
-
-    def has_parent(self, parent_cls):
-        parents = inspect.getmro(self.instance.__class__)
-        for parent in parents:
-            if parent == parent_cls:
-                return True
-        return False
-
-    def has_class_name(self, name):
-        if self.instance.__class__.__name__ == name:
-            return True
-        return False
 
     def bind_method(self, method):
         bound_method = method.__get__(self.instance, self.instance.__class__)

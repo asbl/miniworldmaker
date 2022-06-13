@@ -6,6 +6,9 @@ import pygame
 import miniworldmaker.appearances.appearance_base as appearance_base
 import miniworldmaker.tools.color as color
 
+from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
+from miniworldmaker.appearances.managers.image_manager import ImageManager
+
 
 class Appearance(appearance_base.AppearanceBase):
     """Base class of token costumes and board backgrounds
@@ -13,6 +16,7 @@ class Appearance(appearance_base.AppearanceBase):
     The class contains all methods and attributes to display and animate images of the objects, render text
     on the images or display overlays.
     """
+        
     @property
     def font_size(self):
         return self.font_manager.font_size
@@ -412,6 +416,8 @@ class Appearance(appearance_base.AppearanceBase):
                 board.run()
 
         """
+        if type(source) not in [str, pygame.Surface, tuple]:
+            raise MiniworldMakerError(f"Wrong type, expected str, pygame.Surface or Tuple, got {type(source)}")
         return super().add_image(source)
 
     def add_images(self, sources: list):
@@ -419,6 +425,7 @@ class Appearance(appearance_base.AppearanceBase):
         
         Each source in sources paramater must be a valid parameter for :py:attr:`Appearance.add_image`
         """
+        assert type(sources) == list
         for source in sources:
             self.add_image(source)
 
@@ -610,10 +617,8 @@ class Appearance(appearance_base.AppearanceBase):
                 :alt: converted image
         """
         surf = pygame.surfarray.make_surface(arr)
-        self.image_manager.replace_image(surf)
+        self.image_manager.replace_image(surf, ImageManager.SURFACE, None)
 
-    def from_appearance(self, appearance, index):
-        self.image_manager.add_image_from_surface(index)
 
     @property
     def color(self):

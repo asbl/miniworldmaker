@@ -9,12 +9,9 @@ from typing import Union
 
 
 class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
-    def __init__(self, token, position):
-        super().__init__(token, position)
-        if position is not None:
-            self._position = hex_elements.CubeCoord.create(position)
-        else:
-            self._position = hex_elements.CubeCoord.create((0, 0))
+    def __init__(self, token, board):
+        super().__init__(token, board)
+        self._position = hex_elements.CubeCoord.create((0, 0))
 
     def get_rect(self):
         if self.token.costume:

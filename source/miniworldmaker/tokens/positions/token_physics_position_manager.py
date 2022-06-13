@@ -6,8 +6,8 @@ from miniworldmaker.exceptions.miniworldmaker_exception import PhysicsSimulation
 from miniworldmaker.tokens import token as token_mod
 
 class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManager):
-    def __init__(self, token : "token_mod.Token", position):
-        super().__init__(token, position)
+    def __init__(self, token : "token_mod.Token", board):
+        super().__init__(token, board)
         if self.size:
             self.size = (40, 40)
         self.token.register(self.impulse)

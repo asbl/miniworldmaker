@@ -5,6 +5,7 @@ import miniworldmaker.appearances.appearance as appearance
 
 
 class CostumesManager(appearances_manager.AppearancesManager):
+    
     @property
     def costume(self):
         return self.appearance
@@ -37,16 +38,24 @@ class CostumesManager(appearances_manager.AppearancesManager):
 
         """
         new_costume = self.add_new_appearance(source)
-        self.costume._update_shape()
+        self.costume._update_draw_shape()
         self.costume.dirty = 1
         return new_costume
+    
+    def add_costume_from_list(self, sources: List) -> "appearance.Appearance":
+        return super().add_new_appearance_from_list(sources)
 
     def add_costumes(self, source_list):
         for source in source_list:
             self.add_costume(source)
 
-    def get_default_appearance(self):
-        new_costume = costume_mod.Costume(self.token)
+    def create_appearance(self) -> "costume_mod.Costume":
+        """Creates a new costume 
+
+        Returns:
+            _type_: _description_
+        """
+        new_costume = self.token._get_new_costume()
         return new_costume
 
     @property
@@ -69,3 +78,6 @@ class CostumesManager(appearances_manager.AppearancesManager):
 
     def next_costume(self) -> "costume_mod.Costume":
         return self.next_appearance()
+
+    def _add_appearance_to_manager(self, appearance):
+        return super()._add_appearance_to_manager(appearance)

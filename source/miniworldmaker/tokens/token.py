@@ -9,6 +9,7 @@ import miniworldmaker.appearances.costume as costume
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token_base as token_base
 from miniworldmaker.exceptions.miniworldmaker_exception import (
+    MiniworldMakerError,
     NotImplementedOrRegisteredError,
 )
 
@@ -279,7 +280,7 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.flip_x()
 
-    def add_costume(self, source: Union[Tuple, str] = None) -> costume.Costume:
+    def add_costume(self, source: Union[Tuple, str, List]) -> costume.Costume:
         """Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
@@ -356,7 +357,13 @@ class Token(token_base.BaseToken):
             The new costume.
 
         """
-        return self.costume_manager.add_costume(source)
+        
+        if type(source) in [str, tuple]:
+            return self.costume_manager.add_costume(source)
+        elif type(source) == list:
+            return self.costume_manager.add_costume_from_list(source)
+        else:
+            raise MiniworldMakerError(f"Wrong type for appearance. Expected: list, tuple or str, got {type(source)}")
 
     def add_costumes(self, sources : list) -> costume.Costume:
         """Adds multiple costumes
@@ -404,6 +411,8 @@ class Token(token_base.BaseToken):
         """
         return self.costume_manager.switch_costume(source)
 
+    set_costume = switch_costume
+    
     def next_costume(self):
         """Switches to the next costume of token
 
@@ -416,7 +425,7 @@ class Token(token_base.BaseToken):
     def costume(self) -> costume.Costume:
         """Gets the costume of token
         """
-        if self.costume_manager:
+        if hasattr(self, "_costume_manager") and self._costume_manager:
             return self.costume_manager.costume
 
     @costume.setter
@@ -815,17 +824,6 @@ class Token(token_base.BaseToken):
         self.size = (old_width * scale_factor, value)
 
     @property
-    def position(self) -> "board_position.Position":
-        """
-        The position of the token as Position (x, y)
-        """
-        return self.position_manager.position
-
-    @position.setter
-    def position(self, value: Union["board_position.Position", tuple]):
-        self.position_manager.position = value
-
-    @property
     def x(self) -> float:
         """The x-value of a token"""
         return self.position_manager.x
@@ -1182,7 +1180,7 @@ class Token(token_base.BaseToken):
     get_touching_tokens = sensing_tokens  #: Alias of :meth:`Token.sensing_tokens`
     detect_tokens = sensing_tokens  #: Alias of :meth:`Token.sensing_tokens`
 
-    def sensing_token(self, token_filter: str = None) -> Union["Token", None]:
+    def sensing_token(self, token_filter: Union[str, type] = None) -> Union["Token", None]:
         """Senses if tokens are on token position.
         Returns the first found token.
 
@@ -1231,7 +1229,7 @@ class Token(token_base.BaseToken):
                 Your browser does not support the video tag.
                 </video>
         """
-        return self.board_sensor.sensing_token(filter)
+        return self.board_sensor.sensing_token(token_filter)
 
     get_touching_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
     detect_token = sensing_token  #: Alias of :meth:`Token.sensing_token`

@@ -130,6 +130,7 @@ Links
   objectsfirst_german/index
   processing_german/index
   howto_german/index
+  games/index
 
 .. toctree::
   :maxdepth: 1

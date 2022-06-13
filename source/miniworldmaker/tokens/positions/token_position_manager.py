@@ -11,9 +11,10 @@ import miniworldmaker.board_positions.board_rect as board_rect
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.tokens import token as token_mod
+from miniworldmaker.boards import board
 
 class TokenPositionManager:
-    def __init__(self, token : "token_mod.Token", position):
+    def __init__(self, token : "token_mod.Token", board : "board.Board"):
         self.token = token
         self.last_position = (0, 0)
         self.last_direction = 90
@@ -24,10 +25,7 @@ class TokenPositionManager:
         self._position = (0, 0)
         self._direction = 0
         self._initial_direction = 0
-        if position is not None:
-            self._position = board_position.Position.create(position)
-        else:
-            self._position = board_position.Position.create((0, 0))
+        self._position = board_position.Position.create((0, 0))
 
     def move_vector(self, vector : "board_vector.Vector") -> "token_mod.Token":
         position = self.get_position()

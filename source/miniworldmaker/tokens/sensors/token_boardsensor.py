@@ -40,7 +40,7 @@ class TokenBoardSensor:
             token_list = self.filter_tokens_by_classname(token_list, token_filter)
         elif isinstance(token_mod.Token, token_filter):
             token_list = self.filter_tokens_by_instance(token_list, token_filter)
-        elif issubclass(token_mod.Token, token_filter):
+        elif issubclass(token_filter, token_mod.Token):
             token_list = self.filter_tokens_by_class(token_list, token_filter)
         return token_list
 

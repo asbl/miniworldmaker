@@ -33,8 +33,9 @@ class Shape(token.Token):
         if position == None:
             position = (0, 0)
         super().__init__(position)
-        self.costume = shape_costume.ShapeCostume(self)
 
+    def _get_new_costume(self):
+        return shape_costume.ShapeCostume(self)
 
 class Circle(Shape):
     """

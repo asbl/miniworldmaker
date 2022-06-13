@@ -8,17 +8,16 @@ class TiledBoardConnector(token_connector.TokenConnector):
 
     def __init__(self, board, token):
         super().__init__(board, token)
-        self.board_sensor = tiledboardsensor.TokenTiledBoardSensor(token, board)
 
-    def get_position_manager_class(self):
+    @staticmethod        
+    def get_board_sensor_class():
+        return tiledboardsensor.TokenTiledBoardSensor
+    
+    @staticmethod
+    def get_position_manager_class():
         return tiledpositionmanager.TiledBoardPositionManager
 
-    def add_token_to_board(self, position: "board_position.Position"):
-        super().add_token_to_board(position)
-
     def remove_token_from_board(self, token):
-        """ Implemented in subclasses
-        """
         self.remove_static_token()
         self.remove_dynamic_token()
         super().remove_token_from_board(token)

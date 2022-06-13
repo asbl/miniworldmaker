@@ -8,8 +8,8 @@ import miniworldmaker.tokens.positions.token_position_manager as token_position_
 
 
 class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
-    def __init__(self, token, position):
-        super().__init__(token, position)
+    def __init__(self, token, board):
+        super().__init__(token, board)
         self._scaled_size = (1, 1)
 
     def get_rect(self):

@@ -8,6 +8,9 @@ import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
 import miniworldmaker.tools.binding as binding
 
+from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
+from miniworldmaker.appearances.managers.image_manager import ImageManager
+
 
 class MetaAppearance(type):
     def __call__(cls, *args, **kwargs):
@@ -45,7 +48,6 @@ class AppearanceBase(metaclass=MetaAppearance):
         self._border_color = None
         self._alpha = 255
         self._dirty = 0
-        self.call_image_actions = {}
         self._image = pygame.Surface((0, 0))  # size set in image()-method
         self.surface_loaded = False
         self.last_image = None
@@ -53,13 +55,13 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.image_manager = image_manager.ImageManager(self)
         self.transformations_manager = transformations_manager.TransformationsManager(self)
         self.image_manager.add_default_image()
-        self.has_image = False
         # properties
         self.texture_size = (0, 0)
         self.animation_speed = 100  #: The animation speed for animations
         self.loop = False
-        self.dirty = 1
         self.animation_length = 0
+        self.dirty = 1
+
 
     def after_init(self):
         # Called in metaclass
@@ -98,11 +100,7 @@ class AppearanceBase(metaclass=MetaAppearance):
         self._dirty = value
         if self.parent and value == 1:
             self.parent.dirty = 1
-
-    @property
-    def image_paths(self):
-        return self.image_manager.image_paths
-
+            
     def _reload_image(self):
         """If dirty, the image will be reloaded.
         The image pipeline will be  processed, defined by "reload_transformations_after"
@@ -111,13 +109,15 @@ class AppearanceBase(metaclass=MetaAppearance):
             self._reload_dirty_image()
 
     def _reload_dirty_image(self):
-        """Reloads image from image_index in image_manager.images_list"""
+        """Reloads image from image_index in image_manager.images_list and processes transformations pipeline
+        
+        Called by property `image`, if image is dirty
+        Sets dirty to 0.
+        """
         self.dirty = 0
-        # self.image_manager.reset_image_index()
         image = self.image_manager.load_image_by_image_index()
         image = self.transformations_manager.process_transformation_pipeline(image, self)
         self._image = image
-        # self.transformations_manager.reset_reload_transformations()
 
     @property
     def image(self) -> pygame.Surface:
@@ -125,28 +125,27 @@ class AppearanceBase(metaclass=MetaAppearance):
         self._reload_image()
         return self._image
 
-    def add_image(self, source: Union[str, pygame.Surface, Tuple] = None) -> int:
+    def add_images(self, sources : list):
+        assert type(sources) == list
+        for image in sources:
+            self.add_image(image)
+        
+    def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
         """Adds an image to the appearance
 
         Returns:
             Index of the created image.
         """
-        if not self.has_image and not source:
-            self.image_manager.add_default_image()
-        elif not self.has_image and source:
-            self.image_manager.add_first_image(source)
-            self.has_image = True
-        else:
-            return self.image_manager.add_image(source)
+        if type(source) not in [str, pygame.Surface, tuple]:
+            raise MiniworldMakerError(f"Error: Image source has wrong format (expected str or pygame.Surface, got {type(source)}")
+        self.image_manager.add_image(source)
 
     def set_image(self, source: Union[int, "AppearanceBase"]) -> bool:
-        if isinstance(source, AppearanceBase):
-            self.image_manager.replace_image(source)
-        elif type(source) == int:
+        if type(source) == int:
             return self.image_manager.set_image_index(source)
         elif type(source) == tuple:
             surface = image_manager.ImageManager.get_surface_from_color(source)
-            self.image_manager.replace_image(surface)
+            self.image_manager.replace_image(surface, ImageManager.COLOR, source)
 
     def update(self):
         """Loads the next image,

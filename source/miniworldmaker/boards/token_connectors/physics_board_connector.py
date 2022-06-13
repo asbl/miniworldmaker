@@ -3,6 +3,7 @@ import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.boards.token_connectors.pixel_board_connector as pixelboard_connector
 import miniworldmaker.tokens.physics.token_physics as token_physics
 import miniworldmaker.tokens.positions.token_physics_position_manager as physicspositionmanager
+import miniworldmaker.tokens.sensors.token_pixelboardsensor as token_pixelboardsensor
 
 
 class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
@@ -11,9 +12,14 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
     def __init__(self, board, token):
         super().__init__(board, token)
 
-    def get_position_manager_class(self):
+    @staticmethod
+    def get_position_manager_class():
         return physicspositionmanager.PhysicsBoardPositionManager
 
+    @staticmethod
+    def get_board_sensor_class():
+        return token_pixelboardsensor.TokenPixelBoardSensor
+    
     def add_token_to_board(self, position: "board_position.Position"):
         # add token.physics attribute with physics properties to token
         self.token.physics = token_physics.TokenPhysics(self.token, app.App.board)
