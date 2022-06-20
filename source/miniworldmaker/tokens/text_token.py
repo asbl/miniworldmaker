@@ -41,7 +41,7 @@ class Text(token.Token):
     @font_size.setter
     def font_size(self, value):
         self.costume.font_size = value
-        self.costume._update_draw_shape()
+        self.costume.set_dirty("write_text", self.costume.RELOAD_ACTUAL_IMAGE)
 
     def set_text(self, text):
         """
@@ -51,7 +51,7 @@ class Text(token.Token):
             text: The text
         """
         self.costume.text = text
-        self.costume._update_draw_shape()
+        
 
     def get_text(self):
         """Gets the currently displayed tex
@@ -72,7 +72,7 @@ class Text(token.Token):
         if value == "":
             value = " "
         self.set_text(value)
-        self.costume._update_draw_shape()
+        self.costume.set_dirty("all", self.costume.RELOAD_ACTUAL_IMAGE)
 
 
 class TextToken(Text):

@@ -25,6 +25,8 @@ class Test147(unittest.TestCase):
         board = HexBoard(24, 2)
 
         board.tile_size = 40
+        assert board.columns == 24
+        assert board.rows == 2
         for x in range(board.columns):
             for y in range(board.rows):
                 t = Token((x,y))

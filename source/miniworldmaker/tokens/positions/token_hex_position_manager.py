@@ -1,4 +1,5 @@
 import pygame
+from miniworldmaker.appearances import costume
 
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.hex_elements as hex_elements
@@ -48,7 +49,7 @@ class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
         if type(value) == int or type(value) == float:  # convert int to tuple
             value = (value, value)
         self._scaled_size = value
-        self.token.costume.reload_transformations_after("all")
+        self.token.costume.set_dirty("all", costume.Costume.RELOAD_ACTUAL_IMAGE)
 
     def get_position(self) -> "hex_elements.CubeCoord":
         """Position is stores as CubeCoord on HexBoard
@@ -62,8 +63,6 @@ class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
         self._position = hex_elements.CubeCoord.create(value)
         if self.last_position != self._position:
             self.token.dirty = 1
-            if self.token.board:
-                self.token.board.app.event_manager.send_event_to_containers("token_moved", self.token)
         return self.position
 
     def set_direction(self, value):
@@ -71,11 +70,11 @@ class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
         direction = board_direction.Direction.create(value)
         self._direction = direction
         if self.last_direction != self._direction:
-            self.token.costume.reload_transformations_after("all")
+            self.token.costume.set_dirty("all", costume.Costume.RELOAD_ACTUAL_IMAGE)
 
-    def move_in_direction(self, direction: Union[int, str, "board_position.Position", tuple], distance=1):
+    def move_in_direction(self, direction: Union[int, str, "board_direction.Direction"], distance=1):
         old_direction = self.token.direction
-        direction = board_direction.Direction.create_from_token(self.token, direction).value
+        direction = board_direction.Direction.from_token_towards_direction(self.token, direction).value
         self.set_direction(direction)
         self.move(distance)
         self.direction = old_direction

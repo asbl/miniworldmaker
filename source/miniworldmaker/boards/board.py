@@ -1,4 +1,4 @@
-from typing import Type, Union, Tuple
+from typing import Type, Union, Tuple, ValuesView
 
 import pygame
 
@@ -218,27 +218,74 @@ class Board(board_base.BaseBoard):
         return self.container_height
 
     @property
-    def rows(self) -> int:
-        """The number of rows"""
-        return self._rows
+    def boundary_x(self) -> int:
+        """The x-boundary (defaults to view_size)"""
+        return self.camera.boundary_x
 
-    @rows.setter
-    def rows(self, value: int):
-        self._rows = value
-        self.app.window.dirty = 1
-        self.background.reload_transformations_after("all")
+    @boundary_x.setter
+    def boundary_x(self, value: int):
+        self.camera.boundary_x = value
+
+    @property
+    def boundary_y(self) -> int:
+        """The y-boundary (defaults to view_size)"""
+        return self.camera.boundary_y
+
+    @boundary_y.setter
+    def boundary_y(self, value: int):
+        self.camera.boundary_y = value
+
+    @property
+    def viewport_width(self) -> int:
+        return self.camera.viewport_width
+
+    @viewport_width.setter
+    def viewport_width(self, value: int):
+        self.camera.viewport_width = value
+
+    @property
+    def viewport_height(self) -> int:
+        """The y-boundary (defaults to view_size)"""
+        return self.camera.viewport_height
+
+    @viewport_height.setter
+    def viewport_height(self, value: int):
+        self.camera.viewport_height = value
 
     @property
     def columns(self) -> int:
-        """The number of columns"""
-        return self._columns
+        return self.camera.viewport_width
 
     @columns.setter
     def columns(self, value: int):
-        self._columns = value
-        self.app.window.dirty = 1
-        self.background.reload_transformations_after("all")
+        self.camera.viewport_width = value
+        self.boundary_x = value
+ 
+    @property
+    def rows(self) -> int:
+        return self.camera.viewport_height
 
+    @rows.setter
+    def rows(self, value: int):
+        self.viewport_height = value
+        self.boundary_y = value     
+
+    @property
+    def camera_x(self):
+        return self.camera.x
+    
+    @camera_x.setter
+    def camera_x(self, value):
+        self.camera.x = value
+        
+    @property
+    def camera_y(self):
+        return self.camera.y
+    
+    @camera_y.setter
+    def camera_y(self, value):
+        self.camera.y = value
+        
     @property
     def size(self) -> tuple:
         """Set the size of board
@@ -252,14 +299,14 @@ class Board(board_base.BaseBoard):
             board = miniworldmaker.PixelBoard()
             board.size = (800, 600)
         """
-        return self.columns, self.rows
+        return self.boundary_x, self.boundary_y
 
     @size.setter
     def size(self, value: tuple):
-        self.columns = value[0]
-        self.rows = value[1]
-        self.background.reload_transformations_after("all")
-        self.app.window.dirty = 1
+        self.boundary_x = value[0]
+        self.boundary_y = value[1]
+        self.viewport_width = value[0]
+        self.viewport_height = value[1]
 
     @property
     def default_fill_color(self):
@@ -676,9 +723,9 @@ class Board(board_base.BaseBoard):
                   self.board.reset()
         """
         self.app.event_manager.event_queue.clear()
-        self.clean()
         for background in self.backgrounds:
-            self.remove_background(background)
+            self.backgrounds_manager.remove_appearance(background)
+        self.clean()
         if hasattr(self, "on_setup"):
             self.on_setup()
 

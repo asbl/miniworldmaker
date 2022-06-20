@@ -7,14 +7,6 @@ import miniworldmaker.appearances.appearance as appearance
 class CostumesManager(appearances_manager.AppearancesManager):
     
     @property
-    def costume(self):
-        return self.appearance
-
-    @costume.setter
-    def costume(self, value):
-        self.appearance = value
-
-    @property
     def token(self):
         return self.parent
 
@@ -25,7 +17,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
     def get_costume_at_index(self, index):
         return super().get_appearance_at_index(index)
 
-    def add_costume(self, source: Union[str, List[str], "appearance.Appearance"] = None) -> "costume_mod.Costume":
+    def add_new_appearance(self, source: Union[str, List[str], "appearance.Appearance"] = None) -> "costume_mod.Costume":
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
@@ -37,18 +29,10 @@ class CostumesManager(appearances_manager.AppearancesManager):
             The new costume.
 
         """
-        new_costume = self.add_new_appearance(source)
-        self.costume._update_draw_shape()
-        self.costume.dirty = 1
+        new_costume = super().add_new_appearance(source)
+        self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return new_costume
     
-    def add_costume_from_list(self, sources: List) -> "appearance.Appearance":
-        return super().add_new_appearance_from_list(sources)
-
-    def add_costumes(self, source_list):
-        for source in source_list:
-            self.add_costume(source)
-
     def create_appearance(self) -> "costume_mod.Costume":
         """Creates a new costume 
 
@@ -81,3 +65,6 @@ class CostumesManager(appearances_manager.AppearancesManager):
 
     def _add_appearance_to_manager(self, appearance):
         return super()._add_appearance_to_manager(appearance)
+    
+    def get_board(self):
+        return self.parent.board

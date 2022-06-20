@@ -56,8 +56,8 @@ class Test709(unittest.TestCase):
         @l.register
         def act(self):
             print("act")
-            self.start_position = self.start_position[0], self._start_position[1]+1
-            self.end_position = self.end_position[0], self._end_position[1]+1
+            self.start_position = self.start_position[0], self.start_position[1]+1
+            self.end_position = self.end_position[0], self.end_position[1]+1
 
         """ here act and init - delete if used in testcode"""
         

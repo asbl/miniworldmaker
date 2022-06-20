@@ -38,10 +38,10 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     class_image: str = ""
 
     def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0,0)):
-        self._collision_type: str = "rect"
+        self._collision_type: str = "mask"
+        self._dirty = 0
         self._layer: int = 0
         self._inner = 0
-        self._dirty = 1
         self._size = (0, 0)
         self._static = False
         self._position: "board_position.Position" = position
@@ -57,6 +57,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         BaseToken.token_count += 1
         self.speed: int = 1
         self.ask: "ask.Ask" = ask.Ask(self.board)
+        self._dirty = 1
         
     def _get_new_costume(self):
         return self.board.get_token_connector(self).create_costume()
@@ -81,19 +82,15 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     @property
     def position_manager(self):
         if not hasattr(self, "_position_manager") or not self._position_manager:
-            self._init_position_manager()
+            return None
         return self._position_manager
 
     @property
     def board_sensor(self):
-        if not hasattr(self, "_position_manager") or not self._board_sensor:
-            self._init_board_sensor()
         return self._board_sensor
     
     @property
     def costume_manager(self):
-        if not hasattr(self, "_position_manager") or not self._costume_manager:
-            self._init_costume_manager()
         return self._costume_manager
 
     @property
@@ -149,7 +146,12 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @dirty.setter
     def dirty(self, value: int):
-        self._dirty = value
+        if not self._dirty and self.position_manager and self.board.camera.is_token_in_viewport(self) and value == 1:
+            self._dirty = 1
+        elif value == 0:
+            self._dirty = 0
+        else:
+            pass
 
     @property
     def rect(self) -> pygame.Rect:
@@ -157,10 +159,18 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         The surrounding Rectangle as pygame.Rect.
         Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
         """
-        return self.position_manager.rect
+        return self.position_manager.get_local_rect()
 
     def get_rect(self) -> pygame.Rect:
-        return self.position_manager.rect
+        return self.position_manager.get_local_rect()
+    
+    def get_local_rect(self) -> pygame.Rect:
+        return self.position_manager.get_local_rect()
+    
+    def get_global_rect(self) -> pygame.Rect:
+        if self.position_manager:
+            return self.position_manager.get_global_rect()
+        return pygame.Rect(-1,-1,0,0)
 
     def register(self, method: callable):
         """This method is used for the @register decorator. It adds a method to an object

@@ -1,5 +1,5 @@
 import math
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 import pygame
 
@@ -18,8 +18,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         super().__init__(token, board)
 
     def sensing_on_board(self, distance: int = 0) -> bool:
-        target_rect = self.get_destination_rect(distance)
-        return self.is_rect_completly_on_board(target_rect)
+        return self.token.board.camera.is_token_in_viewport(self.token)
 
     def sensing_borders(self, distance: int = 0) -> list:
         """
@@ -62,12 +61,31 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         return [actor for actor in a_list if type(token_mod.Token) == actor_type]
 
     def sensing_tokens(self, token_filter=None) -> list:
-        tokens = self.get_tokens_at_rect(self.token.rect)
+        tokens = pygame.sprite.spritecollide(self.token, self.token.board.camera.get_tokens_in_viewport(),  False, pygame.sprite.collide_rect)  
+        tokens_list = self.remove_self_from_token_list(tokens)
+        if tokens_list:
+            tokens_list = self._detect_token(tokens_list, self.token.collision_type)
+        if tokens_list:
+            tokens_list = self.filter_token_list(tokens_list, token_filter)
+        if tokens_list and len(tokens_list) >= 1:
+            return tokens_list
+        else: 
+            return []
+
+    def sensing_token(self, token_filter=None) -> Union["token_mod.Token", None]:
+        token = pygame.sprite.spritecollideany(self.token, self.token.board.camera.get_tokens_in_viewport(), None)
+        tokens_list = self.remove_self_from_token_list([token])
+        if tokens_list:
+            tokens_list = self._detect_token(tokens_list, self.token.collision_type)
+        if tokens_list:
+            tokens_list = self.filter_token_list(tokens_list, token_filter)
+        if tokens_list and len(tokens_list) >= 1:
+            return tokens_list[0]
+        else: 
+            return []
+    
+    def _detect_token(self, tokens, collision_type) -> List:
         tokens_list = []
-        if self.token.collision_type == "default":
-            collision_type = "mask"
-        else:
-            collision_type = self.token.collision_type
         if collision_type == "circle":
             tokens_list = [
                 token for token in tokens if pygame.sprite.collide_circle(self.token, token)]
@@ -77,28 +95,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         elif collision_type == "mask":
             tokens_list = [
                 token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
-        tokens_list = self.remove_self_from_token_list(tokens_list)
-        tokens_list = self.filter_token_list(tokens_list, token_filter)
         return tokens_list
-
-    def sensing_token(self, token_filter=None) -> Union["token_mod.Token", None]:
-        tokens = [self.get_single_token_at_rect(self.token.rect)]
-        tokens = self.filter_token_list(tokens, token_filter)
-        if self.token.collision_type == "default":
-            collision_type = "mask"
-        else:
-            collision_type = self.token.collision_type
-        if not tokens:
-            return None
-        for token in tokens:
-            if collision_type == "circle" and pygame.sprite.collide_circle(self.token, token):
-                return token
-            if collision_type == "rect" or collision_type == "static-rect" and pygame.sprite.collide_rect(self.token,
-                                                                                                          token):
-                return token
-            if collision_type == "mask" and pygame.sprite.collide_mask(self.token, token):
-                return token
-        return tokens[0]
 
     def sensing_tokens_at(self, direction: int = 0, distance: int = 1) -> list:
         if direction == 0:
@@ -109,25 +106,8 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
     def get_tokens_at_position(self, position):
         tokens = []
         for token in self.board.tokens:
-            if token.rect.collidepoint(position[0], position[1]):
+            if token.get_global_rect().collidepoint(position[0], position[1]):
                 tokens.append(token)
         if self.token in tokens:
             tokens.remove(self.token)
         return tokens
-
-    def get_single_token_at_rect(self, rect: pygame.Rect) -> Optional["token_mod.Token"]:
-        # Get first colliding token
-        for token in self.board.tokens.sprites():
-            if token.rect.colliderect(rect) and token != self.token:
-                return token
-        return None
-
-    def get_tokens_at_rect(self, rect: pygame.Rect) -> list:
-        """Returns all tokens that collide with a rectangle.
-
-        Args:
-            rect: A rectangle
-
-        Returns all tokens in a rect
-        """
-        return [token for token in self.board.tokens if token.rect.colliderect(rect)]

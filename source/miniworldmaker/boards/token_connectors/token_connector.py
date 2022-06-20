@@ -44,9 +44,10 @@ class TokenConnector:
         return None
 
     def add_token_to_board(self, position):
+        self.board.camera.clear_camera_cache()
         self.board.tokens.add(self.token)
         self.set_static(self.token.static)
-        self.token.costume.reload_transformations_after("all")
+        self.token.costume.set_dirty("all", costume.Costume.LOAD_NEW_IMAGE)
         if hasattr(self.token, "on_setup"):
             self.token.on_setup()
             self.board.background.reload_costumes_queue.append(self.token)
@@ -57,6 +58,7 @@ class TokenConnector:
         """
         Implemented in subclasses
         """
+        self.board.camera.clear_camera_cache()
         self.board.event_manager.unregister_instance(token)
         if self in self.board.background.reload_costumes_queue:
             self.board.background.reload_costumes_queue.remove(self)

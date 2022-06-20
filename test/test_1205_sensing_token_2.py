@@ -24,29 +24,33 @@ class Test1205(unittest.TestCase):
         """
         board = Board()
         wall=Token((200,0))
+        wall.color = (255,255,255)
         wall.size = (20, 400)
 
         for i in range(7):
             token = Token((10,i*60))
+            token.color = (255,255,255)
             token.range = i * 10
+            token.number = i % 4
             @token.register
             def act(self):
-                if i % 4 == 0:
+                if self.number == 0:
                     if not self.sensing_token(wall):
                         self.direction = "right"
                         self.move()
-                elif i % 4 == 1:
+                if self.number == 1:
                     if not self.sensing_token():
                         self.direction = "right"
                         self.move()
-                elif i % 4 == 2:
+                if self.number == 2:
                     if not self.sensing_tokens():
                         self.direction = "right"
                         self.move()
-                elif i % 4 == 3:
+                if self.number == 3:
                     if not self.sensing_tokens(wall):
                         self.direction = "right"
                         self.move()
+                    
 
         """ here act and init - delete if used in testcode"""
         

@@ -27,7 +27,7 @@ class Rect(pygame.Rect):
 
     @classmethod
     def from_token(cls, token):
-        return Rect.create(token.rect)
+        return Rect.create(token.get_global_rect())
 
     @property
     def board(self):

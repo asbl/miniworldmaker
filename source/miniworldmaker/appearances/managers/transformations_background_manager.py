@@ -25,6 +25,7 @@ class TransformationsBackgroundManager(transformations_manager.TransformationsMa
 
         return image
 
-    def reload_transformations_after(self, transformation_string):
-        super().reload_transformations_after(transformation_string)
-        self.appearance.repaint()
+    #def set_dirty(self, transformation_string, status):
+    #    super().set_dirty(transformation_string, status)
+    #    self.appearance.repaint()
+    # not needed?

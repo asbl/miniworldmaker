@@ -15,7 +15,6 @@ class TextCostume(costume.Costume):
         self.border_color = (100, 100, 100, 255)
         self.border = 0
         
-    
     def _inner_shape(self):
         return None
 
@@ -26,8 +25,10 @@ class TextCostume(costume.Costume):
         super()._update_draw_shape()
         """Sets self.size by costume.font_size"""
         if not self.token.board.tokens_fixed_size:
-            self.token.set_size((self.get_text_width(), self.font_size))
+            self.token.position_manager.set_size((self.get_text_width(), self.font_size))
         if self.board.tokens_fixed_size:
-            self.font_size = 0
-            while self.get_text_width() < self.token.size[0] and self.font_size < self.token.size[1]:
-                self.font_size += 1
+            _font_size = 0
+            self.font_manager.set_font_size(_font_size, update = False)
+            while self.font_manager.get_text_width() < self.token.size[0] and self.font_size < self.token.size[1]:
+                _font_size += 1
+                self.font_manager.set_font_size(_font_size, update = False)

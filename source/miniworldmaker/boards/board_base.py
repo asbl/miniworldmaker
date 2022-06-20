@@ -25,27 +25,31 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardInstanceError,
     NotImplementedOrRegisteredError,
 )
+from miniworldmaker.boards.board_manager import board_camera_manager
+from abc import ABC, abstractmethod
+import asyncio
 
-
-class BaseBoard(container.Container):
+class BaseBoard(container.Container, ABC):
     subclasses = None
 
     def __init__(
             self,
-            columns: Union[int, Tuple[int]] = 400,
-            rows: int = 400,
+            view_x: Union[int, Tuple[int]] = 400,
+            view_y: int = 400,
             tile_size: int = 1,
     ):
-        if self.__class__ == BaseBoard:
-            raise BoardInstanceError()
-        if type(columns) != int or type(rows) != int:
-            if type(columns) == tuple:
-                size = columns
-                columns = size[0]
-                rows = size[1]
+        #if self.__class__ == BaseBoard:
+        #    raise BoardInstanceError()
+        if type(view_x) != int or type(view_y) != int:
+            # If first param is tuple, generate board from tuple-data
+            if type(view_x) == tuple:
+                size = view_x
+                view_x = size[0]
+                view_y = size[1]
             else:
-                raise BoardArgumentsError(columns, rows)
-        self._columns, self._rows, self._tile_size = columns, rows, tile_size
+                raise BoardArgumentsError(view_x, view_y)
+        self._tile_size = tile_size
+        self.camera = self._get_camera_manager_class()(view_x, view_y, self)
         self._tokens = pygame.sprite.LayeredDirty()
         self.event_manager: event_manager.BoardEventHandler = event_manager.BoardEventHandler(self)
         super().__init__()
@@ -59,7 +63,7 @@ class BaseBoard(container.Container):
         self._fps: int = 60
         self._key_pressed: bool = False
         self._animated: bool = False
-        self._orientation: int = 0
+        self._orientation: int = 0 
         self._static: bool = False
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self._default_is_filled = False
@@ -81,12 +85,17 @@ class BaseBoard(container.Container):
         self.dynamic_tokens = set()
         self._registered_methods = []
         self.tokens_fixed_size = False
-        self._container_width = self.columns * self.tile_size
-        self._container_height = self.rows * self.tile_size
+        self._container_width = self.camera.get_viewport_width()
+        self._container_height = self.camera.get_viewport_height() 
+        
 
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return self._get_token_connector_class()(self, token)
 
+    @staticmethod
+    def _get_camera_manager_class():
+        return board_camera_manager.CameraManager
+    
     @staticmethod
     def _get_token_connector_class():
         return token_connector.TokenConnector
@@ -133,14 +142,14 @@ class BaseBoard(container.Container):
         """
         The width of the container
         """
-        return self.columns * self.tile_size
+        return self.camera.get_viewport_width_in_pixels()
 
     @property
     def container_height(self) -> int:
         """
         The height of the container
         """
-        return self.rows * self.tile_size
+        return self.camera.get_viewport_height_in_pixels()
 
     @property
     def has_background(self) -> bool:
@@ -223,22 +232,6 @@ class BaseBoard(container.Container):
         """The current displayed image"""
         return self.backgrounds_manager.image
 
-    def remove_tokens_from_rect(self, rect, token_class=None, exclude=None):
-        """Removes all tokens in an area
-
-        Args:
-            rect: A rectangle or a tuple (which is automated converted to a rectangle with tile_size).
-            token_class: The class of the tokens which should be removed
-            exclude: A token which should not be removed e.g. the actor itself
-
-        Returns: all tokens in the area
-        """
-        rect = board_rect.Rect(self).create(rect)
-        tokens = self.get_tokens_at_rect(rect)
-        for token in tokens:
-            if token is not None:
-                [token.remove() for token in BaseBoard.filter_actor_list(tokens, token_class)]
-
     def repaint(self):
         self.background.repaint()  # called 1/frame in container.repaint()
 
@@ -291,9 +284,6 @@ class BaseBoard(container.Container):
     def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
         return self.backgrounds_manager.find_colors(rect, color, threshold)
 
-    def _update_event_handling(self):
-        self.event_manager.update_event_handling()
-
     def register(self, method: callable) -> callable:
         """
         Used as decorator
@@ -312,12 +302,6 @@ class BaseBoard(container.Container):
         
     def add_container(self, container, dock, size=None):
         return self.app.container_manager.add_container(container, dock, size)
-
-    def get_tokens_by_class_name(self, classname: str):
-        return [token for token in self._tokens if token.__class__.__name__ == classname]
-
-    def get_tokens_by_class(self, classname: str):
-        return [token for token in self._tokens if isinstance(token, classname)]
 
     def on_started(self):
         """The on_started method is executed after starting the board.
@@ -388,4 +372,4 @@ class BaseBoard(container.Container):
     def set_tile_size(self, value):
         self._tile_size = value
         self.app.window.dirty = 1
-        self.background.reload_transformations_after("all")
+        self.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)

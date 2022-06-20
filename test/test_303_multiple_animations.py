@@ -25,7 +25,7 @@ class Test303(unittest.TestCase):
 
 
 
-        board = Board(columns=280, rows=100)
+        board = Board(280, 100)
         board.add_background("images/water.png")
         board.speed = 1
         # Should show: A1, B1, C1, C2, C3, A1

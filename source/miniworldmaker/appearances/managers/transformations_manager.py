@@ -55,6 +55,10 @@ class TransformationsManager:
             self.reload_transformations[key] = False
 
     def process_transformation_pipeline(self, image, appearance):
+        """Processes the transformation pipeline for a given image.
+
+        The transformations pipeline will be loaded from cache, if nothing is cleared
+        """
         for transformation in self.transformations_pipeline:
             # If an image action is to be executed again,
             # load the last cached image from the pipeline and execute
@@ -223,13 +227,21 @@ class TransformationsManager:
         self.surface = image
         return image
 
-    def reload_transformations_after(self, transformation_string):
+    def flag_reload_actions_for_transformation_pipeline(self, transformation_string):
+        """Reloads transformations in transformation pipeline with given transformation string.
+        
+        e.g. "scale": reloads everything after scale. Actions before scale are loaded from cache.
+
+        Pipeline:
+        
+        texture, scale, upscale, flip, coloring, transparency, write_text, draw_images, draw_shapes, rotate
+
+        """
         reload = False
         for transformation in self.transformations_pipeline:
             if transformation[0] == transformation_string or transformation_string == "all":
                 reload = True  # reload image action
             if reload:
-                self.reload_transformations[transformation[0]] = True  # reload all actions after image action
+                self.reload_transformations[transformation[0]] = True  # reload all actions starting with image action
         if self.appearance.parent:
-            self.appearance.dirty = 1
             self.appearance.parent.dirty = 1

@@ -23,6 +23,8 @@ class Test1206(unittest.TestCase):
             b) An act-method, where self.test() is called
         """
         board = TiledBoard(6,6)
+        assert board.rows == 6
+        assert board.columns == 6
         for x in range(board.rows):
             for y in range(board.columns):
                 color = (x * y) / (board.rows * board.columns) * 255

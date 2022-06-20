@@ -27,6 +27,7 @@ class Test117(unittest.TestCase):
         text = Text((2,1), "Hello")
         text.border = 1
         text.direction = 5
+        print("in viewport?", board.camera.is_token_in_viewport(text))
 
         """ here act and init - delete if used in testcode"""
         
@@ -72,7 +73,7 @@ class Test117(unittest.TestCase):
         board.test_title = self.__class__.__name__
         
         
-    def test_108(self):
+    def test_117(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         

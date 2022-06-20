@@ -1,5 +1,5 @@
 import miniworldmaker.tokens.text_token as text_token
-
+from miniworldmaker.appearances import costume
 
 class Number(text_token.TextToken):
     """
@@ -75,7 +75,7 @@ class Number(text_token.TextToken):
                 number = self.number_token.get_number()
             
         """
-        self.costume.reload_transformations_after("text changed")
+        self.costume.set_dirty("text changed", costume.Costume.LOAD_NEW_IMAGE)
         return int(self.costume.text)
 
 

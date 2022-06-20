@@ -34,8 +34,7 @@ class Test501(unittest.TestCase):
         player = Token(position=(3, 4))
         player.add_costume("images/char_blue.png")
         player.costume.orientation = - 90
-
-
+        print(board.camera.is_token_in_viewport(player))
 
         LoopActionTimer(48, player.move, 2)
 

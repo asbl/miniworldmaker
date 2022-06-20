@@ -37,8 +37,6 @@ class TiledBoardConnector(token_connector.TokenConnector):
     def set_static(self, value):
         super().set_static(value)
         if self.token._static:
-            _token_connector = self.board.get_token_connector(self.token)
-            _token_connector.add_static_token()
+            self.add_static_token()
         else:
-            _token_connector = self.board.get_token_connector(self.token)
-            _token_connector.remove_static_token()
+            self.remove_static_token()

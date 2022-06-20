@@ -14,7 +14,7 @@ from miniworldmaker.appearances.managers.image_manager import ImageManager
 
 class MetaAppearance(type):
     def __call__(cls, *args, **kwargs):
-        instance = super().__call__(*args, **kwargs)
+        instance = type.__call__(cls, *args, **kwargs)  # create a new Appearance of type...
         instance.after_init()
         return instance
 
@@ -22,10 +22,14 @@ class MetaAppearance(type):
 class AppearanceBase(metaclass=MetaAppearance):
     counter = 0
 
+    RELOAD_ACTUAL_IMAGE = 1
+    LOAD_NEW_IMAGE = 2
+
     def __init__(self):
         self.id = AppearanceBase.counter + 1
         AppearanceBase.counter += 1
         self.initialized = False
+        self._flag_transformation_pipeline = False
         self.parent = None
         self.board = None
         self.draw_shapes = []
@@ -52,44 +56,32 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.surface_loaded = False
         self.last_image = None
         self.font_manager = font_manager.FontManager(self)
-        self.image_manager = image_manager.ImageManager(self)
+        self.image_manager : "image_manager.ImageManager" = image_manager.ImageManager(self)
         self.transformations_manager = transformations_manager.TransformationsManager(self)
         self.image_manager.add_default_image()
         # properties
         self.texture_size = (0, 0)
-        self.animation_speed = 100  #: The animation speed for animations
+        self.animation_speed = 10  #: The animation speed for animations
         self.loop = False
         self.animation_length = 0
-        self.dirty = 1
-
+        self._animation_start_frame = 0
 
     def after_init(self):
         # Called in metaclass
-        self.reload_transformations_after(
-            "all",
-        )
+        self.set_dirty("all", AppearanceBase.LOAD_NEW_IMAGE)
         self.initialized = True
-
-    def reload_transformations_after(self, value):
-        if hasattr(self, "transformations_manager"):
-            self.transformations_manager.reload_transformations_after(value)
-            self.dirty = 1
 
     def draw_shape_append(self, shape, arguments):
         self.draw_shapes.append((shape, arguments))
-        self.reload_transformations_after("all")
 
     def draw_shape_set(self, shape, arguments):
         self.draw_shapes = [(shape, arguments)]
-        self.reload_transformations_after("all")
 
     def draw_image_append(self, surface, rect):
         self.draw_images.append((surface, rect))
-        self.reload_transformations_after("all")
 
     def draw_image_set(self, surface, rect):
         self.draw_images = [(surface, rect)]
-        self.reload_transformations_after("all")
 
     @property
     def dirty(self):
@@ -97,39 +89,56 @@ class AppearanceBase(metaclass=MetaAppearance):
 
     @dirty.setter
     def dirty(self, value):
-        self._dirty = value
-        if self.parent and value == 1:
-            self.parent.dirty = 1
-            
-    def _reload_image(self):
-        """If dirty, the image will be reloaded.
-        The image pipeline will be  processed, defined by "reload_transformations_after"
-        """
-        if self.dirty == 1:
-            self._reload_dirty_image()
+        if value == 0:
+            self._dirty = 0
+        else:
+            self.set_dirty(value)
 
-    def _reload_dirty_image(self):
-        """Reloads image from image_index in image_manager.images_list and processes transformations pipeline
-        
-        Called by property `image`, if image is dirty
-        Sets dirty to 0.
-        """
-        self.dirty = 0
-        image = self.image_manager.load_image_by_image_index()
-        image = self.transformations_manager.process_transformation_pipeline(image, self)
-        self._image = image
+    def set_dirty(self, value="all", status=1):
+        if hasattr(self, "transformations_manager"):
+            if value != None:
+                self.transformations_manager.flag_reload_actions_for_transformation_pipeline(value)
+            if status >= self._dirty:
+                self._dirty = status
+            if self.parent:
+                self.parent.dirty = 1
 
     @property
     def image(self) -> pygame.Surface:
         """Performs all actions in image pipeline"""
-        self._reload_image()
+        return self.get_image()
+    
+    def get_image(self):
+        """If dirty, the image will be reloaded.
+        The image pipeline will be  processed, defined by "set_dirty"
+        """
+        if self.dirty >= self.RELOAD_ACTUAL_IMAGE or not self._image and not self._flag_transformation_pipeline:
+            dirty = self.dirty
+            self.dirty = 0
+            self._flag_transformation_pipeline = True
+            self._before_transformation_pipeline()
+            image = self.image
+            if dirty >= self.RELOAD_ACTUAL_IMAGE:
+                # @todo: Not working: Replace RELOAD_ACTUAL_IMAGE with LOAD NEW IMAGE
+                image = self.image_manager.load_image_from_image_index()
+            if dirty >= self.RELOAD_ACTUAL_IMAGE:
+                image = self.transformations_manager.process_transformation_pipeline(image, self)
+                self._after_transformation_pipeline()
+                self._flag_transformation_pipeline = False
+            self._image = image
         return self._image
 
-    def add_images(self, sources : list):
+    def _before_transformation_pipeline(self):
+        pass
+    def _after_transformation_pipeline(self):
+        pass
+
+
+    def add_images(self, sources: list):
         assert type(sources) == list
         for image in sources:
             self.add_image(image)
-        
+
     def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
         """Adds an image to the appearance
 
@@ -137,7 +146,9 @@ class AppearanceBase(metaclass=MetaAppearance):
             Index of the created image.
         """
         if type(source) not in [str, pygame.Surface, tuple]:
-            raise MiniworldMakerError(f"Error: Image source has wrong format (expected str or pygame.Surface, got {type(source)}")
+            raise MiniworldMakerError(
+                f"Error: Image source has wrong format (expected str or pygame.Surface, got {type(source)}"
+            )
         self.image_manager.add_image(source)
 
     def set_image(self, source: Union[int, "AppearanceBase"]) -> bool:
@@ -155,26 +166,13 @@ class AppearanceBase(metaclass=MetaAppearance):
 
     def __str__(self):
         return (
-                self.__class__.__name__
-                + "with ID ["
-                + str(self.id)
-                + "] for parent:["
-                + str(self.parent)
-                + "], images: "
-                + str(self.image_manager.images_list)
-        )
-
-    def rotated(self):
-        self.reload_transformations_after("rotate")
-
-    def resized(self):
-        self.reload_transformations_after(
-            "scale",
-        )
-
-    def visible(self):
-        self.reload_transformations_after(
-            "all",
+            self.__class__.__name__
+            + "with ID ["
+            + str(self.id)
+            + "] for parent:["
+            + str(self.parent)
+            + "], images: "
+            + str(self.image_manager.images_list)
         )
 
     def register(self, method: callable):
@@ -202,12 +200,10 @@ class AppearanceBase(metaclass=MetaAppearance):
     def text(self, value):
         if value == "":
             self.font_manager.text = ""
-            self.dirty = 1
+            self.set_dirty("write_text", AppearanceBase.RELOAD_ACTUAL_IMAGE)
         else:
             self.font_manager.text = value
-        self.reload_transformations_after(
-            "all",
-        )
+        self.set_dirty("write_text",AppearanceBase.RELOAD_ACTUAL_IMAGE)
 
     @property
     def images(self):

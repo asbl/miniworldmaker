@@ -9,28 +9,55 @@ from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPosit
 class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
     def __init__(self, token, board):
         super().__init__(token, board)
-        self.size = (0, 0)
-        self.set_position((0, 0))
-        self.size=(40, 40)
+        self._position = (0, 0)
+        self._size = (40, 40)
 
-    def get_rect(self) -> pygame.Rect:
+    def get_local_rect(self) -> pygame.Rect:
         """Pixelboard-Rects are positioned at center of position
         """
-        if self.token.costume:
-            _rect = self.token.costume.image.get_rect()
-        else:
-            _rect = pygame.Rect(self.position[0], self._position[1], self.token.size[0], self.token.size[1])
-        _rect_center_pos = super().get_position()
-        _rect.center = _rect_center_pos[0], _rect_center_pos[1]
+        # if costume is set, get rect coordinates from costume.
+        _rect = self.get_global_rect()
+        _rect.topleft = self.token.board.camera.get_local_position(_rect)
         return _rect
-
+    
+    def get_global_rect(self) -> pygame.Rect:
+        """Pixelboard-Rects are positioned at center of position
+        """
+        # if costume is set, get rect coordinates from costume.
+        if self.token.costume:
+            _rect = self.token.costume.get_image().get_rect()
+        else:
+            _rect = pygame.Rect(0,0 , self.token.size[0], self.token.size[1])
+        _rect_center = self.center
+        # board position without shift is the center position
+        _rect.center = _rect_center
+        return _rect
+    
     def get_position(self):    
         shift_x = self.size[0] / 2
         shift_y = self.size[1] / 2
         rect_center = super().get_position()
         pos = rect_center[0] - shift_x, rect_center[1] - shift_y
         return board_position.Position.create(pos)
-    
+
+    @property
+    def center_x(self):
+        """x-value of token center-position"""
+        return self._position[0]
+
+    @center_x.setter
+    def center_x(self, value):
+        self.set_center((value, self.center_y))
+
+    @property
+    def center_y(self):
+        """y-value of token center-position"""
+        return self._position[1]
+
+    @center_y.setter
+    def center_y(self, value):
+        self.set_center((self.center_x, value))
+        
     def set_position(self, value):
         """Because Pixelboard-Rects are positioned at center of position, newly created Objects are shifted down right.
 

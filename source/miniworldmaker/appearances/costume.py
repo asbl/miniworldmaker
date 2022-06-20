@@ -26,9 +26,9 @@ class Costume(appear.Appearance):
 
     def after_init(self):
         # Called in metaclass
-        super().after_init()
         self._set_default_color_values()
-        self._update_draw_shape()
+        super().after_init()
+
         
     def _set_default_color_values(self):
         self._set_token_default_values()
@@ -63,19 +63,14 @@ class Costume(appear.Appearance):
     @info_overlay.setter
     def info_overlay(self, value):
         self._info_overlay = value
-        self.reload_transformations_after(
-            "all",
+        self.set_dirty("all",Costume.RELOAD_ACTUAL_IMAGE
         )
+        
+    def set_dirty(self, value, status):
+        if value != None and self.parent and self.images:
+            self._update_draw_shape()
+        super().set_dirty(value, status)
 
-    def _reload_dirty_image(self):
-        """Reloads a dirty image. 
-        
-        Called by property `image`, if image is dirty.
-        
-        called by ...
-        """
-        self._update_draw_shape()
-        super()._reload_dirty_image()
 
     def set_image(self, source) -> bool:
         super().set_image(source)
@@ -98,14 +93,14 @@ class Costume(appear.Appearance):
 
     def _update_draw_shape(self):
         self.draw_shapes = []
-        if self._inner_shape():
+        if self._inner_shape() and self.image_manager:
             if self.is_filled and not self.image_manager.is_image():
                 self.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
         if self._outer_shape() and self.border:
             self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
 
     def _inner_shape_arguments(self) -> List:
-        """Gets arguments for inner shape
+        """def setGets arguments for inner shape
 
         Returns:
             List[]: List of arguments
@@ -126,3 +121,14 @@ class Costume(appear.Appearance):
         return [
             color,
         ] + self._outer_shape()[1]
+
+    def rotated(self):
+        if self.board.camera.is_token_in_viewport(self.token):
+            self.set_dirty("rotate", self.RELOAD_ACTUAL_IMAGE)
+
+    def resized(self):
+        self.set_dirty("scale", self.RELOAD_ACTUAL_IMAGE)
+
+    def visible(self):
+        if self.board.camera.is_token_in_viewport(self.token):
+            self.set_dirty("all", self.RELOAD_ACTUAL_IMAGE)

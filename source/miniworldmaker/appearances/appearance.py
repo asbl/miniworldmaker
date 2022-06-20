@@ -23,8 +23,7 @@ class Appearance(appearance_base.AppearanceBase):
 
     @font_size.setter
     def font_size(self, value):
-        self.font_manager.font_size = value
-        self.reload_transformations_after("write_text")
+        self.font_manager.set_font_size(value, update = True)      
 
     def set_font(self, font, font_size):
         self.font_manager.font_path = font
@@ -76,7 +75,7 @@ class Appearance(appearance_base.AppearanceBase):
     @is_textured.setter
     def is_textured(self, value):
         self._is_textured = value
-        self.reload_transformations_after("texture")
+        self.set_dirty("texture", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_rotatable(self):
@@ -115,7 +114,7 @@ class Appearance(appearance_base.AppearanceBase):
     @is_rotatable.setter
     def is_rotatable(self, value):
         self._is_rotatable = value
-        self.dirty = 1
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_centered(self):
@@ -125,7 +124,7 @@ class Appearance(appearance_base.AppearanceBase):
     @is_centered.setter
     def is_centered(self, value):
         self._is_centered = value
-        self.dirty = 1
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def orientation(self):
@@ -171,7 +170,7 @@ class Appearance(appearance_base.AppearanceBase):
     @orientation.setter
     def orientation(self, value):
         self._orientation = value
-        self.reload_transformations_after("orientation")
+        self.set_dirty("orientation", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_flipped(self):
@@ -213,7 +212,7 @@ class Appearance(appearance_base.AppearanceBase):
     @is_flipped.setter
     def is_flipped(self, value):
         self._is_flipped = value
-        self.reload_transformations_after("flip")
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     def flip(self, value):
         self.is_flipped = value
@@ -252,7 +251,7 @@ class Appearance(appearance_base.AppearanceBase):
             self._is_scaled_to_height = False
             self._is_scaled_to_width = False
         self._is_scaled = value
-        self.reload_transformations_after("scale")
+        self.set_dirty("scale", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_upscaled(self):
@@ -285,7 +284,7 @@ class Appearance(appearance_base.AppearanceBase):
             self._is_scaled_to_height = False
             self._is_scaled_to_width = False
         self._is_upscaled = value
-        self.reload_transformations_after("scale")
+        self.set_dirty("scale", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_scaled_to_width(self):
@@ -299,7 +298,7 @@ class Appearance(appearance_base.AppearanceBase):
             self._is_scaled_to_height = False
         self.is_scaled = False
         self._is_scaled_to_width = value
-        self.reload_transformations_after("scale")
+        self.set_dirty("scale", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_scaled_to_height(self):
@@ -313,7 +312,7 @@ class Appearance(appearance_base.AppearanceBase):
             self._is_scaled_to_height = False
         self.is_scaled = False
         self._is_scaled_to_height = value
-        self.reload_transformations_after("scale")
+        self.set_dirty("scale", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def fill_color(self):
@@ -322,7 +321,7 @@ class Appearance(appearance_base.AppearanceBase):
     @fill_color.setter
     def fill_color(self, value):
         self._fill_color = value
-        self.reload_transformations_after("all")
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def coloring(self):
@@ -335,7 +334,7 @@ class Appearance(appearance_base.AppearanceBase):
     @coloring.setter
     def coloring(self, value):
         self._coloring = value
-        self.reload_transformations_after("coloring")
+        self.set_dirty("coloring", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def transparency(self):
@@ -350,7 +349,7 @@ class Appearance(appearance_base.AppearanceBase):
     @transparency.setter
     def transparency(self, value):
         self._transparency = value
-        self.reload_transformations_after("transparency")
+        self.set_dirty("transparency", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def alpha(self):
@@ -390,7 +389,7 @@ class Appearance(appearance_base.AppearanceBase):
             self.transparency = True
 
     def get_text_width(self):
-        return self.font_manager.get_font_width()
+        return self.font_manager.get_text_width()
 
     def remove_last_image(self):
         self.image_manager.remove_last_image()
@@ -496,6 +495,7 @@ class Appearance(appearance_base.AppearanceBase):
             :width: 300
             :height: 100
         """
+        self._animation_start_frame = self.board.frame
         self.is_animated = True
 
     def after_animation(self):
@@ -637,7 +637,7 @@ class Appearance(appearance_base.AppearanceBase):
         self._is_filled = value
         if self.is_filled != None and self.is_filled != False and self.is_filled != True:
             self.fill_color = color.Color(value).get()
-        self.reload_transformations_after("all")
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
     def is_filled(self):
@@ -651,7 +651,7 @@ class Appearance(appearance_base.AppearanceBase):
         if ``_is_filled`` set to a color-value, ``self.fill_color`` is set to the color.
         
         """
-        self.fill(value)
+        self._is_filled = value
 
     @property
     def stroke_color(self):
@@ -671,7 +671,7 @@ class Appearance(appearance_base.AppearanceBase):
     def border_color(self, value: int):
         if value != None:
             self._border_color = value
-            self.reload_transformations_after("all")
+            self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
         else:
             self.border = None
 
@@ -693,7 +693,7 @@ class Appearance(appearance_base.AppearanceBase):
         if type(value) != int:
             raise TypeError("border value should be of type int")
         self._border = value
-        self.reload_transformations_after("all")
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     def get_color(self, position):
         x = int(position[0])
@@ -716,10 +716,10 @@ class Appearance(appearance_base.AppearanceBase):
         file = self.image_manager.find_image_file(path)
         surface = self.image_manager.load_image(file)
         self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
-        self.reload_transformations_after("all")
+        self.set_dirty("draw_images", Appearance.RELOAD_ACTUAL_IMAGE)
 
     def draw_color_on_image(self, color, position, width, height):
         surface = pygame.Surface((width, height))
         surface.fill(color)
         self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
-        self.reload_transformations_after("all")
+        self.set_dirty("draw_images", Appearance.RELOAD_ACTUAL_IMAGE)

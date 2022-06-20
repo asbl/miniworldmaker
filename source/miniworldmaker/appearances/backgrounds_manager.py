@@ -2,6 +2,7 @@ from typing import Union
 
 import miniworldmaker.appearances.appearances_manager as appearances_manager
 import miniworldmaker.appearances.background as background
+from miniworldmaker.appearances import appearance
 
 
 class BackgroundsManager(appearances_manager.AppearancesManager):
@@ -46,5 +47,5 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
     def backgrounds(self):
         return self.appearances_list
     
-    def remove_background(self, source: Union[int, "appearance_mod.Appearance"] = -1):
-        self.remove_appearance(source)
+    def get_board(self):
+        return self.parent

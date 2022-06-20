@@ -99,7 +99,7 @@ class ImageManager:
             surf = pygame.Surface((1, 1), pygame.SRCALPHA)
             surf.fill(self.appearance.fill_color)
             self.images_list.append({"image": surf, "type": ImageManager.COLOR})
-            self.appearance.dirty = 1
+            self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
             return len(self.images_list) - 1
 
     def add_image(self, source: Union[str, pygame.Surface, Tuple]) -> int:
@@ -152,9 +152,7 @@ class ImageManager:
     def add_image_from_color(self, color : tuple) -> int:
         surf = ImageManager.get_surface_from_color(color)
         self.images_list.append({"image" : surf, "type": ImageManager.COLOR, "source": color})
-        self.appearance.reload_transformations_after(
-            "all",
-        )
+        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
         return len(self.images_list) - 1
 
     def get_source_from_current_image(self) -> Union[str, pygame.Surface, tuple]:
@@ -176,9 +174,7 @@ class ImageManager:
         # set image by path
         _image = self.load_image(path)
         self.images_list.append({"image" : _image, "type": ImageManager.IMAGE, "source": path})
-        self.appearance.reload_transformations_after(
-            "all",
-        )
+        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
         return len(self.images_list) - 1
 
     def add_image_from_appearance(self, appearance, index):
@@ -194,9 +190,7 @@ class ImageManager:
             Index of the created image.
         """
         self.images_list.append({"image" : surface, "type": ImageManager.SURFACE, "source": None})
-        self.appearance.reload_transformations_after(
-            "all",
-        )
+        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
         return len(self.images_list) - 1
 
     def get_surface(self, index):
@@ -207,9 +201,7 @@ class ImageManager:
 
     def replace_image(self, image, type, source):
         self.images_list[self.image_index] = {"image" : image, "type": type, "source": source}
-        self.appearance.reload_transformations_after(
-            "all",
-        )
+        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
 
     def reset_image_index(self):
         if self.current_animation_images:
@@ -220,10 +212,10 @@ class ImageManager:
         * switches image if neccessary
         * processes transformations pipeline if neccessary
         """
-        if self.appearance.is_animated:
+        if self.appearance.is_animated and self.appearance._animation_start_frame != self.board.frame:
             if self.board.frame != 0 and self.board.frame % self.appearance.animation_speed == 0:
                 await self.next_image()
-        self.appearance._reload_image()
+        self.appearance.get_image()
 
     async def next_image(self):
         """Switches to the next image of the appearance."""
@@ -235,16 +227,15 @@ class ImageManager:
                     self.appearance.is_animated = False
                     self.appearance.after_animation()
                 self.image_index = 0
-            self.appearance.dirty = 1
-            self.appearance.parent.dirty = 1
-            self.appearance.reload_transformations_after("all")
+            self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
+            
 
     async def first_image(self):
         """Switches to the first image of the appearance."""
         self.image_index = 0
-        self.reload_transformations_after("all")
+        self.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
 
-    def load_image_by_image_index(self):
+    def load_image_from_image_index(self):
         if self.images_list and self.image_index < len(self.images_list) and self.images_list[self.image_index]:
             # if there is a image list load image by index
             image = self.images_list[self.image_index]["image"]
@@ -259,7 +250,7 @@ class ImageManager:
             old_index = self.image_index
             self.image_index = value
             if old_index != self.image_index:
-                self.appearance.reload_transformations_after("all")
+                self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
             return True
         else:
             raise ImageIndexNotExistsError(value, self)
@@ -279,4 +270,4 @@ class ImageManager:
     def remove_last_image(self):
         del self.images_list[-1]
         self.set_image(-1)
-        self.appearance.reload_transformations_after("all")
+        self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)

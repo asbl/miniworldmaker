@@ -7,7 +7,7 @@ import miniworldmaker.board_positions.tile_factory as tile_factory
 import miniworldmaker.boards.tiled_board as tiled_board
 import miniworldmaker.boards.token_connectors.hex_board_connector as hex_board_connector
 from miniworldmaker.exceptions import miniworldmaker_exception
-
+from miniworldmaker.boards.board_manager import board_camera_manager
 
 class HexBoard(tiled_board.TiledBoard):
     """
@@ -17,10 +17,14 @@ class HexBoard(tiled_board.TiledBoard):
 
     
     """
-    def __init__(self, columns: int = 20, rows: int = 16, empty=False):
-        super().__init__(columns, rows, empty)
+    def __init__(self, view_x: int = 20, view_y: int = 16, empty=False):
+        super().__init__(view_x, view_y, empty)
         self.lookup_table = []
 
+    @staticmethod
+    def _get_camera_manager_class():
+        return board_camera_manager.HexCameraManager
+    
     def _get_tile_factory(self):
         return tile_factory.HexTileFactory()
 
@@ -161,12 +165,3 @@ class HexBoard(tiled_board.TiledBoard):
     def set_tile_size(self, value):
         super().set_tile_size(value)
 
-    @property
-    def container_width(self) -> int:
-        """The width of the container"""
-        return self.columns * self.get_tile_width() + 1 / 2 * self.get_tile_width()
-
-    @property
-    def container_height(self) -> int:
-        """The height of the container"""
-        return self.rows * self.get_tile_height() * 3 / 4 + self.get_tile_height() / 4

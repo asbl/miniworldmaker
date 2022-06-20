@@ -8,12 +8,12 @@ import numpy as np
 import math
 
 
-class Position(collections.namedtuple('Position', ['x', 'y'])):
+class Position(collections.namedtuple("Position", ["x", "y"])):
     """
     A Position Object represents a position on a Board.
 
     As a subclass of namedtuple, Position is for
-    performance reasons not mutable. 
+    performance reasons not mutable.
 
     On a tiled board, the Position does not describe pixels
     but tiles coordinates.
@@ -115,7 +115,7 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
         """
         return (int(self.x), int(self.y))
 
-    def is_close(self, other : Union["Position", Tuple], error : int =1):
+    def is_close(self, other: Union["Position", Tuple], error: int = 1):
         """
         Is a position close to another position
 
@@ -126,6 +126,18 @@ class Position(collections.namedtuple('Position', ['x', 'y'])):
         if abs(self.x - other[0]) < error and abs(self.y - other[1] < error):
             return True
         return False
+
+    def up(self, value):
+        return self.__class__(self.x, self.y - value)
+
+    def down(self, value):
+        return self.__class__(self.x, self.y + value)
+
+    def left(self, value):
+        return self.__class__(self.x - value, self.y)
+
+    def right(self, value):
+        return self.__class__(self.x + value, self.y)
 
 
 class BoardPosition(Position):

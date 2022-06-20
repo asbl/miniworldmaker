@@ -10,6 +10,8 @@ def diff(ia, ib):
 class Test106_1(unittest.TestCase):
     def setUp(self):
         board = PixelBoard(400,300)
+        path = os.path.dirname(__file__)
+        board.app.register_path(path)
         self.board = board
         path = os.path.dirname(__file__)
         board.app.register_path(path)

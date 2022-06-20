@@ -24,11 +24,14 @@ class Test1204(unittest.TestCase):
         """
         board = Board()
         t1 = Token((10,10))
+        t1.color = (255,255,255)
         t2 = Token((20,10))
-
+        t2.color = (255,255,255)
         t3 = Token((10,10))
+        t3.color = (255,255,255)
         print(t3.sensing_tokens())
         print(t1.sensing_tokens())
+        print(t3.sensing_tokens())
         assert(len(t3.sensing_tokens())==2)
         assert(len(t1.sensing_tokens())==2)
         assert(t1 in t3.sensing_tokens())

@@ -10,7 +10,7 @@ import miniworldmaker.boards.board as board
 import miniworldmaker.boards.token_connectors.tiled_board_connector as tiled_board_connector
 from miniworldmaker.exceptions import miniworldmaker_exception
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
-
+from miniworldmaker.boards.board_manager import board_camera_manager
 
 class TiledBoard(board.Board):
     """
@@ -56,18 +56,18 @@ class TiledBoard(board.Board):
             :alt: Placing Tokens on a Tile, on a Corner or in a Edge
     """
 
-    def __init__(self, columns: int = 20, rows: int = 16, empty=False):
+    def __init__(self, view_x: int = 20, view_y: int = 16, empty=False):
         """Initializes the TiledBoard
 
         Args:
-            columns: The number of columns
-            rows: The number of rows
+            view_x: The number of columns
+            view_y: The number of rows
             empty: The board has no tiles, edges, and corners. They must be created manually
         """
         self.default_token_speed: int = 1
-        if columns > 1000 or rows > 1000:
-            raise TiledBoardTooBigError(columns, rows, 40)
-        super().__init__(columns=columns, rows=rows)
+        if view_x > 1000 or view_y > 1000:
+            raise TiledBoardTooBigError(view_x, view_y, 40)
+        super().__init__(view_x=view_x, view_y=view_y)
         self.tile_factory = self._get_tile_factory()
         self.tile_size = 40
         self.speed = 20
@@ -140,12 +140,19 @@ class TiledBoard(board.Board):
         self.corners.clear()
         self.edges.clear()
 
+    @staticmethod
+    def _get_camera_manager_class():
+        return board_camera_manager.TiledCameraManager
+    
     def setup_board(self):
         """In this method, corners and edges are created.
         """
         if not self.empty:
+            print("setup tiles")
             self._setup_tiles()
+            print("setup corners")
             self._setup_corners()
+            print("setup edges")
             self._setup_edges()
 
     def _templates(self):
@@ -183,8 +190,8 @@ class TiledBoard(board.Board):
     def _setup_tiles(self):
         """Adds Tile to Board for each BoardPosition
         """
-        for x in range(self.columns):
-            for y in range(self.rows):
+        for x in range(self.boundary_x):
+            for y in range(self.boundary_y):
                 self.add_tile_to_board((x, y))
 
     def _setup_corners(self):
@@ -463,13 +470,3 @@ class TiledBoard(board.Board):
         x = position[0] * self.tile_size + origin[0]
         y = position[1] * self.tile_size + origin[1]
         return board_position.Position(x, y)
-    
-    @property
-    def container_width(self) -> int:
-        """The width of the container"""
-        return self.columns * self.tile_size
-
-    @property
-    def container_height(self) -> int:
-        """The height of the container"""
-        return self.rows * self.tile_size

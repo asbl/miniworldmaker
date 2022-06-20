@@ -84,7 +84,7 @@ class Test116(unittest.TestCase):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
                 d = diff(file_test, file_output)
-                assert 0 <= d <= 0.05
+                assert 0 <= d <= 2
             if self.test_frame == QUIT_FRAME:
                 self.quit()
         

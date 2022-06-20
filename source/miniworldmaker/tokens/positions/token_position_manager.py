@@ -8,13 +8,15 @@ import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.board_vector as board_vector
 import miniworldmaker.board_positions.board_direction as board_direction
 import miniworldmaker.board_positions.board_rect as board_rect
-from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
+from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, MoveInDirectionTypeError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.boards import board
+from miniworldmaker.appearances import costume
+
 
 class TokenPositionManager:
-    def __init__(self, token : "token_mod.Token", board : "board.Board"):
+    def __init__(self, token: "token_mod.Token", board: "board.Board"):
         self.token = token
         self.last_position = (0, 0)
         self.last_direction = 90
@@ -27,7 +29,7 @@ class TokenPositionManager:
         self._initial_direction = 0
         self._position = board_position.Position.create((0, 0))
 
-    def move_vector(self, vector : "board_vector.Vector") -> "token_mod.Token":
+    def move_vector(self, vector: "board_vector.Vector") -> "token_mod.Token":
         position = self.get_position()
         position = vector.add_to_position(position)
         self.set_position(position)
@@ -35,10 +37,17 @@ class TokenPositionManager:
 
     @property
     def rect(self):
-        return self.get_rect()
+        return self.get_local_rect()
 
-    def get_rect(self) -> "board_rect.Rect":
-        return board_rect.Rect(self.token.position[0], self.token.position[1], self.size[0], self.size[1])
+    def get_global_rect(self) -> "board_rect.Rect":
+        if self.token.costume:
+            rect = self.token.costume.image.get_rect()
+        else:
+            rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
+        return rect
+
+    def get_local_rect(self) -> "board_rect.Rect":
+        pass
 
     @classmethod
     def from_center(cls, center_position: "board_position.Position"):
@@ -64,7 +73,7 @@ class TokenPositionManager:
         direction = (self._direction + 180) % 360 - 180
         return direction
 
-    def set_direction(self, value : Union[int, float, str, board_direction.Direction]):
+    def set_direction(self, value: Union[int, float, str, board_direction.Direction]):
         if type(value) not in [int, float, str, board_direction.Direction, board_vector.Vector]:
             raise ValueError(f"Direction must be int, float, Direction or Vector but is {type(value)}")
         self.last_direction = self.direction
@@ -81,11 +90,11 @@ class TokenPositionManager:
     def size(self, value: Union[int, float, tuple]):
         self.set_size(value)
 
-    def set_size(self, value : Union[int, float, tuple]):
+    def set_size(self, value: Union[int, float, tuple]):
         """Sets size of token
 
         Args:
-            value (Union[int, float, tuple]): 
+            value (Union[int, float, tuple]):
                 An int or float will be converted to tuple (e.g. 2 => (2,2) )
 
         Raises:
@@ -99,12 +108,12 @@ class TokenPositionManager:
                 raise ValueError("token.size must be >= 0")
             else:
                 value = (value, value)
-        if type(value) == tuple:                
+        if type(value) == tuple:
             if value != self._size:
                 self._old_size = self._size
                 self._size = value
                 if self.token.costume:
-                    self.token.costume.reload_transformations_after("all")
+                    self.token.costume.set_dirty("scale", costume.Costume.RELOAD_ACTUAL_IMAGE)
         else:
             raise ValueError("token size must be int, float or tuple")
         return self.token
@@ -120,7 +129,7 @@ class TokenPositionManager:
         old_height = self.token.size[1]
         scale_factor = value / old_height
         self.set_size((old_width * scale_factor, value))
-                
+
     def set_width(self, value):
         if value < 0:
             raise ValueError("token width must be >= 0")
@@ -145,14 +154,13 @@ class TokenPositionManager:
     def get_position(self) -> "board_position.Position":
         return board_position.Position.create(self._position)
 
-    def set_position(self, value : Union[tuple, "board_position.BoardPosition"]) -> "board_position.BoardPosition":
+    def set_position(self, value: Union[tuple, "board_position.BoardPosition"]) -> "board_position.BoardPosition":
         self.last_position = self.position
         self.last_direction = self.direction
         self._position = board_position.Position.create(value)
+        self.token.board.camera.fetch_token(self.token)
         if self.last_position != self._position:
             self.token.dirty = 1
-            if self.token.board:
-                self.token.board.app.event_manager.send_event_to_containers("token_moved", self.token)
         return self.position
 
     @property
@@ -163,7 +171,7 @@ class TokenPositionManager:
     def center_x(self):
         """x-value of token center-position"""
         if self.token.costume:
-            return self.rect.centerx
+            return self.get_global_rect().centerx
 
     @center_x.setter
     def center_x(self, value):
@@ -173,7 +181,7 @@ class TokenPositionManager:
     def center_y(self):
         """y-value of token center-position"""
         if self.token.costume:
-            return self.rect.centery
+            return self.get_global_rect().centery
 
     @center_y.setter
     def center_y(self, value):
@@ -192,21 +200,19 @@ class TokenPositionManager:
     def local_center(self) -> "board_position.Position":
         return board_position.Position.create((self.center_x - self.topleft[0], self.center_y - self.topleft[1]))
 
-    def set_center(self, value :  Union[tuple, "board_position.Position"] ) -> "token_mod.Token":
+    def set_center(self, value: Union[tuple, "board_position.Position"]) -> "token_mod.Token":
         if self.token.costume is None:
             raise NoCostumeSetError(self.token)
         new_center = board_position.Position(value)
         self.last_position = self.position
-        rect = pygame.Rect.copy(self.rect)
+        rect = pygame.Rect.copy(self.get_global_rect)
         rect.center = new_center
-        # rect.centerx = value[0]
-        # rect.centery = value[1]
         self.set_position(rect.topleft)
         return self.token
 
     @property
     def topleft(self) -> "board_position.Position":
-        return board_position.Position.create(self.rect.topleft)
+        return board_position.Position.create(self.get_global_rect().topleft)
 
     @topleft.setter
     def topleft(self, value):
@@ -220,24 +226,28 @@ class TokenPositionManager:
         self.position = destination
         return self
 
-    def move_towards_position(self, position):
-        tkn_position = board_position.Position.create(self.token.position)
-        if tkn_position.is_close(position):
+    def move_towards_position(self, position, distance=1):
+        tkn_center = board_position.Position.create(self.token.center)
+        if tkn_center.is_close(position):
             return self
         else:
-            direction = board_direction.Direction.create_from_token(self.token, position).value
-            self.set_direction(direction)
-            self.move()
-            return self
-
-    def move_in_direction(self, direction: Union[int, str, "board_position.Position", tuple], distance=1):
-        if type(direction) in [int, str]:
-            direction = board_direction.Direction.create_from_token(self.token, direction).value
+            direction = board_direction.Direction.from_token_to_position(self.token, position).value
             self.set_direction(direction)
             self.move(distance)
             return self
-        else:
+
+    def move_in_direction(self, direction: Union[int, str, "board_direction.Direction"], distance=1):
+        if type(direction) in [int, str]:
+            direction = board_direction.Direction.from_token_towards_direction(self.token, direction).value
+            self.set_direction(direction)
+            self.move(distance)
+            return self
+        elif type(direction) in [tuple, board_position.Position]:
             return self.move_towards_position(direction)
+        else:
+            raise MiniworldMakerError(
+                f"No valid type in method move_in_direction - Expected int, str, Position or tuple, got {type(direction)}"
+            )
 
     def move_back(self):
         self.position = self.last_position
@@ -334,7 +344,9 @@ class TokenPositionManager:
         self.token.costume.flip(not self.token.costume.is_flipped)
         return self.direction
 
-    def point_in_direction(self, direction: Union[int, float, board_direction.Direction, str]) -> "board_direction.Direction":
+    def point_in_direction(
+        self, direction: Union[int, float, board_direction.Direction, str]
+    ) -> "board_direction.Direction":
         self.direction = board_direction.Direction.create(direction)
         return self.direction
 
@@ -363,7 +375,9 @@ class TokenPositionManager:
     def draw_position(self):
         return (self.x, self.y)
 
-    def point_towards_position(self, destination : Union[int, float, str, board_direction.Direction]) -> "board_direction.Direction":
+    def point_towards_position(
+        self, destination: Union[int, float, str, board_direction.Direction]
+    ) -> "board_direction.Direction":
         """
         Token points towards a given position
 

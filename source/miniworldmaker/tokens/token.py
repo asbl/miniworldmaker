@@ -8,6 +8,7 @@ import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token_base as token_base
+from miniworldmaker.board_positions import board_direction
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     MiniworldMakerError,
     NotImplementedOrRegisteredError,
@@ -118,7 +119,10 @@ class Token(token_base.BaseToken):
 
         * `mask`: Are tokens colliding when checkig if their image masks are overlapping.
         """
-        return self._collision_type
+        if self._collision_type == "default":
+            return "mask"
+        else:
+            return self._collision_type
 
     @collision_type.setter
     def collision_type(self, value: str):
@@ -180,7 +184,7 @@ class Token(token_base.BaseToken):
         Returns:
             int: _description_
         """
-        return self.costume_manager.count()
+        return self.costume_manager.length()
 
     @property
     def is_flipped(self) -> bool:
@@ -280,7 +284,7 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.flip_x()
 
-    def add_costume(self, source: Union[Tuple, str, List]) -> costume.Costume:
+    def add_costume(self, source: Union[None, Tuple, str, List] = None) -> costume.Costume:
         """Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
@@ -358,17 +362,17 @@ class Token(token_base.BaseToken):
 
         """
         
-        if type(source) in [str, tuple]:
-            return self.costume_manager.add_costume(source)
+        if not source or type(source) in [str, tuple]:
+            return self.costume_manager.add_new_appearance(source)
         elif type(source) == list:
-            return self.costume_manager.add_costume_from_list(source)
+            return self.costume_manager.add_new_appearance_from_list(source)
         else:
             raise MiniworldMakerError(f"Wrong type for appearance. Expected: list, tuple or str, got {type(source)}")
 
     def add_costumes(self, sources : list) -> costume.Costume:
         """Adds multiple costumes
         """
-        return self.costume_manager.add_costumes(sources)
+        return self.costume_manager.add_new_appearances(sources)
 
     def remove_costume(self, source: Union[int, "costume.Costume"] = None):
         """Removes a costume from token
@@ -425,18 +429,20 @@ class Token(token_base.BaseToken):
     def costume(self) -> costume.Costume:
         """Gets the costume of token
         """
-        if hasattr(self, "_costume_manager") and self._costume_manager:
-            return self.costume_manager.costume
+        if hasattr(self, "costume_manager") and self.costume_manager is not None:
+            return self.costume_manager.get_actual_appearance()
 
     @costume.setter
     def costume(self, value):
-        self.costume_manager.costume = value
+        self.costume_manager.appearance = value
 
     @property
     def costumes(self) -> list:
-        """Gets a list of all costumes.
+        """Gets the costume manager
+        
+        The costume manager can be iterated to get all costumes
         """
-        return self.costume_manager.costumes
+        return self.costume_manager
 
     @property
     def orientation(self) -> int:
@@ -716,7 +722,7 @@ class Token(token_base.BaseToken):
             The new direction
 
         """
-        pos = other.rect.center
+        pos = other.get_global_rect().center
         return self.point_towards_position(pos)
 
     @property
@@ -853,12 +859,12 @@ class Token(token_base.BaseToken):
     @property
     def topleft_x(self):
         """x-value of token topleft-position"""
-        return self.rect.topleft[0]
+        return self.get_global_rect.topleft[0]
 
     @property
     def topleft_y(self):
         """x-value of token topleft-position"""
-        return self.rect.topleft[1]
+        return self.get_global_rect.topleft[1]
 
     @property
     def topleft(self) -> "board_position.Position":
@@ -961,11 +967,13 @@ class Token(token_base.BaseToken):
 
         """
         return self.position_manager.move_back()
+    
+    undo_move = move_back
 
     def move_towards(self, position):
         return self.position_manager.move_towards_position(position)
 
-    def move_in_direction(self, direction: Union[int, str, tuple, "board_position.Position"], distance=1):
+    def move_in_direction(self, direction: Union[int, str, tuple, "board_direction.Direction", "board_position.Position"], distance=1):
         """Moves token *distance* steps into a *direction* or towards a position
 
         .. image:: ../_images/move_in_direction.png
@@ -986,7 +994,12 @@ class Token(token_base.BaseToken):
             The token itself
 
         """
-        return self.position_manager.move_in_direction(direction, distance)
+        if type(direction) in [int, str, board_direction.Direction]:
+            return self.position_manager.move_in_direction(direction, distance)
+        elif type(direction) == tuple or isinstance(direction, board_position.Position):
+            return self.position_manager.move_towards_position(direction, distance)
+        else:
+            raise MiniworldMakerError(f"Expected direction or position, got f{type(direction)}, ({direction})")
 
     def move_to(self, position: "board_position.Position"):
         """Moves token *distance* to a specific board_posiition

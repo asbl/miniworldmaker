@@ -55,21 +55,21 @@ class Test124(unittest.TestCase):
         t.add_costume("images/alien1.png")
         t.costume.is_upscaled = True
         t.border = 1
-        assert(t.width, t.height == (40,40))
+        assert (t.width, t.height) == (40,40)
 
         t = Token((650,150))
         t.add_costume("images/alien1.png")
         t.costume.is_upscaled = True
         t.border = 1
         t.size = (140,80)
-        assert(t.width, t.height == (140,80))
+        assert t.width, t.height == (140,80)
 
         t = Token((600,250))
         t.add_costume("images/alien1.png")
         t.costume.alpha = 50
         t.width = 40
         t.border = 1
-        assert(t.width, t.height == (40,40))
+        assert t.width, t.height == (40,40)
 
 
         """ here act and init - delete if used in testcode"""

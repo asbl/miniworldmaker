@@ -117,14 +117,14 @@ class Test110(unittest.TestCase):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
                 d = diff(file_test, file_output)
-                assert 0 <= d <= 0.05
+                assert 0 <= d <= 2
                 self.quit()
         
         #in TESTXYZ setup:
         board.test_title = self.__class__.__name__
         
         
-    def test_108(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         

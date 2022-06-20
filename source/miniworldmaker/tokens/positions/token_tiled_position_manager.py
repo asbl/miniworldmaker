@@ -5,6 +5,9 @@ import pygame
 
 import miniworldmaker.board_positions.tile_elements as tile_elements
 import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_direction
+from miniworldmaker.appearances import costume
 
 
 class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
@@ -12,17 +15,18 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
         super().__init__(token, board)
         self._scaled_size = (1, 1)
 
-    def get_rect(self):
-        if self.token.costume:
-            rect = self.token.costume.image.get_rect()
-        else:
-            rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
+    def get_global_rect(self):
+        rect = super().get_global_rect()
         if self.token.board.is_tile(self.token.position):
             rect.topleft = tile_elements.Tile.from_position(self.token.position).to_pixel()
         if self.token.board.is_corner(self.token.position):
             rect.center = tile_elements.Corner.from_position(self.token.position).to_pixel()
         if self.token.board.is_edge(self.token.position):
             rect.center = tile_elements.Edge.from_position(self.token.position).to_pixel()
+        return rect
+
+    def get_local_rect(self):
+        rect = self.get_global_rect()
         return rect
 
     @property
@@ -40,7 +44,7 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
         if type(value) == int or type(value) == float:  # convert int to tuple
             value = (value, value)
         self._scaled_size = value
-        self.token.costume.reload_transformations_after("all")
+        self.token.costume.set_dirty("scale", costume.Costume.RELOAD_ACTUAL_IMAGE)
 
     def point_towards_position(self, destination) -> float:
         """
@@ -73,3 +77,13 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
             else:
                 self.token.direction = 0
                 return self.token.direction
+
+    def move_towards_position(self, position, distance=1):
+        tkn_center = board_position.Position.create(self.token.position)
+        if tkn_center.is_close(position):
+            return self
+        else:
+            direction = board_direction.Direction.from_two_points(self.token.position, position).value
+            self.set_direction(direction)
+            self.move(distance)
+            return self

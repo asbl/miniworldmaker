@@ -7,20 +7,22 @@ In this chapter we will build a maze game together, step by step.
 
 The technique of creating a tilemap is common in games and after seeing it here you should be able to incorporate it into your own projects.
 
-Based on: https://github.com/electronstudio/pygame-zero-book
-License: Attribution-NonCommercial-ShareAlike 4.0 International
+* **Based on**: `https://github.com/electronstudio/pygame-zero-book`
+* **License:**  Attribution-NonCommercial-ShareAlike 4.0 International
 
 ## Step 1: Reading tokens from Tilemap
 
 A tilemap uses a small number of images (the tiles) and draws them many times to build a much larger game level (the map). This saves you from creating a lot of artwork and makes it very easy to change the design of the level on a whim. Here we create a maze level.
 
-We must create three image files for the tiles: player.png, wall.png and save them in the mu_code/images folder (accessible with the images button in Mu).
+We must create three image files for the tiles: `player.png `, `wall.png` and save them in the `mu_code/images` folder.
 
+```
 my_code
 |
 |--images
 |----images/player.png
 |----images/wall.png
+```
 
 Now we can code a framework:
 
@@ -57,7 +59,9 @@ class Wall(Token):
         self.add_costume("wall")
 ```
 
-* self.add_costume adds a costume. A costume can be based on an image ("player", "wall" - You can ommit file endings like .png or .jpeg) or on a color. A color can be a 3-tuple (r,g,b) or an 4-tuple (r,g,b,a).
+`self.add_costume` adds a costume to the token. A costume can be based on an image ("player", "wall" - You can ommit file endings like .png or .jpeg) or on a color. 
+
+A color can be a 3-tuple (r,g,b) or an 4-tuple (r,g,b,a).
 
 
 ### Create a Tile-Map

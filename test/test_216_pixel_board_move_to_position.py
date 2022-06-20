@@ -33,7 +33,7 @@ class Test216(unittest.TestCase):
 
         @player.register
         def act(self):
-            self.move_in_direction((360, 360))
+            self.move_towards((360, 360))
 
         """ here act and init - delete if used in testcode"""
         

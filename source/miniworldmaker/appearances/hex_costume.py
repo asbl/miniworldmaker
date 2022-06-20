@@ -22,8 +22,8 @@ class HexCostume(costume.Costume):
     def _update_draw_shape(self):
         self.mod_pointlist = []
         board = self.token.board
-        if board.is_tile(self.token.position):
-            tile = self.token.board.get_tile(self.token.position)
+        if board.is_tile(self.token.position_manager.get_position()):
+            tile = self.token.board.get_tile(self.token.position_manager.get_position())
             self.mod_pointlist = tile.get_local_corner_points()
         super()._update_draw_shape()
 
@@ -31,7 +31,7 @@ class HexCostume(costume.Costume):
         board = self.token.board
         if board.is_tile(self.token.position):
             return pygame.draw.polygon, [self.mod_pointlist, 0]
-        elif board.is_corner(self.token.position):
+        elif board.is_corner(self.token.position_manager.position):
             return pygame.draw.rect, [pygame.Rect(0, 0, self.token.size[0], self.token.size[1]), 0]
         elif board.is_edge(self.token.position):
             return pygame.draw.rect, [pygame.Rect(0, 0, self.token.size[0], self.token.size[1]), 0]

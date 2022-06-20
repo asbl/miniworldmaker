@@ -95,7 +95,7 @@ class Circle(Shape):
     @radius.setter
     def radius(self, value):
         self._radius = value
-        self.costume._update_draw_shape()
+        self.costume.set_dirty("scale", self.costume.RELOAD_ACTUAL_IMAGE)
 
     def set_physics_default_values(self):
         self.physics.shape_type = "circle"
@@ -156,7 +156,6 @@ class Ellipse(Shape):
         self.costume = shape_costume.EllipseCostume(self)
         self._border = 1
         self.size = (width, height)
-        self.costume._update_draw_shape()
 
     def check_arguments(self, position, width, height):
         if type(position) not in [tuple, board_position.Position, None]:
@@ -206,7 +205,7 @@ class Arc(Ellipse):
     @start_angle.setter
     def start_angle(self, value):
         self._start_angle = value
-        self.costume._update_draw_shape()
+        self.costume.set_dirty("draw_shapes", self.costume.RELOAD_ACTUAL_IMAGE)
 
     @property
     def end_angle(self):
@@ -215,7 +214,7 @@ class Arc(Ellipse):
     @end_angle.setter
     def end_angle(self, value):
         self._end_angle = value
-        self.costume._update_draw_shape()
+        self.costume.set_dirty("draw_shapes", self.costume.RELOAD_ACTUAL_IMAGE)
 
     @classmethod
     def from_topleft(cls, position: tuple, width: float, height: float, start_angle, end_angle):
@@ -272,29 +271,10 @@ class Line(Shape):
         self._end_position = end_position
         super().__init__(start_position)
         self.costume = shape_costume.LineCostume(self)
-        self.position = start_position
-        self.costume._update_draw_shape()
-        box = self.get_bounding_box()
-        self.position = box.topleft
-
+        
     def set_physics_default_values(self):
         self.physics.shape_type = "line"
         self.physics.simulation = "static"
-
-    def get_bounding_box(self):
-        width = abs(self.start_position[0] - self.end_position[0]) + 2 * self.border
-        height = abs(self.start_position[1] - self.end_position[1]) + 2 * self.border
-        box = pygame.Rect(
-            min(self.start_position[0], self.end_position[0]) - self.border,
-            min(self.start_position[1], self.end_position[1]) - self.border,
-            width,
-            height,
-        )
-        self.position = box[0], box[1]
-        width, height = box[2], box[3]
-        self.width = width
-        self.height = height
-        return box
 
     @property
     def start_position(self):
@@ -303,8 +283,8 @@ class Line(Shape):
     @start_position.setter
     def start_position(self, value: Tuple):
         self._start_position = value
-        self.costume._update_draw_shape()
-
+        self.costume.set_dirty("all", 1)
+        
     @property
     def end_position(self):
         return self._end_position
@@ -312,7 +292,8 @@ class Line(Shape):
     @end_position.setter
     def end_position(self, value: Tuple):
         self._end_position = value
-        self.costume._update_draw_shape()
+        self.costume.set_dirty("all", 1)
+        
 
     @property
     def thickness(self):
@@ -357,7 +338,7 @@ class Rectangle(Shape):
         super().__init__(topleft)
         self.costume = shape_costume.RectangleCostume(self)
         self.size = (width, height)
-        self.costume._update_draw_shape()
+
 
     def check_arguments(self, topleft, width, height):
         if type(topleft) != tuple and type(topleft) != board_position.Position:

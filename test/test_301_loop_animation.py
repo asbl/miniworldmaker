@@ -25,7 +25,7 @@ class Test301(unittest.TestCase):
 
 
 
-        board = PixelBoard(columns=280, rows=100)
+        board = PixelBoard(280, 100)
         board.add_background("images/water.png")
         board.speed = 1
         print(board.speed, board.fps)

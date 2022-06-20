@@ -64,7 +64,7 @@ class TokenPhysics:
         other_body = other.physics._body
         pj = pymunk.PinJoint(my_body, other_body, (0, 0), (0, 0))
         self.board.space.add(pj)
-        return self.token.position, other.position
+        return self.token.position_manager.get_position(), other.position
 
     def join(self, other: "token.Token"):
         """joins two tokens at their center points
@@ -76,7 +76,7 @@ class TokenPhysics:
         pj = pymunk.PinJoint(my_body, other_body, (0, 0), (0, 0))
         self.joints.append(pj)
         self.board.space.add(pj)
-        return self.token.position, other.position
+        return self.token.position_manager.get_position(), other.position
 
     def remove_join(self, other: "token.Token"):
         """Remove a joint between two tokens.
@@ -160,8 +160,8 @@ class TokenPhysics:
                                   (0, 0),
                                   )
         elif self.shape_type.lower() == "line":
-            shift_x = self.token.size[0] / 2 + self.token.position[0]
-            shift_y = self.token.size[1] / 2 + self.token.position[1]
+            shift_x = self.token.size[0] / 2 + self.token.position_manager.get_position()[0]
+            shift_y = self.token.size[1] / 2 + self.token.position_manager.get_position()[1]
             start = pymunk.pygame_util.from_pygame(
                 (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y),
                 self.token.board.image)
@@ -173,7 +173,7 @@ class TokenPhysics:
         return shape
 
     def _setup_physics_model(self):
-        if self.dirty and self.token.position:  # if token is on board
+        if self.dirty and self.token.position_manager.get_position():  # if token is on board
             # create body
             self.has_physics = False
             self._body = pymunk_engine.Body(body_type=self.body_type)

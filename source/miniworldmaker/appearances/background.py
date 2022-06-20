@@ -55,17 +55,13 @@ class Background(appearance.Appearance):
         # Register image actions which you can be triggered
         self._grid = False
         self._grid_color = (255, 0, 255)
-        self.surface = None
+        self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
         self._is_scaled_to_tile = False
         self._image = pygame.Surface((self.parent.width, self.parent.height))  # size set in image()-method
         self.reload_costumes_queue = []
         self.is_scaled = True
         self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
         self.image_manager = image_background_manager.ImageBackgroundManager(self)
-
-    def add_image(self, source: Union[str, pygame.Surface, Tuple] = None) -> int:
-        super().add_image(source)
-        return self.parent.app.window.display_update()
 
     def show_grid(self):
         self.grid = True
@@ -104,26 +100,13 @@ class Background(appearance.Appearance):
     @grid.setter
     def grid(self, value):
         self._grid = value
-        self.reload_transformations_after("all")
+        self.set_dirty("all", Background.LOAD_NEW_IMAGE)
 
     def repaint(self):
         """Called 1/frame from board"""
         self.board.tokens.clear(self.surface, self.image)
         repaint_rects = self.board.tokens.draw(self.surface)
         self.board.app.window.repaint_areas.extend(repaint_rects)
-
-    def reload_transformations_after(self, value):
-        """reloads all transformations (scale, upscale, draw shape, rotate for shape)
-
-        The transformation pipeline is not run through completely,
-        but starting from the passed parameter -
-        The remaining transformations are loaded from the cache.
-
-        "all": Reloads all Transformations
-        "scale": Reloads transformations after scale
-        ...
-        """
-        super().reload_transformations_after(value)
 
     def _update_all_costumes(self):
         """updates costumes for all tokens on board"""
@@ -134,15 +117,10 @@ class Background(appearance.Appearance):
             [token.costume.update() for token in dynamic_tokens]
             del(dynamic_tokens)
 
-    def _reload_dirty_image(self):
-        """ Reloads dirty image
-        
-        Called by property `image`, if image is dirty.
-        """
-        super()._reload_dirty_image()
+    def _after_transformation_pipeline(self):
         self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
         self.surface.blit(self.image, self.surface.get_rect())
-        for token in self.board.tokens:
+        for token in self.board.camera.get_tokens_in_viewport():
             token.dirty = 1
         self._blit_to_window_surface()
         self._update_all_costumes()
@@ -152,3 +130,9 @@ class Background(appearance.Appearance):
         self.parent.app.window.surface.blit(self.image, (0, 0))
         self.parent.app.window.add_display_to_repaint_areas()
         self.repaint()
+
+    def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
+        super().add_image(source)
+        self._blit_to_window_surface()
+        self._update_all_costumes()
+        return self.parent.app.window.display_update()

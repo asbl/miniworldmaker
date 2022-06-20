@@ -1,7 +1,5 @@
 import pygame
 
-from miniworldmaker.appearances import appearance
-
 
 class FontManager:
     def __init__(self, appearance):
@@ -21,16 +19,22 @@ class FontManager:
             font = pygame.font.Font(self.font_path, font_size)
         return font
 
-    def get_font_width(self):
+    def get_text_width(self):
         font = self._get_font_object()
         return font.size(self.text)[0]
 
     def transformation_write_text(self, image: pygame.Surface, parent, color) -> pygame.Surface:
+        # called from write_text in transformations_manager
         font = self._get_font_object()
         if self.appearance.parent.color == None:
             color = (255,255,255)
         else:
             color = self.appearance.parent.color
-        label = font.render(self.text, 1, color)
-        image.blit(label, self.text_position)
+        rendered_text = font.render(self.text, 1, color)
+        image.blit(rendered_text, self.text_position)
         return image
+
+    def set_font_size(self, value, update = True):
+        self.font_size = value
+        if update:
+            self.appearance.set_dirty("write_text", self.appearance.RELOAD_ACTUAL_IMAGE)

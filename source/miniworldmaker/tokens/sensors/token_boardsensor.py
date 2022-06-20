@@ -8,9 +8,9 @@ import miniworldmaker.boards.board as board_mod
 import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
 from miniworldmaker.exceptions.miniworldmaker_exception import NotImplementedOrRegisteredError
+from abc import ABC, abstractmethod
 
-
-class TokenBoardSensor:
+class TokenBoardSensor(ABC):
     def __init__(self, token: "token_mod.Token", board: "board_mod.Board"):
         super().__init__()
         self.token: "token_mod.Token" = token
@@ -38,7 +38,7 @@ class TokenBoardSensor:
             return token_list
         if type(token_filter) == str:
             token_list = self.filter_tokens_by_classname(token_list, token_filter)
-        elif isinstance(token_mod.Token, token_filter):
+        elif isinstance(token_filter, token_mod.Token):
             token_list = self.filter_tokens_by_instance(token_list, token_filter)
         elif issubclass(token_filter, token_mod.Token):
             token_list = self.filter_tokens_by_class(token_list, token_filter)
@@ -82,10 +82,10 @@ class TokenBoardSensor:
         raise NotImplementedOrRegisteredError(self.sensing_tokens)
 
     def sensing_point(self, pixel_position):
-        return self.token.rect.collidepoint(pixel_position)
+        return self.token.get_global_rect().collidepoint(pixel_position)
 
     def sensing_rect(self, rect):
-        return self.token.rect.colliderect(rect)
+        return self.token.get_global_rect().colliderect(rect)
 
     def sensing_on_board(self, distance: int) -> bool:
         raise NotImplementedOrRegisteredError(self.sensing_on_board)
@@ -115,25 +115,23 @@ class TokenBoardSensor:
         pos = board_position.Position.create((exact_position_x, exact_position_y))
         return pos
 
-    @staticmethod
-    def is_position_on_board(pos):
+    def is_position_on_board(self, pos):
         """
         Checks if Position is on board
 
         Returns:
             True, if Position is on board.
         """
-        board = app.App.board
-        if 0 <= pos[0] < board.columns and 0 <= pos[1] < board.rows:
+        board = self.board
+        if 0 <= pos[0] < board.boundary_x and 0 <= pos[1] < board.boundary_y:
             return True
         else:
             return False
 
-    @classmethod
-    def is_rect_completly_on_board(cls, rect):
+    def is_rect_completly_on_board(self, rect):
         rect = board_rect.Rect.create(rect)
-        topleft_on_board = cls.is_position_on_board(rect.topleft)
-        bottom_right_on_board = TokenBoardSensor.is_position_on_board(rect.bottomright)
+        topleft_on_board = self.is_position_on_board(rect.topleft)
+        bottom_right_on_board = self.is_position_on_board(rect.bottomright)
         return topleft_on_board or bottom_right_on_board
 
     def get_borders_from_rect(self, rect):
