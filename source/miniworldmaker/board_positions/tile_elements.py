@@ -4,7 +4,7 @@ import math
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token as token
 import miniworldmaker.base.app as app
-
+from miniworldmaker.board_positions import board_vector
 
 class TileBase:
     def __init__(self, position):
@@ -189,6 +189,11 @@ class Tile(TileBase):
     def from_position(cls, position):
         board = app.App.board
         return board.get_tile(position)
+    
+    @classmethod
+    def from_token(cls, token):
+        board = token.board
+        return board.get_tile(token.position)        
 
     def __init__(self, position):
         super().__init__(position)
@@ -228,7 +233,13 @@ class Tile(TileBase):
         x = pixel_position[0] // board.tile_size
         y = pixel_position[1] // board.tile_size
         return cls((x, y))
+    
+    def __sub__(self, other):
+        return board_vector.Vector(self.position[0]-other.position[0], self.position[1]-other.position[1])    
 
+    def distance_to(self, other):
+        vec = self - other
+        return vec.length()
 
 class Corner(TileDelimiter):
     angles = {

@@ -75,6 +75,18 @@ class Vector:
         self.vec = np.array([self.vec[0], value])
 
     @classmethod
+    def from_token_and_position(cls, t1: "token_mod.Token", pos) -> "Vector":
+        """Create a vector from token and position
+
+        The vector desribes is generated from:
+        token2.center - position
+        """
+        x = pos[0] - t1.center.x
+        y = pos[1] - t1.center.y
+        return cls(x, y)
+
+
+    @classmethod
     def from_tokens(cls, t1: "token_mod.Token", t2: "token_mod.Token") -> "Vector":
         """Create a vector from two tokens.
 
