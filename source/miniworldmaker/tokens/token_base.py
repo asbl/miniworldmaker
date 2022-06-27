@@ -2,22 +2,19 @@ from __future__ import annotations
 from shelve import Shelf
 
 from typing import Union, Optional, Tuple
+from numpy import isin
 
 import pygame
 import functools
+import collections
 
-import miniworldmaker.appearances.costumes_manager as costumes_manager
 import miniworldmaker.base.app as app
-import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.boards.board as board
-import miniworldmaker.dialogs.ask as ask
-import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
-import miniworldmaker.tools.token_inspection as token_inspection
-import miniworldmaker.tokens.sensors.token_boardsensor as token_boardsensor
+
 from miniworldmaker.exceptions.miniworldmaker_exception import (
+    MiniworldMakerError,
     NoValidBoardPositionError,
     TokenArgumentShouldBeTuple,
-    NoBoardError,
+    WrongArgumentsError,
 )
 
 
@@ -34,31 +31,11 @@ class Meta(type):
 
 
 class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
-    token_count: int = 0
-    class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0,0)):
-        self._collision_type: str = "mask"
-        self._dirty = 0
-        self._layer: int = 0
-        self._inner = 0
-        self._size = (0, 0)
-        self._static = False
-        self._position: "board_position.Position" = position
-        self._managers: list = list()
-        self.token_id: int = BaseToken.token_count + 1
+    def __init__(self):
         self.board: "board.Board" = app.App.board
-        self._board_sensor: token_boardsensor.TokenBoardSensor = self._init_board_sensor()
-        self._position_manager: token_position_manager.TokenPositionManager = self._init_position_manager()
-        self._costume_manager: costumes_manager.CostumesManager = self._init_costume_manager()
-        if not self.board:
-            raise NoBoardError()
-        pygame.sprite.DirtySprite.__init__(self)
-        BaseToken.token_count += 1
-        self.speed: int = 1
-        self.ask: "ask.Ask" = ask.Ask(self.board)
-        self._dirty = 1
-        
+        self._managers: list = list()
+
     def _get_new_costume(self):
         return self.board.get_token_connector(self).create_costume()
         
@@ -80,61 +57,6 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         return self._position_manager
 
     @property
-    def position_manager(self):
-        if not hasattr(self, "_position_manager") or not self._position_manager:
-            return None
-        return self._position_manager
-
-    @property
-    def board_sensor(self):
-        return self._board_sensor
-    
-    @property
-    def costume_manager(self):
-        return self._costume_manager
-
-    @property
-    def position(self) -> "board_position.Position":
-        """
-        The position of the token as Position (x, y)
-        """
-        return self.position_manager.position
-
-    @position.setter
-    def position(self, value: Union["board_position.Position", tuple]):
-        self.position_manager.position = value
-
-    @property
-    def size(self) -> Tuple:
-        """implemented in subclass"""
-        return self._size
-
-    @property
-    def static(self) -> bool:
-        """implemented in subclass"""
-        return self._static
-
-    def __str__(self):
-        if self.board and hasattr(self.board, "position_manager"):
-            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
-                self.__class__.__name__, self.token_id, self.position, self.size
-            )
-        else:
-            return "**: {0}; ID: {1}".format(self.__class__.__name__, self.token_id)
-
-    @property
-    def image(self) -> pygame.Surface:
-        """
-        The image of the token:
-
-        .. warning::
-          Warning: You should not directly draw on the image
-          as the image will be reloaded during animations
-
-        """
-        return self.costume_manager.image
-
-    @property
     def dirty(self) -> int:
         """If token is dirty, it will be repainted.
 
@@ -143,7 +65,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
             int: 1 if token is dirty/0 otherwise
         """
         return self._dirty
-
+    
     @dirty.setter
     def dirty(self, value: int):
         if not self._dirty and self.position_manager and self.board.camera.is_token_in_viewport(self) and value == 1:
@@ -152,34 +74,15 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
             self._dirty = 0
         else:
             pass
-
+        
     @property
     def rect(self) -> pygame.Rect:
+        """Implemented in subclass
         """
-        The surrounding Rectangle as pygame.Rect.
-        Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
-        """
-        return self.position_manager.get_local_rect()
-
-    def get_rect(self) -> pygame.Rect:
-        return self.position_manager.get_local_rect()
+        pass
     
-    def get_local_rect(self) -> pygame.Rect:
-        return self.position_manager.get_local_rect()
-    
-    def get_global_rect(self) -> pygame.Rect:
-        if self.position_manager:
-            return self.position_manager.get_global_rect()
-        return pygame.Rect(-1,-1,0,0)
-
-    def register(self, method: callable):
-        """This method is used for the @register decorator. It adds a method to an object
-
-        Args:
-            method (callable): The method which should be added to the token
+    @property
+    def image(self) -> pygame.Surface:
+        """Implemented in subclass
         """
-        bound_method = token_inspection.TokenInspection(self).bind_method(method)
-        if method.__name__ == "on_setup":
-            self.on_setup()
-        self.board.event_manager.register_event(method.__name__, self)
-        return bound_method
+        return self.costume_manager.image

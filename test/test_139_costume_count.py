@@ -18,6 +18,8 @@ class Test139(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board()
         token = Token()
         assert token.costume_count == 0

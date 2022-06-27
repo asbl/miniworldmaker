@@ -22,6 +22,8 @@ class Test1203(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board()
         board.background.draw((255,0,0), (200,0), 20, 400)
 

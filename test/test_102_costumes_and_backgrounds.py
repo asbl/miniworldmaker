@@ -22,7 +22,8 @@ class Test102(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
-
+        App.reset(unittest = True, file = __file__)
+        
         board = Board(200,400)
         path = os.path.dirname(__file__)
         board.app.register_path(path)

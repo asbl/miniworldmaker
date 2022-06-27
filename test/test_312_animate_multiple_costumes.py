@@ -22,6 +22,8 @@ class Test312(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = PixelBoard(200, 100)
         board.add_background("images/water.png")
         board.speed = 1

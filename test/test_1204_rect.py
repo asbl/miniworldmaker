@@ -22,6 +22,8 @@ class Test1204(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board()
         t1 = Token((10,10))
         t1.color = (255,255,255)

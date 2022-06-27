@@ -2,14 +2,39 @@ from typing import Type, Union, Tuple, ValuesView
 
 import pygame
 
+import inspect
+from typing import List, Tuple, Union
+
+import pygame
+import os
+
+import miniworldmaker.appearances.background as background
+
+import miniworldmaker.base.app as app
+import miniworldmaker.board_positions.board_rect as board_rect
+import miniworldmaker.appearances.backgrounds_manager as backgrounds_manager
+import miniworldmaker.boards.board_manager.board_collision_manager as coll_manager
+import miniworldmaker.boards.board_manager.board_event_manager as event_manager
+import miniworldmaker.boards.board_manager.board_mouse_manager as mouse_manager
+import miniworldmaker.boards.token_connectors.token_connector as token_connector
+
+
+import miniworldmaker.dialogs.ask as ask
+import miniworldmaker.tokens.token as token_module
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.background as background
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.boards.token_connectors.pixel_board_connector as pixel_board_connector
 import miniworldmaker.tools.color as color
+import miniworldmaker.tools.board_inspection as board_inspection
 import miniworldmaker.tools.timer as timer
-
+from miniworldmaker.base import app
+from miniworldmaker.exceptions.miniworldmaker_exception import (
+    BoardArgumentsError,
+    NotImplementedOrRegisteredError,
+)
+import miniworldmaker.board_positions.board_position as board_position
 
 class Board(board_base.BaseBoard):
     """A board is a playing field on which tokens can move.
@@ -125,6 +150,68 @@ class Board(board_base.BaseBoard):
         rows: rows of new board (default:40)
     """
 
+    def __init__(
+            self,
+            view_x: Union[int, Tuple[int]] = 400,
+            view_y: int = 400,
+            tile_size: int = 1,
+    ):
+        if type(view_x) != int or type(view_y) != int:
+            # If first param is tuple, generate board from tuple-data
+            if type(view_x) == tuple:
+                size = view_x
+                view_x = size[0]
+                view_y = size[1]
+            else:
+                raise BoardArgumentsError(view_x, view_y)
+        self._tile_size = tile_size
+        self.camera = self._get_camera_manager_class()(view_x, view_y, self)
+        self._tokens = pygame.sprite.LayeredDirty()
+        self.event_manager: event_manager.BoardEventHandler = event_manager.BoardEventHandler(self)
+        super().__init__()
+        self.backgrounds_manager: "backgrounds_manager.BackgroundsManager" = backgrounds_manager.BackgroundsManager(
+            self
+        )
+        self.mouse_manager: "mouse_manager.BoardMouseManager" = mouse_manager.BoardMouseManager(self)
+        self.ask: "ask.Ask" = ask.Ask(self)
+        self._is_setup: bool = False
+        self._fps: int = 60
+        self._key_pressed: bool = False
+        self._animated: bool = False
+        self._orientation: int = 0 
+        self._static: bool = False
+        self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
+        self._default_is_filled = False
+        self._default_fill_color = None
+        self._default_border_color = None
+        self._default_border = None
+        self.is_running: bool = True
+        self.is_listening: bool = True
+        self.frame: int = 0
+        self.clock: pygame.time.Clock = pygame.time.Clock()
+        if not app.App.init:
+            app.App.init = True
+            self.app: "app.App" = app.App("miniworldmaker")
+            app.App.running_app = self.app
+            app.App.board = self
+        else:
+            self.app = app.App.running_app
+        self.background = background.Background(self)
+        self.background.update()
+        self.collision_manager: "coll_manager.BoardCollisionHandler" = coll_manager.BoardCollisionHandler(self)
+        self.timed_objects: list = []
+        self.app.event_manager.to_event_queue("setup", self)
+        self.dynamic_tokens = set()
+        self._registered_methods = []
+        self.tokens_fixed_size = False
+        self._container_width = self.camera.get_viewport_width_in_pixels()
+        self._container_height = self.camera.get_viewport_height_in_pixels() 
+        self.app.container_manager.add_topleft(self)
+
+    def setup_board(self):
+        # Implemented in TiledBoards
+        pass
+            
     @property
     def speed(self) -> int:
         """speed defines how often the method ``act()`` will be called.  
@@ -258,18 +345,35 @@ class Board(board_base.BaseBoard):
 
     @columns.setter
     def columns(self, value: int):
+        self.setup_board()
         self.camera.viewport_width = value
         self.boundary_x = value
  
     @property
     def rows(self) -> int:
+        
         return self.camera.viewport_height
 
     @rows.setter
     def rows(self, value: int):
+        print("changed rows")
+        self.setup_board()
         self.viewport_height = value
         self.boundary_y = value     
 
+    def borders(self, value: Union[tuple, "board_position.Position", pygame.Rect]) -> list:
+        """
+        Gets all borders a rect is touching
+
+        Args:
+            rect: The rect
+
+        Returns: A list of borders, e.g. ["left", "top", if rect is touching the left a top border.
+
+        """
+        pass
+
+       
     @property
     def camera_x(self):
         return self.camera.x
@@ -285,7 +389,25 @@ class Board(board_base.BaseBoard):
     @camera_y.setter
     def camera_y(self, value):
         self.camera.y = value
-        
+
+    @property
+    def tile_size(self) -> int:
+        """Tile size of each tile, if board has tiles
+
+        Returns:
+            int: The tile-size in pixels.
+        """
+        return self._tile_size
+
+    @tile_size.setter
+    def tile_size(self, value: int):
+        self.set_tile_size(value)
+
+    def set_tile_size(self, value):
+        self._tile_size = value
+        self.app.window.resize()
+        self.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)
+
     @property
     def size(self) -> tuple:
         """Set the size of board
@@ -433,8 +555,11 @@ class Board(board_base.BaseBoard):
     @property
     def background(self):
         """Returns the background of board."""
-        return self.backgrounds_manager.background
+        return self.get_background()
 
+    def get_background(self):
+        return self.backgrounds_manager.background
+    
     @background.setter
     def background(self, source):
         if isinstance(source, appearance.Appearance):
@@ -535,6 +660,12 @@ class Board(board_base.BaseBoard):
         else:
             timer.ActionTimer(frames, self.stop, 0)
 
+    def start_listening(self):
+        self.is_listening = True
+        
+    def stop_listening(self):
+        self.is_listening = False
+    
     def clear(self):
         """Alias of ``clean``
 
@@ -602,9 +733,9 @@ class Board(board_base.BaseBoard):
             self.app._prepare_mainloop()
             self.event_manager.handle_event("setup", None)
             self._is_setup = True
-            self.app.event_manager.send_event_to_containers("setup", self)
+            self.app.event_manager.to_event_queue("setup", self)
         if event:
-            self.app.event_manager.send_event_to_containers(event, data)
+            self.app.event_manager.to_event_queue(event, data)
         self.app.run(self.image, fullscreen=fullscreen, fit_desktop=fit_desktop, replit=replit)
 
     def play_sound(self, path: str):
@@ -693,16 +824,7 @@ class Board(board_base.BaseBoard):
 
         A message can received by the board or any token on board
         """
-        self.app.event_manager.send_event_to_containers("message", message)
-
-    def screenshot(self, filename: str = "screenshot.jpg"):
-        """Creates a screenshot in given file.
-
-        Args:
-            filename: The location of the file. The folder must exist. Defaults to "screenshot.jpg".
-        """
-
-        pygame.image.save(self.app.window.surface, filename)
+        self.app.event_manager.to_event_queue("message", message)
 
     def quit(self, exit_code=0):
         """quits app and closes the window"""
@@ -736,20 +858,16 @@ class Board(board_base.BaseBoard):
         Args:
             new_board (board_base.BaseBoard): _description_
         """
-        app = self.app
-        app.event_manager.event_queue.clear()
-        app.board = new_board
-        new_board.running = True
-        new_board.run(
-            event="board_loaded",
-        )
-        return new_board
-
-    @staticmethod
-    def _get_token_connector_class():
-        """needed by get_token_connector in parent class
-        """
-        return pixel_board_connector.PixelBoardConnector
+        self.stop()
+        self.stop_listening()
+        #for background in self.backgrounds:
+        #    self.backgrounds_manager.remove_appearance(background)
+        #self.clean()
+        self.app.event_manager.event_queue.clear()
+        self.app.container_manager.switch_container(self, new_board)
+        self.app.switch_board(new_board)
+        new_board.start()
+        new_board.start_listening()
 
     def get_color_from_pixel(self, position: "board_position.Position") -> tuple:
         """
@@ -774,7 +892,9 @@ class Board(board_base.BaseBoard):
 
             .. image:: ../_images/get_color.png
                 :width: 100px
-                :alt: get color of red screen
+        from __future__ import annotations
+
+        :alt: get color of red screen
 
 
 
@@ -816,6 +936,136 @@ class Board(board_base.BaseBoard):
         return x, y
 
     def on_setup(self):
-        """Overwrite or register this method to call on_setup-Actions
+        """Overwrite or register this method to call `on_setup`-Actions
         """
         pass
+         
+    def __str__(self):
+        return "{0} with {1} columns and {2} rows".format(self.__class__.__name__, self.columns, self.rows)
+
+    @property
+    def container_width(self) -> int:
+        """
+        The width of the container
+        """
+        return self.camera.get_viewport_width_in_pixels()
+
+    @property
+    def container_height(self) -> int:
+        """
+        The height of the container
+        """
+        return self.camera.get_viewport_height_in_pixels()
+
+    @property
+    def has_background(self) -> bool:
+        return self.backgrounds_manager.has_background
+
+    @property
+    def registered_events(self) -> set:
+        return self.event_manager.registered_events
+
+    @registered_events.setter
+    def registered_events(self, value):
+        return  # setter is defined so that board_event_manager is not overwritten by board parent class container
+
+    def add_to_board(self, token, position: tuple):
+        """Adds a Token to the board.
+        Is called in __init__-Method if position is set.
+
+        Args:
+            token: The token, which should be added to the board.
+            position: The position on the board where the actor should be added.
+        """
+        self.get_token_connector(token).add_token_to_board(token, position)
+
+    def get_tokens_from_pixel(self, pixel: tuple) -> list:
+        """Gets all tokens by Pixel.
+
+        Args:
+            pixel: the pixel-coordinates
+
+        Returns:
+            A list of tokens
+
+        Examples:
+
+          Get all tokens at mouse position:
+
+          .. code-block:: python
+
+              position = board.get_mouse_position()
+              tokens = board.get_tokens_by_pixel(position)
+
+        """
+        return [token for token in self.tokens if token.sensing_point(pixel)]
+
+    def get_tokens_at_position(self, position) -> list:
+        """Alias for ``get_tokens_from_pixel``
+        """
+        return self.get_tokens_from_pixel(position)
+
+    @property
+    def image(self) -> pygame.Surface:
+        """The current displayed image"""
+        return self.backgrounds_manager.image
+
+    def repaint(self):
+        self.background.repaint()  # called 1/frame in container.repaint()
+
+    def update(self):
+        """This is the board-mainloop()
+        Called in app.update() when update() vom all containers is called.
+        """
+        if self.is_running or self.frame == 0:
+            # Acting for all actors@static
+            if self.frame > 0 and self.frame % self.speed == 0:
+                self.act_all()
+            self.collision_manager.handle_all_collisions()
+            self.mouse_manager.update_positions()
+            # run animations
+            self.background._update_all_costumes()
+            self.background.update()
+            self._tick_timed_objects()
+        self.frame = self.frame + 1
+        self.clock.tick(self.fps)
+        self.event_manager.executed_events.clear()
+
+    def act_all(self):
+        """Overwritten in subclasses, e.g. physics_board"""
+        self.event_manager.act_all()
+
+    def _tick_timed_objects(self):
+        [obj.tick() for obj in self.timed_objects]
+
+    def handle_event(self, event, data=None):
+        """
+        Event handling
+
+        Args:
+            event (str): The event which was thrown, e.g. "key_up", "act", "reset", ...
+            data: The data of the event (e.g. ["S","s"], (155,3), ...
+        """
+        self.event_manager.handle_event(event, data)
+
+    def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
+        return self.backgrounds_manager.find_colors(rect, color, threshold)
+
+    def register(self, method: callable) -> callable:
+        """
+        Used as decorator
+        e.g.
+        @register
+        def method...
+        """
+        self._registered_methods.append(method)
+        bound_method = board_inspection.BoardInspection(self).bind_method(method)
+        self.event_manager.register_event(method.__name__, self)
+        return bound_method
+
+    def unregister(self, method: callable):
+        self._registered_methods.remove(method)
+        board_inspection.BoardInspection(self).unbind_method(method)
+        
+
+    

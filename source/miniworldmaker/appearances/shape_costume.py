@@ -8,7 +8,7 @@ class ShapeCostume(costume.Costume):
     def __init__(self, token):
         super().__init__(token)
         self.set_image((0, 0, 0, 0))
-        
+
     def _set_token_default_values(self):
         self._info_overlay = False
         self._is_rotatable = True
@@ -18,7 +18,8 @@ class ShapeCostume(costume.Costume):
         self.fill_color = (255, 255, 255, 50)
         self.border_color = (100, 100, 100, 255)
         self.border = 1
-        
+
+
 class CircleCostume(ShapeCostume):
     def _inner_shape(self):
         return pygame.draw.circle, [(self.parent.size[0] / 2, self.parent.size[0] / 2), self.parent.radius, 0]
@@ -64,14 +65,12 @@ class ArcCostume(ShapeCostume):
 
 class LineCostume(ShapeCostume):
     def __init__(self, token):
-        self.local_start_position, self.local_end_position = (0,0), (0,0)
+        self.local_start_position, self.local_end_position = (0, 0), (0, 0)
         super().__init__(token)
-        
+
     def _update_draw_shape(self):
         super()._update_draw_shape()
-        box = self.get_bounding_box()
-        self.parent.topleft = box.topleft
-        self.parent.size = (box.width, box.height) 
+        box = self.parent.get_bounding_box()
         # mod_start: Start of line
         _x_start = self.parent.start_position[0] - box.topleft[0] - self.border
         _y_start = self.parent.start_position[1] - box.topleft[1] - self.border
@@ -80,6 +79,7 @@ class LineCostume(ShapeCostume):
         _x_end = self.parent.end_position[0] - box.topleft[0] - self.border
         _y_end = self.parent.end_position[1] - box.topleft[1] - self.border
         self.local_end_position = (_x_end, _y_end)
+        return self.local_start_position, self.local_end_position
 
     def _inner_shape(self):
         return pygame.draw.line, [self.local_start_position, self.local_end_position, 0]
@@ -87,16 +87,6 @@ class LineCostume(ShapeCostume):
     def _outer_shape(self):
         return pygame.draw.line, [self.local_start_position, self.local_end_position, self.border]
 
-    def get_bounding_box(self):
-        width = abs(self.parent.start_position[0] - self.parent.end_position[0]) + 2 * self.border
-        height = abs(self.parent.start_position[1] - self.parent.end_position[1]) + 2 * self.border
-        box = pygame.Rect(
-            min(self.parent.start_position[0], self.parent.end_position[0]) - self.border,
-            min(self.parent.start_position[1], self.parent.end_position[1]) - self.border,
-            width,
-            height,
-        )
-        return box
 
 class RectangleCostume(ShapeCostume):
     def _inner_shape(self):

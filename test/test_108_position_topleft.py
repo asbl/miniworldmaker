@@ -18,6 +18,8 @@ class Test108(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = PixelBoard(400, 400)
         board.add_background((100, 0, 0, 255))
 

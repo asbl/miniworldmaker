@@ -49,9 +49,6 @@ class Background(appearance.Appearance):
         super().__init__()
         self._fill_color = (150, 150, 150, 255)  # for default image
         self.parent = board  #: The parent of a Background is the associated board.
-        if not board:
-            board = app.App.board
-        self.board = board
         # Register image actions which you can be triggered
         self._grid = False
         self._grid_color = (255, 0, 255)
@@ -63,6 +60,10 @@ class Background(appearance.Appearance):
         self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
         self.image_manager = image_background_manager.ImageBackgroundManager(self)
 
+    @property
+    def board(self) -> "board.Board":
+        return self.parent
+    
     def show_grid(self):
         self.grid = True
 
@@ -104,9 +105,10 @@ class Background(appearance.Appearance):
 
     def repaint(self):
         """Called 1/frame from board"""
-        self.board.tokens.clear(self.surface, self.image)
-        repaint_rects = self.board.tokens.draw(self.surface)
-        self.board.app.window.repaint_areas.extend(repaint_rects)
+        if self.parent == app.App.board:
+            self.board.tokens.clear(self.surface, self.image)
+            repaint_rects = self.board.tokens.draw(self.surface)
+            self.board.app.window.repaint_areas.extend(repaint_rects)
 
     def _update_all_costumes(self):
         """updates costumes for all tokens on board"""
@@ -127,12 +129,16 @@ class Background(appearance.Appearance):
 
     def _blit_to_window_surface(self):
         """Blits background to window surface"""
-        self.parent.app.window.surface.blit(self.image, (0, 0))
-        self.parent.app.window.add_display_to_repaint_areas()
-        self.repaint()
+        if self.parent == app.App.board:
+            self.parent.app.window.surface.blit(self.image, (0, 0))
+            self.parent.app.window.add_display_to_repaint_areas()
+            self.repaint()
 
     def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
         super().add_image(source)
         self._blit_to_window_surface()
         self._update_all_costumes()
-        return self.parent.app.window.display_update()
+        if self.parent == app.App.board:
+            self.parent.app.window.surface.blit(self.image, (0, 0))
+            self.parent.app.window.add_display_to_repaint_areas()
+            return self.parent.app.window.display_update()

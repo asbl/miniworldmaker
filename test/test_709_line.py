@@ -4,8 +4,8 @@ import os
 import unittest
 import random
 
-TEST_FRAMES = [1,2,3,4,5,6,7,8]
-QUIT_FRAME = 8
+TEST_FRAMES = [0, 20, 40, 60]
+QUIT_FRAME = 60
     
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
@@ -22,6 +22,8 @@ class Test709(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board((200, 200))
         board.default_stroke_color = (0,100,0,100)
 
@@ -59,6 +61,14 @@ class Test709(unittest.TestCase):
             self.start_position = self.start_position[0], self.start_position[1]+1
             self.end_position = self.end_position[0], self.end_position[1]+1
 
+        l2 = Line((180,220), (100,20))
+        l2.border_color = (100,200,0,255)
+        l2.border = 10
+
+        @l2.register
+        def act(self):
+            self.y += 1
+    
         """ here act and init - delete if used in testcode"""
         
         @board.register
@@ -76,6 +86,8 @@ class Test709(unittest.TestCase):
         @board.register
         def init_test(self):
             print("setup test")
+            path = os.path.dirname(__file__)
+            board.app.register_path(path)
             board.test_frame = 0
         
         @board.register

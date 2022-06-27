@@ -1,4 +1,3 @@
-import asyncio
 from typing import Union, Tuple
 
 import pygame
@@ -10,9 +9,10 @@ import miniworldmaker.tools.binding as binding
 
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 from miniworldmaker.appearances.managers.image_manager import ImageManager
+from miniworldmaker.boards import board
+from abc import ABC
 
-
-class MetaAppearance(type):
+class MetaAppearance(type, ABC):
     def __call__(cls, *args, **kwargs):
         instance = type.__call__(cls, *args, **kwargs)  # create a new Appearance of type...
         instance.after_init()
@@ -31,7 +31,6 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.initialized = False
         self._flag_transformation_pipeline = False
         self.parent = None
-        self.board = None
         self.draw_shapes = []
         self.draw_images = []
         self._is_flipped = False
@@ -65,6 +64,10 @@ class AppearanceBase(metaclass=MetaAppearance):
         self.loop = False
         self.animation_length = 0
         self._animation_start_frame = 0
+        
+    @property
+    def board(self) -> "board.Board":
+        return None
 
     def after_init(self):
         # Called in metaclass
@@ -161,8 +164,20 @@ class AppearanceBase(metaclass=MetaAppearance):
     def update(self):
         """Loads the next image,
         called 1/frame"""
-        asyncio.run(self.image_manager.update())
+        self._load_image()
         return 1
+
+    def _load_image(self):
+        """Loads the image,
+        
+        * switches image if neccessary
+        * processes transformations pipeline if neccessary
+        """
+        if self.is_animated and self._animation_start_frame != self.board.frame:
+            if self.board.frame != 0 and self.board.frame % self.animation_speed == 0:
+                self.image_manager.next_image()
+        self.get_image()
+
 
     def __str__(self):
         return (

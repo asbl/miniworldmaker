@@ -293,4 +293,4 @@ class Toolbar(container.Container):
             widget.update()
 
     def send_message(self, text):
-        self.app.app.event_manager.send_event_to_containers("message", text)
+        self.app.event_manager.to_event_queue("message", text)

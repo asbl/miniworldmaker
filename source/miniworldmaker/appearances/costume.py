@@ -2,7 +2,7 @@ import pygame
 from typing import List, Tuple
 import miniworldmaker.appearances.appearance as appear
 import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
-
+from miniworldmaker.boards import board
 
 class Costume(appear.Appearance):
     """A costume contains one or multiple images
@@ -16,7 +16,6 @@ class Costume(appear.Appearance):
     def __init__(self, token):
         super().__init__()
         self.parent = token  #: the parent of a costume is the associated token.
-        self.board = token.board
         self.token = self.parent
         self.info_overlay = False
         self.is_rotatable = False
@@ -24,6 +23,10 @@ class Costume(appear.Appearance):
         self.border_color = None
         self.transformations_manager = transformations_costume_manager.TransformationsCostumeManager(self)
 
+    @property
+    def board(self) -> "board.Board":
+        return self.parent.board
+    
     def after_init(self):
         # Called in metaclass
         self._set_default_color_values()
@@ -81,7 +84,7 @@ class Costume(appear.Appearance):
         Returns:
             pygame.Rect: Inner shape (Rectangle with size of token)
         """
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), 0]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), 0]
 
     def _outer_shape(self) -> pygame.Rect:
         """Returns outer shape of costume
@@ -89,7 +92,7 @@ class Costume(appear.Appearance):
         Returns:
             pygame.Rect: Outer shape (Rectangle with size of tokens without filling.)
         """
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), self.border]
+        return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), self.border]
 
     def _update_draw_shape(self):
         self.draw_shapes = []

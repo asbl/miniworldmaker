@@ -8,89 +8,95 @@ import miniworldmaker.tools.keys as keys
 class EventManager:
 
     def __init__(self, app: "app.App"):
+        """The event manager consist
+
+        Args:
+            app (app.App): _description_
+        """
         self.event_queue: deque = deque()
         self.app: "app.App" = app
 
     def handle_event_queue(self):
         """ Handle the event queue
          This function is called once per mainloop iteration.
-         The event_queue is build with `send_event_to_containers`.
+         The event_queue is build with `to_event_queue`.
          """
         while self.event_queue:
             element = self.event_queue.pop()
-            for ct in self.app.container_manager.containers:
-                ct.handle_event(element[0], element[1])
+            [ct.handle_event(element[0], element[1]) for ct in self.app.container_manager.containers if ct.is_listening]
         self.event_queue.clear()
 
-    def send_event_to_containers(self, event, data):
-        """
-        Sends a event to all containers (usually called in process_pygame_events)
+    def to_event_queue(self, event, data):
+        """Puts an event to the event queue.
+        
+        It is handled in the handle_event_queue
         """
         self.event_queue.appendleft((event, data))
 
-    def process_pygame_events(self):
-        """
-        The function is called in App._update once per tick.
+    def pygame_events_to_event_queue(self):
+        """Puts pygame events to event queue. Called in mainloop (App._update) 1/frame.
+        
+        Iterates over pygame.event.get() and puts events in event queue.
         """
         if pygame.key.get_pressed().count(1) != 0:
             keys_pressed = pygame.key.get_pressed()
             key_codes = keys.key_codes_to_keys(keys_pressed)
             if "STRG" in key_codes and "Q" in key_codes:
                 self.app.quit()
-            self.send_event_to_containers("key_pressed", keys.key_codes_to_keys(keys_pressed))
+            self.to_event_queue("key_pressed", keys.key_codes_to_keys(keys_pressed))
             keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
             for key in keys_pressed:
-                self.send_event_to_containers("key_pressed_" + key, None)
+                self.to_event_queue("key_pressed_" + key, None)
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
                 self.app.quit()
             # Event: Mouse-Button Down
             elif event.type == pygame.MOUSEBUTTONUP:
-                self.send_mouse_up(event)
+                self.put_mouse_up_in_event_queue(event)
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.send_mouse_down(event)
+                self.put_mouse_down_in_event_queue(event)
             elif event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
-                self.send_event_to_containers("mouse_motion", (pos[0], pos[1]))
+                self.to_event_queue("mouse_motion", (pos[0], pos[1]))
                 # key-events
             elif event.type == pygame.KEYUP:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
-                self.send_event_to_containers("key_up", keys_pressed)
+                self.to_event_queue("key_up", keys_pressed)
                 for key in keys_pressed:
                     if key.islower() and key == pygame.key.name(event.key):
-                        self.send_event_to_containers("key_up_" + key, None)
+                        self.to_event_queue("key_up_" + key, None)
             elif event.type == pygame.KEYDOWN:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
-                self.send_event_to_containers("key_down", keys_pressed)
+                self.to_event_queue("key_down", keys_pressed)
                 for key in keys_pressed:
                     if key.islower() and key == pygame.key.name(event.key):
-                        self.send_event_to_containers("key_down_" + key, None)
+                        self.to_event_queue("key_down_" + key, None)
             if event.type == pygame.VIDEORESIZE:
                 self.app.window.add_display_to_repaint_areas()
         return False
 
-    def send_mouse_down(self, event):
-        """function is called in 'process_pygame_events
+    def put_mouse_down_in_event_queue(self, event):
+        """function is called in 'pygame_events_to_event_queue
         """
         pos = pygame.mouse.get_pos()
         if event.button == 1:
-            self.send_event_to_containers("mouse_left", (pos[0], pos[1]))
+            self.to_event_queue("mouse_left", (pos[0], pos[1]))
         if event.button == 3:
-            self.send_event_to_containers("mouse_right", (pos[0], pos[1]))
+            self.to_event_queue("mouse_right", (pos[0], pos[1]))
         if event.button == 4:
-            self.send_event_to_containers("wheel_up", (pos[0], pos[1]))
+            self.to_event_queue("wheel_up", (pos[0], pos[1]))
         if event.button == 5:
-            self.send_event_to_containers("wheel_down", (pos[0], pos[1]))
+            self.to_event_queue("wheel_down", (pos[0], pos[1]))
 
-    def send_mouse_up(self, event):
-        """function is called in 'process_pygame_events
+    def put_mouse_up_in_event_queue(self, event):
+        """function is called in 'pygame_events_to_event_queue
         """
         pos = pygame.mouse.get_pos()
         if event.button == 1:
-            self.send_event_to_containers("mouse_left_released", (pos[0], pos[1]))
+            self.to_event_queue("mouse_left_released", (pos[0], pos[1]))
         if event.button == 3:
-            self.send_event_to_containers("mouse_right_released", (pos[0], pos[1]))
+            self.to_event_queue("mouse_right_released", (pos[0], pos[1]))
 
     def get_keys(self):
         key_codes = None

@@ -233,9 +233,7 @@ class TransformationsManager:
         e.g. "scale": reloads everything after scale. Actions before scale are loaded from cache.
 
         Pipeline:
-        
         texture, scale, upscale, flip, coloring, transparency, write_text, draw_images, draw_shapes, rotate
-
         """
         reload = False
         for transformation in self.transformations_pipeline:

@@ -30,10 +30,10 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             button = TokenButton(token_type=cls, board=board, parent=self, prototype=prototype)
             self.add_widget(button, cls.__name__)
         db_file = file
-        self.add_widget(widgets.SaveButton(board=self.app.board, text="Save", filename=db_file))
+        self.add_widget(widgets.SaveButton(board=self.board, text="Save", filename=db_file))
         if os.path.exists(db_file):
-            self.add_widget(widgets.LoadButton(board=self.app.board, text="Load", filename=db_file))
-        self.add_widget(widgets.ClearButton(board=self.app.board, text="Clear"))
+            self.add_widget(widgets.LoadButton(board=self.board, text="Load", filename=db_file))
+        self.add_widget(widgets.ClearButton(board=self.board, text="Clear"))
 
     def _add_token_to_mouse_position(self, mouse_pixel_pos):
         position = board_position.Position.from_pixel(mouse_pixel_pos)
@@ -41,7 +41,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             prototype = self.prototypes[self.selected_token_type.__name__]
             rect = board_rect.Rect.from_token(prototype)
             rect.topleft = mouse_pixel_pos
-            tokens = [token for token in self.app.board.tokens if token.sensing_rect(rect)]
+            tokens = [token for token in self.board.tokens if token.sensing_rect(rect)]
             # remove dummy
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
@@ -67,8 +67,8 @@ class LevelDesignerToolbar(toolbar.Toolbar):
         # preprocess - Get Position and token at position (max: 1)
         pixel_position = data
         position = board_position.Position.from_pixel(data)
-        keys = self.app.board.app.event_manager.get_keys()
-        tokens = self.app.board.get_tokens_at_position(position)
+        keys = self.board.app.event_manager.get_keys()
+        tokens = self.board.get_tokens_at_position(position)
         # remove dummy from tokens
         if self.dummy in tokens:
             tokens.remove(self.dummy)
@@ -109,7 +109,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 
     def get_event(self, event, data):
         super().get_event(event, data)
-        if type(data) == tuple and self.app.board.is_in_container(data[0], data[1]):
+        if type(data) == tuple and self.bboard.is_in_container(data[0], data[1]):
             self.handle_board_event(event, data)
 
 
@@ -134,7 +134,7 @@ class TokenButton(widgets.Widget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.board.app.event_manager.send_event_to_containers(
+            self.board.app.event_manager.to_event_queue(
                 "Selected actor", self.token_type)
             self.parent.selected_token_type = self.token_type
             prototype = self.parent.prototypes[self.parent.selected_token_type.__name__]

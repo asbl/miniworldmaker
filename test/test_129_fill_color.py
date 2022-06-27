@@ -21,6 +21,8 @@ class Test129(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = PixelBoard()
         token = Token()
         token.fill_color = (0, 0, 255)

@@ -207,7 +207,7 @@ class HexEdge(HexBase, tile_elements.Edge):
         return CubeCoord
 
 
-class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
+class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"]), board_position.PositionBase):
     matrix = np.matrix([[math.sqrt(3.0), math.sqrt(3.0) / 2.0], [0.0, 3.0 / 2.0]])
     inverse = np.matrix([[math.sqrt(3.0) / 3.0, -1.0 / 3.0], [0.0, 2.0 / 3.0]])
 
@@ -280,6 +280,8 @@ class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"])):
         else:
             raise TypeError(f"position is {type(position)}, should be OffsetPosition, Position or CubeCoord")
 
+    def __str__(self):
+        return f"q: {self.q} r: {self.r} s: {self.s}"
 
 class OffsetPosition(board_position.Position):
     EVEN = 1

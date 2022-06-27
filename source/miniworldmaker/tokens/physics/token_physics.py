@@ -446,7 +446,7 @@ class TokenPhysics:
         Returns:
 
         """
-        if not math.isnan(self._body.position[0]):
+        if self.simulation and not math.isnan(self._body.position[0]):
             self._set_mwm_token_position()
             self._set_mwm_token_direction()
         if self._body and not self._body.body_type == pymunk_engine.Body.STATIC:

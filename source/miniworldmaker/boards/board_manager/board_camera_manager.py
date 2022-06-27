@@ -17,7 +17,6 @@ class CameraManager(pygame.sprite.Sprite):
     
     @viewport_width.setter
     def viewport_width(self, value):
-        print("set viewport x to", value)
         if value > self.boundary_x:
             self._boundary_x = value
         self.viewport = (value, self.viewport[1])
@@ -29,10 +28,8 @@ class CameraManager(pygame.sprite.Sprite):
     
     @viewport_height.setter
     def viewport_height(self, value):
-        print("Set viewport to y to", value)
         if value > self.boundary_y:
             self._boundary_y = value
-        
         self.viewport = (self.viewport[0], value)
         self.reload_camera()
 
@@ -43,6 +40,8 @@ class CameraManager(pygame.sprite.Sprite):
         return self.viewport[1]
     
     def get_viewport_width_in_pixels(self):
+        """overwritten in TiledCameraManager
+        """
         return self.viewport[0]
     
     def get_viewport_height_in_pixels(self):
@@ -54,7 +53,6 @@ class CameraManager(pygame.sprite.Sprite):
 
     @boundary_x.setter
     def boundary_x(self, value):
-        print("set boundary x to", value)
         if value > self.viewport_width:
             self._viewport_width = value
         self._boundary_x = value
@@ -67,7 +65,6 @@ class CameraManager(pygame.sprite.Sprite):
 
     @boundary_y.setter
     def boundary_y(self, value):
-        print("set boundary y to", value)
         if value > self.viewport_height:
             self._viewport_height = value
         self._boundary_y = value
@@ -75,7 +72,7 @@ class CameraManager(pygame.sprite.Sprite):
 
     def reload_camera(self):
         self.clear_camera_cache()
-        self.board.app.window.dirty = 1
+        self.board.app.window.resize()
         self.board.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)
         
     def clear_camera_cache(self):

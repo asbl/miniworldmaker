@@ -38,7 +38,6 @@ class BoardEventHandler:
             self.specific_key_events.append("on_key_up_" + value.lower())
         self.message_event = ["on_message"]
         self.act_event = ["act"]
-        self.started_event = ["on_started"]
         self.setup_events = ["on_setup", "on_board_loaded"]
         self.border_events = [
             "on_sensing_borders",
@@ -49,16 +48,15 @@ class BoardEventHandler:
         ]
         self.on_board_events = ["on_sensing_on_board", "on_sensing_not_on_board"]
         self.events = (
-                self.mouse_events
-                + self.specific_key_events
-                + self.key_events
-                + self.clicked_on_token_events
-                + self.message_event
-                + self.act_event
-                + self.border_events
-                + self.on_board_events
-                + self.setup_events
-                + self.started_event
+            self.mouse_events
+            + self.specific_key_events
+            + self.key_events
+            + self.clicked_on_token_events
+            + self.message_event
+            + self.act_event
+            + self.border_events
+            + self.on_board_events
+            + self.setup_events
         )
         for event in self.events:
             self.registered_events[event] = set()
@@ -69,7 +67,6 @@ class BoardEventHandler:
         self.register_events(self.setup_events, self.board)
         self.register_events(self.message_event, self.board)
         self.register_events(self.act_event, self.board)
-        self.register_events(self.started_event, self.board)
         self.register_events(self.mouse_events, self.board)
         self.register_events(self.key_events, self.board)
         self.register_events(self.specific_key_events, self.board)
@@ -94,10 +91,9 @@ class BoardEventHandler:
     def register_sensing_token_events(self, instance):
         members = dir(instance)
         for member in (
-                member
-                for member in members
-                if
-                (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events
+            member
+            for member in members
+            if (member.startswith("on_sensing_") or member.startswith("on_not_sensing_")) and member not in self.events
         ):
             method = inspection.Inspection(instance).get_instance_method(member)
             if method and member.startswith("on_sensing_"):
@@ -150,10 +146,7 @@ class BoardEventHandler:
         """
         overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
         parents = inspect.getmro(instance.__class__)
-        if (
-                instance.__class__ not in [token.Token, board_base.BaseBoard]
-                and method.__name__ in overwritten_methods
-        ):
+        if instance.__class__ not in [token.Token, board_base.BaseBoard] and method.__name__ in overwritten_methods:
             self.registered_events[event].add(method)
         else:
             parent_overwritten_methods = set()
@@ -193,7 +186,7 @@ class BoardEventHandler:
                 if type(data) in [list, str, tuple]:
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
-            del(registered_events)
+            del registered_events
 
     def unregister_instance(self, instance):
         awaiting_remove = defaultdict()
@@ -209,7 +202,7 @@ class BoardEventHandler:
         # acting
         for method in registered_act_methods:
             method_caller.call_method(method, None, False)
-        del(registered_act_methods)
+        del registered_act_methods
 
     def handle_click_on_token_event(self, event, data):
         if event == "mouse_left":
@@ -220,4 +213,3 @@ class BoardEventHandler:
             token = method.__self__
             if token.sensing_point(data):
                 method_caller.call_method(method, [data])
-

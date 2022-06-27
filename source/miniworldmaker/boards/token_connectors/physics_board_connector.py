@@ -22,7 +22,7 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
     
     def add_token_to_board(self, position: "board_position.Position"):
         # add token.physics attribute with physics properties to token
-        self.token.physics = token_physics.TokenPhysics(self.token, app.App.board)
+        self.token.physics = token_physics.TokenPhysics(self.token, self.token.board)
         if hasattr(self.token, "set_physics_default_values"):
             self.token.set_physics_default_values()
         super().add_token_to_board(position)

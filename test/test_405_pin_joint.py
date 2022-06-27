@@ -22,6 +22,7 @@ class Test405(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
 
         # Is player 1 sensing player 2? Should return True
         board = PhysicsBoard((400, 200))

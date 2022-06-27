@@ -22,7 +22,8 @@ class Test106(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
-
+        App.reset(unittest = True, file = __file__)
+        
         board = TiledBoard()
         board.add_background("images/soccer_green.jpg")
         board.columns=20

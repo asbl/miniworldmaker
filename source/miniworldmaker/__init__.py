@@ -1,4 +1,3 @@
-import nest_asyncio
 import os
 import inspect
 import sys
@@ -6,10 +5,10 @@ import sys
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-nest_asyncio.apply()
 
 __all__ = []
 
+from miniworldmaker.base.app import App
 from miniworldmaker.boards.board import Board
 from miniworldmaker.boards.pixel_board import PixelBoard
 from miniworldmaker.boards.tiled_board import TiledBoard
@@ -82,6 +81,7 @@ from miniworldmaker.board_positions.tile_elements import Corner
 
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
 
+__all__.append(App.__name__)
 __all__.append(Board.__name__)
 __all__.append(PixelBoard.__name__)
 __all__.append(PhysicsBoard.__name__)

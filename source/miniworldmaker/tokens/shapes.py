@@ -271,11 +271,23 @@ class Line(Shape):
         self._end_position = end_position
         super().__init__(start_position)
         self.costume = shape_costume.LineCostume(self)
+        self._update_rect()
         
     def set_physics_default_values(self):
         self.physics.shape_type = "line"
         self.physics.simulation = "static"
 
+    def get_bounding_box(self):
+        width = abs(self.start_position[0] - self.end_position[0]) + 2 * self.border
+        height = abs(self.start_position[1] - self.end_position[1]) + 2 * self.border
+        box = pygame.Rect(
+            min(self.start_position[0], self.end_position[0]) - self.border,
+            min(self.start_position[1], self.end_position[1]) - self.border,
+            width,
+            height,
+        )
+        return box
+    
     @property
     def start_position(self):
         return self._start_position
@@ -283,7 +295,8 @@ class Line(Shape):
     @start_position.setter
     def start_position(self, value: Tuple):
         self._start_position = value
-        self.costume.set_dirty("all", 1)
+        self._update_rect()
+        # self.costume.set_dirty("all", 1)
         
     @property
     def end_position(self):
@@ -292,8 +305,15 @@ class Line(Shape):
     @end_position.setter
     def end_position(self, value: Tuple):
         self._end_position = value
-        self.costume.set_dirty("all", 1)
+        self._update_rect()
+        # self.costume.set_dirty("all", 1)
         
+    def _update_rect(self):
+        box = self.get_bounding_box()
+        self.width = box.width
+        self.height = box.height
+        self.topleft = box.topleft
+        self.costume.set_dirty("all", 1)        
 
     @property
     def thickness(self):

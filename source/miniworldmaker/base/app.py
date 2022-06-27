@@ -1,6 +1,7 @@
 import __main__
 import sys
 import warnings
+import os
 
 import pkg_resources
 import pygame
@@ -22,7 +23,18 @@ class App:
 
     board = None
     path = None
+    running_app = None
+    init = False
 
+    @staticmethod
+    def reset(unittest = False, file = None):
+        App.board = None
+        App.path = None
+        App.running_app = None
+        App.init = False # is pygame.init called?
+        if file and unittest:
+            App.path = os.path.dirname(file)
+        
     def check_for_run_method(self):
         try:
             with open(__main__.__file__) as f:
@@ -39,18 +51,33 @@ class App:
         print("Let's go")
 
     def __init__(self, title):
+        self.init_pygame()
         self._output_start()
         self.check_for_run_method()
         self.container_manager: "container_manager.ContainerManager" = container_manager.ContainerManager(self)
         self._quit = False
+        self._unittest = False
         self._mainloop_started: bool = False
         self.event_manager: "event_manager.EventManager" = event_manager.EventManager(self)
         self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
         self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
-        App.app: App = self
+        App.running_app: App = self
         App.window: "window.Window" = self.window
         self._exit_code: int = 0
+        if App.path:
+            self.path = App.path
 
+    def switch_board(self, new_board):
+        old_board = App.board
+        if new_board != old_board:
+            App.board = new_board
+            self.image = new_board.image
+            self.container_manager.switch_container(old_board, new_board)
+            self._prepare_mainloop()
+            new_board.on_setup()
+        
+        # new_board.run(event="board_loaded")
+        
     def run(self, image, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False):
         """
         runs the main_loop
@@ -66,29 +93,41 @@ class App:
         self.window.fit_desktop = fit_desktop
         self.window.replit = replit
         # Start the main-loop
+        self.init_app()
         self._prepare_mainloop()
         if not self._mainloop_started:
             self.start_mainloop()
+        else:
+            self.board.dirty = 1
+            self.board.background.set_dirty("all", 2)
 
+    def init_app(self):
+        self.init_pygame()
+        image_manager.ImageManager.cache_images_in_image_folder()
+        
     def _prepare_mainloop(self):
         self.window.recalculate_dimensions()
         self.window.display_update()
-        image_manager.ImageManager.cache_images_in_image_folder()
-
-    def start_mainloop(self):
-        self._mainloop_started = True
         self.board.dirty = 1
         self.board.background.set_dirty("all", 2)
+        
+
+    def init_pygame(self):
+        pygame.init()     
+            
+    def start_mainloop(self):
+        self._mainloop_started = True
         while not self._quit:
             self._update()
-        pygame.display.quit()
-        sys.exit(self._exit_code)
+        if not self._unittest:
+            pygame.display.quit()
+            sys.exit(self._exit_code)
 
     def _update(self):
         """
         This is the mainloop. This function is called until the app quits.
         """
-        self.event_manager.process_pygame_events()
+        self.event_manager.pygame_events_to_event_queue()
         if self.window.dirty:
             self.window.recalculate_dimensions()
             self.window.add_display_to_repaint_areas()

@@ -12,6 +12,7 @@ from miniworldmaker.exceptions import miniworldmaker_exception
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
 from miniworldmaker.boards.board_manager import board_camera_manager
 
+
 class TiledBoard(board.Board):
     """
     A TiledBoard is a Board where each Token is placed in one Tile.
@@ -56,7 +57,7 @@ class TiledBoard(board.Board):
             :alt: Placing Tokens on a Tile, on a Corner or in a Edge
     """
 
-    def __init__(self, view_x: int = 20, view_y: int = 16, empty=False):
+    def __init__(self, view_x: int = 20, view_y: int = 16, tile_size: int = 40, empty=False):
         """Initializes the TiledBoard
 
         Args:
@@ -65,21 +66,21 @@ class TiledBoard(board.Board):
             empty: The board has no tiles, edges, and corners. They must be created manually
         """
         self.default_token_speed: int = 1
+        self.empty = empty
+        self.tile_factory = self._get_tile_factory()
+        self.tiles = defaultdict()
+        self.corners = defaultdict()
+        self.edges = defaultdict()
         if view_x > 1000 or view_y > 1000:
             raise TiledBoardTooBigError(view_x, view_y, 40)
-        super().__init__(view_x=view_x, view_y=view_y)
-        self.tile_factory = self._get_tile_factory()
-        self.tile_size = 40
+        super().__init__(view_x=view_x, view_y=view_y, tile_size=tile_size)
+        self._tile_size = 40
         self.speed = 20
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
         self.dynamic_tokens: set = set()  # Set with all dynamic actors
         self.static_tokens_dict: defaultdict = defaultdict(list)
         self.tokens_fixed_size = True
         self.rotatable_tokens = True
-        self.empty = empty
-        self.tiles = defaultdict()
-        self.corners = defaultdict()
-        self.edges = defaultdict()
         self.setup_board()
 
     def _get_tile_factory(self):
@@ -143,21 +144,16 @@ class TiledBoard(board.Board):
     @staticmethod
     def _get_camera_manager_class():
         return board_camera_manager.TiledCameraManager
-    
+
     def setup_board(self):
-        """In this method, corners and edges are created.
-        """
+        """In this method, corners and edges are created."""
         if not self.empty:
-            print("setup tiles")
             self._setup_tiles()
-            print("setup corners")
             self._setup_corners()
-            print("setup edges")
             self._setup_edges()
 
     def _templates(self):
-        """Returns Classes for Tile, Edge and Corner
-        """
+        """Returns Classes for Tile, Edge and Corner"""
         return tile_elements.Tile, tile_elements.Edge, tile_elements.Corner
 
     def add_tile_to_board(self, position):
@@ -188,8 +184,7 @@ class TiledBoard(board.Board):
         return self.edges[edge_pos]
 
     def _setup_tiles(self):
-        """Adds Tile to Board for each BoardPosition
-        """
+        """Adds Tile to Board for each BoardPosition"""
         for x in range(self.boundary_x):
             for y in range(self.boundary_y):
                 self.add_tile_to_board((x, y))
@@ -376,8 +371,7 @@ class TiledBoard(board.Board):
             self.dynamic_tokens_dict[(x, y)].append(token)
 
     def sensing_tokens(self, position):
-        """Sensing tokens at same position
-        """
+        """Sensing tokens at same position"""
         if type(position) == tuple:
             position = board_position.Position(position[0], position[1])
         self._update_token_positions()  # This method can be a bottleneck!
@@ -414,18 +408,16 @@ class TiledBoard(board.Board):
         self.background.draw_on_image(image, position, self.tile_size, self.tile_size)
 
     def get_from_pixel(self, position):
-        """Gets board position from pixel coordinates
-        """
+        """Gets board position from pixel coordinates"""
         if position[0] > self.container_width or position[1] > self.container_height:
             return None
         else:
             return self.get_tile_from_pixel(position).position
 
     get_board_position_from_pixel = get_from_pixel
-    
+
     def get_tile_from_pixel(self, position):
-        """Gets nearest Tile from pixel
-        """
+        """Gets nearest Tile from pixel"""
         tile_cls = self.tile_factory.tile_cls
         return tile_cls.from_pixel(position)
 
@@ -442,24 +434,21 @@ class TiledBoard(board.Board):
         return corner_points
 
     def is_edge(self, position):
-        """Returns True, if position is a edge.
-        """
+        """Returns True, if position is a edge."""
         if position in self.edges:
             return True
         else:
             return False
 
     def is_corner(self, position):
-        """Returns True, if position is a corner.
-        """
+        """Returns True, if position is a corner."""
         if position in self.corners:
             return True
         else:
             return False
 
     def is_tile(self, position):
-        """Returns True, if position is a tile.
-        """
+        """Returns True, if position is a tile."""
         if position in self.tiles:
             return True
         else:

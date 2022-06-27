@@ -423,11 +423,12 @@ class ClearButton(Widget):
     ):
         super().__init__()
         self.set_text(text)
+        self.board = board
         self.app = board.app
 
     def on_mouse_left(self, event, data):
         if event == "mouse_left":
-            self.app.board.clear()
+            self.board.clear()
 
 
 class CounterLabel(Widget):

@@ -113,7 +113,7 @@ class ActionBarWidget():
         self._dirty = 1
 
     def get_event(self, event, data):
-        self.parent.window.send_event_to_containers(self.event, 0)
+        self.parent.window.to_event_queue(self.event, 0)
 
     @property
     def dirty(self):
@@ -226,7 +226,7 @@ class PauseButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.parent.window.send_event_to_containers(self.event, self._text)
+            self.parent.window.to_event_queue(self.event, self._text)
 
 
 class ResetButton(ActionBarWidget):
@@ -242,7 +242,7 @@ class ResetButton(ActionBarWidget):
 
     def get_event(self, event, data):
         if event == "mouse_left":
-            self.parent._app.event_manager.send_event_to_containers(self.event, self._text)
+            self.parent._app.event_manager.to_event_queue(self.event, self._text)
             for token in self.board.tokens:
                 token.remove()
             self.board.reset()
@@ -307,7 +307,7 @@ class SpeedDownButton(ActionBarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.board.fps -= 1
-            self.parent._app.event_manager.send_event_to_containers(
+            self.parent._app.event_manager.to_event_queue(
                 "board_speed_changed", self.board.fps)
 
 
@@ -325,5 +325,5 @@ class SpeedUpButton(ActionBarWidget):
     def get_event(self, event, data):
         if event == "mouse_left":
             self.board.fps += 1
-            self.parent._app.event_manager.send_event_to_containers(
+            self.parent._app.event_manager.to_event_queue(
                 "board_speed_changed", self.board.fps)

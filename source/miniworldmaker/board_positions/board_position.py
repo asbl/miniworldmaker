@@ -5,10 +5,14 @@ import miniworldmaker.base.app as app
 import miniworldmaker.board_positions.board_vector as board_vector
 from typing import Union, Tuple
 import numpy as np
-import math
+from abc import ABC
 
 
-class Position(collections.namedtuple("Position", ["x", "y"])):
+class PositionBase(ABC):
+    pass
+
+
+class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
     """
     A Position Object represents a position on a Board.
 

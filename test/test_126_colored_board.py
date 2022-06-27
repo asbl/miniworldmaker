@@ -21,6 +21,8 @@ class Test126(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board(100,60)
         board.add_background((0,255,0))
         token = Token((10, 10))

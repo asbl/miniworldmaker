@@ -1,18 +1,37 @@
 from __future__ import annotations
 
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Optional
 
 import pygame.rect
 
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.boards.board as board
+import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume
+import miniworldmaker.appearances.costumes_manager as costumes_manager
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token_base as token_base
+import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
+import miniworldmaker.tools.token_inspection as token_inspection
+import miniworldmaker.tokens.sensors.token_boardsensor as token_boardsensor
 from miniworldmaker.board_positions import board_direction
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     MiniworldMakerError,
     NotImplementedOrRegisteredError,
+    NoBoardError
 )
+
+class Meta(type):
+    def __call__(cls, *args, **kwargs):
+        if len(args) >= 2 and type(args[0]) == int and type(args[1]) == int:
+            first = (args[0], args[1])
+            last_args = [args[n] for n in range(2, len(args))]
+            args = [first] + last_args
+        instance = type.__call__(cls, *args, **kwargs)  # create a new Token
+        _token_connector = instance.board.get_token_connector(instance)
+        _token_connector.add_token_to_board(instance._position)
+        return instance
 
 
 class Token(token_base.BaseToken):
@@ -102,6 +121,32 @@ class Token(token_base.BaseToken):
         * See: :doc:`Shapes <../api/token.shape>`
         * See: :doc:`TextTokens and NumberTokens <../api/token.texttoken>`
     """
+    
+    token_count: int = 0
+    class_image: str = ""
+    
+    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0,0)):
+        super().__init__()
+        if type(position) is not tuple and not isinstance(position, board_position.PositionBase):
+            raise MiniworldMakerError(f"Wrong type for Token.init() - Expected Tuple or Position, got {type(position)}")
+        self._collision_type: str = "mask"
+        self._dirty = 0
+        self._layer: int = 0
+        self._inner = 0
+        self._size = (0, 0)
+        self._static = False
+        self._position: "board_position.Position" = position
+        self.token_id: int = Token.token_count + 1
+        self._board_sensor: token_boardsensor.TokenBoardSensor = self._init_board_sensor()
+        self._position_manager: token_position_manager.TokenPositionManager = self._init_position_manager()
+        self._costume_manager: costumes_manager.CostumesManager = self._init_costume_manager()
+        if not self.board:
+            raise NoBoardError()
+        pygame.sprite.DirtySprite.__init__(self)
+        Token.token_count += 1
+        self.speed: int = 1
+        self.ask: "ask.Ask" = ask.Ask(self.board)
+        self._dirty = 1
 
     @property
     def collision_type(self) -> str:
@@ -1045,13 +1090,8 @@ class Token(token_base.BaseToken):
                    other.remove()
         """
         if hasattr(self, "board") and self.board:
-            self.board.remove_from_board(self)
-        for token in self.sensing_tokens():
-            token.dirty = 1
-        for manager in self._managers:
-            manager.self_remove()
-            del manager
-        self.kill()
+            self.board.get_token_connector(self).remove_token_from_board(self)
+
 
     @property
     def is_rotatable(self) -> bool:
@@ -1247,7 +1287,8 @@ class Token(token_base.BaseToken):
     get_touching_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
     detect_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
 
-    def sensing_borders(self, distance: int = 0) -> bool:
+   
+    def sensing_borders(self, distance: int = 0,) -> List:
         """
         Senses borders
 
@@ -1478,7 +1519,7 @@ class Token(token_base.BaseToken):
         Args:
             message (str): A string containing the message.
         """
-        self.board.app.event_manager.send_event_to_containers("message", message)
+        self.board.app.event_manager.to_event_queue("message", message)
 
     def on_key_down(self, key: list):
         """**on_key_down**  is called one time when a key is pressed down.
@@ -2058,3 +2099,79 @@ class Token(token_base.BaseToken):
         """Displays a token ( an invisible token will be visible)
         """
         self.visible = True
+
+    def register(self, method: callable):
+        """This method is used for the @register decorator. It adds a method to an object
+
+        Args:
+            method (callable): The method which should be added to the token
+        """
+        bound_method = token_inspection.TokenInspection(self).bind_method(method)
+        if method.__name__ == "on_setup":
+            self.on_setup()
+        self.board.event_manager.register_event(method.__name__, self)
+        return bound_method
+
+    def get_local_rect(self) -> pygame.Rect:
+        return self.position_manager.get_local_rect()
+    
+    def get_global_rect(self) -> pygame.Rect:
+        if self.position_manager:
+            return self.position_manager.get_global_rect()
+        return pygame.Rect(-1,-1,0,0)
+
+    @property
+    def rect(self) -> pygame.Rect:
+        """
+        The surrounding Rectangle as pygame.Rect.
+        Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
+        """
+        return self.position_manager.get_local_rect()
+
+    def get_rect(self) -> pygame.Rect:
+        return self.position_manager.get_local_rect()
+    
+    def __str__(self):
+        if self.board and hasattr(self.board, "position_manager"):
+            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
+                self.__class__.__name__, self.token_id, self.position, self.size
+            )
+        else:
+            return "**: {0}; ID: {1}".format(self.__class__.__name__, self.token_id)
+        
+    @property
+    def image(self) -> pygame.Surface:
+        """
+        The image of the token:
+
+        .. warning::
+          Warning: You should not directly draw on the image
+          as the image will be reloaded during animations
+
+        """
+        return self.costume_manager.image
+    
+    @property
+    def position_manager(self):
+        if not hasattr(self, "_position_manager") or not self._position_manager:
+            return None
+        return self._position_manager
+
+    @property
+    def board_sensor(self):
+        return self._board_sensor
+    
+    @property
+    def costume_manager(self):
+        return self._costume_manager
+
+    @property
+    def position(self) -> "board_position.Position":
+        """
+        The position of the token as Position (x, y)
+        """
+        return self.position_manager.position
+
+    @position.setter
+    def position(self, value: Union["board_position.Position", tuple]):
+        self.position_manager.position = value

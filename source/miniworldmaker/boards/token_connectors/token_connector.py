@@ -55,9 +55,6 @@ class TokenConnector:
             self.token.board.event_manager.register_events_for_token(self.token)
       
     def remove_token_from_board(self, token):
-        """
-        Implemented in subclasses
-        """
         self.board.camera.clear_camera_cache()
         self.board.event_manager.unregister_instance(token)
         if self in self.board.background.reload_costumes_queue:
@@ -66,6 +63,13 @@ class TokenConnector:
             _token_connector = self.board.get_token_connector(self.token)
             _token_connector.remove_dynamic_token()
         self.board.tokens.remove(token)
+        for colliding_token in token.sensing_tokens():
+            colliding_token.dirty = 1
+        for manager in token._managers:
+            manager.self_remove()
+            del manager
+        token.kill()
+        del(token)
 
     def set_static(self, value):
         self.token._static = value

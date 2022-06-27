@@ -15,15 +15,14 @@ class ImageManager:
     """Handles loading and caching of images."""
 
     _images_dict = {}  # dict with key: image_path, value: loaded image
-    
+
     IMAGE_FOLDER = "./images/"
     # types
     IMAGE = 1
     COLOR = 2
     SURFACE = 3
-    
+
     def __init__(self, appearance):
-        self.board = app.App.board
         self.animation_frame = 0
         self.current_animation_images = None
         self.image_index = 0  # current_image index (for animations) in self.image_lists
@@ -92,8 +91,7 @@ class ImageManager:
         self.add_image_from_source(source)
 
     def add_default_image(self):
-        """called in init
-        """
+        """called in init"""
         if not self.has_image and len(self.images_list) == 0:
             self.appearance.is_scaled = True
             surf = pygame.Surface((1, 1), pygame.SRCALPHA)
@@ -118,8 +116,8 @@ class ImageManager:
             return self.add_image_from_source(source)
         else:
             raise MiniworldMakerError("unexpected behaviour")
-        
-    def add_image_from_source(self, source : Union[str, list, pygame.Surface, tuple]):
+
+    def add_image_from_source(self, source: Union[str, list, pygame.Surface, tuple]):
         if type(source) == str:
             return self.add_image_from_path(source)
         elif type(source) == list:
@@ -129,7 +127,7 @@ class ImageManager:
         elif type(source) == tuple:
             return self.add_image_from_color(source)
 
-    def _add_scaling(self, source : Union[str, list, pygame.Surface, tuple]) -> None:
+    def _add_scaling(self, source: Union[str, list, pygame.Surface, tuple]) -> None:
         """adds scaling for image by source.
         This is called when first image is created.
         (overwritten in image_background_manager)
@@ -144,27 +142,25 @@ class ImageManager:
             self.appearance.is_scaled = True
 
     @staticmethod
-    def get_surface_from_color(color : tuple) -> pygame.Surface:
+    def get_surface_from_color(color: tuple) -> pygame.Surface:
         surf = pygame.Surface((1, 1), pygame.SRCALPHA)
         surf.fill(color)
         return surf
 
-    def add_image_from_color(self, color : tuple) -> int:
+    def add_image_from_color(self, color: tuple) -> int:
         surf = ImageManager.get_surface_from_color(color)
-        self.images_list.append({"image" : surf, "type": ImageManager.COLOR, "source": color})
-        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
+        self.images_list.append({"image": surf, "type": ImageManager.COLOR, "source": color})
+        self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return len(self.images_list) - 1
 
     def get_source_from_current_image(self) -> Union[str, pygame.Surface, tuple]:
-        """Returns color, path or surface
-        """
+        """Returns color, path or surface"""
         return self.images_list[self.image_index]["source"]
 
     def is_image(self) -> bool:
-        """Returns true, if current image is image (not color, or any surface)
-        """
+        """Returns true, if current image is image (not color, or any surface)"""
         return self.images_list[self.image_index]["type"] == ImageManager.IMAGE
-    
+
     def add_image_from_paths(self, paths: str) -> int:
         for path in paths:
             self.add_image_from_path(path)
@@ -173,8 +169,8 @@ class ImageManager:
         path = self.find_image_file(path)
         # set image by path
         _image = self.load_image(path)
-        self.images_list.append({"image" : _image, "type": ImageManager.IMAGE, "source": path})
-        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
+        self.images_list.append({"image": _image, "type": ImageManager.IMAGE, "source": path})
+        self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return len(self.images_list) - 1
 
     def add_image_from_appearance(self, appearance, index):
@@ -189,8 +185,8 @@ class ImageManager:
         Returns:
             Index of the created image.
         """
-        self.images_list.append({"image" : surface, "type": ImageManager.SURFACE, "source": None})
-        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
+        self.images_list.append({"image": surface, "type": ImageManager.SURFACE, "source": None})
+        self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return len(self.images_list) - 1
 
     def get_surface(self, index):
@@ -200,24 +196,14 @@ class ImageManager:
             raise ImageIndexNotExistsError(index, self)
 
     def replace_image(self, image, type, source):
-        self.images_list[self.image_index] = {"image" : image, "type": type, "source": source}
-        self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
+        self.images_list[self.image_index] = {"image": image, "type": type, "source": source}
+        self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
 
     def reset_image_index(self):
         if self.current_animation_images:
             self.image_index = len(self.images_list) - 1
 
-    async def update(self):
-        """Loads the image,
-        * switches image if neccessary
-        * processes transformations pipeline if neccessary
-        """
-        if self.appearance.is_animated and self.appearance._animation_start_frame != self.board.frame:
-            if self.board.frame != 0 and self.board.frame % self.appearance.animation_speed == 0:
-                await self.next_image()
-        self.appearance.get_image()
-
-    async def next_image(self):
+    def next_image(self):
         """Switches to the next image of the appearance."""
         if self.appearance.is_animated:
             if self.image_index < len(self.images_list) - 1:
@@ -227,10 +213,9 @@ class ImageManager:
                     self.appearance.is_animated = False
                     self.appearance.after_animation()
                 self.image_index = 0
-            self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
-            
+            self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
 
-    async def first_image(self):
+    def first_image(self):
         """Switches to the first image of the appearance."""
         self.image_index = 0
         self.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
@@ -250,7 +235,7 @@ class ImageManager:
             old_index = self.image_index
             self.image_index = value
             if old_index != self.image_index:
-                self.appearance.set_dirty("all",self.appearance.LOAD_NEW_IMAGE)
+                self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
             return True
         else:
             raise ImageIndexNotExistsError(value, self)

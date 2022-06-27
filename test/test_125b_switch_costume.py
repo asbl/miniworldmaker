@@ -21,6 +21,8 @@ class Test125b(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board(120,60)
         t1 = Token()
         costume =t1.add_costume("images/1.png")

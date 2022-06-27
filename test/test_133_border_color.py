@@ -22,6 +22,8 @@ class Test133(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board(210,80)
         board.default_border_color = (0,0, 255)
         board.default_border = 1

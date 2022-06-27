@@ -14,11 +14,9 @@ class HexBoard(tiled_board.TiledBoard):
     A hexboard is a board that consists of hexagonal tiles.
 
     Each token can be positioned either at a tile, at an edge or at a corner.
-
-    
     """
-    def __init__(self, view_x: int = 20, view_y: int = 16, empty=False):
-        super().__init__(view_x, view_y, empty)
+    def __init__(self, view_x: int = 20, view_y: int = 16, tile_size = 40, empty = False):
+        super().__init__(view_x, view_y, tile_size = tile_size, empty = empty)
         self.lookup_table = []
 
     @staticmethod

@@ -8,6 +8,7 @@ class Container:
 
     def __init__(self):
         self.dirty = 1
+        self.is_listening = True
         self.surface = pygame.Surface((1, 1))
         self.background_color = (255, 255, 255)
         self.default_size = 100

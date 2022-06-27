@@ -5,9 +5,10 @@ class ImageBackgroundManager(image_manager.ImageManager):
     def __init__(self, appearance):
         super().__init__(appearance)
 
-    async def next_image(self):
+    def next_image(self):
         """Switches to the next image of the appearance."""
-        await super().next_image()
+        # was next_image()
+        super().next_image()
         if self.appearance.is_animated:
             self.appearance._blit_to_window_surface()
 

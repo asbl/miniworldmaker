@@ -18,6 +18,8 @@ class Test109(unittest.TestCase):
             or additionally on_setup-Method must be added
             b) An act-method, where self.test() is called
         """
+        App.reset(unittest = True, file = __file__)
+        
         board = Board()
         # Black board
         board.add_background((0, 0, 0, 100))

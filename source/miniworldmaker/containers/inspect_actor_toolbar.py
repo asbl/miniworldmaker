@@ -22,7 +22,7 @@ class InspectActorToolbar(toolbar.Toolbar):
         self.active_token = token
         self.active_token.costume.info_overlay = True
         token.dirty = 1
-        self.board.app.event_manager.send_event_to_containers("active_token", token)
+        self.board.app.event_manager.to_event_queue("active_token", token)
         return token
 
     def get_active_token_from_board_position(self, pos):
