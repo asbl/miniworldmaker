@@ -111,12 +111,14 @@ class ContainerManager:
         """updates container widths and heights if a container was changed"""
         top_left = 0
         for ct in self.containers_right():
-            ct.container_top_left_x = top_left
-            top_left += ct.container_width
+            if ct:
+                ct.container_top_left_x = top_left
+                top_left += ct.container_width
         top_left = 0
         for ct in self.containers_bottom():
-            ct.container_top_left_y = top_left
-            top_left += ct.container_height
+            if ct:
+                ct.container_top_left_y = top_left
+                top_left += ct.container_height
 
     def recalculate_containers_width(self) -> int:
         """Recalculates container width
