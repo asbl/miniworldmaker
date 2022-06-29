@@ -6,6 +6,7 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     WrongArgumentsError,
     NotNullError,
 )
+from typing import Optional
 
 
 def get_signature(method: callable, arguments: tuple, allow_none=True):
@@ -31,9 +32,9 @@ def check_signature(method: callable, arguments: tuple, allow_none=False):
         i = i + 1
 
 
-def call_method(method: callable, arguments: tuple, allow_none=True):
+def call_method(method: callable, arguments: Optional[tuple], allow_none=True):
     check_signature(method, arguments, allow_none=True)
-    if arguments == None:
+    if arguments is None:
         method()
     else:
         if isinstance(arguments, Iterable):

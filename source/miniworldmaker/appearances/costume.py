@@ -1,8 +1,11 @@
+from typing import List, Union
+
 import pygame
-from typing import List, Tuple
+
 import miniworldmaker.appearances.appearance as appear
 import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
 from miniworldmaker.boards import board
+
 
 class Costume(appear.Appearance):
     """A costume contains one or multiple images
@@ -26,23 +29,22 @@ class Costume(appear.Appearance):
     @property
     def board(self) -> "board.Board":
         return self.parent.board
-    
+
     def after_init(self):
         # Called in metaclass
         self._set_default_color_values()
         super().after_init()
 
-        
     def _set_default_color_values(self):
         self._set_token_default_values()
         self._set_board_default_values()
-        
+
     def _set_token_default_values(self):
         self._info_overlay = False
         self._is_rotatable = True
         self.fill_color = (255, 0, 255, 100)
         self.border_color = (100, 100, 100)
-        
+
     def _set_board_default_values(self):
         if self.token.board.default_fill_color:
             self.fill_color = self.board.default_fill_color
@@ -58,41 +60,44 @@ class Costume(appear.Appearance):
     @property
     def info_overlay(self):
         """Shows info overlay (Rectangle around the token and Direction marker)
-        Args:
-            color: Color of info_overlay
         """
         return self._info_overlay
 
     @info_overlay.setter
     def info_overlay(self, value):
         self._info_overlay = value
-        self.set_dirty("all",Costume.RELOAD_ACTUAL_IMAGE
-        )
-        
-    def set_dirty(self, value, status):
-        if value != None and self.parent and self.images:
+        self.set_dirty("all", Costume.RELOAD_ACTUAL_IMAGE
+                       )
+
+    def set_dirty(self, value="all", status=1):
+        if value and self.parent and self.images:
             self._update_draw_shape()
         super().set_dirty(value, status)
 
+    def set_image(self, source: Union[int, "appear.Appearance, tuple"]) -> bool:
+        """
+        :param source: index, Appearance or color.
+        :return: True if image exists
+        """
+        return super().set_image(source)
 
-    def set_image(self, source) -> bool:
-        super().set_image(source)
-
-    def _inner_shape(self) -> pygame.Rect:
+    def _inner_shape(self) -> tuple:
         """Returns inner shape of costume
 
         Returns:
             pygame.Rect: Inner shape (Rectangle with size of token)
         """
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), 0]
+        return pygame.draw.rect, [
+            pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), 0]
 
-    def _outer_shape(self) -> pygame.Rect:
+    def _outer_shape(self) -> tuple:
         """Returns outer shape of costume
 
         Returns:
             pygame.Rect: Outer shape (Rectangle with size of tokens without filling.)
         """
-        return pygame.draw.rect, [pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), self.border]
+        return pygame.draw.rect, [
+            pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), self.border]
 
     def _update_draw_shape(self):
         self.draw_shapes = []
@@ -108,11 +113,11 @@ class Costume(appear.Appearance):
         Returns:
             List[]: List of arguments
         """
-        
+
         color = self.fill_color
         return [
-            color,
-        ] + self._inner_shape()[1]
+                   color,
+               ] + self._inner_shape()[1]
 
     def _outer_shape_arguments(self) -> List:
         """Gets arguments for outer shape
@@ -122,8 +127,8 @@ class Costume(appear.Appearance):
         """
         color = self.border_color
         return [
-            color,
-        ] + self._outer_shape()[1]
+                   color,
+               ] + self._outer_shape()[1]
 
     def rotated(self):
         if self.board.camera.is_token_in_viewport(self.token):

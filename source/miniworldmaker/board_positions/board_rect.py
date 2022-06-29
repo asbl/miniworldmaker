@@ -13,11 +13,11 @@ class Rect(pygame.Rect):
         elif type(rect) == pygame.Rect:
             return cls(rect.x, rect.y, rect.width, rect.height)
         else:
-            raise NoValidBoardRectError()
+            raise NoValidBoardRectError("No valid board direction")
 
     @classmethod
     def from_position(cls, position, dimensions=None):
-        board = app.App.board
+        board = app.App.running_board
         if dimensions is None:
             new_rect = pygame.Rect(0, 0, board.tile_size, board.tile_size)
         else:
@@ -31,4 +31,4 @@ class Rect(pygame.Rect):
 
     @property
     def board(self):
-        return app.App.board
+        return app.App.running_board

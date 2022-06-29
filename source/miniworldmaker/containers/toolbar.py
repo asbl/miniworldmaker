@@ -4,7 +4,7 @@ from typing import Union, List
 from collections import OrderedDict
 import itertools
 
-import miniworldmaker.base.app as app
+import miniworldmaker.base.app as app_mod
 import miniworldmaker.containers.container as container
 import miniworldmaker.containers.widgets as widgets
 
@@ -56,7 +56,6 @@ class Toolbar(container.Container):
                 board.run()
         """
         super().__init__()
-        self.app = app.App
         self.widgets: OrderedDict["widgets.Widget"] = OrderedDict()
         self.timed_widgets = dict()
         self.position = "right"
@@ -216,7 +215,7 @@ class Toolbar(container.Container):
             self.surface.fill(self.background_color)
             self._paint_widgets()
         if self.repaint_all:
-            self.app.window.repaint_areas.append(self.rect)
+            app_mod.App.running_app.window.repaint_areas.append(self.rect)
             self.repaint_all = False
         self.dirty = 1  # Always dirty so that timed widgets can run
 
@@ -243,7 +242,7 @@ class Toolbar(container.Container):
                     widget._repaint()
                     widget._topleft = (self.rect.left + self.margin_left + widget.margin_left, actual_height)
                     rect = pygame.Rect(widget._topleft[0], widget._topleft[1], widget.width, widget.height)
-                    self.app.window.repaint_areas.append(rect)
+                    app_mod.App.running_app.window.repaint_areas.append(rect)
                 self.surface.blit(widget.surface, (self.margin_left + widget.margin_left, actual_height))
                 actual_height += widget.height + widget.margin_bottom
 
@@ -293,4 +292,4 @@ class Toolbar(container.Container):
             widget.update()
 
     def send_message(self, text):
-        self.app.event_manager.to_event_queue("message", text)
+        app_mod.App.running_app.event_manager.to_event_queue("message", text)

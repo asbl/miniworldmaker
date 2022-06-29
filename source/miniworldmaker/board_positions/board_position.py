@@ -73,7 +73,7 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         :param position:
         :return:
         """
-        board = app.App.board
+        board = app.App.running_board
         position = board.get_from_pixel(position)
         return position[0], position[1]
 
@@ -82,7 +82,7 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         Transforms position to pixel-coordinates by calling board.to_pixel()
         :return:
         """
-        board = app.App.board
+        board = app.App.running_board
         return board.to_pixel(self)
 
     def add(self, x, y):

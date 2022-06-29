@@ -1,6 +1,5 @@
 import pygame
 import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
-import traceback
 
 
 class TransformationsBackgroundManager(transformations_manager.TransformationsManager):
@@ -24,8 +23,3 @@ class TransformationsBackgroundManager(transformations_manager.TransformationsMa
             j += parent.tile_size
 
         return image
-
-    #def set_dirty(self, transformation_string, status):
-    #    super().set_dirty(transformation_string, status)
-    #    self.appearance.repaint()
-    # not needed?

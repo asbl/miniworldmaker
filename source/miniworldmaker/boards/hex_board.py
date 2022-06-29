@@ -6,8 +6,9 @@ import miniworldmaker.board_positions.hex_elements as hex_elements
 import miniworldmaker.board_positions.tile_factory as tile_factory
 import miniworldmaker.boards.tiled_board as tiled_board
 import miniworldmaker.boards.token_connectors.hex_board_connector as hex_board_connector
-from miniworldmaker.exceptions import miniworldmaker_exception
 from miniworldmaker.boards.board_manager import board_camera_manager
+from miniworldmaker.exceptions import miniworldmaker_exception
+
 
 class HexBoard(tiled_board.TiledBoard):
     """
@@ -15,14 +16,15 @@ class HexBoard(tiled_board.TiledBoard):
 
     Each token can be positioned either at a tile, at an edge or at a corner.
     """
-    def __init__(self, view_x: int = 20, view_y: int = 16, tile_size = 40, empty = False):
-        super().__init__(view_x, view_y, tile_size = tile_size, empty = empty)
+
+    def __init__(self, view_x: int = 20, view_y: int = 16, tile_size=40, empty=False):
+        super().__init__(view_x, view_y, tile_size=tile_size, empty=empty)
         self.lookup_table = []
 
     @staticmethod
     def _get_camera_manager_class():
         return board_camera_manager.HexCameraManager
-    
+
     def _get_tile_factory(self):
         return tile_factory.HexTileFactory()
 
@@ -162,4 +164,3 @@ class HexBoard(tiled_board.TiledBoard):
 
     def set_tile_size(self, value):
         super().set_tile_size(value)
-

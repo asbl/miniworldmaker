@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import Any
 import inspect
-import miniworldmaker.tokens.token as token
+import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.method_caller as method_caller
@@ -11,7 +11,7 @@ import miniworldmaker.tools.keys as keys
 class BoardEventHandler:
     """Processes Board Events
 
-    * Board Events which can be registered are stored self.events variable.
+    * Board Events which can be registered are stored `self.events` variable.
     * Board Events which are registered are stored in the dict self.registered_events
     """
 
@@ -72,11 +72,11 @@ class BoardEventHandler:
         self.register_events(self.specific_key_events, self.board)
         self.register_events(self.specific_key_events, self.board)
 
-    def register_events_for_token(self, token: "token.Token"):
+    def register_events_for_token(self, token: "token_mod.Token"):
         """Registers all Token events
 
         Args:
-            token : The token, events shoudl be registered to.
+            token : The token, events should be registered to.
         """
         self.register_events(self.message_event, token)
         self.register_events(self.act_event, token)
@@ -146,7 +146,7 @@ class BoardEventHandler:
         """
         overwritten_methods = {name for name, method in vars(instance.__class__).items() if callable(method)}
         parents = inspect.getmro(instance.__class__)
-        if instance.__class__ not in [token.Token, board_base.BaseBoard] and method.__name__ in overwritten_methods:
+        if instance.__class__ not in [token_mod.Token, board_base.BaseBoard] and method.__name__ in overwritten_methods:
             self.registered_events[event].add(method)
         else:
             parent_overwritten_methods = set()
@@ -212,4 +212,4 @@ class BoardEventHandler:
         for method in on_click_methods.copy():
             token = method.__self__
             if token.sensing_point(data):
-                method_caller.call_method(method, [data])
+                method_caller.call_method(method, (data,))

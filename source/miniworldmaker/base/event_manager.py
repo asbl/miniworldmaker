@@ -1,20 +1,20 @@
 import pygame
 from collections import deque
 
-import miniworldmaker.base.app as app
+import miniworldmaker.base.app as app_mod
 import miniworldmaker.tools.keys as keys
 
 
 class EventManager:
 
-    def __init__(self, app: "app.App"):
+    def __init__(self, app: "app_mod.App"):
         """The event manager consist
 
         Args:
             app (app.App): _description_
         """
         self.event_queue: deque = deque()
-        self.app: "app.App" = app
+        self.app: "app_mod.App" = app
 
     def handle_event_queue(self):
         """ Handle the event queue

@@ -7,6 +7,7 @@ class BoardCollisionHandler:
 
     The method ``handle_all_collisions`` is called every frame (in BaseBoard.update())
     """
+
     def __init__(self, board):
         self.board = board
 
@@ -22,21 +23,21 @@ class BoardCollisionHandler:
             token = method.__self__
             token_type_of_target = method.__name__[11:]
             found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
-            if found_tokens_for_token_type == None:  # found nothing
+            if not found_tokens_for_token_type:  # found nothing
                 found_tokens_for_token_type = []
             if token in found_tokens_for_token_type:  # found self
                 found_tokens_for_token_type.remove(token)
             for found_token in found_tokens_for_token_type:  # found other token
-                subclasses = token_class_inspection.TokenClassInspection(token).get_all_token_classes()
+                subclasses = token_class_inspection.TokenClassInspection.get_all_token_classes()
                 if found_token.__class__ in subclasses:
-                    method_caller.call_method(method, [found_token])
+                    method_caller.call_method(method, (found_token,))
 
     def _handle_token_not_sensing_token_methods(self):
         for method in self.board.event_manager.registered_events["on_not_sensing_token"].copy():
             token = method.__self__
             token_type_of_target = method.__name__[15:]
             found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
-            if found_tokens_for_token_type == None:
+            if found_tokens_for_token_type:
                 found_tokens_for_token_type = []
                 method_caller.call_method(method, None)
                 return
@@ -54,7 +55,7 @@ class BoardCollisionHandler:
                 sensed_borders = method.__self__.sensing_borders()
                 if method.__name__ == "on_sensing_borders" and sensed_borders:
                     method_caller.call_method(
-                        method, [sensed_borders])
+                        method, (sensed_borders,))
                 else:
                     self._handle_token_sensing_specific_border_methods(method, sensed_borders)
 

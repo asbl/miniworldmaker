@@ -1,7 +1,7 @@
 import __main__
+import os
 import sys
 import warnings
-import os
 
 import pkg_resources
 import pygame
@@ -17,25 +17,27 @@ class App:
     """The class app contains the game itself. It's created the first time you call board.run().
 
     Raises:
-        NoRunError: After running the programm, the source of the main module is checked.
+        NoRunError: After running the program, the source of the main module is checked.
             If it does not contain a run() method (e.g. board.run()), this error is raised.
     """
 
-    board = None
+    running_board = None
     path = None
-    running_app = None
+    running_app: "App" = None
     init = False
+    window: "window.Window" = None
 
     @staticmethod
-    def reset(unittest = False, file = None):
-        App.board = None
+    def reset(unittest=False, file=None):
+        App.running_board = None
         App.path = None
         App.running_app = None
-        App.init = False # is pygame.init called?
+        App.init = False  # is pygame.init called?
         if file and unittest:
             App.path = os.path.dirname(file)
-        
-    def check_for_run_method(self):
+
+    @staticmethod
+    def check_for_run_method():
         try:
             with open(__main__.__file__) as f:
                 if ".run(" not in f.read():
@@ -56,28 +58,29 @@ class App:
         self.check_for_run_method()
         self.container_manager: "container_manager.ContainerManager" = container_manager.ContainerManager(self)
         self._quit = False
+        self.image = None
         self._unittest = False
         self._mainloop_started: bool = False
         self.event_manager: "event_manager.EventManager" = event_manager.EventManager(self)
         self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
         self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
-        App.running_app: App = self
-        App.window: "window.Window" = self.window
+        App.running_app = self
+        App.window = self.window
         self._exit_code: int = 0
         if App.path:
             self.path = App.path
 
     def switch_board(self, new_board):
-        old_board = App.board
+        old_board = App.running_board
         if new_board != old_board:
-            App.board = new_board
+            App.running_board = new_board
             self.image = new_board.image
             self.container_manager.switch_container(old_board, new_board)
             self._prepare_mainloop()
             new_board.on_setup()
-        
+
         # new_board.run(event="board_loaded")
-        
+
     def run(self, image, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False):
         """
         runs the main_loop
@@ -85,8 +88,10 @@ class App:
         Lines after this statement are not reachable
 
         Args:
-            image:
-            fullscreen:
+            image: The background image
+            fullscreen: True or False
+            fit_desktop: True or false
+            replit: True or false
         """
         self.image = image
         self.window.fullscreen = fullscreen
@@ -98,23 +103,23 @@ class App:
         if not self._mainloop_started:
             self.start_mainloop()
         else:
-            self.board.dirty = 1
-            self.board.background.set_dirty("all", 2)
+            self.running_board.dirty = 1
+            self.running_board.background.set_dirty("all", 2)
 
     def init_app(self):
         self.init_pygame()
         image_manager.ImageManager.cache_images_in_image_folder()
-        
+
     def _prepare_mainloop(self):
         self.window.recalculate_dimensions()
         self.window.display_update()
-        self.board.dirty = 1
-        self.board.background.set_dirty("all", 2)
-        
+        self.running_board.dirty = 1
+        self.running_board.background.set_dirty("all", 2)
 
-    def init_pygame(self):
-        pygame.init()     
-            
+    @staticmethod
+    def init_pygame():
+        pygame.init()
+
     def start_mainloop(self):
         self._mainloop_started = True
         while not self._quit:

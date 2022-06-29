@@ -7,7 +7,7 @@ class Timed():
     """
 
     def __init__(self):
-        self.board = app.App.board
+        self.board = app.App.running_board
         self.board.timed_objects.append(self)
         self.running = True
 

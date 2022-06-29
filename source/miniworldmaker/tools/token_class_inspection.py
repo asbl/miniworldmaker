@@ -29,7 +29,8 @@ class TokenClassInspection:
                    method.startswith(string)]
         return methods
 
-    def get_all_token_classes(self):
+    @staticmethod
+    def get_all_token_classes():
         token_parent_class = token.Token
         return TokenClassInspection(token_parent_class).get_subclasses_for_cls()
 

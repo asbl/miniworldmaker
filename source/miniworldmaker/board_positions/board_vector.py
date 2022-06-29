@@ -1,12 +1,15 @@
-import numpy as np
 import math
 from typing import Union
+
+import numpy as np
+
+import miniworldmaker.board_positions.board_direction as board_direction
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token as token_mod
-import miniworldmaker.board_positions.board_direction as board_direction
+
 
 class Vector:
-    """Describes a two dimensional vector.
+    """Describes a two-dimensional vector.
 
     It is used to describe a position, acceleration
     or velocity.
@@ -48,8 +51,14 @@ class Vector:
 
     """
 
-    def __init__(self, x : float, y : float):
+    def __init__(self, x: float, y: float):
         self.vec = np.array([x, y])
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self.vec[0]
+        else:
+            return self.vec[1]
 
     @property
     def angle(self):
@@ -71,7 +80,7 @@ class Vector:
         return self.vec[1]
 
     @y.setter
-    def y(self, value : float):
+    def y(self, value: float):
         self.vec = np.array([self.vec[0], value])
 
     @classmethod
@@ -85,7 +94,6 @@ class Vector:
         y = pos[1] - t1.center.y
         return cls(x, y)
 
-
     @classmethod
     def from_tokens(cls, t1: "token_mod.Token", t2: "token_mod.Token") -> "Vector":
         """Create a vector from two tokens.
@@ -98,7 +106,7 @@ class Vector:
         return cls(x, y)
 
     @classmethod
-    def from_direction(cls, direction : Union[str, int, float, str, "board_direction.Direction"]) -> "Vector":
+    def from_direction(cls, direction: Union[str, int, float, str, "board_direction.Direction"]) -> "Vector":
         """Creates a vector from miniworldmaker direction."""
         if direction >= 90:
             x = 0 + math.sin(math.radians(direction)) * 1
@@ -145,7 +153,7 @@ class Vector:
         return Vector.from_direction(token.direction)
 
     @classmethod
-    def from_token_position(cls, token : "token_mod.Token") -> "Vector":
+    def from_token_position(cls, token: "token_mod.Token") -> "Vector":
         """Creates a vector from token position"""
         x = token.center.x
         y = token.center.y
@@ -192,11 +200,11 @@ class Vector:
                 print(w.length())     # 5
                 print(w.normalize()) #  (0.8, 0.6)
         """
-        l = np.linalg.norm(self.vec)
-        if l == 0:
+        norm = np.linalg.norm(self.vec)
+        if norm == 0:
             self.vec = (0, 0)
             return self
-        self.vec = self.vec / l
+        self.vec = self.vec / norm
         return self
 
     def length(self) -> float:
@@ -238,7 +246,7 @@ class Vector:
         self.x, self.y = x, y
         return self
 
-    def multiply(self, other: float) -> Union[float, "Vector"]:
+    def multiply(self, other: Union[float, "Vector"]) -> Union[float, "Vector"]:
         """product self * other:
         * returns product, if ``other`` is scalar (return-type: Vector)
         * returns dot-product, if ``other`` is vector (return-type: float)
@@ -275,8 +283,8 @@ class Vector:
             dot_product = self.dot(other)
             return dot_product
 
-    def dot(self, other : "Vector") -> "Vector":
-        self.vec =  np.dot(self.vec, other.vec)
+    def dot(self, other: "Vector") -> "Vector":
+        self.vec = np.dot(self.vec, other.vec)
         return self
 
     def add_to_position(self, position: "board_position.Position") -> "board_position.Position":
@@ -289,7 +297,7 @@ class Vector:
     def __neg__(self):
         return self.neg()
 
-    def __mul__(self, other:"Vector") -> "Vector":
+    def __mul__(self, other: Union[int, float, "Vector"]) -> "Vector":
         if type(other) in [int, float]:
             x = self.x * other
             y = self.y * other

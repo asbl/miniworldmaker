@@ -1,22 +1,20 @@
-from miniworldmaker.boards.token_connectors import pixel_board_connector
 import miniworldmaker.containers.container as container
+from abc import ABC
+from typing import List
+
+import pygame
+
 import miniworldmaker.boards.data.export_factory as export_factory
 import miniworldmaker.boards.data.import_factory as import_factory
-from miniworldmaker.exceptions.miniworldmaker_exception import (
-    BoardArgumentsError,
-    NotImplementedOrRegisteredError,
-)
+import miniworldmaker.containers.container as container
 from miniworldmaker.boards.board_manager import board_camera_manager
-from abc import ABC, abstractmethod
 from miniworldmaker.boards.token_connectors import pixel_board_connector as pixel_board_connector
 from miniworldmaker.boards.token_connectors import token_connector as token_connector
-from miniworldmaker.appearances import background
-from typing import List
-import pygame
+
 
 class BaseBoard(container.Container, ABC):
     subclasses = None
-    
+
     def __init__(self):
         super().__init__()
 
@@ -37,14 +35,14 @@ class BaseBoard(container.Container, ABC):
 
     def remove_container(self, container):
         return self.app.container_manager.remove_container(container)
-    
+
     def blit_surface_to_window_surface(self):
         self.app.window.surface.blit(self.background.surface, self.rect)
-        
+
     @property
     def class_name(self) -> str:
         return self.__class__.__name__
-    
+
     @property
     def window(self) -> "app.App":
         """
@@ -55,7 +53,7 @@ class BaseBoard(container.Container, ABC):
 
         """
         return self._window
-    
+
     def load_board_from_db(self, file: str):
         """
         Loads a sqlite db file.
@@ -89,16 +87,15 @@ class BaseBoard(container.Container, ABC):
         export.remove_file()
         export.save()
         export_factory.ExportTokensToDBFactory(file, self.tokens).save()
-        
+
     def screenshot(self, filename: str = "screenshot.jpg"):
         """Creates a screenshot in given file.
 
         Args:
             filename: The location of the file. The folder must exist. Defaults to "screenshot.jpg".
         """
-
         pygame.image.save(self.app.window.surface, filename)
-        
+
     def get_background(self):
         """Implemented in subclass"""
         pass

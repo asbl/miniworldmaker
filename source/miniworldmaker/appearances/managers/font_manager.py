@@ -11,7 +11,6 @@ class FontManager:
         self.appearance = appearance
 
     def _get_font_object(self):
-        font_size = 0
         font_size = self.font_size
         if self.font_path is None:
             font = pygame.font.SysFont(self.font_style, font_size)
@@ -26,15 +25,15 @@ class FontManager:
     def transformation_write_text(self, image: pygame.Surface, parent, color) -> pygame.Surface:
         # called from write_text in transformations_manager
         font = self._get_font_object()
-        if self.appearance.parent.color == None:
-            color = (255,255,255)
+        if not self.appearance.parent.color:
+            color = (255, 255, 255)
         else:
             color = self.appearance.parent.color
-        rendered_text = font.render(self.text, 1, color)
+        rendered_text = font.render(self.text, True, color)
         image.blit(rendered_text, self.text_position)
         return image
 
-    def set_font_size(self, value, update = True):
+    def set_font_size(self, value, update=True):
         self.font_size = value
         if update:
             self.appearance.set_dirty("write_text", self.appearance.RELOAD_ACTUAL_IMAGE)

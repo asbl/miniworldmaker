@@ -1,29 +1,32 @@
-from typing import Union, List, Tuple
+from typing import Union, List, cast
+
+import miniworldmaker.appearances.appearance as appearance_mod
 import miniworldmaker.appearances.appearances_manager as appearances_manager
 import miniworldmaker.appearances.costume as costume_mod
-import miniworldmaker.appearances.appearance as appearance
+from miniworldmaker.tokens import token as token_mod
 
 
 class CostumesManager(appearances_manager.AppearancesManager):
-    
+
     @property
-    def token(self):
+    def token(self) -> "token_mod.Token":
         return self.parent
 
     @token.setter
-    def token(self, value):
+    def token(self, value : "token_mod.Token"):
         self.parent = value
 
     def get_costume_at_index(self, index):
         return super().get_appearance_at_index(index)
 
-    def add_new_appearance(self, source: Union[str, List[str], "appearance.Appearance"] = None) -> "costume_mod.Costume":
+    def add_new_appearance(self,
+                           source: Union[str, List[str], "appearance_mod.Appearance"] = None) -> "costume_mod.Costume":
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
         Args:
-            path: Path to the first image of new costume
+            source: Path to the first image of new costume
 
         Returns:
             The new costume.
@@ -31,8 +34,8 @@ class CostumesManager(appearances_manager.AppearancesManager):
         """
         new_costume = super().add_new_appearance(source)
         self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
-        return new_costume
-    
+        return cast("costume.Costume", new_costume)
+
     def create_appearance(self) -> "costume_mod.Costume":
         """Creates a new costume 
 
@@ -61,10 +64,10 @@ class CostumesManager(appearances_manager.AppearancesManager):
         self.has_appearance = value
 
     def next_costume(self) -> "costume_mod.Costume":
-        return self.next_appearance()
+        return cast("costume.Costume", self.next_appearance())
 
     def _add_appearance_to_manager(self, appearance):
         return super()._add_appearance_to_manager(appearance)
-    
+
     def get_board(self):
-        return self.parent.board
+        return self.token.board

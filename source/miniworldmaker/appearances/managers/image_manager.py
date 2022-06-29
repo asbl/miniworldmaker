@@ -1,13 +1,11 @@
-import pygame
 import os
 from pathlib import Path
-import miniworldmaker.base.app as app
-from miniworldmaker.base import file_manager
-from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExistsError
 from typing import List, Union, Tuple, Dict
-from pathlib import Path
+
+import pygame
 
 from miniworldmaker.base import file_manager
+from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExistsError
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -34,7 +32,7 @@ class ImageManager:
     @staticmethod
     def load_image(path):
         """
-        Loads an image from an path.
+        Loads an image from a path.
 
         Args:
             path: The path to image
@@ -44,14 +42,14 @@ class ImageManager:
 
         """
         try:
-            canonicalized_path = str(path).replace("/", os.sep).replace("\\", os.sep)
-            if canonicalized_path in ImageManager._images_dict.keys():
+            canonical_path = str(path).replace("/", os.sep).replace("\\", os.sep)
+            if canonical_path in ImageManager._images_dict.keys():
                 # load image from img_dict
-                _image = ImageManager._images_dict[canonicalized_path]
+                _image = ImageManager._images_dict[canonical_path]
             else:
                 try:
-                    _image = pygame.image.load(canonicalized_path).convert_alpha()
-                    ImageManager._images_dict[canonicalized_path] = _image
+                    _image = pygame.image.load(canonical_path).convert_alpha()
+                    ImageManager._images_dict[canonical_path] = _image
                 except pygame.error:
                     raise FileExistsError("File '{0}' does not exist. Check your path to the image.".format(path))
             return _image
@@ -104,7 +102,7 @@ class ImageManager:
         """Adds an image to the appearance
 
         Args:
-            path (str): Path to the image relative to actual directory
+            source (str): Path to the image relative to actual directory
 
         Returns:
             Index of the created image.
@@ -164,6 +162,7 @@ class ImageManager:
     def add_image_from_paths(self, paths: str) -> int:
         for path in paths:
             self.add_image_from_path(path)
+        return len(self.images_list) - 1
 
     def add_image_from_path(self, path: str) -> int:
         path = self.find_image_file(path)
@@ -180,7 +179,7 @@ class ImageManager:
         """Adds an image to the appearance
 
         Args:
-            path (str): Path to the image relative to actual directory
+            surface: A pygame Surface
 
         Returns:
             Index of the created image.
@@ -218,11 +217,11 @@ class ImageManager:
     def first_image(self):
         """Switches to the first image of the appearance."""
         self.image_index = 0
-        self.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
+        # self.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
 
     def load_image_from_image_index(self):
         if self.images_list and self.image_index < len(self.images_list) and self.images_list[self.image_index]:
-            # if there is a image list load image by index
+            # if there is an image list load image by index
             image = self.images_list[self.image_index]["image"]
         else:  # no image files - Render raw surface
             image = self.load_surface()
@@ -254,5 +253,5 @@ class ImageManager:
 
     def remove_last_image(self):
         del self.images_list[-1]
-        self.set_image(-1)
+        self.appearance.set_image(-1)
         self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)

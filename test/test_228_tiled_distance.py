@@ -11,7 +11,7 @@ def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test101(unittest.TestCase):
+class Test228(unittest.TestCase):
 
     def setUp(self):
         """ Programmcode here:
@@ -23,33 +23,28 @@ class Test101(unittest.TestCase):
             b) An act-method, where self.test() is called
         """
         App.reset(unittest = True, file = __file__)
+
+
+        board = TiledBoard(8,8)
+        tile1 = board.get_tile((0,0))
+        tile2 = board.get_tile((6,6))
+        t = Token(5,6)
+        tile3 = Tile.from_token(t)
+        tile4 = board.get_tile((7,7))
+        t2 = Token(7,7)
         
-        class MyBoard(TiledBoard):
-            def on_setup(self):
-                path = os.path.dirname(__file__)
-                board.app.register_path(path)
-                self.columns = 5
-                self.rows = 5
-                self.tile_size = 40
-                self.add_background("images/stone.png")
-                print(self.background)
-                token = Token()
-                token.position = (3,4)
-                print(token.position, type(token.position))
-                print(token, token.costumes)
-                print("costume:", token.costume)
-                print(token.costume.images)
-                token.add_costume("images/player.png")
-                print(token.costumes)
-                
-                print(token.costume.images)
-                print(token.costume.is_upscaled)
-                # Bilder von:
-                # https://www.kenney.nl/assets
-                
-        board = MyBoard()
-        """ here act and init - delete if used in testcode"""
-        
+        print(tile1)
+        print(tile2)
+        print(tile1.distance_to(tile2))
+        print(tile3.distance_to(tile2))
+        print(tile1.distance_to(tile4))
+        assert 8 < tile1.distance_to(tile2) < 8.5
+        assert 0.9 < tile3.distance_to(tile2) < 1.1
+        assert 9.5 < tile1.distance_to(tile4) < 10
+        assert tile3.distance_to(tile4) == t.get_distance_to((7,7))
+        print(t.get_distance_to(t2), tile3.distance_to(tile4))
+        assert abs(t.get_distance_to(t2) - tile3.distance_to(tile4)) < 0.1
+
         @board.register
         def on_setup(self):
             self.init_test()            
@@ -98,6 +93,5 @@ class Test101(unittest.TestCase):
         
 if __name__ == '__main__':
     unittest.main()
-
 
 

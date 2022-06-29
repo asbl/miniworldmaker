@@ -1,14 +1,15 @@
 import math
-from typing import Union, Optional, List
+from typing import Union, List
 
 import pygame
 
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.board_rect as board_rect
+import miniworldmaker.board_positions.board_vector as board_vector
 import miniworldmaker.boards.board as board_mod
 import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
-import miniworldmaker.tokens.token as token_mod
-import miniworldmaker.tools.token_inspection as token_inspection
+from miniworldmaker.tokens import token as token_mod
+
 
 class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
     """Sensor for Tokens on PixelBoard.
@@ -61,7 +62,8 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         return [actor for actor in a_list if type(token_mod.Token) == actor_type]
 
     def sensing_tokens(self, token_filter=None) -> list:
-        tokens = pygame.sprite.spritecollide(self.token, self.token.board.camera.get_tokens_in_viewport(),  False, pygame.sprite.collide_rect)  
+        tokens = pygame.sprite.spritecollide(self.token, self.token.board.camera.get_tokens_in_viewport(), False,
+                                             pygame.sprite.collide_rect)
         tokens_list = self.remove_self_from_token_list(tokens)
         if tokens_list:
             tokens_list = self._detect_token(tokens_list, self.token.collision_type)
@@ -69,7 +71,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
             tokens_list = self.filter_token_list(tokens_list, token_filter)
         if tokens_list and len(tokens_list) >= 1:
             return tokens_list
-        else: 
+        else:
             return []
 
     def sensing_token(self, token_filter=None) -> Union["token_mod.Token", None]:
@@ -81,9 +83,9 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
             tokens_list = self.filter_token_list(tokens_list, token_filter)
         if tokens_list and len(tokens_list) >= 1:
             return tokens_list[0]
-        else: 
+        else:
             return []
-    
+
     def _detect_token(self, tokens, collision_type) -> List:
         tokens_list = []
         if collision_type == "circle":
@@ -111,3 +113,10 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         if self.token in tokens:
             tokens.remove(self.token)
         return tokens
+
+    def get_distance_to(self, obj: Union["token_mod.Token", "board_position.Position", tuple]) -> float:
+        if isinstance(obj, token_mod.Token):
+            vec = board_vector.Vector.from_tokens(self.token, obj)
+        else:
+            vec = board_vector.Vector.from_token_and_position(self.token, obj)
+        return vec.length()

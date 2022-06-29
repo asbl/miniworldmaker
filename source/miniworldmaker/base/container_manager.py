@@ -1,11 +1,13 @@
-import miniworldmaker.containers.container as container
-import miniworldmaker.base.app as app
-from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 from typing import List
+
+import miniworldmaker.base.app as app
+import miniworldmaker.containers.container as container_mod
+from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
+
 
 class ContainerManager:
     def __init__(self, miniworldmaker_app: "app.App"):
-        self.containers: List["container.Container"] = []
+        self.containers: List["container_mod.Container"] = []
         self.total_width: int = 0
         self.total_height: int = 0
         self.app: "app.App" = miniworldmaker_app
@@ -29,16 +31,16 @@ class ContainerManager:
                 ct.repaint()
                 ct.blit_surface_to_window_surface()
 
-    def add_topleft(self, new_container: "container.Container") -> "container.Container":
+    def add_topleft(self, new_container: "container_mod.Container") -> "container_mod.Container":
         """Adds the topleft corner if it does not exist."""
         for container in self.containers:
             if container.docking_position == "top_left":
-                return
+                return self.get_topleft()
         self.topleft = new_container
         self.add_container(new_container, "top_left")
         return new_container
 
-    def add_container(self, container: "container.Container", dock: str, size: int = None) -> "container.Container":
+    def add_container(self, container: "container_mod.Container", dock: str, size: int = None) -> "container_mod.Container":
         """Adds a new container
 
         Args:
@@ -62,14 +64,15 @@ class ContainerManager:
             self.app.window.resize()
             for ct in self.containers:
                 ct.dirty = 1
-            if self.app.board:
-                for token in self.app.board.tokens:
+            if self.app.running_board:
+                for token in self.app.running_board.tokens:
                     token.dirty = 1
         else:
             raise MiniworldMakerError("Container already in board.containers")
         return container
 
-    def switch_container(self, container: "container.Container", new_container:"container.Container") -> "container.Container":
+    def switch_container(self, container: "container_mod.Container",
+                         new_container: "container_mod.Container") -> "container_mod.Container":
         """Switches a container (e.g. replace a board with another board)
 
         Args:
@@ -87,6 +90,12 @@ class ContainerManager:
         self.update_containers()
         self.app.window.resize()
         return new_container
+
+    def get_topleft(self) -> "container_mod.Container":
+        for container in self.containers:
+            if container.docking_position == "top_left":
+                return container
+        raise MiniworldMakerError("Container top_left is missing!")
 
     def containers_right(self):
         """List of all containers with docking_position "right", ordered by display-position

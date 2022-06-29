@@ -30,10 +30,10 @@ class Text(token.Token):
         self.costume.text = ""
         self.is_static: bool = True
         self.set_text(text)
-    
+
     def _get_new_costume(self):
         return text_costume.TextCostume(self)
-        
+
     @property
     def font_size(self):
         return self.costume.font_size
@@ -51,7 +51,6 @@ class Text(token.Token):
             text: The text
         """
         self.costume.text = text
-        
 
     def get_text(self):
         """Gets the currently displayed tex

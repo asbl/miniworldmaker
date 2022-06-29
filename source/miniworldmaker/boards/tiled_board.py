@@ -8,9 +8,9 @@ import miniworldmaker.board_positions.tile_elements as tile_elements
 import miniworldmaker.board_positions.tile_factory as tile_factory
 import miniworldmaker.boards.board as board
 import miniworldmaker.boards.token_connectors.tiled_board_connector as tiled_board_connector
+from miniworldmaker.boards.board_manager import board_camera_manager
 from miniworldmaker.exceptions import miniworldmaker_exception
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
-from miniworldmaker.boards.board_manager import board_camera_manager
 
 
 class TiledBoard(board.Board):
@@ -247,7 +247,8 @@ class TiledBoard(board.Board):
         :return: Tile on Posiiton, if position exists
         """
         if self.is_tile(position):
-            return self.tiles[(position[0], position[1])]
+            position = board_position.Position.create(position)
+            return self.tiles[position]
         else:
             raise miniworldmaker_exception.TileNotFoundError(position)
 

@@ -1,14 +1,14 @@
 import pygame
+
 import miniworldmaker.appearances.costume as costume
 import miniworldmaker.tokens.token as token
 
 
 class HexCostume(costume.Costume):
-    def __init__(self, token: "token.HexToken"):
+    def __init__(self, token: "token.Token"):
         super().__init__(token)
         self.set_image((0, 0, 0, 0))
         self.mod_pointlist = []
-        
 
     def _set_token_default_values(self):
         self.is_scaled = True
@@ -18,7 +18,7 @@ class HexCostume(costume.Costume):
         self.fill_color = (180, 180, 180, 255)
         self.border = 1
         self.border_color = (100, 100, 100, 255)
-        
+
     def _update_draw_shape(self):
         self.mod_pointlist = []
         board = self.token.board

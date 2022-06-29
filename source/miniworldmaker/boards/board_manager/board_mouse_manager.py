@@ -5,6 +5,7 @@ class BoardMouseManager:
     """
 
     """
+
     def __init__(self, board):
         self.board = board
         self._mouse_position = None
@@ -32,6 +33,6 @@ class BoardMouseManager:
 
     def mouse_left_is_clicked(self):
         return pygame.mouse.get_pressed()[0]
-    
+
     def mouse_right_is_clicked(self):
         return pygame.mouse.get_pressed()[0]

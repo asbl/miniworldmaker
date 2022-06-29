@@ -1,12 +1,12 @@
 import pygame
 
-import miniworldmaker.base.app as app
+import miniworldmaker.base.app as app_mod
 
 
 class SoundManager:
-    def __init__(self, app: "app.App"):
+    def __init__(self, app: "app_mod.App"):
         self.sound_effects: dict = {}
-        self.app: "app.App" = app
+        self.app: "app_mod.App" = app
 
     def register_sound(self, path) -> pygame.mixer.Sound:
         """

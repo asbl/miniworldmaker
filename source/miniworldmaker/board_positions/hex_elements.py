@@ -1,13 +1,13 @@
-from collections import OrderedDict
-import miniworldmaker.base.app as app
-import miniworldmaker.board_positions.tile_elements as tile_elements
-import miniworldmaker.board_positions.board_position as board_position
-
 import collections
-from typing import Union, List
 import math
+from collections import OrderedDict
+from typing import Union
+
 import numpy as np
+
+import miniworldmaker.base.app as app
 import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.tile_elements as tile_elements
 
 
 class HexBase(tile_elements.TileBase):
@@ -15,8 +15,8 @@ class HexBase(tile_elements.TileBase):
     def get_local_center_coordinate() -> "board_position.BoardPosition":
         """Gets the local center coordinate of each tile.
         """
-        board = app.App.board
-        return board_position.Position(board.get_tile_width() / 2, board.get_tile_height() / 2)
+        board = app.App.running_board
+        return board_position.Position("Position", x = board.get_tile_width() / 2, y = board.get_tile_height() / 2)
 
     def _internal_coordinates(self):
         return CubeCoord
@@ -109,8 +109,9 @@ class HexTile(HexBase, tile_elements.Tile):
 
     @staticmethod
     def get_position_pixel_dict():
-        board = app.App.board
+        board = app.App.running_board
         return board.get_center_points()
+
 
 class HexCorner(HexBase, tile_elements.Corner):
     angles = {"n": 2, "no": 3, "so": 4, "s": 5, "sw": 0, "nw": 1}
@@ -282,6 +283,7 @@ class CubeCoord(collections.namedtuple("Hex", ["q", "r", "s"]), board_position.P
 
     def __str__(self):
         return f"q: {self.q} r: {self.r} s: {self.s}"
+
 
 class OffsetPosition(board_position.Position):
     EVEN = 1

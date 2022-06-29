@@ -1,18 +1,16 @@
-import math
-from tokenize import Token
 from typing import Union, Tuple
 
 import pygame
 
-import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.board_positions.board_vector as board_vector
 import miniworldmaker.board_positions.board_direction as board_direction
+import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.board_positions.board_rect as board_rect
-from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError, MoveInDirectionTypeError
+import miniworldmaker.board_positions.board_vector as board_vector
+from miniworldmaker.appearances import costume
+from miniworldmaker.boards import board
+from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.tokens import token as token_mod
-from miniworldmaker.boards import board
-from miniworldmaker.appearances import costume
 
 
 class TokenPositionManager:
@@ -73,7 +71,7 @@ class TokenPositionManager:
         direction = (self._direction + 180) % 360 - 180
         return direction
 
-    def set_direction(self, value: Union[int, float, str, board_direction.Direction]):
+    def set_direction(self, value: Union[int, float, str, "board_direction.Direction"]):
         if type(value) not in [int, float, str, board_direction.Direction, board_vector.Vector]:
             raise ValueError(f"Direction must be int, float, Direction or Vector but is {type(value)}")
         self.last_direction = self.direction
@@ -205,7 +203,7 @@ class TokenPositionManager:
             raise NoCostumeSetError(self.token)
         new_center = board_position.Position(value)
         self.last_position = self.position
-        rect = pygame.Rect.copy(self.get_global_rect)
+        rect = pygame.Rect.copy(self.get_global_rect())
         rect.center = new_center
         self.set_position(rect.topleft)
         return self.token
@@ -290,13 +288,13 @@ class TokenPositionManager:
         """
         angle = self.direction
         if "top" in borders and (
-            self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
+                self.direction <= 0 and self.direction > -90 or self.direction <= 90 and self.direction >= 0
         ):
             self.point_in_direction(0)
             incidence = self.direction - angle
             self.turn_left(180 - incidence)
         elif "bottom" in borders and (
-            (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
+                (self.direction < -90 and self.direction >= -180) or (self.direction > 90 and self.direction <= 180)
         ):
             self.point_in_direction(180)
             incidence = self.direction - angle
@@ -345,7 +343,7 @@ class TokenPositionManager:
         return self.direction
 
     def point_in_direction(
-        self, direction: Union[int, float, board_direction.Direction, str]
+            self, direction: Union[int, float, "board_direction.Direction", str]
     ) -> "board_direction.Direction":
         self.direction = board_direction.Direction.create(direction)
         return self.direction
@@ -376,7 +374,7 @@ class TokenPositionManager:
         return (self.x, self.y)
 
     def point_towards_position(
-        self, destination: Union[int, float, str, board_direction.Direction]
+            self, destination: Union[int, float, str, "board_direction.Direction"]
     ) -> "board_direction.Direction":
         """
         Token points towards a given position

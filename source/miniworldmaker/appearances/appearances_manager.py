@@ -1,11 +1,11 @@
 from typing import Union, Tuple, List
 
 import pygame
+
 import miniworldmaker
 import miniworldmaker.appearances.appearance as appearance_mod
-from miniworldmaker.appearances import costume
-from miniworldmaker.appearances import appearance_base
 import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
+from miniworldmaker.appearances import costume
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -23,8 +23,8 @@ class AppearancesManager:
         self.is_scaled_to_width = None
         self.is_scaled_to_height = None
         self.has_appearance = False
-        self._iter_index = 0   
-    
+        self._iter_index = 0
+
     @property
     def image(self):
         if self.appearance:
@@ -40,6 +40,8 @@ class AppearancesManager:
         elif type(source) in [str, pygame.Surface, tuple]:
             appearance = self.create_appearance()
             appearance.add_image(source)
+        else:
+            raise MiniworldMakerError(f"Wrong type in _create_appearance_from_source got {type(source)}", )
         return appearance
 
     def add_new_appearances(self, sources: List):
@@ -57,13 +59,12 @@ class AppearancesManager:
             appearance.add_image(source)
         return appearance
 
-
     def create_appearance(self) -> "appearance_mod.Appearance":
         """Returns a new appearance (Background instance or Costume instance)"""
         pass
 
     def add_new_appearance(
-        self, source: Union[str, pygame.Surface, "costume.Costume", Tuple, None]
+            self, source: Union[str, pygame.Surface, "costume.Costume", Tuple, None]
     ) -> "appearance_mod.Appearance":
         """Adds a new Appearance (costume or background) to manager.
 
@@ -76,7 +77,7 @@ class AppearancesManager:
             return self._add_first_appearance(appearance)
         elif not self.has_appearance and not source:
             self.has_appearance = False
-            return self._add_default_appearance
+            return self._add_default_appearance()
         elif source:
             return self._add_appearance_to_manager(appearance)
         else:
@@ -84,11 +85,10 @@ class AppearancesManager:
                 f"Error: Got wrong type for appearance. Expected: str, pygame.Surface, Costume, tuple;  got {type(source)}, {source}"
             )
 
-
-    def _add_default_appearance(self):
+    def _add_default_appearance(self) -> "appearance_mod.Appearance":
         appearance = self.create_appearance()
         return self._add_first_appearance(appearance)
-    
+
     def _add_first_appearance(self, appearance: "appearance_mod.Appearance") -> "appearance_mod.Appearance":
         self.appearances_list = []
         self._add_appearance_to_manager(appearance)
@@ -137,7 +137,7 @@ class AppearancesManager:
             return len(self.appearances_list)
         else:
             return 0
-        
+
     def __len__(self) -> int:
         return self.length()
 
@@ -241,13 +241,15 @@ class AppearancesManager:
             new_appearance = self.get_appearance_at_index(source)
         elif isinstance(source, appearance_mod.Appearance) or isinstance(source, miniworldmaker.Appearance):
             new_appearance = source
+        else:
+            raise MiniworldMakerError(f"Wrong type in switch_appearance, got {type(source)}")
         self.appearance = new_appearance
         self.appearance.image_manager.end_animation(new_appearance)
         self.appearance.set_image(0)
         self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return self.appearance
 
-    def animate(self, speed : int):
+    def animate(self, speed: int):
         self.appearance.animation_speed = speed
         self.appearance.animate()
 
@@ -255,7 +257,7 @@ class AppearancesManager:
         """Implemented in subclasses
         """
         pass
-    
+
     def animate_appearance(self, appearance, speed):
         if appearance is None:
             raise miniworldmaker_exception.CostumeIsNoneError()
@@ -273,16 +275,16 @@ class AppearancesManager:
 
     def __next__(self):
         if self._iter_index < len(self.appearances_list):
-            apperance_at_position = self.get_appearance_at_index(self._iter_index)
+            appearance_at_position = self.get_appearance_at_index(self._iter_index)
             self._iter_index += 1
-            return apperance_at_position
+            return appearance_at_position
         else:
             raise StopIteration
-        
+
     @property
     def orientation(self):
         return [appearance.orientation for appearance in self.appearances_list]
-    
+
     @orientation.setter
     def orientation(self, value):
         for appearance in self.appearances_list:
@@ -291,11 +293,11 @@ class AppearancesManager:
     @property
     def animation_speed(self):
         return self.appearance.animation_speed
-    
+
     @animation_speed.setter
     def animation_speed(self, value):
         for appearance in self.appearances_list:
-            appearance.animation_speed = value        
-            
+            appearance.animation_speed = value
+
     def get_actual_appearance(self):
         return self.appearance

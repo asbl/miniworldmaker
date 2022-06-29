@@ -28,9 +28,6 @@ class Test122(unittest.TestCase):
         background = board.add_background("images/stone.png")
         background.is_textured = True
         token = Token()
-        @token.register
-        def on_key_down(self, key):
-            self.move_right()
         background.grid = True
 
 

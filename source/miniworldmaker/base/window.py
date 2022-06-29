@@ -1,21 +1,22 @@
-import pygame
 import os
 
-import miniworldmaker.base.container_manager as container_manager
-import miniworldmaker.base.event_manager as event_manager
+import pygame
+
+import miniworldmaker.base.container_manager as container_manager_mod
+import miniworldmaker.base.event_manager as event_manager_mod
 
 
 class Window:
 
-    def __init__(self, title, container_manager: "container_manager.ContainerManager",
-                 event_manager: "event_manager.EventManager"):
+    def __init__(self, title, container_manager: "container_manager_mod.ContainerManager",
+                 event_manager: "event_manager_mod.EventManager"):
         self.title: str = title
-        self.container_manager: "container_manager.ContainerManager" = container_manager
-        self.event_manager: "event_manager.EventManager" = event_manager
+        self.container_manager: "container_manager_mod.ContainerManager" = container_manager
+        self.event_manager: "event_manager_mod.EventManager" = event_manager
         self.default_size: int = 200
         self.dirty: int = 1
         self.repaint_areas = []
-        self._surface: pygame.Surface = pygame.Surface((0,0))
+        self._surface: pygame.Surface = pygame.Surface((0, 0))
         self._fullscreen: bool = False
         self._fit_desktop = False
         self._replit = False
@@ -89,8 +90,8 @@ class Window:
             self._surface = pygame.display.set_mode((800, 600), pygame.SCALED)
         else:
             info = pygame.display.Info()
-            x,y = max((info.current_w - self.width) / 2, 0) , max((info.current_h - self.height) / 2, 0)
-            os.environ['SDL_VIDEO_WINDOW_POS']='%d,%d' %(x, y)
+            x, y = max((info.current_w - self.width) / 2, 0), max((info.current_h - self.height) / 2, 0)
+            os.environ['SDL_VIDEO_WINDOW_POS'] = '%d,%d' % (x, y)
             self._surface = pygame.display.set_mode((self.width, self.height))
         self._surface.set_alpha(None)
 
@@ -105,7 +106,6 @@ class Window:
             self.add_display_to_repaint_areas()
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []
-        
 
     def add_display_to_repaint_areas(self):
         self.repaint_areas.append(pygame.Rect(0, 0, self.width, self.height))

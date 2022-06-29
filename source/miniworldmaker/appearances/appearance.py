@@ -1,29 +1,89 @@
+import abc
+from abc import abstractmethod
 from typing import Union, Tuple
 
 import numpy
 import pygame
 
-import miniworldmaker.appearances.appearance_base as appearance_base
-import miniworldmaker.tools.color as color
-
+import miniworldmaker.appearances.managers.font_manager as font_manager
+import miniworldmaker.appearances.managers.image_manager as image_manager
+import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
+import miniworldmaker.tools.binding as binding
+import miniworldmaker.tools.color as color_mod
+from miniworldmaker.boards import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
-from miniworldmaker.appearances.managers.image_manager import ImageManager
 
 
-class Appearance(appearance_base.AppearanceBase):
+class MetaAppearance(abc.ABCMeta):
+    def __call__(cls, *args, **kwargs):
+        instance = type.__call__(cls, *args, **kwargs)  # create a new Appearance of type...
+        instance.after_init()
+        return instance
+
+
+class Appearance(metaclass=MetaAppearance):
     """Base class of token costumes and board backgrounds
 
     The class contains all methods and attributes to display and animate images of the objects, render text
     on the images or display overlays.
     """
-        
+    counter = 0
+
+    RELOAD_ACTUAL_IMAGE = 1
+    LOAD_NEW_IMAGE = 2
+
+    def __init__(self):
+        self.id = Appearance.counter + 1
+        Appearance.counter += 1
+        self.initialized = False
+        self._flag_transformation_pipeline = False
+        self.parent = None
+        self.draw_shapes = []
+        self.draw_images = []
+        self._is_flipped = False
+        self._is_animated = False
+        self._is_textured = False
+        self._is_centered = True
+        self._is_upscaled = False
+        self._is_scaled = False
+        self._is_scaled_to_width = False
+        self._is_scaled_to_height = False
+        self._is_rotatable = False
+        self._orientation = False
+        self._coloring = None  # Color for colorize operation
+        self._transparency = False
+        self._border = 0
+        self._is_filled = False
+        self._fill_color = (255, 0, 255, 100)
+        self._border_color = None
+        self._alpha = 255
+        self._dirty = 0
+        self._image = pygame.Surface((0, 0))  # size set in image()-method
+        self.surface_loaded = False
+        self.last_image = None
+        self.font_manager = font_manager.FontManager(self)
+        self.image_manager: "image_manager.ImageManager" = image_manager.ImageManager(self)
+        self.transformations_manager = transformations_manager.TransformationsManager(self)
+        self.image_manager.add_default_image()
+        # properties
+        self.texture_size = (0, 0)
+        self.animation_speed = 10  #: The animation speed for animations
+        self.loop = False
+        self.animation_length = 0
+        self._animation_start_frame = 0
+
+    def after_init(self):
+        # Called in metaclass
+        self.set_dirty("all", Appearance.LOAD_NEW_IMAGE)
+        self.initialized = True
+
     @property
     def font_size(self):
         return self.font_manager.font_size
 
     @font_size.setter
     def font_size(self, value):
-        self.font_manager.set_font_size(value, update = True)      
+        self.font_manager.set_font_size(value, update=True)
 
     def set_font(self, font, font_size):
         self.font_manager.font_path = font
@@ -53,7 +113,7 @@ class Appearance(appearance_base.AppearanceBase):
             .. image:: ../_images/is_textured.png
                 :alt: Textured image>
 
-            Set texture soize
+            Set texture size
 
             .. code-block:: python
 
@@ -80,34 +140,6 @@ class Appearance(appearance_base.AppearanceBase):
     @property
     def is_rotatable(self):
         """If True, costume will be rotated with token direction
-
-        Examples:
-
-            Costume of token t ignoriert aspect-ratio:
-
-            .. code-block:: python
-
-                from miniworldmaker import *
-
-                board = Board(800,400)
-
-                t = Token((600,50))
-                t.add_costume("images/alien1.png")
-                t.costume.is_scaled = True
-                t.size = (140,80)
-                t.border = 1
-
-                board.run()
-
-            Output:
-            
-            .. raw:: html 
-
-                <video loop autoplay muted width=400>
-                <source src="../_static/rotatable.webm" type="video/webm">
-                Your browser does not support the video tag.
-                </video> 
-
         """
         return self._is_rotatable
 
@@ -132,7 +164,7 @@ class Appearance(appearance_base.AppearanceBase):
 
         Examples:
 
-            Both tokens are moving up. The image of t2 is correctly algined. t1 is looking in the wrong direction.
+            Both tokens are moving up. The image of t2 is correctly aligned. t1 is looking in the wrong direction.
 
                 .. code-block:: python
 
@@ -220,27 +252,6 @@ class Appearance(appearance_base.AppearanceBase):
     @property
     def is_scaled(self):
         """Scales the actor to parent-size without remaining aspect-ratio.
-
-        Examples:
-
-            Costume of token t ignoriert aspect-ratio:
-
-            .. code-block:: python
-
-                from miniworldmaker import *
-
-                board = Board(800,400)
-
-                t = Token((600,50))
-                t.add_costume("images/alien1.png")
-                t.costume.is_scaled = True
-                t.size = (140,80)
-                t.border = 1
-
-                board.run()
-
-            .. image:: ../_images/is_scaled.png
-                :alt: Textured image
         """
         return self._is_scaled
 
@@ -256,24 +267,6 @@ class Appearance(appearance_base.AppearanceBase):
     @property
     def is_upscaled(self):
         """If True, the image will be upscaled remaining aspect-ratio.
-
-        Examples:
-
-            Costume of token t ignoriert aspect-ratio:
-
-            .. code-block:: python
-
-                from miniworldmaker import *
-
-                board = Board(800,400)
-
-                t = Token((600,50))
-                t.add_costume("images/alien1.png")
-                t.costume.is_scaled = True
-                t.size = (140,80)
-                t.border = 1
-
-                board.run()
         """
         return self._is_upscaled
 
@@ -325,9 +318,10 @@ class Appearance(appearance_base.AppearanceBase):
 
     @property
     def coloring(self):
-        """
-        Defines a colored layer. Coloring is True or false. The color is defined by the attribute appearance.color
+        """Defines a colored layer.
 
+        `coloring` can be True or false.
+        The color is defined by the attribute `appearance.color`.
         """
         return self._coloring
 
@@ -394,35 +388,52 @@ class Appearance(appearance_base.AppearanceBase):
     def remove_last_image(self):
         self.image_manager.remove_last_image()
 
-    def add_image(self, source: Union[str, pygame.Surface, Tuple] = None) -> int:
+    def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
         """Adds an image to the appearance
-
 
         Returns:
             Index of the created image.
+        """
+        if type(source) not in [str, pygame.Surface, tuple]:
+            raise MiniworldMakerError(
+                f"Error: Image source has wrong format (expected str or pygame.Surface, got {type(source)}"
+            )
+        return self.image_manager.add_image(source)
+
+    def set_image(self, source: Union[int, "Appearance", tuple]) -> bool:
+        """Sets the displayed image of costume/background to selected index
+
+        Args:
+            source: The image index or an image.
+
+        Returns:
+            True, if image index exists
 
         Examples:
+
+            Add two images two background and switch to image 2
 
             .. code-block:: python
 
                 from miniworldmaker import *
 
                 board = Board()
-                token = Token()
-                costume = token.add_costume("images/1.png")
-                costume.add_image("images/2.png")
-
+                background = board.add_background("images/1.png")
+                background.add_image("images/2.png")
+                background.set_image(1)
                 board.run()
 
         """
-        if type(source) not in [str, pygame.Surface, tuple]:
-            raise MiniworldMakerError(f"Wrong type, expected str, pygame.Surface or Tuple, got {type(source)}")
-        return super().add_image(source)
+        if type(source) == int:
+            return self.image_manager.set_image_index(source)
+        elif type(source) == tuple:
+            surface = image_manager.ImageManager.get_surface_from_color(source)
+            self.image_manager.replace_image(surface, image_manager.ImageManager.COLOR, source)
 
     def add_images(self, sources: list):
         """Adds multiple images to background/costume. 
         
-        Each source in sources paramater must be a valid parameter for :py:attr:`Appearance.add_image`
+        Each source in sources parameter must be a valid parameter for :py:attr:`Appearance.add_image`
         """
         assert type(sources) == list
         for source in sources:
@@ -456,22 +467,6 @@ class Appearance(appearance_base.AppearanceBase):
     @is_animated.setter
     def is_animated(self, value):
         self._is_animated = value
-
-    def count_pixels_by_color(self, rect, color, threshold=(0, 0, 0, 0)):
-        """Counts the number of pixels of a color under the appearance.
-
-        Args:
-            color: The color
-            threshold: The allowed deviation from the color splitted into r,g,b and alpha values.
-
-        Returns: The number of matching pixes
-
-        """
-        surf = pygame.Surface((rect.width, rect.height))
-        surf.blit(self._image, (0, 0), rect)
-        return pygame.transform.threshold(
-            dest_surf=None, set_behavior=0, surf=surf, search_color=color, threshold=threshold
-        )
 
     def animate(self):
         """Animates the costume
@@ -522,35 +517,6 @@ class Appearance(appearance_base.AppearanceBase):
                 board.run()
         """
         pass
-
-    def reset(self):
-        self.image_manager.reset()
-
-    def set_image(self, source) -> bool:
-        """Sets the displayed image of costume/background to selected index
-
-        Args:
-            source: The image index or an image.
-
-        Returns:
-            True, if image index exists
-
-        Examples:
-
-            Add two images two background and switch to image 2
-
-            .. code-block:: python
-
-                from miniworldmaker import *
-
-                board = Board()
-                background = board.add_background("images/1.png")
-                background.add_image("images/2.png")
-                background.set_image(1)
-                board.run()
-
-        """
-        return super().set_image(source)
 
     def to_colors_array(self) -> numpy.ndarray:
         """ Create an array from costume or background. 
@@ -617,8 +583,7 @@ class Appearance(appearance_base.AppearanceBase):
                 :alt: converted image
         """
         surf = pygame.surfarray.make_surface(arr)
-        self.image_manager.replace_image(surf, ImageManager.SURFACE, None)
-
+        self.image_manager.replace_image(surf, image_manager.ImageManager.SURFACE, None)
 
     @property
     def color(self):
@@ -627,16 +592,15 @@ class Appearance(appearance_base.AppearanceBase):
 
     @color.setter
     def color(self, value):
-        value = color.Color.create(value).get()
+        value = color_mod.Color.create(value).get()
         self._fill_color = value
         # self.reload_costume()
-
 
     def fill(self, value):
         """Set default fill color for borders and lines"""
         self._is_filled = value
-        if self.is_filled != None and self.is_filled != False and self.is_filled != True:
-            self.fill_color = color.Color(value).get()
+        if self.is_filled and self.is_filled:
+            self.fill_color = color_mod.Color(value).get()
         self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     @property
@@ -669,7 +633,7 @@ class Appearance(appearance_base.AppearanceBase):
 
     @border_color.setter
     def border_color(self, value: int):
-        if value != None:
+        if value:
             self._border_color = value
             self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
         else:
@@ -687,7 +651,7 @@ class Appearance(appearance_base.AppearanceBase):
         return self._border
 
     @border.setter
-    def border(self, value : Union[int, None]):
+    def border(self, value: Union[int, None]):
         if not value:
             value = 0
         if type(value) != int:
@@ -699,12 +663,9 @@ class Appearance(appearance_base.AppearanceBase):
         x = int(position[0])
         y = int(position[1])
         if 0 <= x < self.image.get_width() and 0 <= y < self.image.get_height():
-            return self.image.get_at((x,y))
+            return self.image.get_at((x, y))
         else:
             return None
-
-    def find_color_in_rect(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.background.count_pixels_by_color(rect, color, threshold)
 
     def draw(self, source, position, width, height):
         if type(source) == str:
@@ -723,3 +684,134 @@ class Appearance(appearance_base.AppearanceBase):
         surface.fill(color)
         self.draw_image_append(surface, pygame.Rect(position[0], position[1], width, height))
         self.set_dirty("draw_images", Appearance.RELOAD_ACTUAL_IMAGE)
+
+    def __str__(self):
+        return (
+                self.__class__.__name__
+                + "with ID ["
+                + str(self.id)
+                + "] for parent:["
+                + str(self.parent)
+                + "], images: "
+                + str(self.image_manager.images_list)
+        )
+
+    @property
+    def text(self):
+        """Sets text of appearance
+        Examples:
+
+            .. code-block:: python
+
+                explosion = Explosion(position=other.position.up(40).left(40))
+                explosion.costume.is_animated = True
+                explosion.costume.text_position = (100, 100)
+                explosion.costume.text = "100"
+        """
+        return self.font_manager.text
+
+    @text.setter
+    def text(self, value):
+        if value == "":
+            self.font_manager.text = ""
+            self.set_dirty("write_text", Appearance.RELOAD_ACTUAL_IMAGE)
+        else:
+            self.font_manager.text = value
+        self.set_dirty("write_text", Appearance.RELOAD_ACTUAL_IMAGE)
+
+    @property
+    def images(self):
+        return self.image_manager.images_list
+
+    @property
+    def image(self) -> pygame.Surface:
+        """Performs all actions in image pipeline"""
+        return self.get_image()
+
+    def get_image(self):
+        """If dirty, the image will be reloaded.
+        The image pipeline will be  processed, defined by "set_dirty"
+        """
+        if self.dirty >= self.RELOAD_ACTUAL_IMAGE or not self._image and not self._flag_transformation_pipeline:
+            dirty = self.dirty
+            self.dirty = 0
+            self._flag_transformation_pipeline = True
+            self._before_transformation_pipeline()
+            image = self.image
+            if dirty >= self.RELOAD_ACTUAL_IMAGE:
+                # @todo: Not working: Replace RELOAD_ACTUAL_IMAGE with LOAD NEW IMAGE
+                image = self.image_manager.load_image_from_image_index()
+            if dirty >= self.RELOAD_ACTUAL_IMAGE:
+                image = self.transformations_manager.process_transformation_pipeline(image, self)
+                self._after_transformation_pipeline()
+                self._flag_transformation_pipeline = False
+            self._image = image
+        return self._image
+
+    def _before_transformation_pipeline(self):
+        pass
+
+    def _after_transformation_pipeline(self):
+        pass
+
+    def update(self):
+        """Loads the next image,
+        called 1/frame"""
+        self._load_image()
+        return 1
+
+    def _load_image(self):
+        """Loads the image,
+
+        * switches image if necessary
+        * processes transformations pipeline if necessary
+        """
+        if self.is_animated and self._animation_start_frame != self.board.frame:
+            if self.board.frame != 0 and self.board.frame % self.animation_speed == 0:
+                self.image_manager.next_image()
+        self.get_image()
+
+    def register(self, method: callable):
+        """
+        Register method for decorator. Registers method to token or background.
+        """
+        bound_method = binding.bind_method(self, method)
+        return bound_method
+
+    def draw_shape_append(self, shape, arguments):
+        self.draw_shapes.append((shape, arguments))
+
+    def draw_shape_set(self, shape, arguments):
+        self.draw_shapes = [(shape, arguments)]
+
+    def draw_image_append(self, surface, rect):
+        self.draw_images.append((surface, rect))
+
+    def draw_image_set(self, surface, rect):
+        self.draw_images = [(surface, rect)]
+
+    @property
+    def dirty(self):
+        return self._dirty
+
+    @dirty.setter
+    def dirty(self, value):
+        if value == 0:
+            self._dirty = 0
+        else:
+            self.set_dirty(value)
+
+    def set_dirty(self, value="all", status=1):
+        if hasattr(self, "transformations_manager"):
+            if value:
+                self.transformations_manager.flag_reload_actions_for_transformation_pipeline(value)
+            if status >= self._dirty:
+                self._dirty = status
+            if self.parent:
+                self.parent.dirty = 1
+
+    @property
+    @abstractmethod
+    def board(self) -> "board.Board":
+        """Implemented in subclasses Costume and Background
+        """

@@ -32,7 +32,6 @@ from miniworldmaker.tokens.shapes import Triangle
 from miniworldmaker.tokens.shapes import Arc
 
 from miniworldmaker.appearances.appearance import Appearance
-from miniworldmaker.appearances.appearance_base import AppearanceBase
 from miniworldmaker.appearances.background import Background
 from miniworldmaker.appearances.costume import Costume
 
@@ -104,7 +103,6 @@ __all__.append(Arc.__name__)
 __all__.append(Circle.__name__)
 
 __all__.append(Appearance.__name__)
-__all__.append(AppearanceBase.__name__)
 __all__.append(Background.__name__)
 __all__.append(Costume.__name__)
 

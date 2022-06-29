@@ -1,18 +1,32 @@
-from typing import List, Dict
-from collections import OrderedDict
+import abc
 import math
+from abc import abstractmethod
+from collections import OrderedDict
+from typing import List, Dict
+
+import miniworldmaker.base.app as app
 import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token as token
-import miniworldmaker.base.app as app
 from miniworldmaker.board_positions import board_vector
 
-class TileBase:
+
+class TileBase(abc.ABC):
+    """Base Class for Tiles AND TileDelimiters (Corners, Edges)
+
+    Tiles are definied by a position. Multiple positions can be stores, if Tile can be described by multiple
+    positions (e.g. in a Hexboard), multiple positions are stores per Tile.
+    """
     def __init__(self, position):
         self.int_coord = self._internal_coordinates()
-        self.board = app.App.board
+        self.board = app.App.running_board
         self.position = self.int_coord.from_board_coordinates(position)
         self._board_position = position
         self.positions = [(self.position)]
+
+    @classmethod
+    @abstractmethod
+    def from_position(cls, position):
+        pass
 
     @staticmethod
     def _get_corner_cls():
@@ -34,8 +48,12 @@ class TileBase:
         return cls.from_position(nearest_board_position)
 
     @staticmethod
+    def get_position_pixel_dict():
+        pass
+
+    @staticmethod
     def get_local_center_coordinate():
-        board = app.App.board
+        board = app.App.running_board
         return board_position.Position(board.tile_size / 2, board.tile_size / 2)
 
     @staticmethod
@@ -88,6 +106,12 @@ class TileBase:
 
 
 class TileDelimiter(TileBase):
+    """Base Class for corners and edges
+
+    Delimiters are defined by:
+      * The position of a Tile
+      * A direction
+    """
     angles: Dict[str, tuple] = dict()
     direction_angles: Dict[str, int] = dict()
 
@@ -187,13 +211,13 @@ class Tile(TileBase):
 
     @classmethod
     def from_position(cls, position):
-        board = app.App.board
+        board = app.App.running_board
         return board.get_tile(position)
-    
+
     @classmethod
     def from_token(cls, token):
         board = token.board
-        return board.get_tile(token.position)        
+        return board.get_tile(token.position)
 
     def __init__(self, position):
         super().__init__(position)
@@ -220,7 +244,7 @@ class Tile(TileBase):
 
     @staticmethod
     def get_position_pixel_dict():
-        board = app.App.board
+        board = app.App.running_board
         return board.get_center_points()
 
     def to_center(self):
@@ -229,17 +253,18 @@ class Tile(TileBase):
 
     @classmethod
     def from_pixel(cls, pixel_position) -> "TileBase":
-        board = app.App.board
+        board = app.App.running_board
         x = pixel_position[0] // board.tile_size
         y = pixel_position[1] // board.tile_size
         return cls((x, y))
-    
+
     def __sub__(self, other):
-        return board_vector.Vector(self.position[0]-other.position[0], self.position[1]-other.position[1])    
+        return board_vector.Vector(self.position[0] - other.position[0], self.position[1] - other.position[1])
 
     def distance_to(self, other):
         vec = self - other
         return vec.length()
+
 
 class Corner(TileDelimiter):
     angles = {
@@ -262,12 +287,12 @@ class Corner(TileDelimiter):
 
     @classmethod
     def from_position(cls, position):
-        board = app.App.board
+        board = app.App.running_board
         return board.get_corner(position)
 
     @classmethod
     def from_pixel(cls, position):
-        board = app.App.board
+        board = app.App.running_board
         min_value = math.inf
         nearest_hex = None
         corner_points = board.get_corner_points()
@@ -280,7 +305,7 @@ class Corner(TileDelimiter):
 
     @classmethod
     def from_tile(cls, position, direction_string):
-        board = app.App.board
+        board = app.App.running_board
         tile = board.get_tile(position)
         return board.get_corner(tile.position + cls.get_direction_from_string(direction_string))
 
@@ -316,12 +341,12 @@ class Edge(TileDelimiter):
 
     @staticmethod
     def get_position_pixel_dict():
-        board = app.App.board
+        board = app.App.running_board
         return board.get_edge_points()
 
     @classmethod
     def from_position(cls, position):
-        board = app.App.board
+        board = app.App.running_board
         return board.get_edge(position)
 
     def start_angle(self):

@@ -1,31 +1,34 @@
-from miniworldmaker.appearances import costumes_manager
+import abc
+
 from miniworldmaker.appearances import costume
+from miniworldmaker.appearances import costumes_manager
+from miniworldmaker.boards import board as board_mod
+from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens.positions import token_position_manager
 from miniworldmaker.tokens.sensors import token_boardsensor
-from miniworldmaker.tokens import token
-from miniworldmaker.boards import board
 
-class TokenConnector:
-    def __init__(self, board : "board.Board", token : "token.Token"):
-        self.board : "board.Board" = board
-        self.token : "token.Token" = token
+
+class TokenConnector(abc.ABC):
+    def __init__(self, board: "board_mod.Board", token: "token_mod.Token"):
+        self.board: "board_mod.Board" = board
+        self.token: "token_mod.Token" = token
         self._costume = None
         self._costume_manager = None
-        self._board_sensor : "token_boardsensor.TokenBoardSensor" = None
-        self._position_manager : "token_position_manager.TokenPositionManager" = None
+        self._board_sensor: "token_boardsensor.TokenBoardSensor" = None
+        self._position_manager: "token_position_manager.TokenPositionManager" = None
 
     def create_board_sensor(self) -> "token_boardsensor.TokenBoardSensor":
         return self.get_board_sensor_class()(self.token, self.board)
-            
-    def create_position_manager(self) -> "token_position_manager.TokenPositionManager" :
+
+    def create_position_manager(self) -> "token_position_manager.TokenPositionManager":
         return self.get_position_manager_class()(self.token, self.board)
 
     def create_costume(self) -> "costume.Costume":
         return self._get_token_costume_class()(self.token)
-                
+
     def create_costume_manager(self) -> "costumes_manager.CostumesManager":
         return self._get_token_costume_manager_class()(self.token)
- 
+
     @staticmethod
     def _get_token_costume_manager_class():
         return costumes_manager.CostumesManager
@@ -33,8 +36,7 @@ class TokenConnector:
     @staticmethod
     def _get_token_costume_class():
         return costume.Costume
-               
-                              
+
     @staticmethod
     def get_position_manager_class():
         return None
@@ -53,7 +55,7 @@ class TokenConnector:
             self.board.background.reload_costumes_queue.append(self.token)
         if not self.token.static:
             self.token.board.event_manager.register_events_for_token(self.token)
-      
+
     def remove_token_from_board(self, token):
         self.board.camera.clear_camera_cache()
         self.board.event_manager.unregister_instance(token)
@@ -69,7 +71,7 @@ class TokenConnector:
             manager.self_remove()
             del manager
         token.kill()
-        del(token)
+        del (token)
 
     def set_static(self, value):
         self.token._static = value

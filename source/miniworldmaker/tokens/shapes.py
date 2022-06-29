@@ -37,6 +37,7 @@ class Shape(token.Token):
     def _get_new_costume(self):
         return shape_costume.ShapeCostume(self)
 
+
 class Circle(Shape):
     """
     A circular shape, definied by position and radius
@@ -272,7 +273,7 @@ class Line(Shape):
         super().__init__(start_position)
         self.costume = shape_costume.LineCostume(self)
         self._update_rect()
-        
+
     def set_physics_default_values(self):
         self.physics.shape_type = "line"
         self.physics.simulation = "static"
@@ -287,7 +288,7 @@ class Line(Shape):
             height,
         )
         return box
-    
+
     @property
     def start_position(self):
         return self._start_position
@@ -297,7 +298,7 @@ class Line(Shape):
         self._start_position = value
         self._update_rect()
         # self.costume.set_dirty("all", 1)
-        
+
     @property
     def end_position(self):
         return self._end_position
@@ -307,13 +308,13 @@ class Line(Shape):
         self._end_position = value
         self._update_rect()
         # self.costume.set_dirty("all", 1)
-        
+
     def _update_rect(self):
         box = self.get_bounding_box()
         self.width = box.width
         self.height = box.height
         self.topleft = box.topleft
-        self.costume.set_dirty("all", 1)        
+        self.costume.set_dirty("all", 1)
 
     @property
     def thickness(self):
@@ -359,7 +360,6 @@ class Rectangle(Shape):
         self.costume = shape_costume.RectangleCostume(self)
         self.size = (width, height)
 
-
     def check_arguments(self, topleft, width, height):
         if type(topleft) != tuple and type(topleft) != board_position.Position:
             raise RectFirstArgumentError(topleft)
@@ -367,7 +367,7 @@ class Rectangle(Shape):
             raise TypeError("width of Rectangle should be int or float " + str(type(width)))
         if type(height) not in [int, float]:
             raise TypeError("height of Rectangle should be int or float but is " + str(type(height)))
-        
+
     def set_physics_default_values(self):
         self.physics.shape_type = "rect"
         self.physics.stable = False

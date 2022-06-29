@@ -1,26 +1,25 @@
 from __future__ import annotations
 
-from typing import Union, List, Tuple, Optional
+from typing import Union, List, Tuple, Optional, cast
 
 import pygame.rect
 
-import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.boards.board as board
-import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.appearances.appearance as appearance
-import miniworldmaker.appearances.costume as costume
+import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.appearances.costumes_manager as costumes_manager
 import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.tokens.token_base as token_base
+# from miniworldmaker.tokens.sensors import token_boardsensor - @todo not imported because of circular import
+import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
+import miniworldmaker.tokens.token_base as token_base
 import miniworldmaker.tools.token_inspection as token_inspection
-import miniworldmaker.tokens.sensors.token_boardsensor as token_boardsensor
 from miniworldmaker.board_positions import board_direction
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     MiniworldMakerError,
     NotImplementedOrRegisteredError,
     NoBoardError
 )
+
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
@@ -121,11 +120,11 @@ class Token(token_base.BaseToken):
         * See: :doc:`Shapes <../api/token.shape>`
         * See: :doc:`TextTokens and NumberTokens <../api/token.texttoken>`
     """
-    
+
     token_count: int = 0
     class_image: str = ""
-    
-    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0,0)):
+
+    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0)):
         super().__init__()
         if type(position) is not tuple and not isinstance(position, board_position.PositionBase):
             raise MiniworldMakerError(f"Wrong type for Token.init() - Expected Tuple or Position, got {type(position)}")
@@ -135,11 +134,11 @@ class Token(token_base.BaseToken):
         self._inner = 0
         self._size = (0, 0)
         self._static = False
-        self._position: "board_position.Position" = position
+        self._position: Union["board_position.Position", "board_position.PositionBase"] = position
         self.token_id: int = Token.token_count + 1
-        self._board_sensor: token_boardsensor.TokenBoardSensor = self._init_board_sensor()
-        self._position_manager: token_position_manager.TokenPositionManager = self._init_position_manager()
-        self._costume_manager: costumes_manager.CostumesManager = self._init_costume_manager()
+        self._board_sensor: "token_boardsensor.TokenBoardSensor" = self._init_board_sensor()
+        self._position_manager: "token_position_manager.TokenPositionManager" = self._init_position_manager()
+        self._costume_manager: "costumes_manager.CostumesManager" = self._init_costume_manager()
         if not self.board:
             raise NoBoardError()
         pygame.sprite.DirtySprite.__init__(self)
@@ -329,7 +328,7 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.flip_x()
 
-    def add_costume(self, source: Union[None, Tuple, str, List] = None) -> costume.Costume:
+    def add_costume(self, source: Union[None, Tuple, str, List] = None) -> "costume_mod.Costume":
         """Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
@@ -406,20 +405,20 @@ class Token(token_base.BaseToken):
             The new costume.
 
         """
-        
+
         if not source or type(source) in [str, tuple]:
             return self.costume_manager.add_new_appearance(source)
         elif type(source) == list:
-            return self.costume_manager.add_new_appearance_from_list(source)
+            return cast("costume.Costume", self.costume_manager.add_new_appearance_from_list(source))
         else:
             raise MiniworldMakerError(f"Wrong type for appearance. Expected: list, tuple or str, got {type(source)}")
 
-    def add_costumes(self, sources : list) -> costume.Costume:
+    def add_costumes(self, sources: list) -> "costume_mod.Costume":
         """Adds multiple costumes
         """
         return self.costume_manager.add_new_appearances(sources)
 
-    def remove_costume(self, source: Union[int, "costume.Costume"] = None):
+    def remove_costume(self, source: Union[int, "costume_mod.Costume"] = None):
         """Removes a costume from token
 
         Args:
@@ -429,7 +428,7 @@ class Token(token_base.BaseToken):
             source = self.costume
         return self.costume_manager.remove_appearance(source)
 
-    def switch_costume(self, source: Union[int, "appearance.Appearance"]) -> "costume.Costume":
+    def switch_costume(self, source: Union[int, "appearance.Appearance"]) -> "costume_mod.Costume":
         """Switches the costume of token
 
         Args:
@@ -461,7 +460,7 @@ class Token(token_base.BaseToken):
         return self.costume_manager.switch_costume(source)
 
     set_costume = switch_costume
-    
+
     def next_costume(self):
         """Switches to the next costume of token
 
@@ -471,7 +470,7 @@ class Token(token_base.BaseToken):
         self.costume_manager.next_costume()
 
     @property
-    def costume(self) -> costume.Costume:
+    def costume(self) -> costume_mod.Costume:
         """Gets the costume of token
         """
         if hasattr(self, "costume_manager") and self.costume_manager is not None:
@@ -482,7 +481,7 @@ class Token(token_base.BaseToken):
         self.costume_manager.appearance = value
 
     @property
-    def costumes(self) -> list:
+    def costumes(self) -> "costumes_manager.CostumesManager":
         """Gets the costume manager
         
         The costume manager can be iterated to get all costumes
@@ -698,7 +697,7 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.turn_right(degrees)
 
-    def point_in_direction(self, direction: Union[str, int, float]) -> float:
+    def point_in_direction(self, direction: Union[str, int, float]) -> "board_direction.Direction":
         """Token points in given direction.
 
         You can use a integer or a string to describe the direction
@@ -733,7 +732,7 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.point_in_direction(direction)
 
-    def point_towards_position(self, destination: Union[tuple, board_position.BoardPosition]) -> Union[int, float]:
+    def point_towards_position(self, destination: Union[tuple, "board_position.BoardPosition"]) -> Union[int, float]:
         """
         Token points towards a given position
 
@@ -780,7 +779,7 @@ class Token(token_base.BaseToken):
         self.set_size(value)
 
     def set_size(self, value: tuple):
-        self.position_manager.size = value
+        self.position_manager.set_size(value)
 
     @property
     def width(self):
@@ -821,7 +820,7 @@ class Token(token_base.BaseToken):
     @width.setter
     def width(self, value):
         self.position_manager.set_width(value)
-        
+
     def scale_width(self, value):
         old_width = self.size[0]
         old_height = self.size[1]
@@ -877,7 +876,7 @@ class Token(token_base.BaseToken):
     @property
     def x(self) -> float:
         """The x-value of a token"""
-        return self.position_manager.x
+        return self.position_manager.get_position()[0]
 
     @x.setter
     def x(self, value: float):
@@ -886,7 +885,7 @@ class Token(token_base.BaseToken):
     @property
     def y(self) -> float:
         """The y-value of a token"""
-        return self.position_manager.y
+        return self.position_manager.get_position()[1]
 
     @y.setter
     def y(self, value: float):
@@ -904,12 +903,12 @@ class Token(token_base.BaseToken):
     @property
     def topleft_x(self):
         """x-value of token topleft-position"""
-        return self.get_global_rect.topleft[0]
+        return self.get_global_rect().topleft[0]
 
     @property
     def topleft_y(self):
         """x-value of token topleft-position"""
-        return self.get_global_rect.topleft[1]
+        return self.get_global_rect().topleft[1]
 
     @property
     def topleft(self) -> "board_position.Position":
@@ -1012,13 +1011,15 @@ class Token(token_base.BaseToken):
 
         """
         return self.position_manager.move_back()
-    
+
     undo_move = move_back
 
     def move_towards(self, position):
         return self.position_manager.move_towards_position(position)
 
-    def move_in_direction(self, direction: Union[int, str, tuple, "board_direction.Direction", "board_position.Position"], distance=1):
+    def move_in_direction(self,
+                          direction: Union[int, str, tuple, "board_direction.Direction", "board_position.Position"],
+                          distance=1):
         """Moves token *distance* steps into a *direction* or towards a position
 
         .. image:: ../_images/move_in_direction.png
@@ -1091,7 +1092,6 @@ class Token(token_base.BaseToken):
         """
         if hasattr(self, "board") and self.board:
             self.board.get_token_connector(self).remove_token_from_board(self)
-
 
     @property
     def is_rotatable(self) -> bool:
@@ -1196,26 +1196,27 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.bounce_from_border(borders)
 
-    def sensing_board(self, distance: int = 0) -> bool:
+    def on_sensing_not_on_board(self):
+        """*on_sensing_not_on_board* is called, when token is not on board.
+
+        Examples:
+
+            Register on_sensing_not_on_board method:
+
+            .. code-block::
+
+                @player.register
+                    def on_sensing_not_on_board(self):
+                    print("Warning: I'm not on the board!!!")
+
+        Raises:
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        Is the token on board if it is moving distance steps forward?
+        raise NotImplementedOrRegisteredError(self.on_sensing_not_on_board)
 
-        .. image:: ../_images/sensing_on_board.png
 
-        Args:
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
 
-        Returns:
-            True if token is on board
-
-        """
-        return self.board_sensor.sensing_on_board(distance=distance)
-
-    # Aliases
-
-    sensing_on_board = sensing_board  #: Alias of :meth:`Token.sensing_board`
-
-    def sensing_tokens(self, token_filter: str = None) -> List[Token]:
+    def sensing_tokens(self, token_filter: str = None) -> List["Token"]:
         """Detects if tokens are on token position.
         Returns a list of tokens.
 
@@ -1231,7 +1232,6 @@ class Token(token_base.BaseToken):
         return self.board_sensor.sensing_tokens(token_filter)
 
     get_touching_tokens = sensing_tokens  #: Alias of :meth:`Token.sensing_tokens`
-    detect_tokens = sensing_tokens  #: Alias of :meth:`Token.sensing_tokens`
 
     def sensing_token(self, token_filter: Union[str, type] = None) -> Union["Token", None]:
         """Senses if tokens are on token position.
@@ -1285,10 +1285,8 @@ class Token(token_base.BaseToken):
         return self.board_sensor.sensing_token(token_filter)
 
     get_touching_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
-    detect_token = sensing_token  #: Alias of :meth:`Token.sensing_token`
 
-   
-    def sensing_borders(self, distance: int = 0,) -> List:
+    def sensing_borders(self, distance: int = 0, ) -> List:
         """
         Senses borders
 
@@ -1306,7 +1304,6 @@ class Token(token_base.BaseToken):
         return self.board_sensor.sensing_borders(distance)
 
     get_touching_borders = sensing_borders  #: Alias of :meth:`Token.sensing_borders`
-    detect_borders = sensing_borders  #: Alias of :meth:`Token.detect_borders`
 
     def sensing_left_border(self) -> bool:
         """Does the token touch the left border?
@@ -1383,8 +1380,8 @@ class Token(token_base.BaseToken):
         color = self.board_sensor.sense_color_at(direction, distance)
         return color
 
-    detect_color_at = sensing_color_at  #: Alias of :meth:`Token.sensing_color_at`
-    sense_color_at = sensing_color_at  #: Alias of :meth:`Token.sensing_color_at`
+    sense_color_at = sensing_color_at
+    detect_color = sensing_color_at  #: Alias of :meth:`Token.sensing_color_at`
 
     def sensing_tokens_at(self, direction: int = 0, distance: int = 0) -> list:
         """Detects a token in given direction and distance.
@@ -1416,7 +1413,7 @@ class Token(token_base.BaseToken):
         """
         return self.board_sensor.sensing_tokens_at(direction, distance)
 
-    detect_tokens_at = sensing_tokens_at  #: Alias of :meth:`Token.sensing_tokens_at`
+    detect_tokens = sensing_tokens_at  #: Alias of :meth:`Token.sensing_tokens_at`
 
     def sensing_point(self, position: Union["board_position.Position", Tuple]) -> bool:
         """Is the token colliding with a specific (global) point?
@@ -1426,9 +1423,13 @@ class Token(token_base.BaseToken):
         """
         return self.board_sensor.sensing_point(position)
 
+    is_touchining_point = sensing_point
+
     def sensing_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
         """Is the token colliding with a static rect?"""
         return self.board_sensor.sensing_rect(rect)
+
+    is_touching_rect = sensing_rect
 
     def bounce_from_token(self, other: "Token"):
         self.position_manager.bounce_from_token(other)
@@ -1436,7 +1437,7 @@ class Token(token_base.BaseToken):
     def animate(self, speed: int = 10):
         self.costume_manager.animate(speed)
 
-    def animate_costume(self, costume: "costume.Costume", speed: int = 10):
+    def animate_costume(self, costume: "costume_mod.Costume", speed: int = 10):
         self.costume_manager.animate_costume(costume, speed)
 
     def animate_loop(self, speed: int = 10):
@@ -1638,11 +1639,13 @@ class Token(token_base.BaseToken):
         raise NotImplementedOrRegisteredError(self.on_mouse_left)
 
     def on_mouse_right(self, position: tuple):
-        """Method is called when right mouse button was pressed. You must *register* or *implement* this method as an event.
+        """Method is called when right mouse button was pressed.
+        You must *register* or *implement* this method as an event.
 
         .. note::
 
-            The event is triggered, when mouse was clicked, even when the current mouse position is not related to token position.
+            The event is triggered, when mouse was clicked,even when the current mouse position is not related
+            to token position.
 
             You can use :py:meth:`Token.sensing_point` to check, if the mouse_position is *inside* the token.
 
@@ -1852,69 +1855,6 @@ class Token(token_base.BaseToken):
         """
         raise NotImplementedOrRegisteredError(self.on_sensing_on_board)
 
-    def on_sensing_not_on_board(self):
-        """*on_sensing_not_on_board* is called, when token is not on board.
-
-        Examples:
-
-            Register on_sensing_not_on_board method:
-
-            .. code-block::
-
-                @player.register
-                    def on_sensing_not_on_board(self):
-                    print("Warning: I'm not on the board!!!")
-
-        Raises:
-            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
-        """
-        raise NotImplementedOrRegisteredError(self.on_sensing_not_on_board)
-
-    def on_sensing_borders(self, borders: List[str]):
-        """*on_sensing_border* is called, when token is near a border
-
-        Args:
-            borders (List): A list of strings with found borders, e.g.: ['left', 'top']
-
-        Examples:
-
-            Register on_sensing_border_event:
-
-            .. code-block::
-
-                @player.register
-                def on_sensing_borders(self, borders):
-                    print("Player 4: Sensing borders:")
-                    print("Borders are here!", str(borders))
-
-        Raises:
-            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
-        """
-        raise NotImplementedOrRegisteredError(self.on_sensing_borders)
-
-    def on_sensing_token(self, token: "Token"):
-        """*on_sensing_token* is called, when token is sensing a token on same position
-
-        Args:
-            token (Token): The found token
-
-        Examples:
-
-            Register sensing_token event
-
-            .. code-block::
-
-                @player.register
-                def on_sensing_token(self, token):
-                    print("Player 1: Sensing token:")
-                    if token == player2:
-                    print("Am i sensing player2?" + str(token == player2))
-
-        Raises:
-            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
-        """
-        raise NotImplementedOrRegisteredError(self.on_sensing_token)
-
     @property
     def static(self):
         """Should token react to events?
@@ -2089,12 +2029,12 @@ class Token(token_base.BaseToken):
     @border.setter
     def border(self, value):
         self.costume.border = value
-        
+
     def hide(self):
         """Hides a token (the token will be invisible)
         """
         self.visible = False
-    
+
     def show(self):
         """Displays a token ( an invisible token will be visible)
         """
@@ -2114,31 +2054,37 @@ class Token(token_base.BaseToken):
 
     def get_local_rect(self) -> pygame.Rect:
         return self.position_manager.get_local_rect()
-    
+
     def get_global_rect(self) -> pygame.Rect:
         if self.position_manager:
             return self.position_manager.get_global_rect()
-        return pygame.Rect(-1,-1,0,0)
+        return pygame.Rect(-1, -1, 0, 0)
 
     @property
     def rect(self) -> pygame.Rect:
-        """
-        The surrounding Rectangle as pygame.Rect.
+        """The surrounding Rectangle as pygame.Rect.
         Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
         """
         return self.position_manager.get_local_rect()
 
     def get_rect(self) -> pygame.Rect:
+        """Gets the rect of the token.
+        
+        If a camera is used, the local rect is written.
+
+        Returns:
+            pygame.Rect: A Rectangle with local position.
+        """
         return self.position_manager.get_local_rect()
-    
+
     def __str__(self):
-        if self.board and hasattr(self.board, "position_manager"):
+        if self.board and hasattr(self, "position_manager"):
             return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
                 self.__class__.__name__, self.token_id, self.position, self.size
             )
         else:
-            return "**: {0}; ID: {1}".format(self.__class__.__name__, self.token_id)
-        
+            return "**: {0} without positionmanager and; ID: {1}".format(self.__class__.__name__, self.token_id)
+
     @property
     def image(self) -> pygame.Surface:
         """
@@ -2150,7 +2096,7 @@ class Token(token_base.BaseToken):
 
         """
         return self.costume_manager.image
-    
+
     @property
     def position_manager(self):
         if not hasattr(self, "_position_manager") or not self._position_manager:
@@ -2160,18 +2106,28 @@ class Token(token_base.BaseToken):
     @property
     def board_sensor(self):
         return self._board_sensor
-    
+
     @property
     def costume_manager(self):
         return self._costume_manager
 
     @property
     def position(self) -> "board_position.Position":
-        """
-        The position of the token as Position (x, y)
+        """The position of the token as Position(x, y)
         """
         return self.position_manager.position
 
     @position.setter
     def position(self, value: Union["board_position.Position", tuple]):
         self.position_manager.position = value
+
+    def get_distance_to(self, obj: Union["Token", "board_position.Position", tuple]) -> float:
+        """Gets the distance to another token or a position
+
+        Args:
+            obj: Token or Position
+
+        Returns:
+            float: The distance between token (measured from token.center) to token or position.
+        """
+        return self.board_sensor.get_distance_to(obj)

@@ -6,6 +6,7 @@ import miniworldmaker.board_positions.board_vector as board_vector
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
 from miniworldmaker.tokens import token as token_mod
 
+
 class Direction(int):
     def __init__(self, direction):
         self.value = direction
@@ -29,7 +30,7 @@ class Direction(int):
         else:
             raise MoveInDirectionTypeError(direction)
         return _dir_obj
-    
+
     @classmethod
     def from_token_towards_direction(cls, token, direction):
         if type(direction) in [int, str]:
@@ -37,18 +38,19 @@ class Direction(int):
             return cls(direction)
         elif isinstance(direction, Direction):
             return direction
-        
+
     @classmethod
-    def from_token_to_position(cls, t1: "token_mod.Token", pos = Union[tuple, "board_position.Position"]):
+    def from_token_to_position(cls, t1: "token_mod.Token", pos=Union[tuple, "board_position.Position"]):
         t1center = board_position.Position.create(t1.center)
         return Direction.from_two_points(t1center, pos)
-        
+
     @classmethod
-    def from_tokens(cls, t1 : "token_mod.Token", t2 : "token_mod.Token"):
+    def from_tokens(cls, t1: "token_mod.Token", t2: "token_mod.Token"):
         return Direction.from_token_to_position(t1, t2.center)
 
     @classmethod
-    def from_two_points(cls, pos1: Union[tuple, "board_position.BoardPosition"], pos2 : Union[tuple, "board_position.BoardPosition"]) -> "Direction":
+    def from_two_points(cls, pos1: Union[tuple, "board_position.BoardPosition"],
+                        pos2: Union[tuple, "board_position.BoardPosition"]) -> "Direction":
         x = pos2[0] - pos1[0]
         y = pos2[1] - pos1[1]
         if x != 0:
@@ -78,7 +80,7 @@ class Direction(int):
             value: The String value ("top", "left", "right", or "bottom)
 
         Returns:
-            The position as scratch-style deegrees
+            The position as scratch-style degrees
 
         """
         if value == "top" or value == "up":

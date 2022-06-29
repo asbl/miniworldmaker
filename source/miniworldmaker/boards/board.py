@@ -1,46 +1,30 @@
-from typing import Type, Union, Tuple, ValuesView
+from typing import Tuple, Union, Type, Optional
 
 import pygame
 
-import inspect
-from typing import List, Tuple, Union
-
-import pygame
-import os
-
-import miniworldmaker.appearances.background as background
-
-import miniworldmaker.base.app as app
-import miniworldmaker.board_positions.board_rect as board_rect
+import miniworldmaker.appearances.appearance as appearance
+import miniworldmaker.appearances.background as background_mod
 import miniworldmaker.appearances.backgrounds_manager as backgrounds_manager
+import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.boards.board_manager.board_collision_manager as coll_manager
 import miniworldmaker.boards.board_manager.board_event_manager as event_manager
 import miniworldmaker.boards.board_manager.board_mouse_manager as mouse_manager
-import miniworldmaker.boards.token_connectors.token_connector as token_connector
-
-
 import miniworldmaker.dialogs.ask as ask
-import miniworldmaker.tokens.token as token_module
-import miniworldmaker.appearances.appearance as appearance
-import miniworldmaker.appearances.background as background
-import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.boards.board_base as board_base
-import miniworldmaker.boards.token_connectors.pixel_board_connector as pixel_board_connector
-import miniworldmaker.tools.color as color
 import miniworldmaker.tools.board_inspection as board_inspection
+import miniworldmaker.tools.color as color
 import miniworldmaker.tools.timer as timer
 from miniworldmaker.base import app
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardArgumentsError,
-    NotImplementedOrRegisteredError,
 )
-import miniworldmaker.board_positions.board_position as board_position
+
 
 class Board(board_base.BaseBoard):
     """A board is a playing field on which tokens can move.
 
     A board has a `background` and provides basic functions for the positioning of
-    tokens and for the colission detection of tokens, which can be queried via the sensors of the tokens.
+    tokens and for the collision detection of tokens, which can be queried via the sensors of the tokens.
 
     You can create a custom board by inherit from Board or one of Board subclasses (e.g. TiledBoard or  PhysicsBoard)
     or by creating a board-object:
@@ -71,7 +55,8 @@ class Board(board_base.BaseBoard):
 
     A Board for Games based on Tiles (Like Rogue-Like RPGs).
 
-    * Every token on a TiledBoard has the size of exactly on one Tile. (If your tile_size is 40, every token has the size 40x40. )
+    * Every token on a TiledBoard has the size of exactly on one Tile.
+      (If your tile_size is 40, every token has the size 40x40. )
 
     * The `position` of a token (*mytoken.position*) corresponds to the tile on which it is placed.
 
@@ -146,8 +131,9 @@ class Board(board_base.BaseBoard):
 
 
     Args:
-        columns: columns of new board (default: 40)
-        rows: rows of new board (default:40)
+        view_x: columns of new board (default: 40)
+        view_y: rows of new board (default:40)
+        tile_size: Size of tiles (1 for normal Boards, can differ for TiledBoards)
     """
 
     def __init__(
@@ -178,7 +164,7 @@ class Board(board_base.BaseBoard):
         self._fps: int = 60
         self._key_pressed: bool = False
         self._animated: bool = False
-        self._orientation: int = 0 
+        self._orientation: int = 0
         self._static: bool = False
         self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
         self._default_is_filled = False
@@ -193,10 +179,10 @@ class Board(board_base.BaseBoard):
             app.App.init = True
             self.app: "app.App" = app.App("miniworldmaker")
             app.App.running_app = self.app
-            app.App.board = self
+            app.App.running_board = self
         else:
             self.app = app.App.running_app
-        self.background = background.Background(self)
+        self.background = background_mod.Background(self)
         self.background.update()
         self.collision_manager: "coll_manager.BoardCollisionHandler" = coll_manager.BoardCollisionHandler(self)
         self.timed_objects: list = []
@@ -205,13 +191,13 @@ class Board(board_base.BaseBoard):
         self._registered_methods = []
         self.tokens_fixed_size = False
         self._container_width = self.camera.get_viewport_width_in_pixels()
-        self._container_height = self.camera.get_viewport_height_in_pixels() 
+        self._container_height = self.camera.get_viewport_height_in_pixels()
         self.app.container_manager.add_topleft(self)
 
     def setup_board(self):
         # Implemented in TiledBoards
         pass
-            
+
     @property
     def speed(self) -> int:
         """speed defines how often the method ``act()`` will be called.  
@@ -300,7 +286,7 @@ class Board(board_base.BaseBoard):
     def height(self) -> int:
         """Gets height of board in pixels.
 
-        (for tiledboard: rows * tile_size)
+        (for `tiledboard: rows * tile_size)
         """
         return self.container_height
 
@@ -348,10 +334,10 @@ class Board(board_base.BaseBoard):
         self.setup_board()
         self.camera.viewport_width = value
         self.boundary_x = value
- 
+
     @property
     def rows(self) -> int:
-        
+
         return self.camera.viewport_height
 
     @rows.setter
@@ -359,33 +345,32 @@ class Board(board_base.BaseBoard):
         print("changed rows")
         self.setup_board()
         self.viewport_height = value
-        self.boundary_y = value     
+        self.boundary_y = value
 
     def borders(self, value: Union[tuple, "board_position.Position", pygame.Rect]) -> list:
         """
-        Gets all borders a rect is touching
+        Gets all borders a position or rect is touching
 
         Args:
-            rect: The rect
+            value: Position or rect
 
         Returns: A list of borders, e.g. ["left", "top", if rect is touching the left a top border.
 
         """
         pass
 
-       
     @property
     def camera_x(self):
         return self.camera.x
-    
+
     @camera_x.setter
     def camera_x(self, value):
         self.camera.x = value
-        
+
     @property
     def camera_y(self):
         return self.camera.y
-    
+
     @camera_y.setter
     def camera_y(self, value):
         self.camera.y = value
@@ -406,7 +391,7 @@ class Board(board_base.BaseBoard):
     def set_tile_size(self, value):
         self._tile_size = value
         self.app.window.resize()
-        self.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)
+        self.background.set_dirty("all", background_mod.Background.RELOAD_ACTUAL_IMAGE)
 
     @property
     def size(self) -> tuple:
@@ -442,7 +427,7 @@ class Board(board_base.BaseBoard):
     def default_fill(self, value):
         """Set default fill color for borders and lines"""
         self._is_filled = value
-        if self.default_is_filled != None and self.default_is_filled != False:
+        if self.default_is_filled is not None and self.default_is_filled:
             self._default_fill_color = color.Color(value).get()
 
     @property
@@ -551,7 +536,7 @@ class Board(board_base.BaseBoard):
     def backgrounds(self):
         """Returns the background of board."""
         return self.backgrounds_manager.backgrounds
-    
+
     @property
     def background(self):
         """Returns the background of board."""
@@ -559,7 +544,7 @@ class Board(board_base.BaseBoard):
 
     def get_background(self):
         return self.backgrounds_manager.background
-    
+
     @background.setter
     def background(self, source):
         if isinstance(source, appearance.Appearance):
@@ -567,11 +552,12 @@ class Board(board_base.BaseBoard):
         else:
             self.backgrounds_manager.add_background(source)
 
-    def switch_background(self, background: Union[int, Type["appearance.Appearance"]]) -> "background.Background":
+    def switch_background(self, background: Union[int, Type["appearance.Appearance"]]) -> "background_mod.Background":
         """Switches the background of board
 
         Args:
-            index: The index of the new background. If index=-1, the next background will be selected
+            background: The index of the new background or an Appearance.
+            If index=-1, the next background will be selected
 
         Examples:
 
@@ -612,17 +598,17 @@ class Board(board_base.BaseBoard):
             The new background
 
         """
-        self.backgrounds_manager.switch_background(background)
+        return self.backgrounds_manager.switch_background(background)
 
     def remove_background(self, background=None):
         """Removes a background from board
 
         Args:
-            index: The index of the new background. Defaults to -1 (last background)
+            background: The index of the new background. Defaults to -1 (last background) or an Appearance
         """
-        self.backgrounds_manager.remove_background()
+        return self.backgrounds_manager.remove_appearance(background)
 
-    def add_background(self, source: Union[str, tuple]) -> "background.Background":
+    def add_background(self, source: Union[str, tuple]) -> "background_mod.Background":
         """
         Adds a new background to the board
 
@@ -662,10 +648,10 @@ class Board(board_base.BaseBoard):
 
     def start_listening(self):
         self.is_listening = True
-        
+
     def stop_listening(self):
         self.is_listening = False
-    
+
     def clear(self):
         """Alias of ``clean``
 
@@ -813,12 +799,12 @@ class Board(board_base.BaseBoard):
 
     def is_mouse_left_pressed(self) -> bool:
         """Returns True, if mouse left button is pressed"""
-        return self.mouse_manager.mouse_left_is_clicked() 
-    
+        return self.mouse_manager.mouse_left_is_clicked()
+
     def is_mouse_right_pressed(self) -> bool:
         """Returns True, if mouse right button is pressed"""
         return self.mouse_manager.mouse_right_is_clicked()
-                
+
     def send_message(self, message, data=None):
         """Sends broadcast message
 
@@ -851,18 +837,17 @@ class Board(board_base.BaseBoard):
         if hasattr(self, "on_setup"):
             self.on_setup()
 
-
-    def switch_board(self, new_board: "board_base.BaseBoard"):
+    def switch_board(self, new_board: "Board"):
         """Switches to another board
 
         Args:
-            new_board (board_base.BaseBoard): _description_
+            new_board (Board): _description_
         """
         self.stop()
         self.stop_listening()
-        #for background in self.backgrounds:
+        # for background in self.backgrounds:
         #    self.backgrounds_manager.remove_appearance(background)
-        #self.clean()
+        # self.clean()
         self.app.event_manager.event_queue.clear()
         self.app.container_manager.switch_container(self, new_board)
         self.app.switch_board(new_board)
@@ -907,7 +892,7 @@ class Board(board_base.BaseBoard):
         position = board_position.Position.create(position)
         return self.app.window.surface.get_at(position.to_int())
 
-    def get_from_pixel(self, position : Union["board_position.Position", Tuple]) -> "board_position.Position":
+    def get_from_pixel(self, position: Union["board_position.Position", Tuple]) -> Optional["board_position.Position"]:
         """Gets Position from pixel
 
         PixelBoard: the pixel position is returned
@@ -939,7 +924,7 @@ class Board(board_base.BaseBoard):
         """Overwrite or register this method to call `on_setup`-Actions
         """
         pass
-         
+
     def __str__(self):
         return "{0} with {1} columns and {2} rows".format(self.__class__.__name__, self.columns, self.rows)
 
@@ -959,7 +944,7 @@ class Board(board_base.BaseBoard):
 
     @property
     def has_background(self) -> bool:
-        return self.backgrounds_manager.has_background
+        return self.backgrounds_manager.has_appearance()
 
     @property
     def registered_events(self) -> set:
@@ -1048,9 +1033,6 @@ class Board(board_base.BaseBoard):
         """
         self.event_manager.handle_event(event, data)
 
-    def find_colors(self, rect, color, threshold=(20, 20, 20, 20)):
-        return self.backgrounds_manager.find_colors(rect, color, threshold)
-
     def register(self, method: callable) -> callable:
         """
         Used as decorator
@@ -1066,6 +1048,3 @@ class Board(board_base.BaseBoard):
     def unregister(self, method: callable):
         self._registered_methods.remove(method)
         board_inspection.BoardInspection(self).unbind_method(method)
-        
-
-    

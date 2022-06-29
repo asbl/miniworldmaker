@@ -381,11 +381,11 @@ class SaveButton(Widget):
                 self.file = filedialog.asksaveasfilename(
                     initialdir="./", title="Select file", filetypes=(("db files", "*.db"), ("all files", "*.*"))
                 )
-                self.app.board.save_to_db(self.file)
-                self.app.board.send_message("Saved new world", self.file)
+                self.app.running_board.save_to_db(self.file)
+                self.app.running_board.send_message("Saved new world", self.file)
             else:
-                self.app.board.save_to_db(self.file)
-                self.app.board.send_message("Saved new world", self.file)
+                self.app.running_board.save_to_db(self.file)
+                self.app.running_board.send_message("Saved new world", self.file)
                 print("Board was saved to file:", self.file)
 
 
@@ -411,7 +411,7 @@ class LoadButton(Widget):
                 self.file = filedialog.askopenfilename(
                     initialdir="./", title="Select file", filetypes=(("db files", "*.db"), ("all files", "*.*"))
                 )
-            new_board = self.app.board.load_board_from_db(self.file)
+            new_board = self.app.running_board.load_board_from_db(self.file)
 
 
 class ClearButton(Widget):

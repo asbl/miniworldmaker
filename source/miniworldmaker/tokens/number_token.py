@@ -1,6 +1,7 @@
 import miniworldmaker.tokens.text_token as text_token
 from miniworldmaker.appearances import costume
 
+
 class Number(text_token.TextToken):
     """
     A number token shows a Number.
@@ -33,6 +34,7 @@ class Number(text_token.TextToken):
             raise TypeError(f"Error on creating NumberToken. Position is int - Should be a position")
         if type(number) not in [int, float]:
             raise TypeError(f"Error on creating NumberToken. Number should be int or float")
+        self.number = 0
         super().__init__(position)
         self.set_number(number)
         self.is_static = True

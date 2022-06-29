@@ -35,6 +35,8 @@ class CircleCostume(ShapeCostume):
         self.parent.position_manager.size = (self.parent.radius * 2, self.parent.radius * 2)
         super()._update_draw_shape()
 
+    def rotated(self):
+        pass # Do not set dirty after rotation
 
 class EllipseCostume(ShapeCostume):
     def _inner_shape(self):

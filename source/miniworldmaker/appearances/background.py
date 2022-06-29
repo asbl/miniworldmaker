@@ -6,6 +6,7 @@ import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.managers.image_background_manager as image_background_manager
 import miniworldmaker.appearances.managers.transformations_background_manager as transformations_background_manager
 import miniworldmaker.base.app as app
+from miniworldmaker.boards import board as board_mod
 
 
 class Background(appearance.Appearance):
@@ -61,9 +62,9 @@ class Background(appearance.Appearance):
         self.image_manager = image_background_manager.ImageBackgroundManager(self)
 
     @property
-    def board(self) -> "board.Board":
+    def board(self) -> "board_mod.Board":
         return self.parent
-    
+
     def show_grid(self):
         self.grid = True
 
@@ -105,7 +106,7 @@ class Background(appearance.Appearance):
 
     def repaint(self):
         """Called 1/frame from board"""
-        if self.parent == app.App.board:
+        if self.parent == app.App.running_board:
             self.board.tokens.clear(self.surface, self.image)
             repaint_rects = self.board.tokens.draw(self.surface)
             self.board.app.window.repaint_areas.extend(repaint_rects)
@@ -117,7 +118,7 @@ class Background(appearance.Appearance):
         if hasattr(self.board, "dynamic_tokens"):
             dynamic_tokens = self.board.dynamic_tokens.copy()
             [token.costume.update() for token in dynamic_tokens]
-            del(dynamic_tokens)
+            del dynamic_tokens
 
     def _after_transformation_pipeline(self):
         self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
@@ -129,7 +130,7 @@ class Background(appearance.Appearance):
 
     def _blit_to_window_surface(self):
         """Blits background to window surface"""
-        if self.parent == app.App.board:
+        if self.parent == app.App.running_board:
             self.parent.app.window.surface.blit(self.image, (0, 0))
             self.parent.app.window.add_display_to_repaint_areas()
             self.repaint()
@@ -138,7 +139,7 @@ class Background(appearance.Appearance):
         super().add_image(source)
         self._blit_to_window_surface()
         self._update_all_costumes()
-        if self.parent == app.App.board:
+        if self.parent == app.App.running_board:
             self.parent.app.window.surface.blit(self.image, (0, 0))
             self.parent.app.window.add_display_to_repaint_areas()
             return self.parent.app.window.display_update()

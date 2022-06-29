@@ -1,20 +1,13 @@
 from __future__ import annotations
-from shelve import Shelf
 
-from typing import Union, Optional, Tuple
-from numpy import isin
+from typing import List
 
 import pygame
-import functools
-import collections
 
 import miniworldmaker.base.app as app
-
+from miniworldmaker.boards import board as board_mod
 from miniworldmaker.exceptions.miniworldmaker_exception import (
-    MiniworldMakerError,
-    NoValidBoardPositionError,
-    TokenArgumentShouldBeTuple,
-    WrongArgumentsError,
+    NotImplementedOrRegisteredError,
 )
 
 
@@ -33,12 +26,15 @@ class Meta(type):
 class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def __init__(self):
-        self.board: "board.Board" = app.App.board
+        self._dirty = 0  # must be set before calling __init__ of DirtySprite.
+        super().__init__()
+        self.board: "board_mod.Board" = app.App.running_board
         self._managers: list = list()
+        self._position = (0, 0)
 
     def _get_new_costume(self):
         return self.board.get_token_connector(self).create_costume()
-        
+
     def _init_board_sensor(self):
         self._board_sensor = self.board.get_token_connector(self).create_board_sensor()
         self._managers.append(self._board_sensor)
@@ -65,7 +61,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
             int: 1 if token is dirty/0 otherwise
         """
         return self._dirty
-    
+
     @dirty.setter
     def dirty(self, value: int):
         if not self._dirty and self.position_manager and self.board.camera.is_token_in_viewport(self) and value == 1:
@@ -74,15 +70,83 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
             self._dirty = 0
         else:
             pass
-        
+
     @property
     def rect(self) -> pygame.Rect:
         """Implemented in subclass
         """
         pass
-    
+
     @property
     def image(self) -> pygame.Surface:
         """Implemented in subclass
         """
         return self.costume_manager.image
+
+    def on_sensing_token(self, token: "Token"):
+        """*on_sensing_token* is called, when token is sensing a token on same position
+
+        Args:
+            token (Token): The found token
+
+        Examples:
+
+            Register sensing_token event
+
+            .. code-block::
+
+                @player.register
+                def on_sensing_token(self, token):
+                    print("Player 1: Sensing token:")
+                    if token == player2:
+                    print("Am i sensing player2?" + str(token == player2))
+
+        Raises:
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedOrRegisteredError(self.on_sensing_token)
+
+    # on_touching_token = on_sensing_token @todo: replace or add listeneer
+
+    def sensing_board(self, distance: int = 0) -> bool:
+        """
+        Is the token on board if it is moving distance steps forward?
+
+        .. image:: ../_images/sensing_on_board.png
+
+        Args:
+            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+
+        Returns:
+            True if token is on board
+
+        """
+        return self.board_sensor.sensing_on_board(distance=distance)
+
+    # Aliases
+    sensing_on_board = sensing_board  # @todo: replace or add listeneer
+    is_touching_board = sensing_board # @todo: replace or add listeneer
+
+    def on_sensing_borders(self, borders: List[str]):
+        """*on_sensing_border* is called, when token is near a border
+
+        Args:
+            borders (List): A list of strings with found borders, e.g.: ['left', 'top']
+
+        Examples:
+
+            Register on_sensing_border_event:
+
+            .. code-block::
+
+                @player.register
+                def on_sensing_borders(self, borders):
+                    print("Player 4: Sensing borders:")
+                    print("Borders are here!", str(borders))
+
+        Raises:
+            NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
+        """
+        raise NotImplementedOrRegisteredError(self.on_sensing_borders)
+
+    on_touching_borders = on_sensing_borders

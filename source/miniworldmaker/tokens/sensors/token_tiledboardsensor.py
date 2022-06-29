@@ -1,11 +1,11 @@
 import math
 
 import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.boards.tiled_board as board_module
-import miniworldmaker.tokens.sensors.token_boardsensor as boardsensor
-import miniworldmaker.tokens.token as token_module
-
-
+from miniworldmaker.boards import tiled_board as board_module
+from miniworldmaker.tokens.sensors import token_boardsensor as boardsensor
+from miniworldmaker.tokens import token as token_module
+from miniworldmaker.board_positions import tile_elements
+from typing import Union
 class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
     """
     The TiledBoardConnector connects a token to a tiled_board
@@ -112,3 +112,12 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         destination = self.get_destination(self.token.position, direction, distance)
         destination = self.board.to_pixel(destination)
         return self.board.background.get_color(destination)
+    
+    def get_distance_to(self, obj: Union["token_module.Token", "board_position.Position"]) -> float:
+        tile1 = tile_elements.Tile.from_token(self.token)
+        if isinstance(obj, token_module.Token):
+            tile2 = tile_elements.Tile.from_token(obj)
+        else:
+            tile2 = self.token.board.get_tile(obj)
+        return tile1.distance_to(tile2)
+            
