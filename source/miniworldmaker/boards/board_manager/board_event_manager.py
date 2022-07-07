@@ -186,6 +186,7 @@ class BoardEventHandler:
                 if type(data) in [list, str, tuple]:
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
+            registered_events.clear()
             del registered_events
 
     def unregister_instance(self, instance):

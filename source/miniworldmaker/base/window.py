@@ -38,8 +38,7 @@ class Window:
     @fullscreen.setter
     def fullscreen(self, value):
         self._fullscreen = value
-        self.dirty = 1
-        # self.display_update()
+        self.update_surface()
 
     @property
     def fit_desktop(self):
@@ -84,6 +83,7 @@ class Window:
         """
         if self.fullscreen:
             self._surface = pygame.display.set_mode((self.width, self.height), pygame.SCALED)
+            pygame.display.toggle_fullscreen()
         elif self.fit_desktop:
             self._surface = pygame.display.set_mode((0, 0))
         elif self.replit:
@@ -101,8 +101,6 @@ class Window:
         """
         if self.dirty:
             self.dirty = 0
-            if self.fullscreen:
-                pygame.display.toggle_fullscreen()
             self.add_display_to_repaint_areas()
             pygame.display.update(self.repaint_areas)
             self.repaint_areas = []

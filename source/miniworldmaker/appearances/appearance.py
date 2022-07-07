@@ -733,18 +733,13 @@ class Appearance(metaclass=MetaAppearance):
         The image pipeline will be  processed, defined by "set_dirty"
         """
         if self.dirty >= self.RELOAD_ACTUAL_IMAGE or not self._image and not self._flag_transformation_pipeline:
-            dirty = self.dirty
             self.dirty = 0
             self._flag_transformation_pipeline = True
             self._before_transformation_pipeline()
-            image = self.image
-            if dirty >= self.RELOAD_ACTUAL_IMAGE:
-                # @todo: Not working: Replace RELOAD_ACTUAL_IMAGE with LOAD NEW IMAGE
-                image = self.image_manager.load_image_from_image_index()
-            if dirty >= self.RELOAD_ACTUAL_IMAGE:
-                image = self.transformations_manager.process_transformation_pipeline(image, self)
-                self._after_transformation_pipeline()
-                self._flag_transformation_pipeline = False
+            image = self.image_manager.load_image_from_image_index()
+            image = self.transformations_manager.process_transformation_pipeline(image, self)
+            self._after_transformation_pipeline()
+            self._flag_transformation_pipeline = False
             self._image = image
         return self._image
 

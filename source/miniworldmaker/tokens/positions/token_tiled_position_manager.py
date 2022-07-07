@@ -29,8 +29,7 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
         rect = self.get_global_rect()
         return rect
 
-    @property
-    def size(self):
+    def get_size(self):
         if self.token.board:
             return (
                 self.token.board.tile_size * self._scaled_size[0],
@@ -39,8 +38,7 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
         else:
             return 0
 
-    @size.setter
-    def size(self, value: Union[int, Tuple]):
+    def set_size(self, value: Union[int, Tuple]):
         if type(value) == int or type(value) == float:  # convert int to tuple
             value = (value, value)
         self._scaled_size = value

@@ -1009,8 +1009,8 @@ class Board(board_base.BaseBoard):
             self.collision_manager.handle_all_collisions()
             self.mouse_manager.update_positions()
             # run animations
-            self.background._update_all_costumes()
             self.background.update()
+            self.background._update_all_costumes() #@TODO: Uddate costumes for animated costumes, performance
             self._tick_timed_objects()
         self.frame = self.frame + 1
         self.clock.tick(self.fps)

@@ -23,11 +23,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
     def get_global_rect(self) -> pygame.Rect:
         """Pixelboard-Rects are positioned at center of position
         """
-        # if costume is set, get rect coordinates from costume.
-        if self.token.costume:
-            _rect = self.token.costume.get_image().get_rect()
-        else:
-            _rect = pygame.Rect(0,0 , self.token.size[0], self.token.size[1])
+        _rect = super().get_global_rect()
         _rect_center = self.center
         # board position without shift is the center position
         _rect.center = _rect_center

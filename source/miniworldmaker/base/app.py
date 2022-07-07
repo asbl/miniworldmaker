@@ -84,9 +84,6 @@ class App:
     def run(self, image, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False):
         """
         runs the main_loop
-
-        Lines after this statement are not reachable
-
         Args:
             image: The background image
             fullscreen: True or False

@@ -11,9 +11,9 @@ from miniworldmaker.boards import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.tokens import token as token_mod
+from abc import ABC, abstractmethod
 
-
-class TokenPositionManager:
+class TokenPositionManager(ABC):
     def __init__(self, token: "token_mod.Token", board: "board.Board"):
         self.token = token
         self.last_position = (0, 0)
@@ -38,12 +38,14 @@ class TokenPositionManager:
         return self.get_local_rect()
 
     def get_global_rect(self) -> "board_rect.Rect":
+        # if costume is set, get rect coordinates from costume.
         if self.token.costume:
-            rect = self.token.costume.image.get_rect()
+            _rect = self.token.costume.get_image().get_rect()
         else:
-            rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
-        return rect
+            _rect = pygame.Rect(0,0 , self.token.size[0], self.token.size[1])
+        return _rect
 
+    @abstractmethod
     def get_local_rect(self) -> "board_rect.Rect":
         pass
 
@@ -82,11 +84,14 @@ class TokenPositionManager:
 
     @property
     def size(self):
-        return self._size
+        return self.get_size()
 
     @size.setter
     def size(self, value: Union[int, float, tuple]):
         self.set_size(value)
+
+    def get_size(self):
+        return self._size
 
     def set_size(self, value: Union[int, float, tuple]):
         """Sets size of token
@@ -156,7 +161,7 @@ class TokenPositionManager:
         self.last_position = self.position
         self.last_direction = self.direction
         self._position = board_position.Position.create(value)
-        self.token.board.camera.fetch_token(self.token)
+        #self.token.board.camera.fetch_token(self.token)
         if self.last_position != self._position:
             self.token.dirty = 1
         return self.position

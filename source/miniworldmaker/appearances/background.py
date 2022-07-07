@@ -126,7 +126,6 @@ class Background(appearance.Appearance):
         for token in self.board.camera.get_tokens_in_viewport():
             token.dirty = 1
         self._blit_to_window_surface()
-        self._update_all_costumes()
 
     def _blit_to_window_surface(self):
         """Blits background to window surface"""
@@ -138,7 +137,6 @@ class Background(appearance.Appearance):
     def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
         super().add_image(source)
         self._blit_to_window_surface()
-        self._update_all_costumes()
         if self.parent == app.App.running_board:
             self.parent.app.window.surface.blit(self.image, (0, 0))
             self.parent.app.window.add_display_to_repaint_areas()
