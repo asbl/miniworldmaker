@@ -4,14 +4,14 @@ import os
 import unittest
 import random
 
-TEST_FRAMES = [1]
-QUIT_FRAME = 1
+TEST_FRAMES = [1,20,30,40,50,60,70]
+QUIT_FRAME = 70
     
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test101(unittest.TestCase):
+class Test230(unittest.TestCase):
 
     def setUp(self):
         """ Programmcode here:
@@ -23,34 +23,13 @@ class Test101(unittest.TestCase):
             b) An act-method, where self.test() is called
         """
         App.reset(unittest = True, file = __file__)
-        
-        class MyBoard(TiledBoard):
-            def on_setup(self):
-                path = os.path.dirname(__file__)
-                board.app.register_path(path)
-                self.columns = 5
-                self.rows = 5
-                self.tile_size = 40
-                self.add_background("images/stone.png")
-                print(self.background)
-                token = Token()
-                token.position = (3,4)
-                assert(token.costume.is_rotatable == True)
-                assert(type(token.position) == Position)
-                print(token, token.costumes)
-                print("costume:", token.costume)
-                print(token.costume.images)
-                token.add_costume("images/player.png")
-                print(token.costumes)
-                
-                print(token.costume.images)
-                assert(token.costume.is_upscaled == True)
-                # Bilder von:
-                # https://www.kenney.nl/assets
-                
-        board = MyBoard()
-        """ here act and init - delete if used in testcode"""
-        
+
+        board = Board(100,100)
+        t = Circle((50,50))
+        @t.register
+        def act(self):
+            self.x += 1
+
         @board.register
         def on_setup(self):
             self.init_test()            
@@ -99,6 +78,5 @@ class Test101(unittest.TestCase):
         
 if __name__ == '__main__':
     unittest.main()
-
 
 

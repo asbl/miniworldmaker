@@ -97,7 +97,6 @@ class TileBase(abc.ABC):
 
     def get_local_corner_points(self):
         points = []
-        tile_pos = self.to_pixel()
         for corner_str, vector in self.corner_vectors.items():
             corner = self._get_corner_cls()(self._board_position, corner_str)
             offset = corner.get_local_coordinate_for_tile(self)

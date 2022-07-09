@@ -19,10 +19,15 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
         rect = super().get_global_rect()
         if self.token.board.is_tile(self.token.position):
             rect.topleft = tile_elements.Tile.from_position(self.token.position).to_pixel()
-        if self.token.board.is_corner(self.token.position):
+            return rect
+        elif self.token.board.is_corner(self.token.position):
             rect.center = tile_elements.Corner.from_position(self.token.position).to_pixel()
-        if self.token.board.is_edge(self.token.position):
+            return rect
+        elif self.token.board.is_edge(self.token.position):
             rect.center = tile_elements.Edge.from_position(self.token.position).to_pixel()
+            return rect
+        else:
+            rect.topleft = (-self.size[0], -self.size[1])
         return rect
 
     def get_local_rect(self):

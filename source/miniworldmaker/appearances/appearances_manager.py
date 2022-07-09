@@ -97,20 +97,8 @@ class AppearancesManager:
     def _add_appearance_to_manager(self, appearance: "appearance_mod.Appearance") -> "appearance_mod.Appearance":
         self.appearance = appearance
         self.appearances_list.append(appearance)
-        if self.is_rotatable is not None:
-            appearance.is_rotatable = self.is_rotatable
-        if self.is_animated is not None:
-            appearance.is_animated = self.is_animated
-        if self.animation_speed is not None:
-            appearance.animation_speed = self.animation_speed
-        if self.is_upscaled is not None:
-            appearance.is_upscaled = self.is_upscaled
-        if self.is_scaled_to_width is not None:
-            appearance.is_scaled_to_width = self.is_scaled_to_width
-        if self.is_scaled_to_height is not None:
-            appearance.is_scaled_to_height = self.is_scaled_to_height
-        if self.is_scaled is not None:
-            appearance.is_scaled = self.is_scaled
+        appearance.set_defaults(self.is_rotatable, self.is_animated, self.animation_speed, self.is_upscaled,
+                                self.is_scaled_to_width, self.is_scaled_to_height, self.is_scaled, self.is_flipped)
         self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return appearance
 
@@ -298,6 +286,15 @@ class AppearancesManager:
     def animation_speed(self, value):
         for appearance in self.appearances_list:
             appearance.animation_speed = value
+
+    @property
+    def is_flipped(self):
+        return self.appearance.is_flipped
+
+    @is_flipped.setter
+    def is_flipped(self, value):
+        for appearance in self.appearances_list:
+            appearance.is_flipped = value
 
     def get_actual_appearance(self):
         return self.appearance

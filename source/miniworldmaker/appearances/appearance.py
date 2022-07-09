@@ -67,10 +67,31 @@ class Appearance(metaclass=MetaAppearance):
         self.image_manager.add_default_image()
         # properties
         self.texture_size = (0, 0)
-        self.animation_speed = 10  #: The animation speed for animations
+        self._animation_speed = 10  #: The animation speed for animations
         self.loop = False
         self.animation_length = 0
         self._animation_start_frame = 0
+
+    def set_defaults(self, rotatable, is_animated, animation_speed, is_upscaled, is_scaled_to_width,
+                     is_scaled_to_height, is_scaled, is_flipped) -> "appearance_mod.Appearance":
+        if rotatable:
+            self._is_rotatable = rotatable
+        if is_animated:
+            self._is_animated = is_animated
+        if animation_speed:
+            self._animation_speed = animation_speed
+        if is_upscaled:
+            self._is_upscaled = is_upscaled
+        if is_scaled_to_width:
+            self._is_scaled_to_width = is_scaled_to_width
+        if is_scaled_to_height:
+            self._is_scaled_to_height = is_scaled_to_height
+        if is_scaled:
+            self._is_scaled = is_scaled
+        if is_flipped:
+            self._is_flipped = is_flipped
+        self.set_dirty("all", self.LOAD_NEW_IMAGE)
+        return self
 
     def after_init(self):
         # Called in metaclass
@@ -88,6 +109,14 @@ class Appearance(metaclass=MetaAppearance):
     def set_font(self, font, font_size):
         self.font_manager.font_path = font
         self.font_manager.font_size = font_size
+
+    @property
+    def animation_speed(self):
+        return self._animation_speed
+
+    @animation_speed.setter
+    def animation_speed(self, value):
+        self._animation_speed = value
 
     def set_animation_speed(self, value):
         self.animation_speed = value

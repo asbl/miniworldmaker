@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Union, Tuple
 
 import pygame
@@ -11,7 +12,7 @@ from miniworldmaker.boards import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.tokens import token as token_mod
-from abc import ABC, abstractmethod
+
 
 class TokenPositionManager(ABC):
     def __init__(self, token: "token_mod.Token", board: "board.Board"):
@@ -42,7 +43,7 @@ class TokenPositionManager(ABC):
         if self.token.costume:
             _rect = self.token.costume.get_image().get_rect()
         else:
-            _rect = pygame.Rect(0,0 , self.token.size[0], self.token.size[1])
+            _rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
         return _rect
 
     @abstractmethod
@@ -161,7 +162,7 @@ class TokenPositionManager(ABC):
         self.last_position = self.position
         self.last_direction = self.direction
         self._position = board_position.Position.create(value)
-        #self.token.board.camera.fetch_token(self.token)
+        # self.token.board.camera.fetch_token(self.token)
         if self.last_position != self._position:
             self.token.dirty = 1
         return self.position

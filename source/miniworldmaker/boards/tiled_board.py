@@ -158,7 +158,7 @@ class TiledBoard(board.Board):
 
     def add_tile_to_board(self, position):
         tile_cls, edge_cls, corner_cls = self._templates()
-        tile_pos = board_position.Position(position[0], position[1])
+        tile_pos = board_position.Position.create(position)
         tile = tile_cls(tile_pos)
         self.tiles[tile.position] = tile
         return tile
