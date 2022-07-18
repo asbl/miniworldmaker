@@ -78,6 +78,7 @@ class BoardEventManager:
     def _get_members_for_instance(self, instance) -> set:
         """Get"""
         if instance.__class__ not in [token_base.BaseToken,
+                                      token.Token,
                                       board_base.BaseBoard,
                                       ]:
             members = {name for name, method in vars(instance.__class__).items() if callable(method)}
