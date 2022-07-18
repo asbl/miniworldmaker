@@ -19,35 +19,37 @@ class BoardCollisionHandler:
         self._handle_token_sensing_not_on_board_methods()
 
     def _handle_token_sensing_token_methods(self):
-        for method in self.board.event_manager.registered_events["on_sensing_"].copy():
-            token = method.__self__
-            token_type_of_target = method.__name__[11:]
-            found_tokens_for_token_type = token.board_sensor.sensing_tokens(token_filter=token_type_of_target)
-            if not found_tokens_for_token_type:  # found nothing
-                found_tokens_for_token_type = []
-            if token in found_tokens_for_token_type:  # found self
-                found_tokens_for_token_type.remove(token)
-            for found_token in found_tokens_for_token_type:  # found other token
-                subclasses = token_class_inspection.TokenClassInspection.get_all_token_classes()
-                if found_token.__class__ in subclasses:
-                    method_caller.call_method(method, (found_token,))
+        for event in self.board.event_manager.class_events["on_sensing"]:
+            for method in self.board.event_manager.registered_events[event].copy():
+                token = method.__self__
+                token_type_of_target = method.__name__[11:]
+                found_tokens_for_token_type = token.board_sensor.sensing_tokens(token_filter=token_type_of_target)
+                if not found_tokens_for_token_type:  # found nothing
+                    found_tokens_for_token_type = []
+                if token in found_tokens_for_token_type:  # found self
+                    found_tokens_for_token_type.remove(token)
+                for found_token in found_tokens_for_token_type:  # found other token
+                    subclasses = token_class_inspection.TokenClassInspection.get_all_token_classes()
+                    if found_token.__class__ in subclasses:
+                        method_caller.call_method(method, (found_token,))
 
     def _handle_token_not_sensing_token_methods(self):
-        for method in self.board.event_manager.registered_events["on_not_sensing_"].copy():
-            token = method.__self__
-            token_type_of_target = method.__name__[15:]
-            found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
-            if found_tokens_for_token_type:
-                found_tokens_for_token_type = []
-                method_caller.call_method(method, None)
-                return
-            if token in found_tokens_for_token_type:
-                found_tokens_for_token_type.remove(token)
-            for found_token in found_tokens_for_token_type:
-                subclasses = token_class_inspection.TokenClassInspection(token).get_all_token_classes()
-                if found_token.__class__ in subclasses:
+        for event in self.board.event_manager.class_events["on_sensing"]:
+            for method in self.board.event_manager.registered_events["on_not_sensing_"].copy():
+                token = method.__self__
+                token_type_of_target = method.__name__[15:]
+                found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
+                if found_tokens_for_token_type:
+                    found_tokens_for_token_type = []
+                    method_caller.call_method(method, None)
                     return
-            method_caller.call_method(method, None)
+                if token in found_tokens_for_token_type:
+                    found_tokens_for_token_type.remove(token)
+                for found_token in found_tokens_for_token_type:
+                    subclasses = token_class_inspection.TokenClassInspection(token).get_all_token_classes()
+                    if found_token.__class__ in subclasses:
+                        return
+                method_caller.call_method(method, None)
 
     def _handle_token_sensing_border_methods(self):
         for event in self.board.event_manager.class_events["border"]:

@@ -7,9 +7,11 @@ import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.keys as keys
 import miniworldmaker.tools.method_caller as method_caller
 from miniworldmaker.board_positions import board_position
-from miniworldmaker.tokens import token_base
-from miniworldmaker.tokens import token
 from miniworldmaker.boards.board_plugins.pixel_board import board
+from miniworldmaker.tokens import token as token_mod
+from miniworldmaker.tokens import token_base
+from miniworldmaker.tools import token_class_inspection
+
 
 class BoardEventManager:
     """Processes Board Events
@@ -20,6 +22,8 @@ class BoardEventManager:
 
     class_events = dict()
     class_events_set = set()
+    members =  set()
+    registered_class_events = defaultdict()
 
     @staticmethod
     def setup_event_list():
@@ -28,6 +32,12 @@ class BoardEventManager:
             specific_key_events.append("on_key_down_" + value.lower())
             specific_key_events.append("on_key_pressed_" + value.lower())
             specific_key_events.append("on_key_up_" + value.lower())
+
+        sensing_token_methods = []
+        for cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
+            sensing_token_methods.append("on_sensing_" + cls.__name__.lower())
+            sensing_token_methods.append("on_not_sensing_" + cls.__name__.lower())
+
         BoardEventManager.class_events = {
             "mouse": ["on_mouse_left",
                       "on_mouse_right",
@@ -55,8 +65,8 @@ class BoardEventManager:
             ],
             "on_board": ["on_sensing_on_board",
                          "on_sensing_not_on_board"],
-            "on_sensing_token": ["on_sensing_",
-                                 "on_not_sensing_"],
+            "on_sensing": ["on_sensing_",
+                                 "on_not_sensing_", ] + sensing_token_methods,
         }
         BoardEventManager.class_events_set = set()
         for key in BoardEventManager.class_events.keys():
@@ -72,13 +82,17 @@ class BoardEventManager:
         self.executed_events: set = set()
         self.board = board
         self.registered_events = defaultdict(set)
-        self.members = self._get_members_for_instance(board)
-        self.register_events_for_board(board)
+        if not BoardEventManager.members:
+            BoardEventManager.members = self._get_members_for_instance(board)
+        if not BoardEventManager.registered_class_events:
+            self.register_events_for_board(board)
+        else:
+            self.registered_events = BoardEventManager.registered_class_events
 
     def _get_members_for_instance(self, instance) -> set:
         """Get"""
         if instance.__class__ not in [token_base.BaseToken,
-                                      token.Token,
+                                      token_mod.Token,
                                       board_base.BaseBoard,
                                       ]:
             members = {name for name, method in vars(instance.__class__).items() if callable(method)}
@@ -97,7 +111,7 @@ class BoardEventManager:
         all_members = set()
         for cls in classes:
             if cls not in [token_base.BaseToken,
-                           token.Token,
+                           token_mod.Token,
                            board_base.BaseBoard,
                            ]:
                 members = {name for name, method in vars(cls).items() if callable(method)}
@@ -116,10 +130,9 @@ class BoardEventManager:
 
     def register_events_for_token(self, token):
         """Registers all Board events."""
-        members = self._get_members_for_instance(token)
+        members = token._event_manager.get_members(token)
         for member in members:
-            if member in BoardEventManager.class_events_set:
-                self.register_event(member, token)
+            self.register_event(member, token)
 
     def get_parent_methods(self, instance):
         parents = inspect.getmro(instance.__class__)
@@ -127,7 +140,7 @@ class BoardEventManager:
         for parent in parents:
             if parent in [
                 board.Board,
-                token.Token,
+                token_mod.Token,
                 token_base.BaseToken
             ]:
                 methods = methods.union({method for name, method in vars(parent).items() if callable(method)})
@@ -135,18 +148,20 @@ class BoardEventManager:
 
     def register_event(self, member, instance):
         method = inspection.Inspection(instance).get_instance_method(member)
-        for event in BoardEventManager.class_events_set:
-            if member == event:
-                self.registered_events[event].add(method)
-                return
-        for event in BoardEventManager.class_events_set:
-            if member.startswith(event):
-                self.registered_events[event].add(method)
-                return
-            elif member.startswith("on_touching_"):
-                self.board.register_touching_method(method)
-            elif member.startswith("on_separation_from_"):
-                self.board.register_separate_method(method)
+        if method:
+            for event in BoardEventManager.class_events_set:
+                if member == event:
+                    self.registered_events[event].add(method)
+                    return
+            for event in BoardEventManager.class_events_set:
+                if member.startswith(event):
+                    self.registered_events[event].add(method)
+                    return
+                elif member.startswith("on_touching_"):
+                    self.board.register_touching_method(method)
+                elif member.startswith("on_separation_from_"):
+                    self.board.register_separate_method(method)
+
 
     def handle_event(self, event: str, data: Any):
         """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens

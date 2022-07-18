@@ -30,7 +30,7 @@ class TokenConnector(abc.ABC):
         return self._get_token_costume_manager_class()(self.token)
 
     def create_event_manager(self):
-        return self._get_token_costume_manager_class()(self.token)
+        return self._get_token_event_manager_class()(self.token)
 
     @staticmethod
     def _get_token_event_manager_class():
