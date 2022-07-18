@@ -25,20 +25,26 @@ class Test710(unittest.TestCase):
         App.reset(unittest = True, file = __file__)
         
         board = PixelBoard((200, 200))
-        board.fill_color = (255,255,255,100)
+        board.fill_color = (0,0,0)
+        board.default_fill_color = (255,255,255,255)
 
         Rectangle((10,100), 180, 80)
+        r = Rectangle((10,100), 180, 80)
+        r.turn_left(45)
 
-        board.fill_color = (255,0,0,100)
+        board.default_fill_color = (255,0,0,100)
         Rectangle.from_center((100,100),20, 10)
 
-        board.fill_color = (0,255,0,100)
+        board.default_fill_color = (0,255,0,100)
         e = Rectangle((100,100),10, 10)
         e.center = e.position
 
-        board.fill_color = (0,255,0,50)
-        e = Rectangle((100,100),18.1, 18.1)
+        board.default_fill_color = (255,255,0,50)
+        e = Rectangle((100,100),30, 30)
         e.center = e.position
+
+
+
 
         """ here act and init - delete if used in testcode"""
         

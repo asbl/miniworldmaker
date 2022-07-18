@@ -48,7 +48,7 @@ class Test203(unittest.TestCase):
                 self.move()
                 other = self.sensing_token(token_filter=Robot)
                 if other:
-                    print("sensed")
+                    print("sensed", self, other, self.board.tokens)
                     explosion = Explosion(position=self.position)
                     print("exploded")
                     self.remove()

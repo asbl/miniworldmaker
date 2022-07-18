@@ -5,7 +5,7 @@ from typing import List
 import pygame
 
 import miniworldmaker.base.app as app
-from miniworldmaker.boards import board as board_mod
+from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
 )
@@ -45,6 +45,11 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         self._costume_manager._add_default_appearance()
         self._managers.append(self._costume_manager)
         return self._costume_manager
+
+    def _init_event_manager(self):
+        self._event_manager = self.board.get_token_connector(self).create_event_manager()
+        self._managers.append(self._event_manager)
+        return self._event_manager
 
     def _init_position_manager(self):
         self._position_manager = self.board.get_token_connector(self).create_position_manager()

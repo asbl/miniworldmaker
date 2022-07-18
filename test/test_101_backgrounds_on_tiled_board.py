@@ -26,6 +26,7 @@ class Test101(unittest.TestCase):
         
         class MyBoard(TiledBoard):
             def on_setup(self):
+                self.init_test()            
                 path = os.path.dirname(__file__)
                 board.app.register_path(path)
                 self.columns = 5
@@ -50,10 +51,6 @@ class Test101(unittest.TestCase):
                 
         board = MyBoard()
         """ here act and init - delete if used in testcode"""
-        
-        @board.register
-        def on_setup(self):
-            self.init_test()            
             
         @board.register
         def act(self):

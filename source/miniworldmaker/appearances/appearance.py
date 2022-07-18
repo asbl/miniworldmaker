@@ -1,6 +1,6 @@
 import abc
 from abc import abstractmethod
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 
 import numpy
 import pygame
@@ -10,7 +10,7 @@ import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
 import miniworldmaker.tools.binding as binding
 import miniworldmaker.tools.color as color_mod
-from miniworldmaker.boards import board
+from miniworldmaker.boards.board_plugins.pixel_board import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -73,7 +73,7 @@ class Appearance(metaclass=MetaAppearance):
         self._animation_start_frame = 0
 
     def set_defaults(self, rotatable, is_animated, animation_speed, is_upscaled, is_scaled_to_width,
-                     is_scaled_to_height, is_scaled, is_flipped) -> "appearance_mod.Appearance":
+                     is_scaled_to_height, is_scaled, is_flipped) -> "Appearance":
         if rotatable:
             self._is_rotatable = rotatable
         if is_animated:
@@ -773,9 +773,15 @@ class Appearance(metaclass=MetaAppearance):
         return self._image
 
     def _before_transformation_pipeline(self):
+        """Called in `get_image`, if image is "dirty" (e.g. size, rotation, ... has changed)
+        after image transformation pipeline is processed
+        """
         pass
 
-    def _after_transformation_pipeline(self):
+    def _after_transformation_pipeline(self) -> None:
+        """Called in `get_image`, if image is "dirty" (e.g. size, rotation, ... has changed)
+        before image transformation pipeline is processed
+        """
         pass
 
     def update(self):
@@ -826,6 +832,8 @@ class Appearance(metaclass=MetaAppearance):
             self.set_dirty(value)
 
     def set_dirty(self, value="all", status=1):
+        if value and self.parent and self.images:
+            self._update_draw_shape()
         if hasattr(self, "transformations_manager"):
             if value:
                 self.transformations_manager.flag_reload_actions_for_transformation_pipeline(value)
@@ -839,3 +847,52 @@ class Appearance(metaclass=MetaAppearance):
     def board(self) -> "board.Board":
         """Implemented in subclasses Costume and Background
         """
+
+    def _update_draw_shape(self):
+        self.draw_shapes = []
+        if self._inner_shape() and self.image_manager:
+            if self.is_filled and not self.image_manager.is_image():
+                self.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
+        if self._outer_shape() and self.border:
+            self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
+
+    def _inner_shape(self) -> tuple:
+        """Returns inner shape of costume
+
+        Returns:
+            pygame.Rect: Inner shape (Rectangle with size of token)
+        """
+        return pygame.draw.rect, [
+            pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), 0]
+
+    def _outer_shape(self) -> tuple:
+        """Returns outer shape of costume
+
+        Returns:
+            pygame.Rect: Outer shape (Rectangle with size of tokens without filling.)
+        """
+        return pygame.draw.rect, [
+            pygame.Rect(0, 0, self.parent.size[0], self.parent.size[1]), self.border]
+
+    def _inner_shape_arguments(self) -> List:
+        """def setGets arguments for inner shape
+
+        Returns:
+            List[]: List of arguments
+        """
+
+        color = self.fill_color
+        return [
+                   color,
+               ] + self._inner_shape()[1]
+
+    def _outer_shape_arguments(self) -> List:
+        """Gets arguments for outer shape
+
+        Returns:
+            List[]: List of arguments
+        """
+        color = self.border_color
+        return [
+                   color,
+               ] + self._outer_shape()[1]

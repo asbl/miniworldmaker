@@ -19,10 +19,10 @@ class BoardCollisionHandler:
         self._handle_token_sensing_not_on_board_methods()
 
     def _handle_token_sensing_token_methods(self):
-        for method in self.board.event_manager.registered_events["on_sensing_token"].copy():
+        for method in self.board.event_manager.registered_events["on_sensing_"].copy():
             token = method.__self__
             token_type_of_target = method.__name__[11:]
-            found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
+            found_tokens_for_token_type = token.board_sensor.sensing_tokens(token_filter=token_type_of_target)
             if not found_tokens_for_token_type:  # found nothing
                 found_tokens_for_token_type = []
             if token in found_tokens_for_token_type:  # found self
@@ -33,7 +33,7 @@ class BoardCollisionHandler:
                     method_caller.call_method(method, (found_token,))
 
     def _handle_token_not_sensing_token_methods(self):
-        for method in self.board.event_manager.registered_events["on_not_sensing_token"].copy():
+        for method in self.board.event_manager.registered_events["on_not_sensing_"].copy():
             token = method.__self__
             token_type_of_target = method.__name__[15:]
             found_tokens_for_token_type = token.sensing_tokens(token_filter=token_type_of_target)
@@ -50,7 +50,7 @@ class BoardCollisionHandler:
             method_caller.call_method(method, None)
 
     def _handle_token_sensing_border_methods(self):
-        for event in self.board.event_manager.border_events:
+        for event in self.board.event_manager.class_events["border"]:
             for method in self.board.event_manager.registered_events[event]:
                 sensed_borders = method.__self__.sensing_borders()
                 if method.__name__ == "on_sensing_borders" and sensed_borders:

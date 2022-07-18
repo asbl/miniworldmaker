@@ -6,7 +6,7 @@ import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.managers.image_background_manager as image_background_manager
 import miniworldmaker.appearances.managers.transformations_background_manager as transformations_background_manager
 import miniworldmaker.base.app as app
-from miniworldmaker.boards import board as board_mod
+from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
 
 
 class Background(appearance.Appearance):
@@ -120,7 +120,7 @@ class Background(appearance.Appearance):
             [token.costume.update() for token in dynamic_tokens]
             del dynamic_tokens
 
-    def _after_transformation_pipeline(self):
+    def _after_transformation_pipeline(self) -> None:
         self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
         self.surface.blit(self.image, self.surface.get_rect())
         for token in self.board.camera.get_tokens_in_viewport():

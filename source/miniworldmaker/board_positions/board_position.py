@@ -1,11 +1,18 @@
+from __future__ import annotations
+
 import collections
-import pygame
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
-import miniworldmaker.base.app as app
-import miniworldmaker.board_positions.board_vector as board_vector
-from typing import Union, Tuple
-import numpy as np
+import math
 from abc import ABC
+from typing import TYPE_CHECKING
+from typing import Union, Tuple
+
+import pygame
+
+import miniworldmaker.base.app as app
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
+
+if TYPE_CHECKING:
+    from miniworldmaker.board_positions import board_vector
 
 
 class PositionBase(ABC):
@@ -27,7 +34,7 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         return str("Pos(" + str(round(self.x, 3)) + "," + str(round(self.y, 3)) + ")")
 
     @classmethod
-    def from_vector(cls, vector: board_vector.Vector):
+    def from_vector(cls, vector: "board_vector.Vector"):
         """
         Transforms a miniworldmaker-Vector object to a position.
         :param vector: The vector
@@ -35,7 +42,13 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         """
         return cls(vector[0], vector[1])
 
-    @classmethod
+    def distance_to(self, other):
+        if type(other) == Position:
+            return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
+        elif type(other) == tuple:
+            return math.sqrt((self.x - other[0]) ** 2 + (self.y - other[1]) ** 2)
+
+    @ classmethod
     def from_board_coordinates(cls, position):
         """
         Transforms board-coordinates to position

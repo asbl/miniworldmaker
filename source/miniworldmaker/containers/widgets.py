@@ -1,9 +1,11 @@
+import tkinter as tk
 from tkinter import filedialog
 from typing import Union
-import tkinter as tk
+
 import pygame
-from miniworldmaker.tools import inspection
+
 from miniworldmaker.base import file_manager
+from miniworldmaker.tools import inspection
 
 
 class Widget:
@@ -59,7 +61,10 @@ class Widget:
 
     @property
     def text_align(self):
-        "should text be aligned left, oder next to the image?"
+        """Defines how text is aligned.
+
+        If widget has an image, text is aligned left, else it can be set to "left", "center" or "right".
+        """
         if not self._img_source:
             return "left"
         else:
@@ -82,7 +87,7 @@ class Widget:
         """Left text_padding"""
         return self._text_padding_left
 
-    @text_align.setter
+    @text_padding_left.setter
     def text_padding_left(self, value: int):
         self._text_padding_left = value
         self.dirty = 1
@@ -102,7 +107,7 @@ class Widget:
         """Top-left text_padding"""
         return (self._text_padding_left, self.text_padding_top)
 
-    @text_align.setter
+    @text_padding_top_left.setter
     def text_padding_top_left(self, value: int):
         self._text_padding_top = value
         self._text_padding_left = value
@@ -182,7 +187,7 @@ class Widget:
     def background_color(self, value: tuple):
         self.set_background_color(value)
 
-    def set_background_color(self, value) -> "ToolbarWidget":
+    def set_background_color(self, value) -> "Widget":
         self._background_color = value
         self.dirty = 1
         return self
@@ -216,9 +221,11 @@ class Widget:
                 if type(self._img_source) == str:
                     source = file_manager.FileManager.get_image_path(self._img_source)
                     image = pygame.image.load(source)
-                if type(self._img_source) == tuple:
+                elif type(self._img_source) == tuple:
                     image = pygame.Surface((1, 1))
                     image.fill(self._img_source)
+                else:
+                    raise ValueError("img_source has wrong type")
                 image = pygame.transform.scale(
                     image, (self.img_width, self.height - self.padding_top - self.padding_bottom)
                 )
@@ -227,7 +234,7 @@ class Widget:
                 border_rect = pygame.Rect(0, 0, self.width, self.height)
                 pygame.draw.rect(self.surface, self._border_color, border_rect, self._border_width)
             # Blit text to surface
-            label = self.myfont.render(self._text, 1, (0, 0, 0))
+            label = self.myfont.render(self._text, True, (0, 0, 0))
             if self.text_align == "img" or self.text_align == "image":
                 self.surface.blit(
                     label,
@@ -304,14 +311,15 @@ class Button(Widget):
     If the button is clicked
 
     Args:
-        ToolbarWidget (_type_): _description_
+        text (str): _description_
+        img_path (str): path to an image
     """
 
-    def __init__(self, text, img_path=None):
+    def __init__(self, text: str, img_path: str = None):
         super().__init__()
         self.set_text(text)
         self.event = "button_pressed"
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.data = text
 
@@ -339,13 +347,15 @@ class Button(Widget):
         self.parent.send_message(self._text)
 
 
-ToolbarButton = Button
+class ToolbarButton(Button):
+    """for legacy code"""
+    pass
 
 
 class Label(Widget):
     def __init__(self, text, img_path=None):
         super().__init__()
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.set_text(text)
         self.event = "label"
@@ -353,19 +363,21 @@ class Label(Widget):
         self.background_color = (255, 255, 255, 0)
 
 
-ToolbarLabel = Label
+class ToolbarLabel(Label):
+    """for legacy Code"""
+    pass
 
 
 class SaveButton(Widget):
     def __init__(
-        self,
-        board,
-        text,
-        filename: str = None,
-        img_path: str = None,
+            self,
+            board,
+            text,
+            filename: str = None,
+            img_path: str = None,
     ):
         super().__init__()
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.set_text(text)
         self.event = "label"
@@ -374,82 +386,89 @@ class SaveButton(Widget):
         self.file = filename
         self.tokens = None
 
-    def on_mouse_left(self, event, data):
-        if event == "mouse_left":
-            if self.file is None:
-                tk.Tk().withdraw()
-                self.file = filedialog.asksaveasfilename(
-                    initialdir="./", title="Select file", filetypes=(("db files", "*.db"), ("all files", "*.*"))
-                )
-                self.app.running_board.save_to_db(self.file)
-                self.app.running_board.send_message("Saved new world", self.file)
-            else:
-                self.app.running_board.save_to_db(self.file)
-                self.app.running_board.send_message("Saved new world", self.file)
-                print("Board was saved to file:", self.file)
+    def on_mouse_left(self, mouse_pos):
+        if self.file is None:
+            tk.Tk().withdraw()
+            self.file = filedialog.asksaveasfilename(
+                initialdir="./", title="Select file", filetypes=(("db files", "*.db"), ("all files", "*.*"))
+            )
+            self.app.running_board.save_to_db(self.file)
+            self.app.running_board.send_message("Saved new world", self.file)
+        else:
+            self.app.running_board.save_to_db(self.file)
+            self.app.running_board.send_message("Saved new world", self.file)
+            print("Board was saved to file:", self.file)
 
 
 class LoadButton(Widget):
     def __init__(
-        self,
-        board,
-        text,
-        filename,
-        img_path=None,
+            self,
+            board,
+            text,
+            filename,
+            img_path=None,
     ):
         super().__init__()
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.set_text(text)
         self.file = filename
         self.app = board.app
 
-    def on_mouse_left(self, event, data):
-        if event == "mouse_left":
-            tk.Tk().withdraw()
-            if self.file is None:
-                self.file = filedialog.askopenfilename(
-                    initialdir="./", title="Select file", filetypes=(("db files", "*.db"), ("all files", "*.*"))
-                )
-            new_board = self.app.running_board.load_board_from_db(self.file)
+    def on_mouse_left(self, mouse_pos):
+        tk.Tk().withdraw()
+        if self.file is None:
+            self.file = filedialog.askopenfilename(
+                initialdir="./", title="Select file", filetypes=(("db files", "*.db"), ("all files", "*.*"))
+            )
+        self.app.running_board.load_board_from_db(self.file)
 
 
 class ClearButton(Widget):
     def __init__(
-        self,
-        board,
-        text,
-        img_path=None,
+            self,
+            board,
+            text,
+            img_path=None,
     ):
         super().__init__()
         self.set_text(text)
         self.board = board
         self.app = board.app
 
-    def on_mouse_left(self, event, data):
-        if event == "mouse_left":
-            self.board.clear()
+    def on_mouse_left(self, mouse_pos):
+        self.board.clear()
 
 
 class CounterLabel(Widget):
-    def __init__(self, text, img_path=None):
+    """A counter label contains a `description` and a `counter`. The counter starts with value 0 and can be modified with
+    `add` and `sub`
+    """
+    def __init__(self, description, img_path=None):
         super().__init__()
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.value = 0
-        self.text = text
-        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+        self.description = description
+        self.set_text("{0} : {1}".format(self.description, str(self.value)))
         self.data = str(0)
 
     def add(self, value):
         self.value += value
-        self.set_text("{0} : {1}".format(self.text, str(self.value)))
+        self.set_text("{0} : {1}".format(self.description, str(self.value)))
+
+    def sub(self, value):
+        self.value -= value
+        self.set_text("{0} : {1}".format(self.description, str(self.value)))
+
+    def get_value(self):
+        return self.value
 
 
 class TimeLabel(Widget):
     def __init__(self, board, text, img_path=None):
         super().__init__()
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.board = board
         self.value = self.board.frame
@@ -466,7 +485,7 @@ class TimeLabel(Widget):
 class FPSLabel(Widget):
     def __init__(self, board, text, img_path=None):
         super().__init__()
-        if img_path != None:
+        if img_path:
             self.set_image(img_path)
         self.board = board
         self.value = self.board.clock.get_fps()
@@ -522,6 +541,7 @@ class ContainerWidget(Widget):
     def send_message(self, text):
         self.parent.send_message(text)
 
+
 class YesNoButton(ContainerWidget):
     def __init__(self, yes_text, no_text):
         self.yes = Button(yes_text)
@@ -546,11 +566,12 @@ class SimplePagination(ContainerWidget):
         self.last.container = container
         super().__init__([self.last, self.next])
         self.background_color = (255, 255, 255, 0)
-        
+
         def on_mouse_left(self, pos):
             new_first = self.container.first + self.container.max_widgets
             if new_first <= len(self.container.widgets):
                 self.container.first = new_first
+
         self.next.register(on_mouse_left)
 
         def on_mouse_left(self, pos):
@@ -559,5 +580,6 @@ class SimplePagination(ContainerWidget):
                 self.container.first = new_first
             else:
                 self.container.first = 0
-        self.last.register(on_mouse_left)                
+
+        self.last.register(on_mouse_left)
         self.dirty = 1

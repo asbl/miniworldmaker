@@ -2,10 +2,10 @@ import abc
 
 from miniworldmaker.appearances import costume
 from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.boards import board as board_mod
+from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
 from miniworldmaker.tokens import token as token_mod
-from miniworldmaker.tokens.positions import token_position_manager
-from miniworldmaker.tokens.sensors import token_boardsensor
+from miniworldmaker.tokens.managers import event_manager
+from miniworldmaker.tokens.managers import token_position_manager, token_boardsensor
 
 
 class TokenConnector(abc.ABC):
@@ -28,6 +28,13 @@ class TokenConnector(abc.ABC):
 
     def create_costume_manager(self) -> "costumes_manager.CostumesManager":
         return self._get_token_costume_manager_class()(self.token)
+
+    def create_event_manager(self):
+        return self._get_token_costume_manager_class()(self.token)
+
+    @staticmethod
+    def _get_token_event_manager_class():
+        return event_manager.EventManager
 
     @staticmethod
     def _get_token_costume_manager_class():
@@ -53,8 +60,7 @@ class TokenConnector(abc.ABC):
         if hasattr(self.token, "on_setup"):
             self.token.on_setup()
             self.board.background.reload_costumes_queue.append(self.token)
-        if not self.token.static:
-            self.token.board.event_manager.register_events_for_token(self.token)
+        self.board.event_manager.register_events_for_token(self.token)
 
     def remove_token_from_board(self, token):
         self.board.camera.clear_camera_cache()

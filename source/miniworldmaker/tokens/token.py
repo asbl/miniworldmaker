@@ -10,7 +10,7 @@ import miniworldmaker.appearances.costumes_manager as costumes_manager
 import miniworldmaker.board_positions.board_position as board_position
 # from miniworldmaker.tokens.sensors import token_boardsensor - @todo not imported because of circular import
 import miniworldmaker.dialogs.ask as ask
-import miniworldmaker.tokens.positions.token_position_manager as token_position_manager
+import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
 import miniworldmaker.tokens.token_base as token_base
 import miniworldmaker.tools.token_inspection as token_inspection
 from miniworldmaker.board_positions import board_direction
@@ -126,6 +126,8 @@ class Token(token_base.BaseToken):
 
     def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0)):
         super().__init__()
+        if position == None:
+            position = board_position.Position(0,0)
         if type(position) is not tuple and not isinstance(position, board_position.PositionBase):
             raise MiniworldMakerError(f"Wrong type for Token.init() - Expected Tuple or Position, got {type(position)}")
         self._collision_type: str = "mask"
@@ -139,6 +141,7 @@ class Token(token_base.BaseToken):
         self._board_sensor: "token_boardsensor.TokenBoardSensor" = self._init_board_sensor()
         self._position_manager: "token_position_manager.TokenPositionManager" = self._init_position_manager()
         self._costume_manager: "costumes_manager.CostumesManager" = self._init_costume_manager()
+        self._event_manager = self._init_event_manager()
         if not self.board:
             raise NoBoardError()
         pygame.sprite.DirtySprite.__init__(self)
@@ -161,7 +164,7 @@ class Token(token_base.BaseToken):
 
         * `circle`: Are tokens colliding when checking circle with radius = bounding-box-radius.(Only PixelBoard)
 
-        * `mask`: Are tokens colliding when checkig if their image masks are overlapping.
+        * `mask`: Are tokens colliding when checking if their image masks are overlapping.
         """
         if self._collision_type == "default":
             return "mask"
@@ -202,7 +205,7 @@ class Token(token_base.BaseToken):
         Args:
             center_position: Center of token
         """
-        obj = cls(position=(0, 0))  # temp positition
+        obj = cls(position=(0, 0))  # temp position
         obj.center = center_position  # pos set to center
         return obj
 
@@ -1213,8 +1216,6 @@ class Token(token_base.BaseToken):
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
         raise NotImplementedOrRegisteredError(self.on_sensing_not_on_board)
-
-
 
     def sensing_tokens(self, token_filter: str = None) -> List["Token"]:
         """Detects if tokens are on token position.

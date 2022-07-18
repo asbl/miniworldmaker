@@ -1,6 +1,7 @@
 import pygame
-from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardRectError
+
 import miniworldmaker.base.app as app
+from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardRectError
 
 
 class Rect(pygame.Rect):
@@ -16,8 +17,9 @@ class Rect(pygame.Rect):
             raise NoValidBoardRectError("No valid board direction")
 
     @classmethod
-    def from_position(cls, position, dimensions=None):
-        board = app.App.running_board
+    def from_position(cls, position, dimensions=None, board=None):
+        if board == None:
+            board = app.App.running_board
         if dimensions is None:
             new_rect = pygame.Rect(0, 0, board.tile_size, board.tile_size)
         else:

@@ -1,7 +1,8 @@
-import os
 import inspect
+import os
 import sys
 
+# __import__('pkg_resources').declare_namespace(__name__)
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
@@ -9,27 +10,28 @@ sys.path.insert(0, parentdir)
 __all__ = []
 
 from miniworldmaker.base.app import App
-from miniworldmaker.boards.board import Board
-from miniworldmaker.boards.pixel_board import PixelBoard
-from miniworldmaker.boards.tiled_board import TiledBoard
-from miniworldmaker.boards.physics_board import PhysicsBoard as PhysicsBoard
-from miniworldmaker.boards.hex_board import HexBoard
+
+from miniworldmaker.boards.board_plugins.pixel_board.board import Board
+from miniworldmaker.boards.board_plugins.pixel_board.pixel_board import PixelBoard
+from miniworldmaker.boards.board_plugins.tiled_board.tiled_board import TiledBoard
+from miniworldmaker.boards.board_plugins.physics_board.physics_board import PhysicsBoard as PhysicsBoard
+from miniworldmaker.boards.board_plugins.hex_board.hex_board import HexBoard
 
 from miniworldmaker.tokens.token_base import BaseToken
 from miniworldmaker.tokens.token import Token
-from miniworldmaker.tokens.text_token import Text
-from miniworldmaker.tokens.number_token import Number
-from miniworldmaker.tokens.text_token import TextToken
-from miniworldmaker.tokens.number_token import NumberToken
+from miniworldmaker.tokens.token_plugins.text_token.text_token import Text
+from miniworldmaker.tokens.token_plugins.text_token.number_token import Number
+from miniworldmaker.tokens.token_plugins.text_token.text_token import TextToken
+from miniworldmaker.tokens.token_plugins.text_token.number_token import NumberToken
 
-from miniworldmaker.tokens.shapes import Point
-from miniworldmaker.tokens.shapes import Rectangle
-from miniworldmaker.tokens.shapes import Circle
-from miniworldmaker.tokens.shapes import Line
-from miniworldmaker.tokens.shapes import Ellipse
-from miniworldmaker.tokens.shapes import Polygon
-from miniworldmaker.tokens.shapes import Triangle
-from miniworldmaker.tokens.shapes import Arc
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Point
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Rectangle
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Circle
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Line
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Ellipse
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Polygon
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Triangle
+from miniworldmaker.tokens.token_plugins.shapes.shapes import Arc
 
 from miniworldmaker.appearances.appearance import Appearance
 from miniworldmaker.appearances.background import Background
@@ -46,9 +48,10 @@ from miniworldmaker.containers.toolbar import Toolbar
 from miniworldmaker.containers.widgets import Widget
 from miniworldmaker.containers.widgets import Button
 from miniworldmaker.containers.widgets import Label
-from miniworldmaker.containers.widgets import ToolbarButton
 from miniworldmaker.containers.widgets import ToolbarLabel
+from miniworldmaker.containers.widgets import ToolbarButton
 from miniworldmaker.containers.widgets import YesNoButton
+from miniworldmaker.containers.widgets import CounterLabel
 from miniworldmaker.containers.widgets import SimplePagination
 
 from miniworldmaker.containers.actionbar import ActionBar
@@ -61,22 +64,21 @@ from miniworldmaker.containers.color_toolbar import ColorToolbar
 from miniworldmaker.board_positions.board_vector import Vector
 from miniworldmaker.board_positions.board_position import Position
 from miniworldmaker.board_positions.board_rect import Rect
-from miniworldmaker.board_positions.board_direction import Direction
 
-from miniworldmaker.board_positions.tile_factory import TileFactory
-from miniworldmaker.board_positions.tile_factory import HexTileFactory
+from miniworldmaker.boards.board_plugins.tiled_board.tile_factory import TileFactory
+from miniworldmaker.boards.board_plugins.tiled_board.tile_factory import HexTileFactory
 
-from miniworldmaker.board_positions.hex_elements import HexBase
-from miniworldmaker.board_positions.hex_elements import HexEdge
-from miniworldmaker.board_positions.hex_elements import HexTile
-from miniworldmaker.board_positions.hex_elements import HexCorner
+from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexBase
+from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexEdge
+from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexTile
+from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexCorner
 
-from miniworldmaker.board_positions.hex_elements import CubeCoord
+from miniworldmaker.boards.board_plugins.hex_board.cube_coord import CubeCoord
 
-from miniworldmaker.board_positions.tile_elements import TileBase
-from miniworldmaker.board_positions.tile_elements import Edge
-from miniworldmaker.board_positions.tile_elements import Tile
-from miniworldmaker.board_positions.tile_elements import Corner
+from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import TileBase
+from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import Edge
+from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import Tile
+from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import Corner
 
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
 
@@ -117,9 +119,10 @@ __all__.append(EventConsole.__name__)
 __all__.append(InspectActorToolbar.__name__)
 __all__.append(LevelDesignerToolbar.__name__)
 __all__.append(ColorToolbar.__name__)
-__all__.append("ToolbarLabel")
-__all__.append("ToolbarButton")
+__all__.append(ToolbarLabel.__name__)
+__all__.append(ToolbarButton.__name__)
 __all__.append(YesNoButton.__name__)
+__all__.append(CounterLabel.__name__)
 __all__.append(SimplePagination.__name__)
 __all__.append(Label.__name__)
 __all__.append(Button.__name__)
@@ -145,6 +148,5 @@ __all__.append(loop.__name__)
 __all__.append(ActionTimer.__name__)
 __all__.append(LoopActionTimer.__name__)
 __all__.append(Timer.__name__)
-
 
 __all__.append(CostumeOutOfBoundsError.__name__)

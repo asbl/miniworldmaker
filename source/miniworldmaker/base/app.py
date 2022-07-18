@@ -77,7 +77,8 @@ class App:
             self.image = new_board.image
             self.container_manager.switch_container(old_board, new_board)
             self._prepare_mainloop()
-            new_board.on_setup()
+            if hasattr(new_board, "on_setup"):
+                new_board.on_setup()
 
         # new_board.run(event="board_loaded")
 
@@ -112,6 +113,7 @@ class App:
         self.window.display_update()
         self.running_board.dirty = 1
         self.running_board.background.set_dirty("all", 2)
+
 
     @staticmethod
     def init_pygame():

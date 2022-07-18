@@ -53,7 +53,6 @@ class ExportBoardToDBFactory(ExportFactory, ExportDBFactory, ExportBoardFactory)
                         );
                         """
         cur = self.db.cursor
-        print(query_board)
         cur.execute(query_board)
         self.db.commit()
         board_dict = {"board_class": self.board.__class__.__name__,

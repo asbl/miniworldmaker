@@ -1,3 +1,5 @@
+from typing import Union
+
 import miniworldmaker.appearances.appearances_manager as appearances_manager
 import miniworldmaker.appearances.background as background
 
@@ -34,11 +36,13 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
         new_background = background.Background(self.board)
         return new_background
 
-    def switch_background(self, source):
+    def switch_appearance(self, source: Union[int, "appearance_mod.Appearance"]) -> "appearance_mod.Appearance":
         bg = super().switch_appearance(source)
         for token in self.board.tokens:
             token.dirty = 1
         return bg
+
+    switch_background = switch_appearance
 
     @property
     def backgrounds(self):

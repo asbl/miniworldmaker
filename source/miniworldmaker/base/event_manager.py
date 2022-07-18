@@ -1,9 +1,11 @@
-import pygame
 from collections import deque
 
-import miniworldmaker.base.app as app_mod
-import miniworldmaker.tools.keys as keys
+import pygame
 
+import miniworldmaker.base.app as app_mod
+
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.tools import keys
 
 class EventManager:
 
@@ -58,7 +60,8 @@ class EventManager:
                 self.put_mouse_down_in_event_queue(event)
             elif event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
-                self.to_event_queue("mouse_motion", (pos[0], pos[1]))
+                pos = board_position.Position.create(pygame.mouse.get_pos())
+                self.to_event_queue("mouse_motion", pos)
                 # key-events
             elif event.type == pygame.KEYUP:
                 keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
@@ -79,24 +82,24 @@ class EventManager:
     def put_mouse_down_in_event_queue(self, event):
         """function is called in 'pygame_events_to_event_queue
         """
-        pos = pygame.mouse.get_pos()
+        pos = board_position.Position.create(pygame.mouse.get_pos())
         if event.button == 1:
-            self.to_event_queue("mouse_left", (pos[0], pos[1]))
+            self.to_event_queue("mouse_left", pos)
         if event.button == 3:
-            self.to_event_queue("mouse_right", (pos[0], pos[1]))
+            self.to_event_queue("mouse_right", pos)
         if event.button == 4:
-            self.to_event_queue("wheel_up", (pos[0], pos[1]))
+            self.to_event_queue("wheel_up", pos)
         if event.button == 5:
-            self.to_event_queue("wheel_down", (pos[0], pos[1]))
+            self.to_event_queue("wheel_down", pos)
 
     def put_mouse_up_in_event_queue(self, event):
         """function is called in 'pygame_events_to_event_queue
         """
-        pos = pygame.mouse.get_pos()
+        pos = board_position.Position.create(pygame.mouse.get_pos())
         if event.button == 1:
-            self.to_event_queue("mouse_left_released", (pos[0], pos[1]))
+            self.to_event_queue("mouse_left_released", pos)
         if event.button == 3:
-            self.to_event_queue("mouse_right_released", (pos[0], pos[1]))
+            self.to_event_queue("mouse_right_released", pos)
 
     def get_keys(self):
         key_codes = None

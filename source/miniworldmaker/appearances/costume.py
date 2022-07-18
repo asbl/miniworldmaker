@@ -1,10 +1,10 @@
-from typing import List, Union
+from typing import Union
 
 import pygame
 
 import miniworldmaker.appearances.appearance as appear
 import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
-from miniworldmaker.boards import board
+from miniworldmaker.boards.board_plugins.pixel_board import board
 
 
 class Costume(appear.Appearance):
@@ -69,11 +69,6 @@ class Costume(appear.Appearance):
         self.set_dirty("all", Costume.RELOAD_ACTUAL_IMAGE
                        )
 
-    def set_dirty(self, value="all", status=1):
-        if value and self.parent and self.images:
-            self._update_draw_shape()
-        super().set_dirty(value, status)
-
     def set_image(self, source: Union[int, "appear.Appearance, tuple"]) -> bool:
         """
         :param source: index, Appearance or color.
@@ -87,8 +82,9 @@ class Costume(appear.Appearance):
         Returns:
             pygame.Rect: Inner shape (Rectangle with size of token)
         """
+        size = self.parent.position_manager.get_size()
         return pygame.draw.rect, [
-            pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), 0]
+            pygame.Rect(0, 0, size[0], size[1]), 0]
 
     def _outer_shape(self) -> tuple:
         """Returns outer shape of costume
@@ -96,39 +92,9 @@ class Costume(appear.Appearance):
         Returns:
             pygame.Rect: Outer shape (Rectangle with size of tokens without filling.)
         """
+        size = self.parent.position_manager.get_size()
         return pygame.draw.rect, [
-            pygame.Rect(0, 0, self.parent.position_manager.size[0], self.parent.position_manager.size[1]), self.border]
-
-    def _update_draw_shape(self):
-        self.draw_shapes = []
-        if self._inner_shape() and self.image_manager:
-            if self.is_filled and not self.image_manager.is_image():
-                self.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
-        if self._outer_shape() and self.border:
-            self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
-
-    def _inner_shape_arguments(self) -> List:
-        """def setGets arguments for inner shape
-
-        Returns:
-            List[]: List of arguments
-        """
-
-        color = self.fill_color
-        return [
-                   color,
-               ] + self._inner_shape()[1]
-
-    def _outer_shape_arguments(self) -> List:
-        """Gets arguments for outer shape
-
-        Returns:
-            List[]: List of arguments
-        """
-        color = self.border_color
-        return [
-                   color,
-               ] + self._outer_shape()[1]
+            pygame.Rect(0, 0, size[0], size[1]), self.border]
 
     def rotated(self):
         if self.board.camera.is_token_in_viewport(self.token):

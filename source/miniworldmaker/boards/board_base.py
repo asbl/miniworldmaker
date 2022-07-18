@@ -1,4 +1,3 @@
-import miniworldmaker.containers.container as container
 from abc import ABC
 from typing import List
 
@@ -8,7 +7,7 @@ import miniworldmaker.boards.data.export_factory as export_factory
 import miniworldmaker.boards.data.import_factory as import_factory
 import miniworldmaker.containers.container as container
 from miniworldmaker.boards.board_manager import board_camera_manager
-from miniworldmaker.boards.token_connectors import pixel_board_connector as pixel_board_connector
+from miniworldmaker.boards.board_plugins.pixel_board import pixel_board_connector as pixel_board_connector
 from miniworldmaker.boards.token_connectors import token_connector as token_connector
 
 

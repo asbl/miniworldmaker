@@ -26,7 +26,7 @@ class AppearancesManager:
         self._iter_index = 0
 
     @property
-    def image(self):
+    def image(self) -> pygame.Surface:
         if self.appearance:
             return self.appearance.image
         else:
@@ -44,7 +44,7 @@ class AppearancesManager:
             raise MiniworldMakerError(f"Wrong type in _create_appearance_from_source got {type(source)}", )
         return appearance
 
-    def add_new_appearances(self, sources: List):
+    def add_new_appearances(self, sources: List) -> None:
         if type(sources) in [list]:
             for appearance in sources:
                 self.add_new_appearance(appearance)
@@ -129,7 +129,7 @@ class AppearancesManager:
     def __len__(self) -> int:
         return self.length()
 
-    def get_appearance_at_index(self, index) -> Union["appearance_mod.Appearance", None]:
+    def get_appearance_at_index(self, index: int) -> Union["appearance_mod.Appearance", None]:
         if 0 <= index < len(self.appearances_list):
             return self.appearances_list[index]
         else:
@@ -246,14 +246,14 @@ class AppearancesManager:
         """
         pass
 
-    def animate_appearance(self, appearance, speed):
+    def animate_appearance(self, appearance: "appearance_mod.Appearance", speed: int):
         if appearance is None:
             raise miniworldmaker_exception.CostumeIsNoneError()
         self.switch_appearance(appearance)
         self.appearance.animation_speed = speed
         self.appearance.animate()
 
-    def self_remove(self):
+    def self_remove(self) -> None:
         """Implemented in subclasses"""
         pass
 
