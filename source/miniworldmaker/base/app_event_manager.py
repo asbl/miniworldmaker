@@ -3,9 +3,9 @@ from collections import deque
 import pygame
 
 import miniworldmaker.base.app as app_mod
-
 from miniworldmaker.board_positions import board_position
 from miniworldmaker.tools import keys
+
 
 class EventManager:
 
