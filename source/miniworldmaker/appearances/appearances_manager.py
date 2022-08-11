@@ -214,7 +214,6 @@ class AppearancesManager:
             source: The index of the new appearance or the Appearance which should be removed Defaults to -1
             (last costume)
         """
-
         if type(source) == int:
             source = self.get_appearance_at_index(source)
         if source and isinstance(source, appearance_mod.Appearance):

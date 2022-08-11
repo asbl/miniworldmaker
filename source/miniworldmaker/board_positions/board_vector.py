@@ -84,6 +84,19 @@ class Vector:
         self.vec = np.array([self.vec[0], value])
 
     @classmethod
+    def from_positions(cls, p1: Union["board_position.Position",tuple], p2: Union["board_position.Position",tuple]) -> "Vector":
+        """Create a vector from token and position
+
+        The vector desribes is generated from:
+        token2.center - position
+        """
+        p1 = board_position.Position.create(p1)
+        p2 = board_position.Position.create(p2)
+        x = p2.x - p1.x
+        y = p2.y - p1.y
+        return cls(x, y)
+
+    @classmethod
     def from_token_and_position(cls, t1: "token_mod.Token", pos) -> "Vector":
         """Create a vector from token and position
 
@@ -307,16 +320,16 @@ class Vector:
             self.vec = dot_product
             return self
 
-    def __sub__(self, other: "Vector") -> "Vector":
-        if type(other) == Vector:
-            x = self.x - other.x
-            y = self.y - other.y
-            return Vector(x, y)
-
     def __add__(self, other: "Vector") -> "Vector":
         if type(other) == Vector:
             x = self.x + other.x
             y = self.y + other.y
+            return Vector(x, y)
+
+    def __sub__(self, other: "Vector") -> "Vector":
+        if type(other) == Vector:
+            x = self.x - other.x
+            y = self.y - other.y
             return Vector(x, y)
 
     def sub(self, other: "Vector") -> "Vector":

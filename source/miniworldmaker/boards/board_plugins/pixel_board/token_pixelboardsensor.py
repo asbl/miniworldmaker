@@ -62,6 +62,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         return [actor for actor in a_list if type(token_mod.Token) == actor_type]
 
     def sensing_tokens(self, token_filter=None) -> list:
+        self.token.board.init_display()
         tokens = pygame.sprite.spritecollide(self.token, self.token.board.camera.get_tokens_in_viewport(), False,
                                              pygame.sprite.collide_rect)
         tokens_list = self.remove_self_from_token_list(tokens)
@@ -75,6 +76,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
             return []
 
     def sensing_token(self, token_filter=None) -> Union["token_mod.Token", None]:
+        self.token.board.init_display()
         token = pygame.sprite.spritecollideany(self.token, self.token.board.camera.get_tokens_in_viewport(), None)
         tokens_list = self.remove_self_from_token_list([token])
         if tokens_list:

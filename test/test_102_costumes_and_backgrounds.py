@@ -62,8 +62,8 @@ class Test102(unittest.TestCase):
         token5 = Token(position=(60, 200))
         token5.add_costume("images/3")
         assert token5.position == Position(60, 200)
-        assert token5.costume.image.get_width() == 40
-        assert token5.costume.image.get_height() == 40
+        #assert token5.costume.image.get_width() == 40
+        #assert token5.costume.image.get_height() == 40
 
         # Token6: Created with images "1" and "2", siwtches from 
         class SwitchBackground(Token):

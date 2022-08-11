@@ -42,8 +42,8 @@ class Costume(appear.Appearance):
     def _set_token_default_values(self):
         self._info_overlay = False
         self._is_rotatable = True
-        self.fill_color = (255, 0, 255, 100)
-        self.border_color = (100, 100, 100)
+        self.fill_color = (255, 0, 255, 255)
+        self.border_color = (100, 100, 255)
 
     def _set_board_default_values(self):
         if self.token.board.default_fill_color:
@@ -97,12 +97,12 @@ class Costume(appear.Appearance):
             pygame.Rect(0, 0, size[0], size[1]), self.border]
 
     def rotated(self):
-        if self.board.camera.is_token_in_viewport(self.token):
+        if self.board.camera.is_token_repainted(self.token):
             self.set_dirty("rotate", self.RELOAD_ACTUAL_IMAGE)
 
     def resized(self):
         self.set_dirty("scale", self.RELOAD_ACTUAL_IMAGE)
 
     def visible(self):
-        if self.board.camera.is_token_in_viewport(self.token):
+        if self.board.camera.is_token_repainted(self.token):
             self.set_dirty("all", self.RELOAD_ACTUAL_IMAGE)

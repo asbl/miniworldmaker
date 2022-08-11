@@ -7,10 +7,12 @@ import pkg_resources
 import pygame
 
 import miniworldmaker.appearances.managers.image_manager as image_manager
+import miniworldmaker.base.app_event_manager as event_manager
 import miniworldmaker.base.container_manager as container_manager
-import miniworldmaker.base.event_manager as event_manager
+import miniworldmaker.base.music_manager as music_manager
 import miniworldmaker.base.sound_manager as sound_manager
 import miniworldmaker.base.window as window
+from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
 
 
 class App:
@@ -21,10 +23,10 @@ class App:
             If it does not contain a run() method (e.g. board.run()), this error is raised.
     """
 
-    running_board = None
-    path = None
+    running_board: "board_mod.Board" = None
+    path: str = None
     running_app: "App" = None
-    init = False
+    init: bool = False
     window: "window.Window" = None
 
     @staticmethod
@@ -61,26 +63,15 @@ class App:
         self.image = None
         self._unittest = False
         self._mainloop_started: bool = False
-        self.event_manager: "event_manager.EventManager" = event_manager.EventManager(self)
+        self.event_manager: "event_manager.TokenEventManager" = event_manager.AppEventManager(self)
         self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
+        self.music_manager: "music_manager.MusicManager" = music_manager.MusicManager(self)
         self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
         App.running_app = self
         App.window = self.window
         self._exit_code: int = 0
         if App.path:
             self.path = App.path
-
-    def switch_board(self, new_board):
-        old_board = App.running_board
-        if new_board != old_board:
-            App.running_board = new_board
-            self.image = new_board.image
-            self.container_manager.switch_container(old_board, new_board)
-            self._prepare_mainloop()
-            if hasattr(new_board, "on_setup"):
-                new_board.on_setup()
-
-        # new_board.run(event="board_loaded")
 
     def run(self, image, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False):
         """
@@ -114,7 +105,6 @@ class App:
         self.running_board.dirty = 1
         self.running_board.background.set_dirty("all", 2)
 
-
     @staticmethod
     def init_pygame():
         pygame.init()
@@ -128,8 +118,7 @@ class App:
             sys.exit(self._exit_code)
 
     def _update(self):
-        """
-        This is the mainloop. This function is called until the app quits.
+        """This is the mainloop. This function is called until the app quits.
         """
         self.event_manager.pygame_events_to_event_queue()
         if self.window.dirty:

@@ -54,7 +54,7 @@ class TokenBoardSensor(ABC):
         if token_filter is None:
             return token_list
         if token_filter:
-            token_list = [token for token in token_list if issubclass(token.__class__, token_filter)]
+            token_list = [token for token in token_list if token.__class__ == token_filter or issubclass(token.__class__, token_filter)]
             return token_list
         else:
             return token_list

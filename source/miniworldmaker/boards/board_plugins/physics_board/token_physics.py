@@ -6,6 +6,7 @@ import pymunk as pymunk_engine
 import pymunk.pygame_util
 
 from miniworldmaker.tokens import token as token
+from miniworldmaker.tokens.token_plugins.shapes import shapes
 
 
 class TokenPhysics:
@@ -68,7 +69,7 @@ class TokenPhysics:
         self.board.space.add(pj)
         return self.token.position_manager.get_position(), other.position
 
-    def join(self, other: "token.Token"):
+    def join(self, other: "token.Token", type="pin"):
         """joins two tokens at their center points
         """
         if not hasattr(other, "physics"):
@@ -161,15 +162,22 @@ class TokenPhysics:
                                   self.size[0] * self.token.width / 2,
                                   (0, 0),
                                   )
-        elif self.shape_type.lower() == "line":
-            shift_x = self.token.size[0] / 2 + self.token.position_manager.get_position()[0]
-            shift_y = self.token.size[1] / 2 + self.token.position_manager.get_position()[1]
+        elif isinstance(self.token, shapes.Line):
+            shift_x = 0
+            shift_y = 0
             start = pymunk.pygame_util.from_pygame(
                 (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y),
                 self.token.board.image)
             end = pymunk.pygame_util.from_pygame(
                 (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
-            shape = pymunk.Segment(self._body, start, end, self.token.border)
+
+            start = pymunk.pygame_util.from_pygame(
+                (0, - self.token._length / 2 ),
+                self.token.board.image)
+            end = pymunk.pygame_util.from_pygame(
+                (0, self.token._length / 2 ),
+                self.token.board.image)
+            shape = pymunk.Segment(self._body, start, end, self.token.costume.thickness)
         else:
             raise AttributeError("No shape set!")
         return shape

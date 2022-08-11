@@ -345,8 +345,7 @@ class TiledBoard(board.Board):
         return tiled_board_connector.TiledBoardConnector
 
     def is_position_on_board(self, position: "board_position.Position") -> bool:
-        """
-        Returns True if a position is on board.
+        """Returns True if a position is on board.
         """
         position = board_position.Position.create(position)
         return self.position_manager.is_position_on_board(position)

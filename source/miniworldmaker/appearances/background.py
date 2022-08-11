@@ -61,6 +61,13 @@ class Background(appearance.Appearance):
         self.transformations_manager = transformations_background_manager.TransformationsBackgroundManager(self)
         self.image_manager = image_background_manager.ImageBackgroundManager(self)
 
+    def set_dirty(self, value="all", status=1):
+        super().set_dirty(value, status)
+        if self.parent and self.parent.is_display_initialized:
+            for token in self.parent.tokens:
+                token.is_display_initialized = True
+                token.costume.set_dirty("all", self.LOAD_NEW_IMAGE)
+
     @property
     def board(self) -> "board_mod.Board":
         return self.parent
@@ -116,16 +123,14 @@ class Background(appearance.Appearance):
         [token.costume.update() for token in self.reload_costumes_queue]
         self.reload_costumes_queue = []
         if hasattr(self.board, "dynamic_tokens"):
-            dynamic_tokens = self.board.dynamic_tokens.copy()
-            [token.costume.update() for token in dynamic_tokens]
-            del dynamic_tokens
+            [token.costume.update() for token in self.board.dynamic_tokens]
 
     def _after_transformation_pipeline(self) -> None:
         self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
         self.surface.blit(self.image, self.surface.get_rect())
+        self._blit_to_window_surface()
         for token in self.board.camera.get_tokens_in_viewport():
             token.dirty = 1
-        self._blit_to_window_surface()
 
     def _blit_to_window_surface(self):
         """Blits background to window surface"""

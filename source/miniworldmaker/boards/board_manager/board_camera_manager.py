@@ -3,6 +3,7 @@ import pygame
 from miniworldmaker.appearances import background
 from miniworldmaker.tokens import token as token_mod
 
+
 class CameraManager(pygame.sprite.Sprite):
 
     def __init__(self, view_x, view_y, board):
@@ -12,7 +13,7 @@ class CameraManager(pygame.sprite.Sprite):
         self._boundary_x = view_x
         self._boundary_y = view_y
         self.viewport = view_x, view_y
-        self._tokens_in_last_frame : pygame.sprite.Group = pygame.sprite.Group()
+        self._tokens_in_last_frame: pygame.sprite.Group = pygame.sprite.Group()
         self._cached_tokens: tuple = (-1, pygame.sprite.Group())
 
     @property
@@ -122,24 +123,41 @@ class CameraManager(pygame.sprite.Sprite):
                            self.get_viewport_height_in_pixels())
 
     def reload_tokens_in_viewport(self):
-        for token in self.get_tokens_in_viewport():
+        tokens_in_viewport = self.get_tokens_in_viewport()
+        for token in tokens_in_viewport:
             token.dirty = 1
-
+        del tokens_in_viewport
+    """
     def get_tokens_in_viewport(self) -> pygame.sprite.Group:
-        if self._cached_tokens and self.board.frame == self._cached_tokens[0]:
+        if self._cached_tokens and self.board.frame == self._cached_tokens[0]: # tokens are cached for actual frame.
             tokens_in_frame_and_last_frame = self._cached_tokens[1]
         else:
-            found_tokens = pygame.sprite.Group()
-            for token in self.board.tokens:
-                if token.position_manager.get_global_rect().colliderect(self.rect):
-                    found_tokens.add(token)
+            sprite = pygame.sprite.Sprite()
+            sprite.rect = self.rect
+            found_tokens = pygame.sprite.spritecollide(sprite, self.board.tokens, dokill=False)
             self._tokens_in_last_frame = self._cached_tokens[1]
-            tokens_in_frame_and_last_frame = found_tokens.copy()
+            tokens_in_frame_and_last_frame = pygame.sprite.Group(found_tokens)
             tokens_in_frame_and_last_frame.add(self._tokens_in_last_frame)
             self._cached_tokens = (self.board.frame, tokens_in_frame_and_last_frame)
         return tokens_in_frame_and_last_frame
 
-    def from_token(self, token : "token_mod.Token") -> None:
+    """
+    def get_tokens_in_viewport(self) -> pygame.sprite.Group:
+        if self._cached_tokens and self.board.frame == self._cached_tokens[0]:
+            found_tokens = self._cached_tokens[1]
+        else:
+            found_tokens = pygame.sprite.Group()
+            for token in self.board.tokens:
+                # token.rect is the _local(!) rect, so pygame.sprite.collidecrect can't be used
+                if token.position_manager.get_global_rect().colliderect(self.rect):
+                    found_tokens.add(token)
+            self._tokens_in_last_frame = self._cached_tokens[1]
+            # tokens_in_frame_and_last_frame = found_tokens.copy()
+            found_tokens.add(self._tokens_in_last_frame)
+            self._cached_tokens = (self.board.frame, found_tokens)
+        return found_tokens
+
+    def from_token(self, token: "token_mod.Token") -> None:
         if token.center:
             center = token.center
             width = self.board.width // 2
@@ -155,20 +173,14 @@ class CameraManager(pygame.sprite.Sprite):
             return False
         return True
 
+    def is_token_repainted(self, token):
+        return self.board.frame == 0 or self.is_token_in_viewport(token)
+
     def is_token_in_viewport(self, token):
         if token in self.get_tokens_in_viewport():
             return True
         else:
             return False
-
-    def fetch_token(self, token):
-        if self._cached_tokens and not self.is_token_in_viewport(token):
-            if token.get_global_rect().colliderect(self.rect):
-                try:
-                    self._cached_tokens[1].add(token)
-                except AttributeError:
-                    # Token is not a sprite
-                    pass
 
 
 class TiledCameraManager(CameraManager):

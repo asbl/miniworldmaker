@@ -1,5 +1,6 @@
-import pygame
 import math
+
+import pygame
 
 import miniworldmaker.appearances.costume as costume
 
@@ -31,11 +32,9 @@ class CircleCostume(ShapeCostume):
             self.border,
         ]
 
-    def _update_draw_shape(self):
-        super()._update_draw_shape()
-
     def rotated(self):
-        pass # Do not set dirty after rotation
+        pass  # Do not set dirty after rotation
+
 
 class EllipseCostume(ShapeCostume):
     def _inner_shape(self):
@@ -69,24 +68,22 @@ class LineCostume(ShapeCostume):
         self.local_start_position, self.local_end_position = (0, 0), (0, 0)
         super().__init__(token)
 
-    def _update_draw_shape(self):
-        super()._update_draw_shape()
-        box = self.parent.get_bounding_box()
-        # mod_start: Start of line
-        _x_start = self.parent.start_position[0] - box.topleft[0] - self.border
-        _y_start = self.parent.start_position[1] - box.topleft[1] - self.border
-        self.local_start_position = (_x_start, _y_start)
-        # mod end: End of line
-        _x_end = self.parent.end_position[0] - box.topleft[0] - self.border
-        _y_end = self.parent.end_position[1] - box.topleft[1] - self.border
-        self.local_end_position = (_x_end, _y_end)
-        return self.local_start_position, self.local_end_position
-
     def _inner_shape(self):
-        return pygame.draw.line, [self.local_start_position, self.local_end_position, 0]
+        return pygame.draw.line, [(self.thickness / 2, self.thickness),
+                                  (self.thickness / 2, self.token.size[1] - self.thickness), 0]
 
     def _outer_shape(self):
-        return pygame.draw.line, [self.local_start_position, self.local_end_position, self.border]
+        return pygame.draw.line, [(self.thickness / 2, self.thickness),
+                                  (self.thickness / 2, self.token.size[1] - self.thickness), self.thickness]
+
+    @property
+    def thickness(self):
+        """-> see border"""
+        return int(self.border)
+
+    @thickness.setter
+    def thickness(self, value):
+        self.border = value
 
 
 class RectangleCostume(ShapeCostume):

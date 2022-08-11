@@ -12,7 +12,7 @@ def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test1401(unittest.TestCase):
+class TestMain(unittest.TestCase):
     
     def setUp(self):
         """ Programmcode here:
@@ -47,7 +47,7 @@ class Test1401(unittest.TestCase):
             def process_test(self):
                 global TEST_FRAMES
                 global QUIT_FRAME
-                print(self.test_frame)
+                #print(self.test_frame, self.test_title)
                 self.test_frame = self.test_frame + 1
                 if self.test_frame in TEST_FRAMES:
                     print("screenshot test at frame",  self.test_frame)
@@ -82,6 +82,7 @@ class Test1401(unittest.TestCase):
                 self.token.direction = "right"
                 self.test = test.from_running()
                 self.test.setup(self)
+                print(self.event_manager.registered_events)
                 
             def act(self):
                 if self.frame < 60:

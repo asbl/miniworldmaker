@@ -41,7 +41,7 @@ class TokenPositionManager(ABC):
     def get_global_rect(self) -> "board_rect.Rect":
         # if costume is set, get rect coordinates from costume.
         if self.token.costume:
-            _rect = self.token.costume.get_image().get_rect()
+            _rect = self.token.costume.get_rect()
         else:
             _rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
         return _rect
@@ -260,7 +260,7 @@ class TokenPositionManager(ABC):
                 f"No valid type in method move_in_direction - Expected int, str, Position or tuple, got {type(direction)}"
             )
 
-    def move_back(self):
+    def undo_move(self):
         self.position = self.last_position
         self.direction = self.last_direction
         return self

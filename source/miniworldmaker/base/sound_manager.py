@@ -1,12 +1,15 @@
 import pygame
 
 import miniworldmaker.base.app as app_mod
+from typing import Dict
 
 
 class SoundManager:
     def __init__(self, app: "app_mod.App"):
-        self.sound_effects: dict = {}
+        self.sound_effects: Dict[str, pygame.mixer.Sound] = {}
         self.app: "app_mod.App" = app
+        self.volume = 100
+        pygame.mixer.init()
 
     def register_sound(self, path) -> pygame.mixer.Sound:
         """
@@ -20,7 +23,7 @@ class SoundManager:
 
         """
         try:
-            effect = pygame.mixer.Sound(path)
+            effect: pygame.mixer.Sound = pygame.mixer.Sound(path)
             self.sound_effects[path] = effect
             return effect
         except pygame.error:
@@ -35,15 +38,20 @@ class SoundManager:
             effect = self.register_sound(path)
             effect.play()
 
-    def play_music(self, path: str):
+    def set_volume(self, volume, path: str = None):
+        """Sets volume (max: 100, min: 0)
         """
-        plays a music by path
+        if path:
+            self.sound_effects[path].set_volume(volume / 100)
+        else:
+            for key, sound_effect in self.sound_effects.items():
+                sound_effect.set_volume(volume / 100)
 
-        Args:
-            path: The path to the music
-
-        Returns:
-
+    def stop(self, volume, path: str = None):
+        """Sets volume (max: 100, min: 0)
         """
-        pygame.mixer.music.load(path)
-        pygame.mixer.music.play(-1)
+        if path:
+            self.sound_effects[path].stop()
+        else:
+            for key, sound_effect in self.sound_effects.items():
+                sound_effect.stop()

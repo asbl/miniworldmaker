@@ -7,7 +7,7 @@ from miniworldmaker.board_positions import board_position
 from miniworldmaker.tools import keys
 
 
-class EventManager:
+class AppEventManager:
 
     def __init__(self, app: "app_mod.App"):
         """The event manager consist

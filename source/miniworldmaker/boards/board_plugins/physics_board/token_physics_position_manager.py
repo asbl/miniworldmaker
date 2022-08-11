@@ -49,7 +49,7 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         return self._direction
 
     def set_direction(self, value):
-        if self.token.physics.body:
+        if hasattr(self.token, "physics") and self.token.physics.body:
             pymunk_direction = self.get_pymunk_direction(value)
             self.token.physics.body.angle = pymunk_direction
             super().set_direction((value + 360) % 360)

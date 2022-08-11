@@ -43,12 +43,14 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         return cls(vector[0], vector[1])
 
     def distance_to(self, other):
-        if type(other) == Position:
-            return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2)
-        elif type(other) == tuple:
-            return math.sqrt((self.x - other[0]) ** 2 + (self.y - other[1]) ** 2)
+        return app.App.running_board.distance_to(self, other)
 
-    @ classmethod
+    def direction_to(self, other):
+        return app.App.running_board.direction_to(self, other)
+
+    angle_to = direction_to
+
+    @classmethod
     def from_board_coordinates(cls, position):
         """
         Transforms board-coordinates to position
@@ -116,11 +118,9 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         """
         return Position(self.x + other[0], self.y + other[1])
 
+
     def __sub__(self, other: Union[Tuple, "Position", "board_vector.Vector"]):
-        if type(other) == Position:
-            return Position(self.x - other.x, self.y - other.y)
-        elif type(other) == tuple:
-            return Position(self.x - other[0], self.y - other[1])
+        return Position(self.x - other[0], self.y - other[1])
 
     def __neg__(self):
         return Position(-self.x, -self.y)
@@ -156,6 +156,8 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
     def right(self, value):
         return self.__class__(self.x + value, self.y)
 
+    def is_on_board(self):
+        return app.App.running_board.position_is_in_container(self)
 
 class BoardPosition(Position):
     # legacy

@@ -2,13 +2,17 @@ from miniworldmaker import *
 import imgcompare
 import os
 import unittest
+import random
 
+TEST_FRAMES = [1]
+QUIT_FRAME = 1
+    
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
 class Test108(unittest.TestCase):
-    
+
     def setUp(self):
         """ Programmcode here:
             You need:
@@ -20,40 +24,35 @@ class Test108(unittest.TestCase):
         """
         App.reset(unittest = True, file = __file__)
         
-        board = PixelBoard(400, 400)
+        board = Board(400, 400)
         board.add_background((100, 0, 0, 255))
 
         a = Token()
         a.position = (0,0)
-        assert a.topleft == (0,0)
+        print(a.topleft)
+        print(a.position)
         b = Token()
         b.topleft = (100,100)
-        assert b.topleft == (100, 100)
-        assert b.position == (100.0, 100.0)
+        print(b.topleft)
+        print(b.position)
         c = Token()
         c.position = (200,200)
-        assert c.topleft == (200.0, 200.0)
-        assert c.position == (200, 200)
-        assert c.center == (220, 220)
-        assert c.x == 200
-        assert c.y == 200
+        print(c.topleft)
+        print(c.position)
         d = Token()
         d.center = (250,250)
+        print(d.topleft)
+        print(d.position)
+        """ here act and init - delete if used in testcode"""
         
-        assert d.topleft == (230, 230)
-        assert d.position == (230, 230)
-        assert d.center == (250, 250)
-        path = os.path.dirname(__file__)
-        board.app.register_path(path)
-
         @board.register
         def on_setup(self):
-            self.init_test()
+            self.init_test()            
             
         @board.register
         def act(self):
             self.test()
-        
+            
         """ end of setUp - code up here""" 
         
         self.board = board
@@ -62,34 +61,39 @@ class Test108(unittest.TestCase):
         def init_test(self):
             print("setup test")
             board.test_frame = 0
-            
+        
         @board.register
         def test(self):
-            print("test")
+            global TEST_FRAMES
+            global QUIT_FRAME
+            
             self.test_frame = self.test_frame + 1
-            if self.test_frame == 1:
-                print("Screenshot")
+            if self.test_frame in TEST_FRAMES:
+                print("screenshot test at frame",  self.test_frame)
                 path = os.path.dirname(__file__)
                 if path != "":
                     path =  path + "/"
-                file_test = path + f'output/{self.test_title}_test.png'
-                file_output = path + f"output/{self.test_title}.png"
+                file_test = path + f'output/{self.test_title}_test_{self.test_frame}.png'
+                file_output = path + f"output/{self.test_title}_{self.test_frame}.png"
                 if not os.path.isfile(file_test):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
                 d = diff(file_test, file_output)
                 assert 0 <= d <= 0.05
+            if self.test_frame == QUIT_FRAME:
                 self.quit()
         
         #in TESTXYZ setup:
         board.test_title = self.__class__.__name__
         
         
-    def test_108(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         
 if __name__ == '__main__':
     unittest.main()
+
+
 
 

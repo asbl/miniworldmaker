@@ -696,6 +696,9 @@ class Appearance(metaclass=MetaAppearance):
         else:
             return None
 
+    def get_rect(self):
+        return self.image.get_rect()
+
     def draw(self, source, position, width, height):
         if type(source) == str:
             self.draw_on_image(source, position, width, height)
@@ -761,7 +764,7 @@ class Appearance(metaclass=MetaAppearance):
         """If dirty, the image will be reloaded.
         The image pipeline will be  processed, defined by "set_dirty"
         """
-        if self.dirty >= self.RELOAD_ACTUAL_IMAGE or not self._image and not self._flag_transformation_pipeline:
+        if self.dirty >= self.RELOAD_ACTUAL_IMAGE and not self._flag_transformation_pipeline:
             self.dirty = 0
             self._flag_transformation_pipeline = True
             self._before_transformation_pipeline()
@@ -832,14 +835,12 @@ class Appearance(metaclass=MetaAppearance):
             self.set_dirty(value)
 
     def set_dirty(self, value="all", status=1):
-        if value and self.parent and self.images:
-            self._update_draw_shape()
-        if hasattr(self, "transformations_manager"):
-            if value:
+        if self.parent and hasattr(self, "transformations_manager"):
+            if value and self.images and self.parent.is_display_initialized:
+                self._update_draw_shape()
                 self.transformations_manager.flag_reload_actions_for_transformation_pipeline(value)
             if status >= self._dirty:
                 self._dirty = status
-            if self.parent:
                 self.parent.dirty = 1
 
     @property
@@ -848,7 +849,7 @@ class Appearance(metaclass=MetaAppearance):
         """Implemented in subclasses Costume and Background
         """
 
-    def _update_draw_shape(self):
+    def _update_draw_shape(self) -> None:
         self.draw_shapes = []
         if self._inner_shape() and self.image_manager:
             if self.is_filled and not self.image_manager.is_image():

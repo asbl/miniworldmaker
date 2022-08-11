@@ -1,11 +1,12 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 import pygame
 import pygame.gfxdraw
 
-import miniworldmaker.board_positions.board_position as board_position
 import miniworldmaker.tokens.token as token
 import miniworldmaker.tokens.token_plugins.shapes.shape_costume as shape_costume
+from miniworldmaker.board_positions import board_position
+from miniworldmaker.board_positions import board_vector
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     EllipseWrongArgumentsError,
     LineFirstArgumentError,
@@ -96,7 +97,9 @@ class Circle(Shape):
     @radius.setter
     def radius(self, value):
         self._radius = value
+        _center = self.center
         self.position_manager.set_size((self._radius * 2, self._radius * 2), scale=False)
+        self.center = _center
         self.costume.set_dirty("scale", self.costume.RELOAD_ACTUAL_IMAGE)
 
     def set_physics_default_values(self):
@@ -261,7 +264,8 @@ class Line(Shape):
 
     """
 
-    def __init__(self, start_position: tuple, end_position: tuple):
+    def __init__(self, start_position: Union[tuple, "board_position.Position"],
+                 end_position: Union[tuple, "board_position.Position"]):
         if not start_position or not end_position:
             start_position = (0, 0)
             end_position = (0, 0)
@@ -269,62 +273,91 @@ class Line(Shape):
             raise LineFirstArgumentError(start_position)
         if type(end_position) not in [tuple, board_position.Position, None]:
             raise LineSecondArgumentError(end_position)
-        self._start_position = start_position
-        self._end_position = end_position
+        self._length = 0
+        self._start_position = board_position.Position.create(start_position)
+        self._end_position = board_position.Position.create(end_position)
         super().__init__(start_position)
         self.costume = shape_costume.LineCostume(self)
-        self._update_rect()
-
-    def set_physics_default_values(self):
-        self.physics.shape_type = "line"
-        self.physics.simulation = "static"
-
-    def get_bounding_box(self):
-        width = abs(self.start_position[0] - self.end_position[0]) + 2 * self.border
-        height = abs(self.start_position[1] - self.end_position[1]) + 2 * self.border
-        box = pygame.Rect(
-            min(self.start_position[0], self.end_position[0]) - self.border,
-            min(self.start_position[1], self.end_position[1]) - self.border,
-            width,
-            height,
-        )
-        return box
+        self._update_size()
 
     @property
     def start_position(self):
         return self._start_position
 
     @start_position.setter
-    def start_position(self, value: Tuple):
-        self._start_position = value
-        self._update_rect()
-        # self.costume.set_dirty("all", 1)
+    def start_position(self, value):
+        self._start_position = board_position.Position.create(value)
+        self._update_size()
 
     @property
     def end_position(self):
         return self._end_position
 
     @end_position.setter
-    def end_position(self, value: Tuple):
-        self._end_position = value
-        self._update_rect()
-        # self.costume.set_dirty("all", 1)
+    def end_position(self, value):
+        self._end_position = board_position.Position.create(value)
+        self._update_size()
 
-    def _update_rect(self):
-        box = self.get_bounding_box()
-        self.width = box.width
-        self.height = box.height
-        self.topleft = box.topleft
+    @property
+    def direction(self):
+        return self.position_manager.get_direction()
+
+    @direction.setter
+    def direction(self, value):
+        self.position_manager.set_direction(value)
+        direction_vector = board_vector.Vector.from_direction(self.direction)
+        direction_vector = direction_vector.normalize() * self._length * 0.5
+        self._start_position = board_position.Position.create(self.center + direction_vector)
+        self._end_position = board_position.Position.create(self.center - direction_vector)
+
+    def set_physics_default_values(self):
+        self.physics.shape_type = "line"
+        self.physics.simulation = "manual"
+
+    def get_bounding_box(self):
+        width = abs(self.start_position[0] - self.end_position[0]) + self.thickness
+        height = abs(self.start_position[1] - self.end_position[1]) + self.thickness
+        box = pygame.Rect(
+            min(self.start_position[0], self.end_position[0]) - int(0.5 * self.thickness),
+            min(self.start_position[1], self.end_position[1]) - int(0.5 * self.thickness),
+            width,
+            height,
+        )
+        return box
+
+    def _update_size(self):
+        self._length = self.start_position.distance_to(self._end_position)
+        self.position_manager.set_size((self.thickness, self._length + 2 * self.thickness), scale=False)
+        self.position_manager.set_direction(self.start_position.direction_to(self._end_position).value)
+        self.center = self.start_position + board_vector.Vector.from_positions(self.start_position,
+                                                                               self.end_position) * 0.5
         self.costume.set_dirty("all", 1)
+
+    @property
+    def length(self):
+        return self._length
 
     @property
     def thickness(self):
         """-> see border"""
-        return self.border
+        return self.costume.border
 
     @thickness.setter
     def thickness(self, value):
-        self.border = value
+        self.costume.border = value
+        self._update_size()
+
+    @property
+    def border(self):
+        """-> see border"""
+        return self.costume.border
+
+    @border.setter
+    def border(self, value):
+        self.costume.border = value
+        self._update_size()
+
+    line_width = thickness
 
 
 class Rectangle(Shape):

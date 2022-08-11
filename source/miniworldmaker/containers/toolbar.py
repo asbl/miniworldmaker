@@ -1,8 +1,8 @@
-from multiprocessing.sharedctypes import Value
-import pygame
-from typing import Union, List
-from collections import OrderedDict
 import itertools
+from collections import OrderedDict
+from typing import Union
+
+import pygame
 
 import miniworldmaker.base.app as app_mod
 import miniworldmaker.containers.container as container
@@ -128,9 +128,9 @@ class Toolbar(container.Container):
         self.dirty = 1
 
     def add_widget(
-        self,
-        widget: widgets.Widget,
-        key: str = None,
+            self,
+            widget: widgets.Widget,
+            key: str = None,
     ) -> widgets.Widget:
         """Adds a widget to the toolbar
 
@@ -261,7 +261,7 @@ class Toolbar(container.Container):
 
     def _set_widget_width(self, widget):
         widget._width = (
-            self._container_width - self.margin_left - self.margin_right - widget.margin_left - widget.margin_right
+                self._container_width - self.margin_left - self.margin_right - widget.margin_left - widget.margin_right
         )
         if widget._width < 0:
             widget._width = 0
@@ -278,9 +278,9 @@ class Toolbar(container.Container):
                 self._set_widget_width(widget)
                 internal_x = local_pos[0]
                 if (
-                    self.margin_left + widget.margin_left
-                    < internal_x
-                    < self.margin_left + widget.margin_left + widget.width
+                        self.margin_left + widget.margin_left
+                        < internal_x
+                        < self.margin_left + widget.margin_left + widget.width
                 ):
                     return widget
                 else:

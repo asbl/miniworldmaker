@@ -57,9 +57,8 @@ class Test709(unittest.TestCase):
 
         @l.register
         def act(self):
-            print("act")
-            self.start_position = self.start_position[0], self.start_position[1]+1
-            self.end_position = self.end_position[0], self.end_position[1]+1
+            self.start_position = (self.start_position[0], self.start_position[1] + 1)
+            self.end_position = (self.end_position[0], self.end_position[1] + 1)
 
         l2 = Line((180,220), (100,20))
         l2.border_color = (100,200,0,255)

@@ -8,6 +8,10 @@ class TransformationsManager:
         self.surface = None
         self.appearance = appearance
         self.reload_transformations = defaultdict()
+        """Structure: {'orientation': False, 'texture': True, ...}
+        False: The Transformation is loaded from cache
+        True: The transformation is reloaded 
+        """
         self.cached_image = pygame.Surface((0, 0))
         self.cached_images = defaultdict()
         self.transformations_pipeline = [
@@ -74,7 +78,7 @@ class TransformationsManager:
             else:  # reload_transformations is true
                 if getattr(appearance, transformation[2]) and appearance.parent.size != (0, 0):
                     # perform image action
-                    if image.get_width() != 0 and image.get_height != 0:
+                    if image.get_width() != 0 and image.get_height() != 0:
                         image = transformation[1](image, appearance)
                         self.cached_images[transformation[0]] = image
         return image

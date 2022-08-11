@@ -3,18 +3,18 @@ import os
 import pygame
 
 import miniworldmaker.base.container_manager as container_manager_mod
-import miniworldmaker.base.event_manager as event_manager_mod
+import miniworldmaker.base.app_event_manager as event_manager_mod
 
 
 class Window:
 
     def __init__(self, title, container_manager: "container_manager_mod.ContainerManager",
-                 event_manager: "event_manager_mod.EventManager"):
+                 event_manager: "event_manager_mod.TokenEventManager"):
         self._containers_height = None
         self._containers_width = None
         self.title: str = title
         self.container_manager: "container_manager_mod.ContainerManager" = container_manager
-        self.event_manager: "event_manager_mod.EventManager" = event_manager
+        self.event_manager: "event_manager_mod.TokenEventManager" = event_manager
         self.default_size: int = 200
         self.dirty: int = 1
         self.repaint_areas = []

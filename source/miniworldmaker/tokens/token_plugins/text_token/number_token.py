@@ -1,5 +1,5 @@
 import miniworldmaker.tokens.token_plugins.text_token.text_token as text_token
-from miniworldmaker.appearances import costume
+from miniworldmaker.appearances import costume as costume_mod
 
 
 class Number(text_token.TextToken):
@@ -40,16 +40,8 @@ class Number(text_token.TextToken):
         self.is_static = True
         self.set_number(self.number)
 
-    def inc(self):
-        """
-        Increases the number by one
-        """
-        self.number += 1
-        self.set_text(str(self.number))
-
-    def set_number(self, number):
-        """
-        Sets the number
+    def set_value(self, number):
+        """Sets the number
 
         Args:
             number: The number which should be displayed
@@ -62,9 +54,11 @@ class Number(text_token.TextToken):
             
         """
         self.number = number
-        self.set_text(str(self.number))
+        self.update_text()
 
-    def get_number(self) -> int:
+    set_number = set_value
+
+    def get_value(self) -> int:
         """
 
         Returns:
@@ -77,8 +71,27 @@ class Number(text_token.TextToken):
                 number = self.number_token.get_number()
             
         """
-        self.costume.set_dirty("text changed", costume.Costume.LOAD_NEW_IMAGE)
         return int(self.costume.text)
+
+    get_number = get_value
+
+    def inc(self):
+        """Increases the number by one
+        """
+        self.number += 1
+        self.update_text()
+
+    def update_text(self):
+        self.set_text(str(self.number))
+        self.costume.set_dirty("write_text", costume_mod.Costume.LOAD_NEW_IMAGE)
+
+    def sub(self, value):
+        self.number -= value
+        self.update_text()
+
+    def add(self, value):
+        self.number += value
+        self.update_text()
 
 
 class NumberToken(Number):

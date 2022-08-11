@@ -995,8 +995,14 @@ class Token(token_base.BaseToken):
         return self.position_manager.move_in_direction("right", distance)
 
     def move_back(self):
+        """deprecated - use: undo_move()
+
+        In next versions, this functions will move the token backwards
         """
-        "Undo" the last move. Moves the actor to the last position and resets direction.
+        return self.position_manager.undo_move()
+
+    def undo_move(self):
+        """Undo the last move. Moves the actor to the last position and resets direction.
 
         .. image:: ../_images/move_back.png
 
@@ -1010,12 +1016,10 @@ class Token(token_base.BaseToken):
             .. code-block:: python
 
                 def on_sensing_wall(self, wall):
-                    self.move_back()
+                    self.undo_move()
 
         """
-        return self.position_manager.move_back()
-
-    undo_move = move_back
+        return self.position_manager.undo_move()
 
     def move_towards(self, position):
         return self.position_manager.move_towards_position(position)
@@ -2132,3 +2136,4 @@ class Token(token_base.BaseToken):
             float: The distance between token (measured from token.center) to token or position.
         """
         return self.board_sensor.get_distance_to(obj)
+

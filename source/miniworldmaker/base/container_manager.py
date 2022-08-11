@@ -64,12 +64,22 @@ class ContainerManager:
             self.app.window.resize()
             for ct in self.containers:
                 ct.dirty = 1
-            if self.app.running_board:
+            if app.App.running_board:
                 for token in self.app.running_board.tokens:
                     token.dirty = 1
         else:
             raise MiniworldMakerError("Container already in board.containers")
         return container
+
+    def switch_board(self, new_board):
+        old_board = self.app.running_board
+        app.App.running_board = new_board
+        self.app.image = new_board.image
+        self.switch_container(old_board, new_board)
+        for container in self.containers:
+            if container != new_board:
+                self.remove_container(container)
+        self.app._prepare_mainloop()
 
     def switch_container(self, container: "container_mod.Container",
                          new_container: "container_mod.Container") -> "container_mod.Container":
@@ -110,7 +120,8 @@ class ContainerManager:
     def remove_container(self, container):
         """Removes a container and updates window.
         """
-        self.containers.remove(container)
+        if container in self.containers:
+            self.containers.remove(container)
         for ct in self.containers:
             ct.dirty = 1
         self.update_containers()

@@ -7,9 +7,9 @@ from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTy
 from miniworldmaker.tokens import token as token_mod
 
 
-class Direction(int):
-    def __init__(self, direction):
-        self.value = direction
+class Direction(float):
+    def __init__(self, direction: float):
+        self.value: float = direction
 
     @classmethod
     def create(cls, direction: Union[int, str, Tuple, "board_vector.Vector", "Direction"]):

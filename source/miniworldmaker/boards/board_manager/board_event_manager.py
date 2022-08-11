@@ -24,6 +24,7 @@ class BoardEventManager:
     class_events_set = set()
     members =  set()
     registered_class_events = defaultdict()
+    setup = False
 
     @staticmethod
     def setup_event_list():
@@ -77,17 +78,12 @@ class BoardEventManager:
         """Events are registered here in multiple event lists.
         The lists are merged into ``self.events``.
         """
-        if not BoardEventManager.class_events:
-            BoardEventManager.setup_event_list()  # setup static event set/dict
+        BoardEventManager.setup_event_list()  # setup static event set/dict
         self.executed_events: set = set()
         self.board = board
         self.registered_events = defaultdict(set)
-        if not BoardEventManager.members:
-            BoardEventManager.members = self._get_members_for_instance(board)
-        if not BoardEventManager.registered_class_events:
-            self.register_events_for_board(board)
-        else:
-            self.registered_events = BoardEventManager.registered_class_events
+        BoardEventManager.members = self._get_members_for_instance(board)
+        self.register_events_for_board(board)
 
     def _get_members_for_instance(self, instance) -> set:
         """Get"""
@@ -157,10 +153,10 @@ class BoardEventManager:
                 if member.startswith(event):
                     self.registered_events[event].add(method)
                     return
-                elif member.startswith("on_touching_"):
-                    self.board.register_touching_method(method)
-                elif member.startswith("on_separation_from_"):
-                    self.board.register_separate_method(method)
+            if member.startswith("on_touching_"):
+                self.board.register_touching_method(method)
+            elif member.startswith("on_separation_from_"):
+                self.board.register_separate_method(method)
 
 
     def handle_event(self, event: str, data: Any):
@@ -203,10 +199,11 @@ class BoardEventManager:
 
     def handle_click_on_token_event(self, event, data):
         if event == "mouse_left":
-            on_click_methods = self.registered_events["on_clicked_left"].union(self.registered_events["on_clicked"])
+            on_click_methods = self.registered_events["on_clicked_left"].union(self.registered_events["on_clicked"]).copy()
         else:
-            on_click_methods = self.registered_events["on_clicked_right"]
-        for method in on_click_methods.copy():
+            on_click_methods = self.registered_events["on_clicked_right"].copy()
+        for method in on_click_methods:
             token = method.__self__
             if token.sensing_point(data):
                 method_caller.call_method(method, (data,))
+        del on_click_methods

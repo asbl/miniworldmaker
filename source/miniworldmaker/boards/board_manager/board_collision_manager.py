@@ -2,7 +2,7 @@ import miniworldmaker.tools.method_caller as method_caller
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
 
 
-class BoardCollisionHandler:
+class BoardCollisionManager:
     """The class handles all collisions of tokens.
 
     The method ``handle_all_collisions`` is called every frame (in BaseBoard.update())
@@ -20,7 +20,8 @@ class BoardCollisionHandler:
 
     def _handle_token_sensing_token_methods(self):
         for event in self.board.event_manager.class_events["on_sensing"]:
-            for method in self.board.event_manager.registered_events[event].copy():
+            registered_events_copy = list(self.board.event_manager.registered_events[event].copy())
+            for method in registered_events_copy:
                 token = method.__self__
                 token_type_of_target = method.__name__[11:]
                 found_tokens_for_token_type = token.board_sensor.sensing_tokens(token_filter=token_type_of_target)
@@ -32,6 +33,8 @@ class BoardCollisionHandler:
                     subclasses = token_class_inspection.TokenClassInspection.get_all_token_classes()
                     if found_token.__class__ in subclasses:
                         method_caller.call_method(method, (found_token,))
+            del registered_events_copy
+
 
     def _handle_token_not_sensing_token_methods(self):
         for event in self.board.event_manager.class_events["on_sensing"]:

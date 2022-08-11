@@ -1,3 +1,4 @@
+import math
 from typing import Tuple, Union, Type, Optional
 
 import pygame
@@ -5,7 +6,7 @@ import pygame
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.background as background_mod
 import miniworldmaker.appearances.backgrounds_manager as backgrounds_manager
-import miniworldmaker.board_positions.board_position as board_position
+import miniworldmaker.board_positions.board_direction as board_direction
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.boards.board_manager.board_collision_manager as coll_manager
 import miniworldmaker.boards.board_manager.board_event_manager as event_manager
@@ -15,6 +16,7 @@ import miniworldmaker.tools.board_inspection as board_inspection
 import miniworldmaker.tools.color as color
 import miniworldmaker.tools.timer as timer
 from miniworldmaker.base import app
+from miniworldmaker.board_positions import board_position
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardArgumentsError,
 )
@@ -160,7 +162,7 @@ class Board(board_base.BaseBoard):
         )
         self.mouse_manager: "mouse_manager.BoardMouseManager" = mouse_manager.BoardMouseManager(self)
         self.ask: "ask.Ask" = ask.Ask(self)
-        self._is_setup: bool = False
+        self.is_display_initialized: bool = False
         self._fps: int = 60
         self._key_pressed: bool = False
         self._animated: bool = False
@@ -184,15 +186,21 @@ class Board(board_base.BaseBoard):
             self.app = app.App.running_app
         self.background = background_mod.Background(self)
         self.background.update()
-        self.collision_manager: "coll_manager.BoardCollisionHandler" = coll_manager.BoardCollisionHandler(self)
+        self.collision_manager: "coll_manager.BoardCollisionManager" = coll_manager.BoardCollisionManager(self)
         self.timed_objects: list = []
         self.app.event_manager.to_event_queue("setup", None)
-        self.dynamic_tokens = set()
+        self.dynamic_tokens = pygame.sprite.Group()
         self._registered_methods = []
         self.tokens_fixed_size = False
         self._container_width = self.camera.get_viewport_width_in_pixels()
         self._container_height = self.camera.get_viewport_height_in_pixels()
         self.app.container_manager.add_topleft(self)
+
+    def is_position_on_board(self, position: "board_position.Position") -> bool:
+        """Returns True if a position is on board.
+        """
+        position = board_position.Position.create(position)
+        return self.is_in_container(position.x, position.y)
 
     def setup_board(self):
         # Implemented in TiledBoards
@@ -342,7 +350,6 @@ class Board(board_base.BaseBoard):
 
     @rows.setter
     def rows(self, value: int):
-        print("changed rows")
         self.setup_board()
         self.viewport_height = value
         self.boundary_y = value
@@ -715,19 +722,27 @@ class Board(board_base.BaseBoard):
                 :alt: Minimal program
 
         """
-        if not self._is_setup and hasattr(self, "on_setup") and callable(getattr(self, "on_setup")):
-            self.app._prepare_mainloop()
-            if hasattr(self, "on_setup"):
-                self.on_setup()
-            self._is_setup = True
-            self.app.event_manager.to_event_queue("setup", self)
+        self.app._prepare_mainloop()
+        if hasattr(self, "on_setup"):
+            self.on_setup()
+        self.init_display()
+        self.is_running = True
+        # self.app.event_manager.to_event_queue("setup", self)
         if event:
             self.app.event_manager.to_event_queue(event, data)
         self.app.run(self.image, fullscreen=fullscreen, fit_desktop=fit_desktop, replit=replit)
 
+    def init_display(self):
+        if not self.is_display_initialized:
+            self.is_display_initialized = True
+            self.background.set_dirty("all", self.background.LOAD_NEW_IMAGE)
+
     def play_sound(self, path: str):
         """plays sound from path"""
         self.app.sound_manager.play_sound(path)
+
+    def stop_sounds(self):
+        self.app.sound_manager.stop()
 
     def play_music(self, path: str):
         """plays a music from path
@@ -738,7 +753,18 @@ class Board(board_base.BaseBoard):
         Returns:
 
         """
-        self.app.sound_manager.play_music(path)
+        self.app.music_manager.play_music(path)
+
+    def stop_music(self):
+        """plays a music from path
+
+        Args:
+            path: The path to the music
+
+        Returns:
+
+        """
+        self.app.music_manager.stop_music()
 
     def get_mouse_position(self) -> Union["board_position.Position", None]:
         """
@@ -850,9 +876,11 @@ class Board(board_base.BaseBoard):
         #    self.backgrounds_manager.remove_appearance(background)
         # self.clean()
         self.app.event_manager.event_queue.clear()
-        self.app.container_manager.switch_container(self, new_board)
-        self.app.switch_board(new_board)
-        new_board.start()
+        self.app.container_manager.switch_board(new_board)
+        new_board.init_display()
+        new_board.is_running = True
+        new_board.reset()
+        new_board.background.set_dirty("all", 2)
         new_board.start_listening()
 
     def get_color_from_pixel(self, position: "board_position.Position") -> tuple:
@@ -1009,9 +1037,11 @@ class Board(board_base.BaseBoard):
                 self.act_all()
             self.collision_manager.handle_all_collisions()
             self.mouse_manager.update_positions()
+            if self.frame == 0:
+                self.init_display()
             # run animations
             self.background.update()
-            self.background._update_all_costumes()  # @TODO: Uddate costumes for animated costumes, performance
+            self.background._update_all_costumes()  # @TODO: Update costumes for animated costumes, performance
             self._tick_timed_objects()
         self.frame = self.frame + 1
         self.clock.tick(self.fps)
@@ -1060,3 +1090,21 @@ class Board(board_base.BaseBoard):
 
     # Alias
     color = fill_color
+
+    def direction(self, point1, point2):
+        pass
+
+    def distance_to(self,
+                    pos1: "board_position.Position",
+                    pos2: "board_position.Position"):
+        pos1 = board_position.Position.create(pos1)
+        pos2 = board_position.Position.create(pos2)
+        if type(pos2) == board_position.Position:
+            return math.sqrt((pos1.x - pos2.x) ** 2 + (pos1.y - pos2.y) ** 2)
+        elif type(pos2) == tuple:
+            return math.sqrt((pos1.x - pos2[0]) ** 2 + (pos1.y - pos2[1]) ** 2)
+
+    def direction_to(self,
+                     pos1: "board_position.Position",
+                     pos2: "board_position.Position") -> "board_direction.Direction":
+        return board_direction.Direction.from_two_points(pos1, pos2)

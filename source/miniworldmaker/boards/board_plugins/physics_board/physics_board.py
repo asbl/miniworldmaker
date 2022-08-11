@@ -6,6 +6,7 @@ import miniworldmaker.boards.board_plugins.physics_board.physics_board_connector
 import miniworldmaker.boards.board_plugins.pixel_board.board as board
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
 import miniworldmaker.tools.token_inspection as token_inspection
+from miniworldmaker.tokens.token_plugins.shapes import shapes as shapes_mod
 
 
 class PhysicsBoard(board.Board):
@@ -118,11 +119,11 @@ class PhysicsBoard(board.Board):
             return False
         else:
             subclasses_of_other_token = token_class_inspection.TokenClassInspection(other_cls).get_subclasses_for_cls()
-            for other_subcls in subclasses_of_other_token:
-                # If you register a Collision with a Token, collissns with subclasses of the token
+            for other_subcls in set(subclasses_of_other_token).union(set([other_cls])):
+                # If you register a Collision with a Token, collisions with subclasses of the token
                 # are also registered
                 self._pymunk_register_collision_manager(method.__self__, other_subcls, event, method)
-                return True
+            return True
 
     def register_touching_method(self, method):
         """
@@ -187,10 +188,21 @@ class PhysicsBoard(board.Board):
             [token.physics._unset_update_mode() for token in self.physics_tokens]
 
     @property
-    def gravity(self):
+    def gravity(self) -> tuple:
         """ Defines gravity in physics board.
+
+        Gravity is a 2-tuple with gravy in x-direction and y-direction.
+
         Default gravity: x=0, y=500
-        :return:
+
+        Examples:
+
+          Get all tokens at mouse position:
+
+          .. code-block:: python
+
+            board = PhysicsBoard(400,400)
+            board.gravity = (0, 0)
         """
         return self.gravity_x, self.gravity_y
 
@@ -218,19 +230,25 @@ class PhysicsBoard(board.Board):
 
         :meta private:
         """
-        # Translate pymunk variables to miniworldmaker variables
-        token = arbiter.shapes[0].token
-        other = arbiter.shapes[1].token
+        # Translate pymunk variables to miniworldmaker variables.
+        # Arbiter contains the two colliding tokens.
+        t1 = arbiter.shapes[0].token
+        t2 = arbiter.shapes[1].token
         collision = dict()
-        # get touching token_manager for token
+        # get touching methods, e.g. `on_touching_circle`
         for method in self.touching_methods:
-            method_other_cls_name = method.__name__[len("on_touching_"):].lower()
-            method_other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
-                method_other_cls_name
-            )
-            # is other an instance of method_other_cls
-            if isinstance(other, method_other_cls):
-                token_inspection.TokenInspection(token).get_and_call_method(method.__name__, [other, collision])
+            # _cls_search_string = method.__name__[len("on_touching_"):].lower() # Get class by method name
+            # filter_class = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
+            #    _cls_search_string
+            # )
+            # sets parameter for method
+            if method.__self__ == t1:
+                other = t2
+            else:
+                other = t1
+            # call instance method with correct parameters
+            # if isinstance(other, filter_class):
+            token_inspection.TokenInspection(method.__self__).get_and_call_method(method.__name__, [other, collision])
         return True
 
     def pymunk_separation_collision_listener(self, arbiter, space, data):
@@ -238,17 +256,37 @@ class PhysicsBoard(board.Board):
 
         :meta private:
         """
-        # Translate pymunk variables to miniworldmaker variables
-        token = arbiter.shapes[0].token
-        other = arbiter.shapes[1].token
+        # Translate pymunk variables to miniworldmaker variables.
+        # Arbiter contains the two colliding tokens.
+        t1 = arbiter.shapes[0].token
+        t2 = arbiter.shapes[1].token
         collision = dict()
-        # get separation token_manager for token
+        # get touching methods, e.g. `on_touching_circle`
         for method in self.separate_methods:
-            method_other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-            method_other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
-                method_other_cls_name
-            )
-            # is other an instance of method_other_cls
-            if isinstance(other, method_other_cls):
-                token_inspection.TokenInspection(token).get_and_call_method(method.__name__, [other, collision])
+            # _cls_search_string = method.__name__[len("on_separation_from_"):].lower() # Get class by method name
+            # filter_class = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(
+            #    _cls_search_string
+            # )
+            # sets parameter for method
+            if method.__self__ == t1:
+                other = t2
+            else:
+                other = t1
+            # call instance method with correct parameters
+            # if isinstance(other, filter_class):
+            token_inspection.TokenInspection(method.__self__).get_and_call_method(method.__name__, [other, collision])
         return True
+
+    def connect(self, token1, token2) -> "shapes_mod.Line":
+        l = shapes_mod.Line(token1.center, token2.center)
+        l.physics.simulation = None
+        l.border = 1
+        l.fill = True
+        l.color = (255, 0, 0, 100)
+
+        @l.register
+        def act(self):
+            self.start_position = token1.center
+            self.end_position = token2.center
+
+        return l

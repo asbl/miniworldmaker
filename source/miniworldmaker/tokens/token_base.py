@@ -27,6 +27,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def __init__(self):
         self._dirty = 0  # must be set before calling __init__ of DirtySprite.
+        self.is_display_initialized: bool = False
         super().__init__()
         self.board: "board_mod.Board" = app.App.running_board
         self._managers: list = list()
@@ -69,7 +70,8 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     @dirty.setter
     def dirty(self, value: int):
-        if not self._dirty and self.position_manager and self.board.camera.is_token_in_viewport(self) and value == 1:
+        if self.position_manager and (
+                self.board.camera.is_token_repainted(self)) and value == 1:
             self._dirty = 1
         elif value == 0:
             self._dirty = 0
@@ -130,7 +132,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     # Aliases
     sensing_on_board = sensing_board  # @todo: replace or add listeneer
-    is_touching_board = sensing_board # @todo: replace or add listeneer
+    is_touching_board = sensing_board  # @todo: replace or add listeneer
 
     def on_sensing_borders(self, borders: List[str]):
         """*on_sensing_border* is called, when token is near a border

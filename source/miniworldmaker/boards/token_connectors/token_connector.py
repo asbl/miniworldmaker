@@ -4,7 +4,7 @@ from miniworldmaker.appearances import costume
 from miniworldmaker.appearances import costumes_manager
 from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
 from miniworldmaker.tokens import token as token_mod
-from miniworldmaker.tokens.managers import event_manager
+from miniworldmaker.tokens.managers import token_event_manager
 from miniworldmaker.tokens.managers import token_position_manager, token_boardsensor
 
 
@@ -34,7 +34,7 @@ class TokenConnector(abc.ABC):
 
     @staticmethod
     def _get_token_event_manager_class():
-        return event_manager.EventManager
+        return token_event_manager.TokenEventManager
 
     @staticmethod
     def _get_token_costume_manager_class():
@@ -53,6 +53,8 @@ class TokenConnector(abc.ABC):
         return None
 
     def add_token_to_board(self, position):
+        if self.board.is_display_initialized:
+            self.token.is_display_initialized = True
         self.board.camera.clear_camera_cache()
         self.board.tokens.add(self.token)
         self.set_static(self.token.static)

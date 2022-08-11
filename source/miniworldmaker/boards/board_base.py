@@ -5,13 +5,14 @@ import pygame
 
 import miniworldmaker.boards.data.export_factory as export_factory
 import miniworldmaker.boards.data.import_factory as import_factory
-import miniworldmaker.containers.container as container
+import miniworldmaker.containers.container as container_mod
+from miniworldmaker.base import app as app_mod
 from miniworldmaker.boards.board_manager import board_camera_manager
 from miniworldmaker.boards.board_plugins.pixel_board import pixel_board_connector as pixel_board_connector
 from miniworldmaker.boards.token_connectors import token_connector as token_connector
 
 
-class BaseBoard(container.Container, ABC):
+class BaseBoard(container_mod.Container, ABC):
     subclasses = None
 
     def __init__(self):
@@ -29,10 +30,12 @@ class BaseBoard(container.Container, ABC):
     def get_token_connector(self, token) -> token_connector.TokenConnector:
         return self._get_token_connector_class()(self, token)
 
-    def add_container(self, container, dock, size=None):
-        return self.app.container_manager.add_container(container, dock, size)
+    def add_container(self, container: "container_mod.Container", dock: str, size=None):
+        if self == self.app.running_board:
+            _container = self.app.container_manager.add_container(container, dock, size)
+            return _container
 
-    def remove_container(self, container):
+    def remove_container(self, container: "container_mod.Container"):
         return self.app.container_manager.remove_container(container)
 
     def blit_surface_to_window_surface(self):
@@ -43,7 +46,7 @@ class BaseBoard(container.Container, ABC):
         return self.__class__.__name__
 
     @property
-    def window(self) -> "app.App":
+    def window(self) -> "app_mod.App":
         """
         Gets the parent window
 

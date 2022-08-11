@@ -302,6 +302,8 @@ class Widget:
         bound_method = inspection.Inspection(self).bind_method(method)
         return bound_method
 
+    def send_message(self, text):
+        self.parent.send_message(text)
 
 class Button(Widget):
     """A Toolbar Button
@@ -444,6 +446,7 @@ class CounterLabel(Widget):
     """A counter label contains a `description` and a `counter`. The counter starts with value 0 and can be modified with
     `add` and `sub`
     """
+
     def __init__(self, description, img_path=None):
         super().__init__()
         if img_path:
@@ -455,14 +458,21 @@ class CounterLabel(Widget):
 
     def add(self, value):
         self.value += value
-        self.set_text("{0} : {1}".format(self.description, str(self.value)))
+        self.update_text()
 
     def sub(self, value):
         self.value -= value
-        self.set_text("{0} : {1}".format(self.description, str(self.value)))
+        self.update_text()
 
     def get_value(self):
         return self.value
+
+    def set(self, value):
+        self.value = value
+        self.update_text()
+
+    def update_text(self):
+        self.set_text("{0} : {1}".format(self.description, str(self.value)))
 
 
 class TimeLabel(Widget):
@@ -537,10 +547,6 @@ class ContainerWidget(Widget):
         widget = self.get_widget(mouse_pos)
         if widget:
             widget.on_mouse_left(mouse_pos)
-
-    def send_message(self, text):
-        self.parent.send_message(text)
-
 
 class YesNoButton(ContainerWidget):
     def __init__(self, yes_text, no_text):
