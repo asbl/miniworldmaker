@@ -23,11 +23,11 @@ Boards: Physicsboard
       class PhysicsBoard{
       }  
 
-TiledBoard
-==========
+PhysicsBoard
+============
 
 
-.. autoclass:: miniworldmaker.boards.physics_board.PhysicsBoard
+.. autoclass:: miniworldmaker.boards.board_templates.physics_board.physics_board.PhysicsBoard
    :members:
 
    .. autoclasstoc::

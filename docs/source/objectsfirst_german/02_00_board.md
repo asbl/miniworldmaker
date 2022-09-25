@@ -45,6 +45,8 @@ board.add_background("images/grass.png")
 board.run()
 ```
 
+[--> Open in repl.it](https://replit.com/@a_siebel/mwm-background?v=1)
+
 ![First Miniworldmaker Example](../_images/pixel_addbackground.png)
 
 :::{note}
@@ -54,9 +56,9 @@ und das `PhysicsBoard` ist speziell für Spiele mit einer Physikengine gedacht.
 :::
 
 :::{seealso}
-[Concept: Naming und Variablen](concept_naming)
+[Koncept: Naming und Variablen](concept_naming)
 :::
 
 :::{seealso}
-[Concept: Imports](concept_imports)
+[Koncept: Importe](concept_imports)
 :::

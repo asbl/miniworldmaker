@@ -4,7 +4,7 @@ import pygame
 
 import miniworldmaker.appearances.appearance as appear
 import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
-from miniworldmaker.boards.board_plugins.pixel_board import board
+from miniworldmaker.boards.board_templates.pixel_board import board
 
 
 class Costume(appear.Appearance):
@@ -106,3 +106,8 @@ class Costume(appear.Appearance):
     def visible(self):
         if self.board.camera.is_token_repainted(self.token):
             self.set_dirty("all", self.RELOAD_ACTUAL_IMAGE)
+
+    def set_dirty(self, value="all", status=1):
+        super().set_dirty(value, status)
+        if self.parent:
+            self.parent.mask = pygame.mask.from_surface(self.parent.image)

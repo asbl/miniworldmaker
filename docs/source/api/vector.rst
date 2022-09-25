@@ -1,7 +1,7 @@
 Vector
 ******
 
-.. autoclass:: miniworldmaker.board_positions.board_vector.Vector
+.. autoclass:: miniworldmaker.positions.vector.Vector
    :members:
 
    .. autoclasstoc::

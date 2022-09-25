@@ -3,7 +3,7 @@ from collections import deque
 import pygame
 
 import miniworldmaker.base.app as app_mod
-from miniworldmaker.board_positions import board_position
+from miniworldmaker.positions import position as board_position
 from miniworldmaker.tools import keys
 
 
@@ -75,7 +75,9 @@ class AppEventManager:
                 for key in keys_pressed:
                     if key.islower() and key == pygame.key.name(event.key):
                         self.to_event_queue("key_down_" + key, None)
-            if event.type == pygame.VIDEORESIZE:
+            if event.type == pygame.VIDEORESIZE or event.type == pygame.VIDEOEXPOSE:
+                for container in self.app.container_manager.containers:
+                    container.dirty = 1
                 self.app.window.add_display_to_repaint_areas()
         return False
 

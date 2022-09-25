@@ -24,9 +24,9 @@ class TextCostume(costume.Costume):
     def _update_draw_shape(self):
         super()._update_draw_shape()
         """Sets self.size by costume.font_size"""
-        if not self.token.board.tokens_fixed_size:
+        if not self.token.board.tokens_fixed_size:  # fixed size e.g. on TiledBoards
             self.token.position_manager.set_size((self.get_text_width(), self.font_size))
-        if self.board.tokens_fixed_size:
+        if self.token.board.tokens_fixed_size:
             _font_size = 0
             self.font_manager.set_font_size(_font_size, update=False)
             while self.font_manager.get_text_width() < self.token.size[0] and self.font_size < self.token.size[1]:

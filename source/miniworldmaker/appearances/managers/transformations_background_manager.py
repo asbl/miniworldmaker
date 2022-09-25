@@ -16,10 +16,10 @@ class TransformationsBackgroundManager(transformations_manager.TransformationsMa
         i = 0
         j = 0
         while i <= parent.height:
-            pygame.draw.line(image, appearance._grid_color, (0, i), (parent.width, i), 1)
+            pygame.draw.line(image, appearance._grid_color, (0, i), (self.get_width(), i), 1)
             i += parent.tile_size
         while j <= parent.width:
-            pygame.draw.line(image, appearance._grid_color, (j, 0), (j, parent.height), 1)
+            pygame.draw.line(image, appearance._grid_color, (j, 0), (j, self.get_height()), 1)
             j += parent.tile_size
 
         return image

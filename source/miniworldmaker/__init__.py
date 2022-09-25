@@ -1,6 +1,9 @@
 import inspect
 import os
 import sys
+import pygame
+
+pygame.init()
 
 # __import__('pkg_resources').declare_namespace(__name__)
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -11,14 +14,15 @@ __all__ = []
 
 from miniworldmaker.base.app import App
 
-from miniworldmaker.boards.board_plugins.pixel_board.board import Board
-from miniworldmaker.boards.board_plugins.pixel_board.pixel_board import PixelBoard
-from miniworldmaker.boards.board_plugins.tiled_board.tiled_board import TiledBoard
-from miniworldmaker.boards.board_plugins.physics_board.physics_board import PhysicsBoard as PhysicsBoard
-from miniworldmaker.boards.board_plugins.hex_board.hex_board import HexBoard
+from miniworldmaker.boards.board_templates.pixel_board.board import Board
+from miniworldmaker.boards.board_templates.pixel_board.pixel_board import PixelBoard
+from miniworldmaker.boards.board_templates.tiled_board.tiled_board import TiledBoard
+from miniworldmaker.boards.board_templates.physics_board.physics_board import PhysicsBoard as PhysicsBoard
+from miniworldmaker.boards.board_templates.hex_board.hex_board import HexBoard
 
 from miniworldmaker.tokens.token_base import BaseToken
 from miniworldmaker.tokens.token import Token
+from miniworldmaker.tokens.actor import Actor
 from miniworldmaker.tokens.token_plugins.text_token.text_token import Text
 from miniworldmaker.tokens.token_plugins.text_token.number_token import Number
 from miniworldmaker.tokens.token_plugins.text_token.text_token import TextToken
@@ -61,24 +65,24 @@ from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
 from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
 from miniworldmaker.containers.color_toolbar import ColorToolbar
 
-from miniworldmaker.board_positions.board_vector import Vector
-from miniworldmaker.board_positions.board_position import Position
-from miniworldmaker.board_positions.board_rect import Rect
+from miniworldmaker.positions.vector import Vector
+from miniworldmaker.positions.position import Position
+from miniworldmaker.positions.rect import Rect
 
-from miniworldmaker.boards.board_plugins.tiled_board.tile_factory import TileFactory
-from miniworldmaker.boards.board_plugins.tiled_board.tile_factory import HexTileFactory
+from miniworldmaker.boards.board_templates.tiled_board.tile_factory import TileFactory
+from miniworldmaker.boards.board_templates.tiled_board.tile_factory import HexTileFactory
 
-from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexBase
-from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexEdge
-from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexTile
-from miniworldmaker.boards.board_plugins.hex_board.hex_elements import HexCorner
+from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexBase
+from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexEdge
+from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexTile
+from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexCorner
 
-from miniworldmaker.boards.board_plugins.hex_board.cube_coord import CubeCoord
+from miniworldmaker.boards.board_templates.hex_board.cube_coord import CubeCoord
 
-from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import TileBase
-from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import Edge
-from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import Tile
-from miniworldmaker.boards.board_plugins.tiled_board.tile_elements import Corner
+from miniworldmaker.boards.board_templates.tiled_board.tile_elements import TileBase
+from miniworldmaker.boards.board_templates.tiled_board.tile_elements import Edge
+from miniworldmaker.boards.board_templates.tiled_board.tile_elements import Tile
+from miniworldmaker.boards.board_templates.tiled_board.tile_elements import Corner
 
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
 
@@ -90,6 +94,7 @@ __all__.append(TiledBoard.__name__)
 __all__.append(HexBoard.__name__)
 __all__.append(BaseToken.__name__)
 __all__.append(Token.__name__)
+__all__.append(Actor.__name__)
 __all__.append(Text.__name__)
 __all__.append(Number.__name__)
 __all__.append(TextToken.__name__)

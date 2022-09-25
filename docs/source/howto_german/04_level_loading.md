@@ -76,7 +76,7 @@ Mit der Vorarbeit ist es einfach den Raum zu wechseln: Du musst einfach nur die 
     def on_key_down(self, keys):
         global r01
         if "SPACE" in keys:
-            if self.sensing_token(Wall):
+            if self.detect_token(Wall):
                 setup_room(rooms[1]) 
 ```
 
@@ -119,16 +119,16 @@ class Player(Token):
     def on_key_down_d(self):
         self.move_right()
         
-    def on_sensing_not_on_board(self):
+    def on_detecting_not_on_board(self):
         self.move_back()
 
-    def on_sensing_wall(self, other):
+    def on_detecting_wall(self, other):
         self.move_back()
         
     def on_key_down(self, keys):
         global r01
         if "SPACE" in keys:
-            if self.sensing_token(Wall):
+            if self.detect_token(Wall):
                 setup_room(rooms[1])
 
 class Wall(Token):

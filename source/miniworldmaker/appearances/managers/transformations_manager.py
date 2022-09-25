@@ -1,6 +1,6 @@
-import pygame
 from collections import defaultdict
-import numpy as np
+
+import pygame
 
 
 class TransformationsManager:
@@ -38,6 +38,12 @@ class TransformationsManager:
     def get_size(self):
         return self.appearance.parent.size
 
+    def get_width(self):
+        return self.get_size()[0]
+
+    def get_height(self):
+        return self.get_size()[1]
+
     def blit(self, image: "pygame.Surface"):
         """helper function:
         creates new surface with parent_size and blits transformed image to
@@ -68,15 +74,15 @@ class TransformationsManager:
             # load the last cached image from the pipeline and execute
             # all subsequent image actions.
             if (
-                transformation[0] in self.reload_transformations
-                and self.reload_transformations[transformation[0]] is False
-                and transformation[0] in self.cached_images.keys()
-                and self.cached_images[transformation[0]]
+                    transformation[0] in self.reload_transformations
+                    and self.reload_transformations[transformation[0]] is False
+                    and transformation[0] in self.cached_images.keys()
+                    and self.cached_images[transformation[0]]
             ):
-                if getattr(appearance, transformation[2]) and appearance.parent.size != (0, 0):
+                if getattr(appearance, transformation[2]) and self.get_size() != (0, 0):
                     image = self.cached_images[transformation[0]]  # Reload image from cache
             else:  # reload_transformations is true
-                if getattr(appearance, transformation[2]) and appearance.parent.size != (0, 0):
+                if getattr(appearance, transformation[2]) and self.get_size() != (0, 0):
                     # perform image action
                     if image.get_width() != 0 and image.get_height() != 0:
                         image = transformation[1](image, appearance)
@@ -115,7 +121,7 @@ class TransformationsManager:
 
     def transformation_upscale(self, image: pygame.Surface, appearance) -> pygame.Surface:
         parent = appearance.parent
-        if parent.size != 0:
+        if self.get_size() != 0:
             scale_factor_x = self.get_size()[0] / image.get_width()
             scale_factor_y = self.get_size()[1] / image.get_height()
             scale_factor = min(scale_factor_x, scale_factor_y)
@@ -126,9 +132,9 @@ class TransformationsManager:
         return self.surface
 
     def transformation_scale(
-        self,
-        image: pygame.Surface,
-        appearance,
+            self,
+            image: pygame.Surface,
+            appearance,
     ) -> pygame.Surface:
         size = self.get_size()
         image = pygame.transform.scale(image, size)
@@ -136,12 +142,12 @@ class TransformationsManager:
         return self.surface
 
     def transformation_scale_to_height(
-        self,
-        image: pygame.Surface,
-        appearance,
+            self,
+            image: pygame.Surface,
+            appearance,
     ) -> pygame.Surface:
         parent = appearance.parent
-        scale_factor = parent.height / image.get_height()
+        scale_factor = self.get_height() / image.get_height()
         new_width = int(image.get_width() * scale_factor)
         new_height = int(image.get_height() * scale_factor)
         image = pygame.transform.scale(image, (new_width, new_height))
@@ -149,12 +155,12 @@ class TransformationsManager:
         return self.surface
 
     def transformation_scale_to_width(
-        self,
-        image: pygame.Surface,
-        appearance,
+            self,
+            image: pygame.Surface,
+            appearance,
     ) -> pygame.Surface:
         parent = appearance.parent
-        scale_factor = parent.width / image.get_width()
+        scale_factor = self.get_width() / image.get_width()
         new_width = int(image.get_width() * scale_factor)
         new_height = int(image.get_height() * scale_factor)
         image = pygame.transform.scale(image, (new_width, new_height))
@@ -205,9 +211,9 @@ class TransformationsManager:
 
     @staticmethod
     def crop_image(self, image: pygame.Surface, parent, appearance) -> pygame.Surface:
-        cropped_surface = pygame.Surface((appearance.parent.width, appearance.parent.height))
+        cropped_surface = pygame.Surface(self.get_size())
         cropped_surface.fill((255, 255, 255))
-        cropped_surface.blit(image, (0, 0), (0, 0, (appearance.parent.width, appearance.parent.height)))
+        cropped_surface.blit(image, (0, 0), (0, 0, self.get_size()))
         self.blit(cropped_surface)
         return self.surface
 

@@ -6,18 +6,18 @@ and can e.g. detect other tokens at their position.
 ## Detect an object
 
 A `token` can track another `token` at the same location by using the
-function `on_sensing_token`.
+function `on_detect_token`.
 
 ``` python
 @player.register
-def on_sensing_token(self, other):
+def on_detect_token(self, other):
     print("Damage!!!!!")
     self.remove()
 ```
 
 ### What happens here?
 
-* The function `on_sensing_token` will be called when the token
+* The function `on_detect_token` will be called when the token
     detects another object at the same location.
 * The parameter `other` is a reference to the found object, so that
     so that you can directly access attributes and methods of this object
@@ -35,7 +35,7 @@ This goes for example like this:
 lineno-start: 1
 ---
 @player1.register
-def on_sensing_token(self, other):
+def on_detect_token(self, other):
     global player2
     if other == player2:
       print("I found you, player2!")
@@ -79,7 +79,7 @@ def act(self):
         player.move()
 
 @player.register
-def on_sensing_token(self, other):
+def on_detect_token(self, other):
     if other==wall:
         self.move_back()
     
@@ -103,7 +103,7 @@ playing field (or beyond it):
 
 ``` python
 @player3.register
-def on_sensing_not_on_board(self):
+def on_detecting_not_on_board(self):
   print("Warning: I'm not on the board!!!")
 ```
 
@@ -127,7 +127,7 @@ def act(self):
     self.move()
 
 @fish.register
-def on_sensing_not_on_board(self):
+def on_detecting_not_on_board(self):
     self.move_back()
     self.flip_x()
         
@@ -144,7 +144,7 @@ board.run()
 
 ``` python
 @player4.register
-def on_sensing_borders(self, borders):
+def on_detecting_borders(self, borders):
   print("Borders are here!", str(borders))
 ```
 
@@ -159,7 +159,7 @@ is printed: `Borders are here! ['right', 'top']`
 
   ``python
   @player.register
-  def on_sensing_token(self, token):
+  def on_detect_token(self, token):
     print(token)
     ...
   ```

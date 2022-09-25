@@ -1,9 +1,8 @@
 import pygame
 
 
-class BoardMouseManager:
-    """
-
+class StageMouseManager:
+    """ Handles collisions
     """
 
     def __init__(self, board):

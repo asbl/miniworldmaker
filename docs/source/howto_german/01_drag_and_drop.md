@@ -25,7 +25,7 @@ circle.dragged = False
 
 @circle.register
 def on_mouse_left(self, mouse_pos):
-    if self.sensing_point(mouse_pos):
+    if self.detecting_point(mouse_pos):
         self.dragged = True
         
 @circle.register
@@ -48,8 +48,8 @@ t2.dragged = False
 
 @t2.register
 def on_mouse_left(self, mouse_pos):
-    print(self.sensing_point(mouse_pos))
-    if self.sensing_point(mouse_pos):
+    print(self.detecting_point(mouse_pos))
+    if self.detecting_point(mouse_pos):
         self.dragged = True
         print("start drag")
         

@@ -6,7 +6,7 @@ import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.managers.image_background_manager as image_background_manager
 import miniworldmaker.appearances.managers.transformations_background_manager as transformations_background_manager
 import miniworldmaker.base.app as app
-from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
+from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 
 
 class Background(appearance.Appearance):
@@ -146,3 +146,23 @@ class Background(appearance.Appearance):
             self.parent.app.window.surface.blit(self.image, (0, 0))
             self.parent.app.window.add_display_to_repaint_areas()
             return self.parent.app.window.display_update()
+
+    def _inner_shape(self) -> tuple:
+        """Returns inner shape of costume
+
+        Returns:
+            pygame.Rect: Inner shape (Rectangle with size of token)
+        """
+        size = (self.parent.container_width, self.parent.container_height)
+        return pygame.draw.rect, [
+            pygame.Rect(0, 0, size[0], size[1]), 0]
+
+    def _outer_shape(self) -> tuple:
+        """Returns outer shape of costume
+
+        Returns:
+            pygame.Rect: Outer shape (Rectangle with size of tokens without filling.)
+        """
+        size = (self.parent.container_width, self.parent.container_height)
+        return pygame.draw.rect, [
+            pygame.Rect(0, 0, size[0], size[1]), self.border]

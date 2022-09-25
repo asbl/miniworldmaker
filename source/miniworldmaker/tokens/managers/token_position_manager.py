@@ -3,12 +3,12 @@ from typing import Union, Tuple
 
 import pygame
 
-import miniworldmaker.board_positions.board_direction as board_direction
-import miniworldmaker.board_positions.board_position as board_position
-import miniworldmaker.board_positions.board_rect as board_rect
-import miniworldmaker.board_positions.board_vector as board_vector
+import miniworldmaker.positions.direction as board_direction
+import miniworldmaker.positions.position as board_position
+import miniworldmaker.positions.rect as board_rect
+import miniworldmaker.positions.vector as board_vector
 from miniworldmaker.appearances import costume
-from miniworldmaker.boards.board_plugins.pixel_board import board
+from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
 from miniworldmaker.tokens import token as token_mod
@@ -196,7 +196,7 @@ class TokenPositionManager(ABC):
 
     @center_y.setter
     def center_y(self, value):
-        if self.costume is None:
+        if self.token.costume is None:
             raise NoCostumeSetError(self.token)
         self.set_center((self.center_x, value))
 

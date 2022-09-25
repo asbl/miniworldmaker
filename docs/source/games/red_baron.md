@@ -220,16 +220,16 @@ class Bullet(Token):
     def act(self):
         self.x += self.speed
 
-    def on_sensing_enemy(self, enemy):
+    def on_detecting_enemy(self, enemy):
         enemy.reset()
         
-    def on_sensing_not_on_board(self):
+    def on_detecting_not_on_board(self):
         self.remove()
 ```
 
-The Bullet has `sensors` - With the method `on_sensing_enemy` it can detect all Tokens with of class `Enemey' and call their reset()-Methods.
+The Bullet has `sensors` - With the method `on_detecting_enemy` it can detect all Tokens with of class `Enemey' and call their reset()-Methods.
 
-With `on_sensing_not_on_board` it an detect, if Bullet is on the board.
+With `on_detecting_not_on_board` it an detect, if Bullet is on the board.
 
 
 ## Complete Code:
@@ -324,10 +324,10 @@ class Bullet(Token):
     def act(self):
         self.x += self.speed
 
-    def on_sensing_enemy(self, enemy):
+    def on_detecting_enemy(self, enemy):
         enemy.reset()
         
-    def on_sensing_not_on_board(self):
+    def on_detecting_not_on_board(self):
         self.remove()
         
 class Enemy(Token):

@@ -6,8 +6,8 @@ import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.keys as keys
 import miniworldmaker.tools.method_caller as method_caller
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.boards.board_plugins.pixel_board import board
+from miniworldmaker.positions import position as board_position
+from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens import token_base
 from miniworldmaker.tools import token_class_inspection
@@ -33,11 +33,14 @@ class BoardEventManager:
             specific_key_events.append("on_key_down_" + value.lower())
             specific_key_events.append("on_key_pressed_" + value.lower())
             specific_key_events.append("on_key_up_" + value.lower())
-
-        sensing_token_methods = []
+        detecting_token_methods = []
+        not_detecting_token_methods = []
         for cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
-            sensing_token_methods.append("on_sensing_" + cls.__name__.lower())
-            sensing_token_methods.append("on_not_sensing_" + cls.__name__.lower())
+            detecting_token_methods.append("on_detecting_" + cls.__name__.lower())
+            detecting_token_methods.append("on_sensing_" + cls.__name__.lower())
+        for cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
+            not_detecting_token_methods.append("on_not_detecting_" + cls.__name__.lower())
+            not_detecting_token_methods.append("on_not_sensing_" + cls.__name__.lower())
 
         BoardEventManager.class_events = {
             "mouse": ["on_mouse_left",
@@ -58,16 +61,18 @@ class BoardEventManager:
             "act": ["act"],
             # "setup": ["on_setup"],
             "border": [
-                "on_sensing_borders",
-                "on_sensing_left_border",
-                "on_sensing_right_border",
-                "on_sensing_top_border",
-                "on_sensing_bottom_border",
+                "on_detecting_borders",
+                "on_detecting_left_border",
+                "on_detecting_right_border",
+                "on_detecting_top_border",
+                "on_detecting_bottom_border",
             ],
-            "on_board": ["on_sensing_on_board",
-                         "on_sensing_not_on_board"],
-            "on_sensing": ["on_sensing_",
-                                 "on_not_sensing_", ] + sensing_token_methods,
+            "on_the_board": ["on_detecting_board",
+                             "on_not_detecting_board",
+                             "on_sensing_on_board",
+                             "on_sensing_not_on_board"],
+            "on_detecting": ["on_detecting", "on_detecting_"] + detecting_token_methods,
+            "on_not_detecting": ["on_not_detecting", "on_not_detecting_", ] + not_detecting_token_methods
         }
         BoardEventManager.class_events_set = set()
         for key in BoardEventManager.class_events.keys():
@@ -204,6 +209,6 @@ class BoardEventManager:
             on_click_methods = self.registered_events["on_clicked_right"].copy()
         for method in on_click_methods:
             token = method.__self__
-            if token.sensing_point(data):
+            if token.detect_point(data):
                 method_caller.call_method(method, (data,))
         del on_click_methods

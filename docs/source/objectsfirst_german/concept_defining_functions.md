@@ -201,7 +201,7 @@ def raindrop(x,y):
     def act(self):
         self.move_down(random.randint(1,3))
     @c.register
-    def on_sensing_not_on_board(self):
+    def on_detecting_not_on_board(self):
         self.remove()
         
 @board.register

@@ -118,7 +118,7 @@ Das Token wurde in der oberen linken Ecke erstellt. Wenn du das Token an einer b
 
 Der miniworldmaker verwendet dazu ein Koordinatensystem, die obere Linke Ecke ist die Position (0,0):
 
-### Position auf einem PixelBoard
+### Position auf einem PixelBoBoardard
 
 Auf einem `Board` bezeichnet die `position` die x und y-Koordinate, die du am Bildschirm ablesen kannst. 
 Als `position` eines Tokens wird immer die obere linke Ecke des Tokens bezeichnet.
@@ -203,8 +203,6 @@ board.run()
 ```
 
 ![A circle](../_images/processing/circle.png)
-
-
 
 ### Rechteck
 

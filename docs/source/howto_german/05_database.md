@@ -247,11 +247,11 @@ def on_key_pressed_d(self):
     self.move_right()
 
 @player.register
-def on_sensing_right_border(self):
+def on_detecting_right_border(self):
     self.move_back()
 
 @player.register
-def on_sensing_left_border(self):
+def on_detecting_left_border(self):
     self.move_back()
     
 def create_enemy():
@@ -266,7 +266,7 @@ def act(self):
         create_enemy()
     for enemy in enemies:
         enemy.move_down()
-        if "bottom" in enemy.sensing_borders():
+        if "bottom" in enemy.detect_borders():
             enemies.remove(enemy)
             enemy.remove()
             my_score += 1
@@ -292,12 +292,12 @@ def act(self):
         create_enemy()
     for enemy in enemies:
         enemy.move_down()
-        if "bottom" in enemy.sensing_borders():
+        if "bottom" in enemy.detect_borders():
             enemies.remove(enemy)
             enemy.remove()
             my_score += 1
             score_token.set_number(my_score)
-        if enemy in player.sensing_tokens():
+        if enemy in player.detect_tokens():
             board.reset()
             name = board.ask.text(f"You reached {my_score} points! Enter your name")
             new_highscore(name, my_score)

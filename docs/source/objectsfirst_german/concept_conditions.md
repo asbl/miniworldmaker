@@ -238,7 +238,7 @@ def act(self):
     self.y += velocity
     if board.frame % 10 == 0:
         velocity += 1
-    token = self.sensing_token()
+    token = self.detect_token()
     if token == rect:
        self.board.stop()
 
@@ -252,7 +252,7 @@ board.run()
 Die Logik befindet sich in folgenden Zeilen:
 
 ``` python
-    token = self.sensing_token()
+    token = self.detect_token()
     if token == rect:
        self.board.stop()
 ```

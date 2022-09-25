@@ -146,7 +146,7 @@ def on_key_down(self, keys):
             self.x -= 1
         elif "RIGHT" in keys:
             self.x += 1
-        if self.sensing_token(Wall):
+        if self.detect_token(Wall):
             self.move_back()
 ```
 
@@ -186,11 +186,11 @@ def on_setup(self):
 
     def act(self):
         self.move(self.velocity)
-        if self.sensing_token(Wall):
+        if self.detect_token(Wall):
             self.move_back()
             self.velocity = - self.velocity
             self.move(self.velocity)
-        if self.sensing_token(Player):
+        if self.detect_token(Player):
             print("You died")
             exit()
 ```
@@ -280,7 +280,7 @@ maze = [
 Add the folowing sensor to player class. It detects other tokens, if other tokens have the class `key`:
 
 ``` python
-def on_sensing_key(self, other):
+def on_detecting_key(self, other):
     other.get_key()
 ```
 ### Exercise
@@ -315,10 +315,10 @@ class Player(Token):
             self.x -= 1
         elif "RIGHT" in keys:
             self.x += 1
-        if self.sensing_token(Wall):
+        if self.detect_token(Wall):
             self.move_back()
             
-    def on_sensing_key(self, other):
+    def on_detecting_key(self, other):
         other.get_key()
         
 class Wall(Token):
@@ -333,11 +333,11 @@ class Enemy(Token):
         
     def act(self):
         self.move(self.velocity)
-        if self.sensing_token(Wall):
+        if self.detect_token(Wall):
             self.move_back()
             self.velocity = - self.velocity
             self.move(self.velocity)
-        if self.sensing_token(Player):
+        if self.detect_token(Player):
             print("You died")
             exit()
 

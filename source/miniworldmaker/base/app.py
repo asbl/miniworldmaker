@@ -12,7 +12,7 @@ import miniworldmaker.base.container_manager as container_manager
 import miniworldmaker.base.music_manager as music_manager
 import miniworldmaker.base.sound_manager as sound_manager
 import miniworldmaker.base.window as window
-from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
+from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 
 
 class App:
@@ -55,7 +55,6 @@ class App:
         print("Let's go")
 
     def __init__(self, title):
-        self.init_pygame()
         self._output_start()
         self.check_for_run_method()
         self.container_manager: "container_manager.ContainerManager" = container_manager.ContainerManager(self)
@@ -96,7 +95,6 @@ class App:
             self.running_board.background.set_dirty("all", 2)
 
     def init_app(self):
-        self.init_pygame()
         image_manager.ImageManager.cache_images_in_image_folder()
 
     def _prepare_mainloop(self):
@@ -104,10 +102,6 @@ class App:
         self.window.display_update()
         self.running_board.dirty = 1
         self.running_board.background.set_dirty("all", 2)
-
-    @staticmethod
-    def init_pygame():
-        pygame.init()
 
     def start_mainloop(self):
         self._mainloop_started = True

@@ -28,11 +28,10 @@ Boards: Board
 Board
 =====
 
-.. autoclass:: miniworldmaker.boards.board.Board
+.. autoclass:: miniworldmaker.boards.board_templates.pixel_board.board.Board
    :members:
    :exclude-members: add_to_board, handle_event
 
    .. autoclasstoc::
-
 
 

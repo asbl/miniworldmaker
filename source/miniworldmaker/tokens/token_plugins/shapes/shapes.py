@@ -5,8 +5,8 @@ import pygame.gfxdraw
 
 import miniworldmaker.tokens.token as token
 import miniworldmaker.tokens.token_plugins.shapes.shape_costume as shape_costume
-from miniworldmaker.board_positions import board_position
-from miniworldmaker.board_positions import board_vector
+from miniworldmaker.positions import position as board_position
+from miniworldmaker.positions import vector as board_vector
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     EllipseWrongArgumentsError,
     LineFirstArgumentError,

@@ -50,7 +50,7 @@ class Toolbar(container.Container):
                             self.move()
 
                 @rocket.register
-                def on_sensing_not_on_board(self):
+                def on_sensing_not_on_the_board(self):
                     self.remove()
 
                 board.run()

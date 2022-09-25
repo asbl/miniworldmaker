@@ -27,7 +27,7 @@ TiledBoard
 ==========
 
 
-.. autoclass:: miniworldmaker.boards.tiled_board.TiledBoard
+.. autoclass:: miniworldmaker.boards.board_templates.tiled_board.tiled_board.TiledBoard
    :members:
 
    .. autoclasstoc::

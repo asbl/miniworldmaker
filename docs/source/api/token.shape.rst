@@ -7,43 +7,43 @@ Shape
 Base class for shapes
 
 
-.. autoclass:: miniworldmaker.tokens.shapes.Shape
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Shape
    :members:
 
 
 Point
 =====
 
-.. autoclass:: miniworldmaker.tokens.shapes.Point
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Point
    :members:
 
 Circle
 ======
 
-.. autoclass:: miniworldmaker.tokens.shapes.Circle
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Circle
    :members:
 
 Ellipse
 =======
 
-.. autoclass:: miniworldmaker.tokens.shapes.Ellipse
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Ellipse
    :members:
 
 Line
 ====
 
-.. autoclass:: miniworldmaker.tokens.shapes.Line
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Line
    :members:
 
 Rectangle
 =========
 
-.. autoclass:: miniworldmaker.tokens.shapes.Rectangle
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Rectangle
    :members:
 
 
 Polygon
 =======
 
-.. autoclass:: miniworldmaker.tokens.shapes.Polygon
+.. autoclass:: miniworldmaker.tokens.token_plugins.shapes.shapes.Polygon
    :members:

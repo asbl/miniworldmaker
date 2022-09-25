@@ -2,7 +2,7 @@ import abc
 
 from miniworldmaker.appearances import costume
 from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
+from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens.managers import token_event_manager
 from miniworldmaker.tokens.managers import token_position_manager, token_boardsensor
@@ -52,7 +52,7 @@ class TokenConnector(abc.ABC):
     def get_board_sensor_class():
         return None
 
-    def add_token_to_board(self, position):
+    def add_token_to_board(self):
         if self.board.is_display_initialized:
             self.token.is_display_initialized = True
         self.board.camera.clear_camera_cache()
@@ -73,7 +73,7 @@ class TokenConnector(abc.ABC):
             _token_connector = self.board.get_token_connector(self.token)
             _token_connector.remove_dynamic_token()
         self.board.tokens.remove(token)
-        for colliding_token in token.sensing_tokens():
+        for colliding_token in token.detect_tokens():
             colliding_token.dirty = 1
         for manager in token._managers:
             manager.self_remove()

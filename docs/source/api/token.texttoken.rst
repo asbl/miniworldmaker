@@ -1,25 +1,17 @@
-Token.Texts and Numbers
-#######################
+Token: Texts and Numbers
+########################
 
-TextToken
+Texts
 *********
 
-.. autoclass:: miniworldmaker.tokens.text_token.Text
+.. autoclass:: miniworldmaker.tokens.token_plugins.text_token.text_token.Text
    :members:
    :noindex:
 
-.. autoclass:: miniworldmaker.tokens.text_token.TextToken
-   :members:
-   :noindex:
-
-
-NumberToken
+Numbers
 ***********
 
-.. autoclass:: miniworldmaker.tokens.number_token.Number
+.. autoclass:: miniworldmaker.tokens.token_plugins.text_token.number_token.Number
    :members:
    :noindex:
 
-.. autoclass:: miniworldmaker.tokens.number_token.NumberToken
-   :members:
-   :noindex:

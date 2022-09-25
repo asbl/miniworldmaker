@@ -1,8 +1,8 @@
 import os
 
 import miniworldmaker.tokens.token as token
-from miniworldmaker.board_positions import board_rect as board_rect
-from miniworldmaker.board_positions import board_position
+from miniworldmaker.positions import rect as board_rect
+from miniworldmaker.positions import position as board_position
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers import widgets
 from miniworldmaker.exceptions import miniworldmaker_exception
@@ -41,7 +41,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
             prototype = self.prototypes[self.selected_token_type.__name__]
             rect = board_rect.Rect.from_token(prototype)
             rect.topleft = mouse_pixel_pos
-            tokens = [token for token in self.board.tokens if token.sensing_rect(rect)]
+            tokens = [token for token in self.board.tokens if token.detect_rect(rect)]
             # remove dummy
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
@@ -99,7 +99,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
     def _update_dummy(self, position):
         if self.dummy:
             self.dummy.position = position
-            tokens = self.dummy.sensing_tokens()
+            tokens = self.dummy.detect_tokens()
             if self.dummy and tokens and self.dummy in tokens:
                 tokens.remove(self.dummy)
             if tokens:

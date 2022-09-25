@@ -8,8 +8,9 @@ import miniworldmaker.boards.data.import_factory as import_factory
 import miniworldmaker.containers.container as container_mod
 from miniworldmaker.base import app as app_mod
 from miniworldmaker.boards.board_manager import board_camera_manager
-from miniworldmaker.boards.board_plugins.pixel_board import pixel_board_connector as pixel_board_connector
+from miniworldmaker.boards.board_templates.pixel_board import pixel_board_connector as pixel_board_connector
 from miniworldmaker.boards.token_connectors import token_connector as token_connector
+from miniworldmaker.tokens import token as token_module
 
 
 class BaseBoard(container_mod.Container, ABC):
@@ -20,7 +21,7 @@ class BaseBoard(container_mod.Container, ABC):
 
     @staticmethod
     def _get_camera_manager_class():
-        return board_camera_manager.CameraManager
+        return board_camera_manager.BoardCameraManager
 
     @staticmethod
     def _get_token_connector_class():

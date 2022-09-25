@@ -10,7 +10,7 @@ import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
 import miniworldmaker.tools.binding as binding
 import miniworldmaker.tools.color as color_mod
-from miniworldmaker.boards.board_plugins.pixel_board import board
+from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -54,7 +54,7 @@ class Appearance(metaclass=MetaAppearance):
         self._transparency = False
         self._border = 0
         self._is_filled = False
-        self._fill_color = (255, 0, 255, 100)
+        self._fill_color = (255, 0, 255, 255)
         self._border_color = None
         self._alpha = 255
         self._dirty = 0
@@ -623,12 +623,12 @@ class Appearance(metaclass=MetaAppearance):
     def color(self, value):
         value = color_mod.Color.create(value).get()
         self._fill_color = value
-        # self.reload_costume()
+        self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
     def fill(self, value):
         """Set default fill color for borders and lines"""
         self._is_filled = value
-        if self.is_filled and self.is_filled:
+        if self.is_filled:
             self.fill_color = color_mod.Color(value).get()
         self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
@@ -744,6 +744,9 @@ class Appearance(metaclass=MetaAppearance):
 
     @text.setter
     def text(self, value):
+        self.set_text(value)
+
+    def set_text(self, value):
         if value == "":
             self.font_manager.text = ""
             self.set_dirty("write_text", Appearance.RELOAD_ACTUAL_IMAGE)

@@ -22,14 +22,14 @@ def act(self):
 
 @r.register
 def act(self):
-    token = self.sensing_token()
+    token = self.detect()
     if token:
         self.color = (255,0,0)
 
 board.run()
 ```
 
-Die zweite `act()`-Methode enthält den Sensor. Mit der Methode `self.sensing.token` wird abgefragt, welche Tokens
+Die zweite `act()`-Methode enthält den Sensor. Mit der Methode `self.detect` wird abgefragt, welche Tokens
 an der aktuellen Stelle gefunden wurde. Falls kein Token gefunden wird, gibt die Methode `None` zurück.
 
 :::{note}
@@ -64,7 +64,7 @@ def act(self):
     self.move_left()
  
 @r.register
-def on_sensing_token(self, other):
+def on_detecting(self, other):
     self.color = (255,0,0)
 
 board.run()
@@ -72,7 +72,7 @@ board.run()
 
 Was passiert hier?
 
-* Die registrierte Funktion `on_sensing_token` wird dann aufgerufen, wenn das Token
+* Die registrierte Funktion `on_detecting` wird dann aufgerufen, wenn das Token
   ein anderes Objekt am selben Ort aufspürt.
 * Der Parameter `other` ist ein Verweis auf das gefundene Objekt. Du kannst diesen benutzen
   um herauszufinden, welches andere Token gefunden wurde. 
@@ -101,7 +101,7 @@ def act(self):
     self.move_left()
     
 @r.register
-def on_sensing_token(self, other):
+def on_detecting(self, other):
     if other == c1:
         self.color = (255,0,0)
     if other == c2:
@@ -110,7 +110,7 @@ def on_sensing_token(self, other):
 board.run()
 ```
 
-In der on_sensing_token-Methode wird überprüft, ob `other` das gleiche Objekt ist wie `c1` bzw. `c2`.
+In der on_detect_token-Methode wird überprüft, ob `other` das gleiche Objekt ist wie `c1` bzw. `c2`.
 
 Wenn dies zutrifft, wird das Rechteck entsprechend eingefärbt.
 
@@ -156,7 +156,7 @@ def act(self):
         player.move()
 
 @player.register
-def on_sensing_token(self, other):
+def on_detecting(self, other):
     if other==wall:
         self.move_back()
     
@@ -180,7 +180,7 @@ Spielfelds ist (oder darüber hinaus):
 
 ``` python
 @player3.register
-def on_sensing_not_on_board(self):
+def on_not_detecting_board(self):
   print("Warning: I'm not on the board!!!")
 ```
 
@@ -204,7 +204,7 @@ def act(self):
     self.move()
 
 @fish.register
-def on_sensing_not_on_board(self):
+def on_not_detecting_board(self):
     self.move_back()
     self.flip_x()
         
@@ -221,7 +221,7 @@ board.run()
 
 ``` python
 @player4.register
-def on_sensing_borders(self, borders):
+def on_detecting_borders(self, borders):
   print("Borders are here!", str(borders))
 ```
 
@@ -236,7 +236,7 @@ ausgegeben: `Borders are here! ['right', 'top']`
 
   ``` python
   @player.register
-  def on_sensing_token(self, token):
+  def on_detecting(self, token):
     print(token)
     ...
   ```

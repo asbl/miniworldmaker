@@ -4,7 +4,7 @@ from miniworldmaker.appearances import background
 from miniworldmaker.tokens import token as token_mod
 
 
-class CameraManager(pygame.sprite.Sprite):
+class BoardCameraManager(pygame.sprite.Sprite):
 
     def __init__(self, view_x, view_y, board):
         super().__init__()
@@ -183,7 +183,7 @@ class CameraManager(pygame.sprite.Sprite):
             return False
 
 
-class TiledCameraManager(CameraManager):
+class TiledCameraManager(BoardCameraManager):
     def get_viewport_width_in_pixels(self):
         return self.viewport[0] * self.board.tile_size
 
@@ -191,7 +191,7 @@ class TiledCameraManager(CameraManager):
         return self.viewport[1] * self.board.tile_size
 
 
-class HexCameraManager(CameraManager):
+class HexCameraManager(BoardCameraManager):
     def get_viewport_width_in_pixels(self) -> int:
         """The width of the container"""
         return self.get_viewport_width() * self.board.get_tile_width() + 1 / 2 * self.board.get_tile_width()

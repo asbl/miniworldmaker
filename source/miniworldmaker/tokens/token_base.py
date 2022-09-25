@@ -5,7 +5,7 @@ from typing import List
 import pygame
 
 import miniworldmaker.base.app as app
-from miniworldmaker.boards.board_plugins.pixel_board import board as board_mod
+from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
 )
@@ -19,7 +19,7 @@ class Meta(type):
             args = [first] + last_args
         instance = type.__call__(cls, *args, **kwargs)  # create a new Token
         _token_connector = instance.board.get_token_connector(instance)
-        _token_connector.add_token_to_board(instance._position)
+        _token_connector.add_token_to_board()
         return instance
 
 
@@ -71,6 +71,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
     @dirty.setter
     def dirty(self, value: int):
         if self.position_manager and (
+                self.board and
                 self.board.camera.is_token_repainted(self)) and value == 1:
             self._dirty = 1
         elif value == 0:
@@ -90,7 +91,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.costume_manager.image
 
-    def on_sensing_token(self, token: "Token"):
+    def on_detecting_token(self, token: "Token"):
         """*on_sensing_token* is called, when token is sensing a token on same position
 
         Args:
@@ -111,11 +112,11 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError(self.on_sensing_token)
+        raise NotImplementedOrRegisteredError(self.on_detecting_token)
 
     # on_touching_token = on_sensing_token @todo: replace or add listeneer
 
-    def sensing_board(self, distance: int = 0) -> bool:
+    def is_detecting_board(self, distance: int = 0) -> bool:
         """
         Is the token on board if it is moving distance steps forward?
 
@@ -128,13 +129,13 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
             True if token is on board
 
         """
-        return self.board_sensor.sensing_on_board(distance=distance)
+        return self.board_sensor.is_token_on_the_board(distance=distance)
 
     # Aliases
-    sensing_on_board = sensing_board  # @todo: replace or add listeneer
-    is_touching_board = sensing_board  # @todo: replace or add listeneer
+    sensing_on_board = is_detecting_board  # @deprecated
+    is_sensing_on_board = is_detecting_board  # @deprecated
 
-    def on_sensing_borders(self, borders: List[str]):
+    def on_detecting_borders(self, borders: List[str]):
         """*on_sensing_border* is called, when token is near a border
 
         Args:
@@ -154,6 +155,6 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         Raises:
             NotImplementedOrRegisteredError: The error is raised when method is not overwritten or registered.
         """
-        raise NotImplementedOrRegisteredError(self.on_sensing_borders)
+        raise NotImplementedOrRegisteredError(self.on_detecting_borders)
 
-    on_touching_borders = on_sensing_borders
+    on_sensing_borders = on_detecting_borders

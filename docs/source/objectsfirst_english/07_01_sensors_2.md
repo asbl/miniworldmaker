@@ -17,7 +17,7 @@ player2.token_type = "actor"
 wall.token_type = "wall"
 
 @player1.register
-def on_sensing_token(self, other_token):
+def on_detect_token(self, other_token):
     if other_token.token_type == "actor":
         pass # do something
     elif other_token.token_type == "wall":
@@ -54,7 +54,7 @@ wall = miniworldmaker.Token()
 walls.append(wall)
 
 @player1.register
-def on_sensing_token(self, other_token):
+def on_detect_token(self, other_token):
     if other_token.token_type in walls:
         pass # do something
 ```
@@ -78,14 +78,14 @@ of `token` an object is.
 Here you can add the following method to your class:
 
 ``` python
-def on_sensing_[class_name](self, other)
+def on_detecting_[class_name](self, other)
 ```
 
 ### Example
 
 ``` python
 # The other class has the name Torch
-def on_sensing_torch(self, torch):
+def on_detecting_torch(self, torch):
     print("Sensing torch")
     # ...
 ```

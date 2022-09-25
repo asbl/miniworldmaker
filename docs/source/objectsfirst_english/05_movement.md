@@ -119,7 +119,7 @@ You can change the direction with the following commands:
   
   The value degrees can be specified here either as a number or as text as in the following graphic (0: up, 180, down, 90 right, -90 left):
 
-![Move on board](/_images/movement.jpg)
+![Move on the board](/_images/movement.jpg)
   
 ### Example:
 
