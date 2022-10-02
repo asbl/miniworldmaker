@@ -47,11 +47,6 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         self._managers.append(self._costume_manager)
         return self._costume_manager
 
-    def _init_event_manager(self):
-        self._event_manager = self.board.get_token_connector(self).create_event_manager()
-        self._managers.append(self._event_manager)
-        return self._event_manager
-
     def _init_position_manager(self):
         self._position_manager = self.board.get_token_connector(self).create_position_manager()
         self._position_manager.position = self._position

@@ -156,7 +156,7 @@ class Board(board_base.BaseBoard):
         self._tile_size = tile_size
         self.camera = self._get_camera_manager_class()(view_x, view_y, self)
         self._tokens = pygame.sprite.LayeredDirty()
-        self.event_manager: event_manager.BoardEventManager = event_manager.BoardEventManager(self)
+        self.event_manager: event_manager.BoardEventManager = self._create_event_manager()
         super().__init__()
         self.backgrounds_manager: "backgrounds_manager.BackgroundsManager" = backgrounds_manager.BackgroundsManager(
             self
@@ -196,6 +196,9 @@ class Board(board_base.BaseBoard):
         self._container_width = self.camera.get_viewport_width_in_pixels()
         self._container_height = self.camera.get_viewport_height_in_pixels()
         self.app.container_manager.add_topleft(self)
+
+    def _create_event_manager(self):
+        return event_manager.BoardEventManager(self)
 
     def contains_position(self, pos):
         """Checks if position is on the board.
@@ -750,7 +753,6 @@ class Board(board_base.BaseBoard):
             self.on_setup()
         self.init_display()
         self.is_running = True
-        # self.app.event_manager.to_event_queue("setup", self)
         if event:
             self.app.event_manager.to_event_queue(event, data)
         self.app.run(self.image, fullscreen=fullscreen, fit_desktop=fit_desktop, replit=replit)

@@ -7,7 +7,7 @@ import miniworldmaker.boards.board_templates.pixel_board.board as board
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
 import miniworldmaker.tools.token_inspection as token_inspection
 from miniworldmaker.tokens.token_plugins.shapes import shapes as shapes_mod
-
+from miniworldmaker.boards.board_templates.physics_board import physicsboard_event_manager
 
 class PhysicsBoard(board.Board):
     """
@@ -38,6 +38,9 @@ class PhysicsBoard(board.Board):
         self.physics_tokens = list()
         self.touching_methods = set()  # filled in token_manager
         self.separate_methods = set()  # filled in token_manager
+
+    def _create_event_manager(self):
+        return physicsboard_event_manager.PhysicsBoardEventManager(self)
 
     @property
     def accuracy(self):
@@ -147,6 +150,7 @@ class PhysicsBoard(board.Board):
         other_cls_name = method.__name__[len("on_separation_from_"):].lower()
         other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(other_cls_name)
         if self._register_physics_listener_method(method, event, other_cls):
+            print("register", method)
             self.separate_methods.add(method)
 
     def remove_token_from_board(self, token):

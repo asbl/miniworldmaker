@@ -171,18 +171,29 @@ class NoBoardError(MiniworldMakerError):
 class ImageIndexNotExistsError(MiniworldMakerError):
     def __init__(self, appearance, index):
         self.message = f"Error: Image index {index} does not exist for {appearance}.\n You can't set costume or background -image to a non-existing image"
+        super().__init__(self.message)
 
 
 class TileNotFoundError(MiniworldMakerError):
     def __init__(self, position):
         self.message = f"No valid Tile found for position {position}"
+        super().__init__(self.message)
 
 
 class CornerNotFoundError(MiniworldMakerError):
     def __init__(self, position):
         self.message = f"No valid Corner found for position {position}"
+        super().__init__(self.message)
 
 
 class EdgeNotFoundError(MiniworldMakerError):
     def __init__(self, position):
         self.message = f"No valid Edge found for position {position}"
+        super().__init__(self.message)
+
+
+class RegisterError(MiniworldMakerError):
+    def __init__(self, method, instance):
+        self.message = f"You can't register {method} to the instance {instance}"
+        super().__init__(self.message)
+

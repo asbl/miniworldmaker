@@ -13,8 +13,8 @@ class BoardCameraManager(pygame.sprite.Sprite):
         self._boundary_x = view_x
         self._boundary_y = view_y
         self.viewport = view_x, view_y
-        self._tokens_in_last_frame: pygame.sprite.Group = pygame.sprite.Group()
-        self._cached_tokens: tuple = (-1, pygame.sprite.Group())
+        self._tokens_in_last_frame: set = set()
+        self._cached_tokens: tuple = (-1, set())
 
     @property
     def viewport_width(self):
@@ -80,7 +80,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         self.board.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)
 
     def clear_camera_cache(self):
-        self._cached_tokens = (-1, pygame.sprite.Group())
+        self._cached_tokens = (-1, set())
 
     def get_local_position(self, pos):
         return pos[0] - self.topleft[0], pos[1] - self.topleft[1]
@@ -142,18 +142,18 @@ class BoardCameraManager(pygame.sprite.Sprite):
         return tokens_in_frame_and_last_frame
 
     """
-    def get_tokens_in_viewport(self) -> pygame.sprite.Group:
+    def get_tokens_in_viewport(self) -> set:
         if self._cached_tokens and self.board.frame == self._cached_tokens[0]:
             found_tokens = self._cached_tokens[1]
         else:
-            found_tokens = pygame.sprite.Group()
+            found_tokens = set()
             for token in self.board.tokens:
                 # token.rect is the _local(!) rect, so pygame.sprite.collidecrect can't be used
                 if token.position_manager.get_global_rect().colliderect(self.rect):
                     found_tokens.add(token)
             self._tokens_in_last_frame = self._cached_tokens[1]
             # tokens_in_frame_and_last_frame = found_tokens.copy()
-            found_tokens.add(self._tokens_in_last_frame)
+            found_tokens.union(self._tokens_in_last_frame)
             self._cached_tokens = (self.board.frame, found_tokens)
         return found_tokens
 

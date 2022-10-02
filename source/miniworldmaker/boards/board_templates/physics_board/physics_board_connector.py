@@ -30,16 +30,3 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         self.board.physics_tokens.append(self.token)
         if hasattr(self.token, "on_begin_simulation"):
             self.token.on_begin_simulation()
-
-    def register_token_method(self, token, method: callable):
-        """
-        Bind a touching method to pymunk engine, e.g.: 
-        if method on_touching_token
-        is registered, in pymunk are following handlers registered:
-        handler for (self.__class__, Token.__class_)
-        handler for (self.__class__, player.class.__class__)
-        handler for (self.__class__, wall.class.__class__)
-        (because Player and Wall are subclasses of Token)
-        """
-        super().register_token_method(token, method)
-        # Register physic collision methods

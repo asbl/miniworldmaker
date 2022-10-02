@@ -68,6 +68,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         detected_tokens = self._remove_self_from_token_list(tokens)
         if detected_tokens:
             detected_tokens = self._detect_token_by_collision_type(detected_tokens, self.token.collision_type)
+
         return self.filter_tokens(detected_tokens, token_filter)
 
     def detect_token(self, token_filter) -> Union["token_mod.Token", None]:
@@ -77,6 +78,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
         detected_tokens = self._remove_self_from_token_list(tokens)
         if detected_tokens:
             detected_tokens = self._detect_token_by_collision_type(detected_tokens, self.token.collision_type)
+        del tokens
         return self.filter_first_token(detected_tokens, token_filter)
 
     def _detect_token_by_collision_type(self, tokens, collision_type) -> List:

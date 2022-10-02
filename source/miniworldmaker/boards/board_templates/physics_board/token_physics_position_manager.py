@@ -12,12 +12,12 @@ class PhysicsBoardPositionManager(pixel_position_manager.PixelBoardPositionManag
         super().__init__(token, board)
         if self.size:
             self.size = (40, 40)
-        self.token.register(self.impulse)
-        self.token.register(self.force)
-        self.token.register(self.set_simulation)
-        self.token.register(self.set_velocity_x)
-        self.token.register(self.set_velocity_y)
-        self.token.register(self.set_velocity)
+        self.token.register(self.impulse, force = True)
+        self.token.register(self.force, force = True)
+        self.token.register(self.set_simulation, force = True)
+        self.token.register(self.set_velocity_x, force = True)
+        self.token.register(self.set_velocity_y, force = True)
+        self.token.register(self.set_velocity, force = True)
 
     def set_position(self, value: Union[tuple, "board_position.BoardPosition"]) -> "board_position.BoardPosition":
         pos = super().set_position(value)

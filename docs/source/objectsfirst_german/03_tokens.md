@@ -240,7 +240,7 @@ Willst du eine Ellipse an der Position (100, 100) mit Breite 20 und Höhe 100 ze
 from miniworldmaker import *
 
 board = Board(800, 600)
-Rectangle((100, 100), 20, 100)
+Ellipse((100, 100), 20, 100)
 board.run()
 ```
 

@@ -16,7 +16,8 @@ import miniworldmaker.tools.token_inspection as token_inspection
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     MiniworldMakerError,
     NotImplementedOrRegisteredError,
-    NoBoardError
+    NoBoardError,
+    RegisterError
 )
 from miniworldmaker.positions import direction as board_direction
 
@@ -141,7 +142,6 @@ class Token(token_base.BaseToken):
         self._board_sensor: "token_boardsensor.TokenBoardSensor" = self._init_board_sensor()
         self._position_manager: "token_position_manager.TokenPositionManager" = self._init_position_manager()
         self._costume_manager: "costumes_manager.CostumesManager" = self._init_costume_manager()
-        self._event_manager = self._init_event_manager()
         if not self.board:
             raise NoBoardError()
         pygame.sprite.DirtySprite.__init__(self)
@@ -1371,20 +1371,33 @@ class Token(token_base.BaseToken):
     is_sensing_bottom_border = sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
     is_touching_bottom_border = sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
 
-    def detect_color(self, color: Union[Tuple, List] = None) -> tuple:
-        """Senses colors in board-background at token-position
+    def detect_color(self, color: Tuple = None) -> bool:
+        """Senses colors in board-background at token center-position
 
         Args:
-            color: colors as tuple
+            color: color as tuple
             
         Returns:
-            All colors found by Sensor
+            True, if color was found
 
         """
         color = self.board_sensor.detect_color(color, )
         return color
 
     sensing_color = detect_color
+
+    def detect_colosr(self, color: List = None) -> bool:
+        """Senses colors in board-background at token center-position
+
+        Args:
+            color: A list of colors
+
+        Returns:
+            True, if any color was found
+
+        """
+        color = self.board_sensor.detect_colors(color, )
+        return color
 
     def detect_color_at(self, direction: int = 0, distance: int = 0) -> Union[Tuple, List]:
         """Detects colors in board-background at token-position
@@ -1619,8 +1632,14 @@ class Token(token_base.BaseToken):
     def on_key_up(self, key):
         raise NotImplementedOrRegisteredError(self.on_key_up)
 
+    def on_mouse_over(self, position):
+        """on_mouse_over is called, when mouse is moved over token
+        :param position: The mouse position
+        """
+        raise NotImplementedOrRegisteredError(self.on_mouse_over)
+
     def on_mouse_left(self, position: tuple):
-        """Method is called when left mouse button was pressed.
+        """on_mouse_left is called when left mouse button was pressed.
         You must *register* or *implement* this method as an event.
 
         .. note::
@@ -2061,12 +2080,14 @@ class Token(token_base.BaseToken):
         """
         self.visible = True
 
-    def register(self, method: callable):
+    def register(self, method: callable, force=False):
         """This method is used for the @register decorator. It adds a method to an object
 
         Args:
             method (callable): The method which should be added to the token
         """
+        if not force and method.__name__ not in self.board.event_manager.token_class_events_set:
+            raise RegisterError(method.__name__, self)
         bound_method = token_inspection.TokenInspection(self).bind_method(method)
         if method.__name__ == "on_setup":
             self.on_setup()
@@ -2099,12 +2120,12 @@ class Token(token_base.BaseToken):
         return self.position_manager.get_local_rect()
 
     def __str__(self):
-        if self.board and hasattr(self, "position_manager"):
-            return "{0}-Object, ID: {1} at pos {2} with size {3}".format(
+        if self.board and hasattr(self, "position_manager") and self.position_manager:
+            return "**Token: ID: {1} at pos {2} with size {3}**".format(
                 self.__class__.__name__, self.token_id, self.position, self.size
             )
         else:
-            return "**: {0} without positionmanager and; ID: {1}".format(self.__class__.__name__, self.token_id)
+            return "**Token: {0} ; ID: {1}**".format(self.__class__.__name__, self.token_id)
 
     @property
     def image(self) -> pygame.Surface:

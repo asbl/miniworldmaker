@@ -67,6 +67,7 @@ from miniworldmaker.containers.color_toolbar import ColorToolbar
 
 from miniworldmaker.positions.vector import Vector
 from miniworldmaker.positions.position import Position
+from miniworldmaker.positions.direction import Direction
 from miniworldmaker.positions.rect import Rect
 
 from miniworldmaker.boards.board_templates.tiled_board.tile_factory import TileFactory
@@ -116,6 +117,7 @@ __all__.append(Costume.__name__)
 __all__.append(Vector.__name__)
 __all__.append(Position.__name__)
 __all__.append(Rect.__name__)
+__all__.append(Direction.__name__)
 
 __all__.append(Toolbar.__name__)
 __all__.append(ActionBar.__name__)

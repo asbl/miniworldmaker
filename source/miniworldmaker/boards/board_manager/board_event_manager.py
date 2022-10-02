@@ -6,8 +6,8 @@ import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.keys as keys
 import miniworldmaker.tools.method_caller as method_caller
+from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 from miniworldmaker.positions import position as board_position
-from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens import token_base
 from miniworldmaker.tools import token_class_inspection
@@ -20,14 +20,18 @@ class BoardEventManager:
     * Board Events which are registered are stored in the dict self.registered_events
     """
 
+    token_class_events = dict()
+    token_class_events_set = set()
+    board_class_events = dict()
+    board_class_events_set = set()
     class_events = dict()
     class_events_set = set()
-    members =  set()
+    members = set()
     registered_class_events = defaultdict()
     setup = False
 
-    @staticmethod
-    def setup_event_list():
+    @classmethod
+    def setup_event_list(cls):
         specific_key_events = []
         for key, value in keys.KEYS.items():
             specific_key_events.append("on_key_down_" + value.lower())
@@ -35,14 +39,14 @@ class BoardEventManager:
             specific_key_events.append("on_key_up_" + value.lower())
         detecting_token_methods = []
         not_detecting_token_methods = []
-        for cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
-            detecting_token_methods.append("on_detecting_" + cls.__name__.lower())
-            detecting_token_methods.append("on_sensing_" + cls.__name__.lower())
-        for cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
-            not_detecting_token_methods.append("on_not_detecting_" + cls.__name__.lower())
-            not_detecting_token_methods.append("on_not_sensing_" + cls.__name__.lower())
+        for token_cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
+            detecting_token_methods.append("on_detecting_" + token_cls.__name__.lower())
+            detecting_token_methods.append("on_sensing_" + token_cls.__name__.lower())
+        for token_cls in token_class_inspection.TokenClassInspection(token_mod.Token).get_subclasses_for_cls():
+            not_detecting_token_methods.append("on_not_detecting_" + token_cls.__name__.lower())
+            not_detecting_token_methods.append("on_not_sensing_" + token_cls.__name__.lower())
 
-        BoardEventManager.class_events = {
+        cls.token_class_events = {
             "mouse": ["on_mouse_left",
                       "on_mouse_right",
                       "on_mouse_motion",
@@ -52,6 +56,7 @@ class BoardEventManager:
             "clicked_on_token": ["on_clicked",
                                  "on_clicked_left",
                                  "on_clicked_right"],
+            "mouse_over": ["on_mouse_over"],
             "key": ["on_key_down",
                     "on_key_pressed",
                     "on_key_up",
@@ -74,24 +79,61 @@ class BoardEventManager:
             "on_detecting": ["on_detecting", "on_detecting_"] + detecting_token_methods,
             "on_not_detecting": ["on_not_detecting", "on_not_detecting_", ] + not_detecting_token_methods
         }
-        BoardEventManager.class_events_set = set()
-        for key in BoardEventManager.class_events.keys():
-            for event in BoardEventManager.class_events[key]:
-                BoardEventManager.class_events_set.add(event)
+
+        cls.board_class_events = {
+            "mouse": ["on_mouse_left",
+                      "on_mouse_right",
+                      "on_mouse_motion",
+                      "on_mouse_left_release",
+                      "on_mouse_right_released"
+                      ],
+            "clicked_on_token": ["on_clicked",
+                                 "on_clicked_left",
+                                 "on_clicked_right"],
+            "key": ["on_key_down",
+                    "on_key_pressed",
+                    "on_key_up",
+                    ],
+            "specific_key": specific_key_events,
+            "message": ["on_message"],
+            "act": ["act"],
+        }
+        # Generate
+
+        cls.fill_event_sets()
+
+    @classmethod
+    def fill_event_sets(cls):
+        cls.class_events = {**cls.token_class_events, **cls.board_class_events}
+        cls.token_class_events_set = set()
+        for key in cls.token_class_events.keys():
+            for event in cls.token_class_events[key]:
+                cls.token_class_events_set.add(event)
+        cls.board_class_events_set = set()
+        for key in cls.board_class_events.keys():
+            for event in cls.board_class_events[key]:
+                cls.board_class_events_set.add(event)
+        cls.class_events_set = set()
+        for key in cls.class_events.keys():
+            for event in cls.class_events[key]:
+                cls.class_events_set.add(event)
 
     def __init__(self, board):
         """Events are registered here in multiple event lists.
         The lists are merged into ``self.events``.
         """
-        BoardEventManager.setup_event_list()  # setup static event set/dict
+        self.__class__.setup_event_list()  # setup static event set/dict
         self.executed_events: set = set()
         self.board = board
         self.registered_events = defaultdict(set)
-        BoardEventManager.members = self._get_members_for_instance(board)
+        self.__class__.members = self._get_members_for_instance(board)
         self.register_events_for_board(board)
 
     def _get_members_for_instance(self, instance) -> set:
-        """Get"""
+        """Gets all members of an instance
+
+        Gets members from instance class and instance base classes
+        """
         if instance.__class__ not in [token_base.BaseToken,
                                       token_mod.Token,
                                       board_base.BaseBoard,
@@ -125,14 +167,13 @@ class BoardEventManager:
 
     def register_events_for_board(self, board):
         """Registers all Board events."""
-        for member in self.members:
-            if member in BoardEventManager.class_events_set:
+        for member in self._get_members_for_instance(board):
+            if member in self.__class__.board_class_events_set: # static
                 self.register_event(member, board)
 
     def register_events_for_token(self, token):
         """Registers all Board events."""
-        members = token._event_manager.get_members(token)
-        for member in members:
+        for member in self._get_members_for_instance(token):
             self.register_event(member, token)
 
     def get_parent_methods(self, instance):
@@ -140,7 +181,7 @@ class BoardEventManager:
         methods = set()
         for parent in parents:
             if parent in [
-                board.Board,
+                board_mod.Board,
                 token_mod.Token,
                 token_base.BaseToken
             ]:
@@ -148,21 +189,21 @@ class BoardEventManager:
         return methods
 
     def register_event(self, member, instance):
+        """Register event to event manager, IF method exists in instance
+
+        :param member: the method to register
+        :param instance: the instance the method should be registered to (e.g. a board or a token
+        """
         method = inspection.Inspection(instance).get_instance_method(member)
         if method:
             for event in BoardEventManager.class_events_set:
                 if member == event:
                     self.registered_events[event].add(method)
                     return
-            for event in BoardEventManager.class_events_set:
+            for event in BoardEventManager.class_events_set: # Todo: Maybe not needed anymore...
                 if member.startswith(event):
                     self.registered_events[event].add(method)
                     return
-            if member.startswith("on_touching_"):
-                self.board.register_touching_method(method)
-            elif member.startswith("on_separation_from_"):
-                self.board.register_separate_method(method)
-
 
     def handle_event(self, event: str, data: Any):
         """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
@@ -174,8 +215,10 @@ class BoardEventManager:
         if event in self.executed_events:
             return  # events shouldn't be called more than once per tick
         self.executed_events.add(event)
-        if event in ["mouse_left", "mouse_right", "mouse_motion"]:
+        if event in ["mouse_left", "mouse_right"]:
             self.handle_click_on_token_event(event, data)
+        if event in ["mouse_motion"]:
+            self.handle_mouse_over_event(event, data)
         event = "on_" + event
         if event in self.registered_events:
             registered_events = self.registered_events[event].copy()
@@ -204,7 +247,8 @@ class BoardEventManager:
 
     def handle_click_on_token_event(self, event, data):
         if event == "mouse_left":
-            on_click_methods = self.registered_events["on_clicked_left"].union(self.registered_events["on_clicked"]).copy()
+            on_click_methods = self.registered_events["on_clicked_left"].union(
+                self.registered_events["on_clicked"]).copy()
         else:
             on_click_methods = self.registered_events["on_clicked_right"].copy()
         for method in on_click_methods:
@@ -212,3 +256,11 @@ class BoardEventManager:
             if token.detect_point(data):
                 method_caller.call_method(method, (data,))
         del on_click_methods
+
+    def handle_mouse_over_event(self, event, data):
+        mouse_over_methods = self.registered_events["on_mouse_over"].copy()
+        for method in mouse_over_methods:
+            token = method.__self__
+            if token.detect_point(data):
+                method_caller.call_method(method, (data,))
+        del mouse_over_methods

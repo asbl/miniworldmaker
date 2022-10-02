@@ -42,7 +42,9 @@ class TokenBoardSensor(ABC):
         if detected_tokens:
             detected_tokens = self._filter_token_list(detected_tokens, token_filter)
         if detected_tokens and len(detected_tokens) >= 1:
-            return detected_tokens[0]
+            rvalue = detected_tokens[0]
+            del detected_tokens
+            return rvalue
         else:
             return []
 
@@ -114,8 +116,14 @@ class TokenBoardSensor(ABC):
     def detect_borders(self, distance: int) -> list:
         raise NotImplementedOrRegisteredError(self.detect_borders)
 
-    def detect_color(self, color: tuple) -> bool:
-        return self.detect_color_at(0, 0) == color
+    def detect_color(self, source: Union[tuple, list]) -> bool:
+        return self.detect_color_at(0, 0) == source
+
+    def detect_colors(self, source: list) -> bool:
+        for color in source:
+            if self.detect_color_at(0, 0) == color:
+                return True
+        return False
 
     def detect_tokens_at(self, token_filter=None, direction: int = 0, distance: int = 1) -> list:
         if direction == 0:
