@@ -99,7 +99,6 @@ class BoardEventManager:
             "act": ["act"],
         }
         # Generate
-
         cls.fill_event_sets()
 
     @classmethod
@@ -196,11 +195,11 @@ class BoardEventManager:
         """
         method = inspection.Inspection(instance).get_instance_method(member)
         if method:
-            for event in BoardEventManager.class_events_set:
+            for event in self.__class__.class_events_set:
                 if member == event:
                     self.registered_events[event].add(method)
                     return
-            for event in BoardEventManager.class_events_set: # Todo: Maybe not needed anymore...
+            for event in self.__class__.class_events_set: # Todo: Maybe not needed anymore...
                 if member.startswith(event):
                     self.registered_events[event].add(method)
                     return

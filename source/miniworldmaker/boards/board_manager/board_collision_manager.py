@@ -23,8 +23,12 @@ class BoardCollisionManager:
             registered_events_copy = list(self.board.event_manager.registered_events[event].copy())
             for method in registered_events_copy:
                 token = method.__self__
-                token_type_of_target = method.__name__[11:]
+                if len(method.__name__.split("_")) != 3:
+                    return
+                else:
+                    token_type_of_target = method.__name__.split("_")[2]
                 found_tokens_for_token_type = token.board_sensor.detect_tokens(token_filter=token_type_of_target)
+                print("found", token, token.__class__, found_tokens_for_token_type)
                 if not found_tokens_for_token_type:  # found nothing
                     found_tokens_for_token_type = []
                 if token in found_tokens_for_token_type:  # found self
@@ -32,14 +36,18 @@ class BoardCollisionManager:
                 for found_token in found_tokens_for_token_type:  # found other token
                     subclasses = token_class_inspection.TokenClassInspection.get_all_token_classes()
                     if found_token.__class__ in subclasses:
-                        method_caller.call_method(method, (found_token,))
+                        print("call method", method, found_token.__class__, token_type_of_target)
+                        method_caller.call_method(method, found_token, found_token.__class__)
             del registered_events_copy
 
     def _handle_token_not_detecting_token_methods(self):
         for event in self.board.event_manager.class_events["on_not_detecting"]: # first level
             for method in self.board.event_manager.registered_events[event].copy(): # concrete method
                 token = method.__self__
-                token_type_of_target = method.__name__[15:]
+                if len(method.__name__.split("_")) != 4:
+                    return
+                else:
+                    token_type_of_target = method.__name__.split("_")[3]
                 found_tokens_for_token_type = token.detect_tokens(token_filter=token_type_of_target)
                 if found_tokens_for_token_type:
                     found_tokens_for_token_type = []

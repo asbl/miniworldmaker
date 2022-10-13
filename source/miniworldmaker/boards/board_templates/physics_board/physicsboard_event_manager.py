@@ -1,12 +1,13 @@
+import miniworldmaker.tools.inspection as inspection
 from miniworldmaker.boards.board_manager import board_event_manager
 from miniworldmaker.tokens import token as token_mod
-import miniworldmaker.tools.inspection as inspection
 from miniworldmaker.tools import token_class_inspection
 
+
 class PhysicsBoardEventManager(board_event_manager.BoardEventManager):
+    """Adds on_touching and on separation events
     """
-    Adds on_touching and on separation events
-    """
+
     @classmethod
     def setup_event_list(cls):
         super().setup_event_list()

@@ -31,6 +31,12 @@ class TokenBoardSensor(ABC):
         pass
 
     def filter_tokens(self, detected_tokens, token_filter: list):
+        """
+        Filters a list of tokens
+        :param detected_tokens: a list of tokens
+        :param token_filter: list of token filters
+        :return:
+        """
         if detected_tokens:
             detected_tokens = self._filter_token_list(detected_tokens, token_filter)
         if detected_tokens and len(detected_tokens) >= 1:
@@ -58,6 +64,7 @@ class TokenBoardSensor(ABC):
         # Filter tokens by class name
         if not token_filter:
             return token_list
+        print(token_filter, type(token_filter))
         if type(token_filter) == str:
             token_list = self._filter_tokens_by_classname(token_list, token_filter)
         elif isinstance(token_filter, token_mod.Token):
@@ -96,6 +103,7 @@ class TokenBoardSensor(ABC):
     def _remove_self_from_token_list(self, token_list: List["token_mod.Token"]):
         if token_list and self.token in token_list:
             token_list.remove(self.token)
+            print(token_list)
         return token_list
 
     def detect_token(self, token_filter) -> Union["token_mod.Token", None]:
@@ -165,12 +173,10 @@ class TokenBoardSensor(ABC):
         return borders
 
     def get_color(self, position):
-        """
-        Returns the board-color at the current board-position
+        """ Returns the board-color at the current board-position
 
         Returns: The board-color at the current board position as tuple
         with r,g,b value and transparency (e.g. (255, 0, 0, 100)
-
         """
         position = board_position.BoardPosition.create(position)
         if self.board.contains_position(position):
@@ -179,6 +185,6 @@ class TokenBoardSensor(ABC):
             return ()
 
     def get_distance_to(self, obj: Union["token_mod.Token", "board_position.Position", tuple]) -> float:
-        """Implemented in subclasses
+        """ Implemented in subclasses
         """
         pass

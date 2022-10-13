@@ -899,7 +899,6 @@ class Board(board_base.BaseBoard):
         self.stop_listening()
         # for background in self.backgrounds:
         #    self.backgrounds_manager.remove_appearance(background)
-        # self.clean()
         self.app.event_manager.event_queue.clear()
         self.app.container_manager.switch_board(new_board)
         new_board.init_display()

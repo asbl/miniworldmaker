@@ -155,7 +155,7 @@ class TokenPhysics:
             shape = pymunk.Poly.create_box(self._body,
                                            (self.size[0] * self.token.width,
                                             self.size[1] * self.token.height),
-                                           2  # small radius
+                                           1  # small radius
                                            )
         elif self.shape_type.lower() == "circle":
             shape = pymunk.Circle(self._body,

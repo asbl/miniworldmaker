@@ -63,18 +63,21 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
 
     def detect_tokens(self, token_filter) -> list:
         self.token.board.init_display()
-        tokens = pygame.sprite.spritecollide(self.token, self.token.board.camera.get_tokens_in_viewport(), False,
+        group = pygame.sprite.Group(self.token.board.camera.get_tokens_in_viewport())
+        tokens = pygame.sprite.spritecollide(self.token, group, False,
                                              pygame.sprite.collide_rect)
+        group.empty()
         detected_tokens = self._remove_self_from_token_list(tokens)
         if detected_tokens:
             detected_tokens = self._detect_token_by_collision_type(detected_tokens, self.token.collision_type)
-
         return self.filter_tokens(detected_tokens, token_filter)
 
     def detect_token(self, token_filter) -> Union["token_mod.Token", None]:
         self.token.board.init_display()
-        tokens = pygame.sprite.spritecollide(self.token, self.token.board.camera.get_tokens_in_viewport(), False,
+        group = pygame.sprite.Group(self.token.board.camera.get_tokens_in_viewport())
+        tokens = pygame.sprite.spritecollide(self.token, group, False,
                                              pygame.sprite.collide_rect)
+        group.empty()
         detected_tokens = self._remove_self_from_token_list(tokens)
         if detected_tokens:
             detected_tokens = self._detect_token_by_collision_type(detected_tokens, self.token.collision_type)
@@ -83,16 +86,14 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
 
     def _detect_token_by_collision_type(self, tokens, collision_type) -> List:
         if collision_type == "circle":
-            tokens_list = [
+            return [
                 token for token in tokens if pygame.sprite.collide_circle(self.token, token)]
         elif collision_type == "rect" or collision_type == "static-rect":
             return [
                 token for token in tokens if pygame.sprite.collide_rect(self.token, token)]
         elif collision_type == "mask":
-            tokens_list = [
+            return [
                 token for token in tokens if pygame.sprite.collide_mask(self.token, token)]
-            return tokens_list
-        return tokens_list
 
     def get_tokens_at_position(self, position):
         tokens = []
