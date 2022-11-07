@@ -33,7 +33,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         self._managers: list = list()
         self._position = (0, 0)
 
-    def _get_new_costume(self):
+    def new_costume(self):
         return self.board.get_token_connector(self).create_costume()
 
     def _init_board_sensor(self):

@@ -1,4 +1,6 @@
 import inspect
+import types
+import functools
 
 
 class Inspection:
@@ -19,14 +21,18 @@ class Inspection:
         else:
             return None
 
-    def bind_method(self, method):
+    def bind_method(self, method, name=None):
         bound_method = method.__get__(self.instance, self.instance.__class__)
-        setattr(self.instance, method.__name__, bound_method)
+        if name is None:
+            setattr(self.instance, method.__name__, bound_method)
+        else:
+            setattr(self.instance, name, bound_method)
         return bound_method
+
 
     def unbind_method(self, method):
         delattr(self.instance, method.__name__, method)
-    
+
     def get_and_call_method(self, name, args, errors=False):
         method = self.get_instance_method(name)
         if method:

@@ -32,7 +32,7 @@ class Text(token.Token):
         self.set_text(text)
         self.fixed_size = False
 
-    def _get_new_costume(self):
+    def new_costume(self):
         return text_costume.TextCostume(self)
 
     @property

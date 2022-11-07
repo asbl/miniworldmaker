@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Union, List, Tuple, Optional, cast
 
 import pygame.rect
+import inspect
 
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume_mod
@@ -1301,8 +1302,8 @@ class Token(token_base.BaseToken):
         else:
             return self.board_sensor.detect_tokens_at(token_filter, direction, distance)
 
-    detect_token = detect  #: Alias of :meth:`Token.detect`
-    sensing_token = detect_token  #: Alias of :meth:`Token.detect`
+    detect_token = detect
+    sensing_token = detect  #: Alias of :meth:`Token.detect`
 
     def detect_borders(self, distance: int = 0, ) -> List:
         """
@@ -1399,7 +1400,7 @@ class Token(token_base.BaseToken):
         color = self.board_sensor.detect_colors(color, )
         return color
 
-    def detect_color_at(self, direction: int = 0, distance: int = 0) -> Union[Tuple, List]:
+    def detect_color_at(self, direction: int = None, distance: int = 0) -> Union[Tuple, List]:
         """Detects colors in board-background at token-position
 
         Args:
@@ -1416,7 +1417,7 @@ class Token(token_base.BaseToken):
     sensing_color_at = detect_color_at
     sense_color_at = detect_color_at
 
-    def detect_tokens_at(self, direction, distance) -> list:
+    def detect_tokens_at(self, direction=None, distance=0, token_filter=None) -> list:
         """Detects a token in given direction and distance.
 
         Examples:
@@ -1444,9 +1445,22 @@ class Token(token_base.BaseToken):
         :param distance:  The distance in which tokens should be detected (Start-Point is token.center)
         :return: A list of tokens
         """
-        return self.board_sensor.detect_tokens_at(direction, distance)
+        return self.board_sensor.detect_tokens_at(token_filter, direction, distance)
 
     sensing_tokens_at = detect_tokens  #: Alias of :meth:`Token.sensing_tokens_at`
+
+    def detect_token_at(self, direction=None, distance=0, token_filter=None) -> "Token":
+        found_tokens = self.board_sensor.detect_tokens_at(token_filter, direction, distance)
+        if found_tokens:
+            return found_tokens[0]
+
+    def detect_tokens_in_front(self, token_filter=None, distance=1, ) -> list:
+        return self.board_sensor.detect_tokens_at(token_filter, self.direction, distance)
+
+    def detect_token_in_front(self, token_filter=None, distance=1, ) -> "Token":
+        found_tokens = self.board_sensor.detect_tokens_at(token_filter, self.direction, distance)
+        if found_tokens:
+            return found_tokens[0]
 
     def detect_point(self, position: Union["board_position.Position", Tuple]) -> bool:
         """Is the token colliding with a specific (global) point?
@@ -2080,15 +2094,17 @@ class Token(token_base.BaseToken):
         """
         self.visible = True
 
-    def register(self, method: callable, force=False):
+    def register(self, method: callable, force=False, name=None):
         """This method is used for the @register decorator. It adds a method to an object
 
         Args:
             method (callable): The method which should be added to the token
+            force: Should register forced, even if method is not handling a valid event?
+            name: Registers method with specific name
         """
         if not force and method.__name__ not in self.board.event_manager.token_class_events_set:
             raise RegisterError(method.__name__, self)
-        bound_method = token_inspection.TokenInspection(self).bind_method(method)
+        bound_method = token_inspection.TokenInspection(self).bind_method(method, name)
         if method.__name__ == "on_setup":
             self.on_setup()
         self.board.event_manager.register_event(method.__name__, self)

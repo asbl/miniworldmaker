@@ -82,7 +82,8 @@ class AppearancesManager:
             return self._add_appearance_to_manager(appearance)
         else:
             raise MiniworldMakerError(
-                f"Error: Got wrong type for appearance. Expected: str, pygame.Surface, Costume, tuple;  got {type(source)}, {source}"
+                f"""Error: Got wrong type for appearance. 
+                Expected: str, pygame.Surface, Costume, tuple;  got {type(source)}, {source}"""
             )
 
     def _add_default_appearance(self) -> "appearance_mod.Appearance":

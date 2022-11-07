@@ -36,7 +36,7 @@ class Container:
     def window(self):
         return self._window
 
-    def _add_to_window(self, app, dock, size=None):
+    def add_to_window(self, app, dock, size=None):
         self._app = app
         if size == None:
             self.container_size = self.default_size

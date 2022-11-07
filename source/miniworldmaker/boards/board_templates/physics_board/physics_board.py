@@ -1,13 +1,11 @@
-import sys
-
 import pymunk as pymunk_engine
 
 import miniworldmaker.boards.board_templates.physics_board.physics_board_connector as physics_board_connector
 import miniworldmaker.boards.board_templates.pixel_board.board as board
-import miniworldmaker.tools.token_class_inspection as token_class_inspection
 import miniworldmaker.tools.token_inspection as token_inspection
 from miniworldmaker.tokens.token_plugins.shapes import shapes as shapes_mod
 from miniworldmaker.boards.board_templates.physics_board import physicsboard_event_manager
+
 
 class PhysicsBoard(board.Board):
     """
@@ -35,6 +33,7 @@ class PhysicsBoard(board.Board):
         self.space.iterations = 35
         self.space.damping = 0.9
         self.space.collision_persistence = 10
+        self._damping = 0
         self.physics_tokens = list()
         self.touching_methods = set()  # filled in token_manager
         self.separate_methods = set()  # filled in token_manager
@@ -54,31 +53,6 @@ class PhysicsBoard(board.Board):
     def accuracy(self, value: int):
         self._accuracy = value
 
-    def _pymunk_register_collision_manager(self, token, other_class, event, method):
-        """Adds pymunk collision handler, which is evaluated by pymunk engine.
-
-        The event (begin, end) and the method (on_touching...) are added as data to the handler
-
-        Args:
-            token: The token
-            other_class: The class which should be detected by collision handler
-            event: The pymunk-event  (begin or separate)
-            method: The method, e.g. on_touching_token or on_separation_from_token. Last part is a class name
-
-        :meta private:
-        """
-
-        space = self.space
-        token_id = hash(token.__class__.__name__) % ((sys.maxsize + 1) * 2)
-        other_id = hash(other_class.__name__) % ((sys.maxsize + 1) * 2)
-        handler = space.add_collision_handler(token_id, other_id)
-        handler.data["method"] = getattr(token, method.__name__)
-        handler.data["type"] = event
-        if event == "begin":
-            handler.begin = self.pymunk_touching_collision_listener
-        if event == "separate":
-            handler.separate = self.pymunk_separation_collision_listener
-
     @staticmethod
     def _get_token_connector_class():
         return physics_board_connector.PhysicsBoardConnector
@@ -97,66 +71,11 @@ class PhysicsBoard(board.Board):
                or method_name.startswith("on_separation_from_")
         ]
 
-    def register_all_physics_collision_managers_for_token(self, token):
-        """Registers on__touching and on_seperation-Methods to token.
-        If new_class is set, only methods with new class (e.g. on_touching_new_class are set)
-
-        :meta private:
-        """
-        collision_methods = self.get_physics_collision_methods_for_token(token)
-        for method in collision_methods:
-            if method.__name__.startswith("on_touching_"):
-                self.register_touching_method(method)
-            elif method.__name__.startswith("on_separation_from_"):
-                self.register_separate_method(method)
-
-    def _register_physics_listener_method(self, method, event, other_cls):
-        """Registers a physics listener method. (on touching or on_seperation.)
-        Called from register_touching_method and register_separate_method
-
-        :meta private:
-        """
-        token_class_inspect = token_class_inspection.TokenClassInspection(self)
-        all_token_classes = token_class_inspect.get_all_token_classes()
-        if other_cls not in all_token_classes:
-            return False
-        else:
-            subclasses_of_other_token = token_class_inspection.TokenClassInspection(other_cls).get_subclasses_for_cls()
-            for other_subcls in set(subclasses_of_other_token).union(set([other_cls])):
-                # If you register a Collision with a Token, collisions with subclasses of the token
-                # are also registered
-                self._pymunk_register_collision_manager(method.__self__, other_subcls, event, method)
-            return True
-
-    def register_touching_method(self, method):
-        """
-        Registers on_touching_[class] method
-
-        :meta private:
-        """
-        event = "begin"
-        other_cls_name = method.__name__[len("on_touching_"):].lower()
-        other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(other_cls_name)
-        if self._register_physics_listener_method(method, event, other_cls):
-            self.touching_methods.add(method)
-
-    def register_separate_method(self, method):
-        """
-        Registers on_separation_from_[class] method
-
-        :meta private:
-        """
-        event = "separate"
-        other_cls_name = method.__name__[len("on_separation_from_"):].lower()
-        other_cls = token_class_inspection.TokenClassInspection(self).find_token_class_by_classname(other_cls_name)
-        if self._register_physics_listener_method(method, event, other_cls):
-            print("register", method)
-            self.separate_methods.add(method)
-
     def remove_token_from_board(self, token):
         """Removes token from board and removes pymunk body and shapes.
         """
-        super().remove_token_from_board(token)
+        connector = physics_board_connector.PhysicsBoardConnector(self, token)
+        connector.remove_token_from_board(token)
         self.physics_tokens.remove(token)
 
     def act_all(self):

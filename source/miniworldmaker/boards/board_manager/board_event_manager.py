@@ -167,7 +167,7 @@ class BoardEventManager:
     def register_events_for_board(self, board):
         """Registers all Board events."""
         for member in self._get_members_for_instance(board):
-            if member in self.__class__.board_class_events_set: # static
+            if member in self.__class__.board_class_events_set:  # static
                 self.register_event(member, board)
 
     def register_events_for_token(self, token):
@@ -188,7 +188,7 @@ class BoardEventManager:
         return methods
 
     def register_event(self, member, instance):
-        """Register event to event manager, IF method exists in instance
+        """Register event to event manager, IF method exists in instance.
 
         :param member: the method to register
         :param instance: the instance the method should be registered to (e.g. a board or a token
@@ -199,7 +199,7 @@ class BoardEventManager:
                 if member == event:
                     self.registered_events[event].add(method)
                     return
-            for event in self.__class__.class_events_set: # Todo: Maybe not needed anymore...
+            for event in self.__class__.class_events_set:  # Todo: Maybe not needed anymore...
                 if member.startswith(event):
                     self.registered_events[event].add(method)
                     return

@@ -21,6 +21,8 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardArgumentsError,
 )
 from miniworldmaker.positions import position as board_position
+from miniworldmaker.boards.board_manager import board_music_manager
+from miniworldmaker.boards.board_manager import board_sound_manager
 
 
 class Board(board_base.BaseBoard):
@@ -185,6 +187,8 @@ class Board(board_base.BaseBoard):
             app.App.running_board = self
         else:
             self.app = app.App.running_app
+        self.music: "board_music_manager.BoardMusicManager" = board_music_manager.BoardMusicManager(self.app)
+        self.sound: "board_sound_manager.BoardSoundManager" = board_sound_manager.BoardSoundManager(self.app)
         self.background = background_mod.Background(self)
         self.background.update()
         self.collision_manager: "coll_manager.BoardCollisionManager" = coll_manager.BoardCollisionManager(self)
@@ -227,6 +231,8 @@ class Board(board_base.BaseBoard):
         """
         position = board_position.Position.create(position)
         return self.is_in_container(position.x, position.y)
+
+    is_position_on_board = is_position_on_the_board
 
     def setup_board(self):
         # Implemented in TiledBoards
@@ -748,7 +754,7 @@ class Board(board_base.BaseBoard):
                 :alt: Minimal program
 
         """
-        self.app._prepare_mainloop()
+        self.app.prepare_mainloop()
         if hasattr(self, "on_setup"):
             self.on_setup()
         self.init_display()
@@ -778,18 +784,15 @@ class Board(board_base.BaseBoard):
         Returns:
 
         """
-        self.app.music_manager.play_music(path)
+        self.music.play(path)
 
     def stop_music(self):
-        """plays a music from path
-
-        Args:
-            path: The path to the music
+        """stops a music
 
         Returns:
 
         """
-        self.app.music_manager.stop_music()
+        self.music.stop()
 
     def get_mouse_position(self) -> Union["board_position.Position", None]:
         """

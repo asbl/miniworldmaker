@@ -13,7 +13,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
         return self.parent
 
     @token.setter
-    def token(self, value : "token_mod.Token"):
+    def token(self, value: "token_mod.Token"):
         self.parent = value
 
     def get_costume_at_index(self, index):
@@ -42,7 +42,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
         Returns:
             _type_: _description_
         """
-        new_costume = self.token._get_new_costume()
+        new_costume = self.token.new_costume()
         return new_costume
 
     @property

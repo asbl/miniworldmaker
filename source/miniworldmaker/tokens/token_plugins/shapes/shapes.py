@@ -35,7 +35,7 @@ class Shape(token.Token):
             position = (0, 0)
         super().__init__(position)
 
-    def _get_new_costume(self):
+    def new_cotume(self):
         return shape_costume.ShapeCostume(self)
 
 
@@ -284,6 +284,8 @@ class Line(Shape):
     def start_position(self):
         return self._start_position
 
+    start = start_position
+
     @start_position.setter
     def start_position(self, value):
         self._start_position = board_position.Position.create(value)
@@ -292,6 +294,8 @@ class Line(Shape):
     @property
     def end_position(self):
         return self._end_position
+
+    end = end_position
 
     @end_position.setter
     def end_position(self, value):

@@ -40,7 +40,8 @@ class ContainerManager:
         self.add_container(new_container, "top_left")
         return new_container
 
-    def add_container(self, container: "container_mod.Container", dock: str, size: int = None) -> "container_mod.Container":
+    def add_container(self, container: "container_mod.Container", dock: str,
+                      size: int = None) -> "container_mod.Container":
         """Adds a new container
 
         Args:
@@ -60,7 +61,7 @@ class ContainerManager:
             self.containers.append(container)
             if size is None:
                 size = container.default_size
-            container._add_to_window(self.app, dock, size)
+            container.add_to_window(self.app, dock, size)
             self.app.window.resize()
             for ct in self.containers:
                 ct.dirty = 1
@@ -79,7 +80,7 @@ class ContainerManager:
         for container in self.containers:
             if container != new_board:
                 self.remove_container(container)
-        self.app._prepare_mainloop()
+        self.app.prepare_mainloop()
 
     def switch_container(self, container: "container_mod.Container",
                          new_container: "container_mod.Container") -> "container_mod.Container":

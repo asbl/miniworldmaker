@@ -9,7 +9,7 @@ miniworldmaker is a game-engine written in python and pygame designed for pupils
 * Integrated Manager for GUI Elements, Music and Sound effects
 * **Open Source**
 
-.. image:: _images/miniworldmaker.png
+.. image:: _images/miniworldmaker_worlds.png
   :width: 100%
   :alt: Miniworldmaker
 

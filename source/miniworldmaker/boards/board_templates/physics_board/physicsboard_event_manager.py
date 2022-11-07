@@ -2,6 +2,7 @@ import miniworldmaker.tools.inspection as inspection
 from miniworldmaker.boards.board_manager import board_event_manager
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tools import token_class_inspection
+from miniworldmaker.boards.board_templates.physics_board import physics_board_connector as physics_board_connector_mod
 
 
 class PhysicsBoardEventManager(board_event_manager.BoardEventManager):
@@ -25,6 +26,8 @@ class PhysicsBoardEventManager(board_event_manager.BoardEventManager):
         super().register_event(member, instance)
         method = inspection.Inspection(instance).get_instance_method(member)
         if member.startswith("on_touching_"):
-            self.board.register_touching_method(method)
+            connector = physics_board_connector_mod.PhysicsBoardConnector(self.board, instance)
+            connector.register_touching_method(method)
         elif member.startswith("on_separation_from_"):
-            self.board.register_separate_method(method)
+            connector = physics_board_connector_mod.PhysicsBoardConnector(self.board, instance)
+            connector.register_separate_method(method)

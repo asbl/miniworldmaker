@@ -1,4 +1,5 @@
 from collections import deque
+from collections.abc import Sequence
 
 import pygame
 
@@ -41,7 +42,7 @@ class AppEventManager:
         Iterates over pygame.event.get() and puts events in event queue.
         """
         if pygame.key.get_pressed().count(1) != 0:
-            keys_pressed = pygame.key.get_pressed()
+            keys_pressed: Sequence[bool] = pygame.key.get_pressed()
             key_codes = keys.key_codes_to_keys(keys_pressed)
             if "STRG" in key_codes and "Q" in key_codes:
                 self.app.quit()
@@ -59,7 +60,6 @@ class AppEventManager:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.put_mouse_down_in_event_queue(event)
             elif event.type == pygame.MOUSEMOTION:
-                pos = pygame.mouse.get_pos()
                 pos = board_position.Position.create(pygame.mouse.get_pos())
                 self.to_event_queue("mouse_motion", pos)
                 # key-events

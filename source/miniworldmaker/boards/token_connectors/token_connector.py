@@ -5,6 +5,7 @@ from miniworldmaker.appearances import costumes_manager
 from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens.managers import token_position_manager, token_boardsensor
+import miniworldmaker.tools.token_class_inspection as token_class_inspection
 
 
 class TokenConnector(abc.ABC):

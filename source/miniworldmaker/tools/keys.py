@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 KEYS = {20: "Q",
         26: "W",
         8: "E",
@@ -48,7 +50,7 @@ KEYS = {20: "Q",
         }
 
 
-def key_codes_to_keys(key_pressed_list: list):
+def key_codes_to_keys(key_pressed_list: Sequence):
     keys = []
     for index, item in enumerate(key_pressed_list):
         if item:

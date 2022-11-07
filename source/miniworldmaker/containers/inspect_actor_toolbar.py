@@ -43,8 +43,8 @@ class InspectActorToolbar(toolbar.Toolbar):
         if not self.active_token in tokens:
             return tokens[0]
 
-    def _add_to_window(self, window, dock, size=None):
-        super()._add_to_window(window, dock, size)
+    def add_to_window(self, window, dock, size=None):
+        super().add_to_window(window, dock, size)
         for actor in self.board.tokens:
             # if self.actor.__class__ == act.Actor:
             self.add_widget(TokenButton(token=actor, toolbar=self))

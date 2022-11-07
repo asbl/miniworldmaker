@@ -172,10 +172,10 @@ class TokenPhysics:
                 (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
 
             start = pymunk.pygame_util.from_pygame(
-                (0, - self.token._length / 2 ),
+                (0, - self.token._length / 2),
                 self.token.board.image)
             end = pymunk.pygame_util.from_pygame(
-                (0, self.token._length / 2 ),
+                (0, self.token._length / 2),
                 self.token.board.image)
             shape = pymunk.Segment(self._body, start, end, self.token.costume.thickness)
         else:

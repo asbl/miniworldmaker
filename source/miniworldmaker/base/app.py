@@ -44,7 +44,9 @@ class App:
             with open(__main__.__file__) as f:
                 if ".run(" not in f.read():
                     warnings.warn(
-                        "[boardname].run() was not found in your code. This must be the last line in your code \ne.g.:\nboard.run()\n if your board-object is named board.")
+                        """[board_name].run() was not found in your code. 
+                        This must be the last line in your code 
+                        \ne.g.:\nboard.run()\n if your board-object is named board.""")
         except AttributeError:
             print("can't check if run() is present (This can happen if you are using jupyter notebooks. Resuming)")
 
@@ -62,7 +64,7 @@ class App:
         self.image = None
         self._unittest = False
         self._mainloop_started: bool = False
-        self.event_manager: "event_manager.TokenEventManager" = event_manager.AppEventManager(self)
+        self.event_manager: "event_manager.AppEventManager" = event_manager.AppEventManager(self)
         self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
         self.music_manager: "music_manager.MusicManager" = music_manager.MusicManager(self)
         self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
@@ -87,7 +89,7 @@ class App:
         self.window.replit = replit
         # Start the main-loop
         self.init_app()
-        self._prepare_mainloop()
+        self.prepare_mainloop()
         if not self._mainloop_started:
             self.start_mainloop()
         else:
@@ -97,7 +99,7 @@ class App:
     def init_app(self):
         image_manager.ImageManager.cache_images_in_image_folder()
 
-    def _prepare_mainloop(self):
+    def prepare_mainloop(self):
         self.window.recalculate_dimensions()
         self.window.display_update()
         self.running_board.dirty = 1

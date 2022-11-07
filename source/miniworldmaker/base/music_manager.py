@@ -25,7 +25,13 @@ class MusicManager:
 
         """
         self.load_music(path)
+        music = pygame.mixer.Sound(path)
         pygame.mixer.music.play(-1)
+
+    def is_playing(self):
+        return True
+
+
 
     def stop_music(self):
         """stops current music
@@ -39,9 +45,6 @@ class MusicManager:
 
     def fade_in(self, time):
         """Alternative to play
-
-        Args:
-            path: The path to the music
 
         Returns:
 
@@ -59,11 +62,12 @@ class MusicManager:
         min: 0
         max: 100
         """
-        pygame.mixer.set_volume(percent / 100)
+        pygame.mixer.Sound.set_volume(percent / 100)
 
     def get_volume(self, percent):
         """Gets volume
         min: 0
         max: 100
         """
-        pygame.mixer.set_volume(percent * 100)
+        pygame.mixer.Sound.set_volume(percent * 100)
+

@@ -64,7 +64,6 @@ class TokenBoardSensor(ABC):
         # Filter tokens by class name
         if not token_filter:
             return token_list
-        print(token_filter, type(token_filter))
         if type(token_filter) == str:
             token_list = self._filter_tokens_by_classname(token_list, token_filter)
         elif isinstance(token_filter, token_mod.Token):
@@ -103,7 +102,6 @@ class TokenBoardSensor(ABC):
     def _remove_self_from_token_list(self, token_list: List["token_mod.Token"]):
         if token_list and self.token in token_list:
             token_list.remove(self.token)
-            print(token_list)
         return token_list
 
     def detect_token(self, token_filter) -> Union["token_mod.Token", None]:
@@ -134,17 +132,21 @@ class TokenBoardSensor(ABC):
         return False
 
     def detect_tokens_at(self, token_filter=None, direction: int = 0, distance: int = 1) -> list:
-        if direction == 0:
+        if direction is None:
             direction = self.token.direction
-        destination = self.get_destination(self.token.center, direction, distance)
+        destination = self.get_token_destination(self.token, direction, distance)
         detected_tokens = self.board.get_tokens_at_position(destination)
         return self.filter_tokens(detected_tokens, token_filter)
 
     def detect_color_at(self, direction: int = 0, distance: int = 1) -> tuple:
-        if direction == 0:
+        if direction is None:
             direction = self.token.direction
-        destination = self.get_destination(self.token.center, direction, distance)
+        destination = self.get_token_destination(self.token.center, direction, distance)
         return self.board.background.get_color(destination)
+
+    @classmethod
+    def get_token_destination(cls, token: "tkn.Token", direction: float, distance: float) -> "board_position.Position":
+        return cls.get_destination(token.position, direction, distance)
 
     @staticmethod
     def get_destination(start, direction, distance) -> "board_position.Position":
