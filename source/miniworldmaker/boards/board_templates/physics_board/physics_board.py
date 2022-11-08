@@ -78,12 +78,12 @@ class PhysicsBoard(board.Board):
         connector.remove_token_from_board(token)
         self.physics_tokens.remove(token)
 
-    def act_all(self):
+    def _act_all(self):
         """Handles acting of tokens - Calls the physics-simulation in each frame.
 
         :meta private:
         """
-        super().act_all()
+        super()._act_all()
         self.simulate_all_physics_tokens()
 
     def simulate_all_physics_tokens(self):

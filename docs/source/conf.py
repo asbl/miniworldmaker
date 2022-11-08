@@ -57,6 +57,7 @@ extensions = [
     'sphinxcontrib.mermaid',
     'sphinx.ext.autosummary',
     'autoclasstoc',
+    'sphinx_toolbox.collapse',
 ]
 
 myst_enable_extensions = [

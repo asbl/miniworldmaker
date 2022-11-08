@@ -1,7 +1,7 @@
 Board.music
-*************
+***************
 
-``Board.music`` handles Music in your miniworlder.
+`` Board.music`` handles Music in your miniworlder.
 
 You can add a music with:
 

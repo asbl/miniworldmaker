@@ -20,7 +20,6 @@ class TiledBoard(board.Board):
     With Tiled Board, you can realize RPGs and Boardgames.
 
     .. image:: /_images/rpg.jpg
-        :width: 100%
         :alt: TiledBoard
 
     Each Token on a TiledBoard can be placed on a Tile, on a Corner between Tiles or on an Edge between Tiles.

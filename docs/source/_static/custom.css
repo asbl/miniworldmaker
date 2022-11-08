@@ -16,9 +16,9 @@ img.autowidth {
 }
 
 video {
-  border: 2px solid rgb(53, 53, 53);
-  box-shadow: 2px 2px 3px rgba(24, 24, 24, 0.6);
-  border-radius: 15px;
+  border: 1px solid rgb(220, 220, 220);
+  box-shadow: 2px 2px 3px rgba(124, 124, 124, 0.2);
+  border-radius: 10px;
   display: block;
   margin-left: auto;
   margin-right: auto;

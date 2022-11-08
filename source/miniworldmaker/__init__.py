@@ -1,6 +1,7 @@
 import inspect
 import os
 import sys
+
 import pygame
 
 pygame.init()
@@ -27,6 +28,7 @@ from miniworldmaker.tokens.token_plugins.text_token.text_token import Text
 from miniworldmaker.tokens.token_plugins.text_token.number_token import Number
 from miniworldmaker.tokens.token_plugins.text_token.text_token import TextToken
 from miniworldmaker.tokens.token_plugins.text_token.number_token import NumberToken
+from miniworldmaker.tokens.token_plugins.sensor.sensor import Sensor
 
 from miniworldmaker.tokens.token_plugins.shapes.shapes import Point
 from miniworldmaker.tokens.token_plugins.shapes.shapes import Rectangle
@@ -109,6 +111,8 @@ __all__.append(Polygon.__name__)
 __all__.append(Triangle.__name__)
 __all__.append(Arc.__name__)
 __all__.append(Circle.__name__)
+
+__all__.append(Sensor.__name__)
 
 __all__.append(Appearance.__name__)
 __all__.append(Background.__name__)

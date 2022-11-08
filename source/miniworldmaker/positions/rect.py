@@ -2,12 +2,13 @@ import pygame
 
 import miniworldmaker.base.app as app
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardRectError
+from typing import Union
 
 
 class Rect(pygame.Rect):
 
     @classmethod
-    def create(cls, rect):
+    def create(cls, rect: Union[tuple, pygame.Rect]):
         if type(rect) == tuple:
             cls(rect[0], rect[1], 1, 1)
             return rect

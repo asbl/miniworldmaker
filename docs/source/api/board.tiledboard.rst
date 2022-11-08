@@ -1,4 +1,4 @@
-Boards: TiledBoard
+Board -> TiledBoard
 ******************
 
 **TiledBoard** is a child class of **Board**

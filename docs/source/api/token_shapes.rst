@@ -1,4 +1,4 @@
-Token: Shapes
+Tokens -> Shapes
 #############
 
 Shape

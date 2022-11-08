@@ -5,6 +5,8 @@ from miniworldmaker.tokens import token as token_mod
 
 
 class BoardCameraManager(pygame.sprite.Sprite):
+    """Defines a camera which shows specific parts of a Board.
+    """
 
     def __init__(self, view_x, view_y, board):
         super().__init__()
@@ -15,9 +17,12 @@ class BoardCameraManager(pygame.sprite.Sprite):
         self.viewport = view_x, view_y
         self._tokens_in_last_frame: set = set()
         self._cached_tokens: tuple = (-1, set())
+        self._strict = True
 
     @property
     def viewport_width(self):
+        """Maximum viewport width. Can't be greater than board-boundary_x
+        """
         return self.get_viewport_width()
 
     @viewport_width.setter
@@ -29,6 +34,8 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def viewport_height(self):
+        """Maximum viewport width. Can't be greater than board-boundary_y
+        """
         return self.get_viewport_height()
 
     @viewport_height.setter
@@ -87,6 +94,9 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def x(self):
+        """
+        Sets the x-position of camera
+        """
         return self.topleft[0]
 
     @x.setter
@@ -96,6 +106,8 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def y(self):
+        """Sets the y-position of camera
+        """
         return self.topleft[1]
 
     @y.setter
@@ -107,9 +119,29 @@ class BoardCameraManager(pygame.sprite.Sprite):
     def topleft(self):
         return self._topleft
 
+    def _limit_y(self, value):
+        if value < 0:
+            return 0
+        elif value >= self.boundary_y - self.viewport_height:
+            return self.boundary_y - self.viewport_height
+        else:
+            return value
+
+    def _limit_x(self, value):
+        if value < 0:
+            return 0
+        elif value >= self.boundary_x - self.viewport_width:
+            return self.boundary_x - self.viewport_width
+        else:
+            return value
+
     @topleft.setter
     def topleft(self, value):
         old_topleft = self._topleft
+        if self._strict:
+            new_x = self._limit_x(value[0])
+            new_y = self._limit_y(value[1])
+            value = new_x, new_y
         self._topleft = value
         if old_topleft != self._topleft:
             self.reload_tokens_in_viewport()
@@ -127,21 +159,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         for token in tokens_in_viewport:
             token.dirty = 1
         del tokens_in_viewport
-    """
-    def get_tokens_in_viewport(self) -> pygame.sprite.Group:
-        if self._cached_tokens and self.board.frame == self._cached_tokens[0]: # tokens are cached for actual frame.
-            tokens_in_frame_and_last_frame = self._cached_tokens[1]
-        else:
-            sprite = pygame.sprite.Sprite()
-            sprite.rect = self.rect
-            found_tokens = pygame.sprite.spritecollide(sprite, self.board.tokens, dokill=False)
-            self._tokens_in_last_frame = self._cached_tokens[1]
-            tokens_in_frame_and_last_frame = pygame.sprite.Group(found_tokens)
-            tokens_in_frame_and_last_frame.add(self._tokens_in_last_frame)
-            self._cached_tokens = (self.board.frame, tokens_in_frame_and_last_frame)
-        return tokens_in_frame_and_last_frame
 
-    """
     def get_tokens_in_viewport(self) -> set:
         if self._cached_tokens and self.board.frame == self._cached_tokens[0]:
             found_tokens = self._cached_tokens[1]
@@ -158,6 +176,8 @@ class BoardCameraManager(pygame.sprite.Sprite):
         return found_tokens
 
     def from_token(self, token: "token_mod.Token") -> None:
+        """Gets camera from token center-position
+        """
         if token.center:
             center = token.center
             width = self.board.width // 2

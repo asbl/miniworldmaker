@@ -1,5 +1,5 @@
-Appearance: Background
-######################
+Appearance -> Background
+************************
 
 The 'Background' class is a child classes of the 'Appearance' class. 
 

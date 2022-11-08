@@ -32,7 +32,7 @@ All actions performed on the images can be found in the class ImageRenderer
       }
       class Background{
 
-      }   
+      }
 
 Appearance
 ==========

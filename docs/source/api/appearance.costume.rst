@@ -1,5 +1,5 @@
-Appearance: Costume
-####################
+Appearance -> Costume
+**********************
 
 The 'Costume' class is a child classes of the 'Appearance' class. 
 

@@ -10,10 +10,9 @@ from miniworldmaker.tokens.token_plugins.shapes import shapes
 
 
 class TokenPhysics:
-    """The PhysicsProperty class describes all properties necessary to physically
-    simulate an object using the pymunk engine.
+    """Defines pyhsics-properties of a token, used as my_token.pyhsics.attribute or my_token.physics.method
 
-    If you use a physics board, you can access token-physics properties with ``token_name.physics.property``
+    Can only be used for tokens on a PhysicsBoard.
 
     Examples:
 
@@ -166,12 +165,6 @@ class TokenPhysics:
             shift_x = 0
             shift_y = 0
             start = pymunk.pygame_util.from_pygame(
-                (self.token.start_position[0] - shift_x, self.token.start_position[1] - shift_y),
-                self.token.board.image)
-            end = pymunk.pygame_util.from_pygame(
-                (self.token.end_position[0] - shift_x, self.token.end_position[1] - shift_y), self.token.board.image)
-
-            start = pymunk.pygame_util.from_pygame(
                 (0, - self.token._length / 2),
                 self.token.board.image)
             end = pymunk.pygame_util.from_pygame(
@@ -187,6 +180,7 @@ class TokenPhysics:
             # create body
             self.has_physics = False
             self._body = pymunk_engine.Body(body_type=self.body_type)
+            self._body.moment = math.inf
             self._set_pymunk_position()
             self._set_pymunk_direction()
             self._body.size = (self.size[0] * self.token.width, self.size[1] * self.token.height)
@@ -230,8 +224,6 @@ class TokenPhysics:
 
     def reload(self):
         """Removes token from space and reloads physics_model
-
-        :return:
         """
         if self.started:
             self.dirty = 1
@@ -257,22 +249,20 @@ class TokenPhysics:
 
     @property
     def simulation(self):
-        """Sets simulation type for token (static, manual, simulated or None)
+        """Sets simulation type for token (`static`, `manual`, `simulated` or `None`)
 
         Sets simulation type for token:
-          * simulated: Token is fully simulated by physics engine.
-          * manual: Token is not affected by gravity.
-          * static: Token is not moved by physics engine, but tokens can collide with token.
-          * None: Token is not moved by physics engine and other tokens can't collige with token.
+
+        * `simulated`: Token is fully simulated by physics engine.
+        * `manual`: Token is not affected by gravity.
+        * `static`: Token is not moved by physics engine, but tokens can collide with token.
+        * `None`: Token is not moved by physics engine and other tokens can't collige with token.
         """
         return self._simulation
 
     @simulation.setter
     def simulation(self, value: Union[str, None]):
-        # Sets the body type:
-        # dynamic: Influenced by physic (e.g. actors)
-        # static: not influenced by physics (e.g. plattforms)
-        # kinematic: e.g. moving plattforms
+        # Sets the simulation type
         self._simulation = value
         if value == None:
             self._is_rotatable = False
@@ -291,10 +281,10 @@ class TokenPhysics:
             self._can_move = True
             self._stable = True
         elif value.lower() == "simulated":
-            self._is_rotatable = False
+            self._is_rotatable = True
             self._gravity = True
             self._can_move = True
-            self._stable = False
+            self._stable = True
         self.dirty = 1
         self.reload()
 
@@ -462,8 +452,6 @@ class TokenPhysics:
     def _simulation_postprocess_token(self):
         """
         Reloads physics model from pygame data
-        Returns:
-
         """
         if self.simulation and not math.isnan(self._body.position[0]):
             self._set_mwm_token_position()
@@ -478,8 +466,20 @@ class TokenPhysics:
 
     @property
     def velocity_x(self):
-        """Sets velocity in x-direction
-        :return:
+        """Sets velocity in x-direction. Can be positive or negative.
+
+         Examples:
+
+            Move a token left or right.
+
+            .. code-block:: python
+
+                def on_key_pressed_d(self):
+                    self.physics.velocity_x = 50
+
+                def on_key_pressed_a(self):
+                    self.physics.velocity_x = - 50
+
         """
         return self._velocity_x
 
@@ -492,7 +492,6 @@ class TokenPhysics:
     @property
     def velocity_y(self):
         """Sets velocity in y-direction
-        :return:
         """
         return self._velocity_y
 
@@ -504,13 +503,22 @@ class TokenPhysics:
 
     @property
     def is_rotatable(self):
-        """defines, if token will be rotated by physics-engine?
+        """defines, if token will be rotated by physics-engine.
         """
         return self._is_rotatable
 
     @is_rotatable.setter
     def is_rotatable(self, value: bool):
         self._is_rotatable = value
+        self.dirty = 1
+        self.reload()
+
+    def force_in_direction(self, direction: float, power: float):
+        force = pymunk.Vec2d(1, 0)
+        force = force.rotated_degrees(
+            360 - self.token.position_manager.dir_to_unit_circle(direction - self.token.direction))
+        force = power * 1000 * force.normalized()
+        self._body.apply_force_at_local_point(force)
 
     def impulse_in_direction(self, direction: float, power: float):
         """
@@ -552,7 +560,7 @@ class TokenPhysics:
 
     def force_in_direction(self, direction: float, power: float):
         """
-        Adds an force in token-direction
+        Adds a force in given direction
 
         Args:
             power: The power-value of the force.

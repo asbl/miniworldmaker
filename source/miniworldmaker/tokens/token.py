@@ -1313,7 +1313,7 @@ class Token(token_base.BaseToken):
 
         Args:
 
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+            distance: Specifies the distance in front of the actuator to which the sensors reacts.
 
         Returns:
 
@@ -1404,8 +1404,8 @@ class Token(token_base.BaseToken):
         """Detects colors in board-background at token-position
 
         Args:
-            direction: Specifies the direction where the sensor is searching.
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+            direction: Specifies the direction where the sensors is searching.
+            distance: Specifies the distance in front of the actuator to which the sensors reacts.
 
         Returns:
             All colors found by Sensor

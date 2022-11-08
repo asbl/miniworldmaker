@@ -1,5 +1,5 @@
-Boards: Physicsboard
-*********************
+Board -> Physicsboard
+***********************
 
 **PhysicsBoard** is a child class of **Board**
 

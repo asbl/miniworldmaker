@@ -2,14 +2,13 @@ import abc
 from abc import abstractmethod
 from typing import Union, Tuple, List
 
-import numpy
-import pygame
-
 import miniworldmaker.appearances.managers.font_manager as font_manager
 import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
 import miniworldmaker.tools.binding as binding
 import miniworldmaker.tools.color as color_mod
+import numpy
+import pygame
 from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
@@ -497,9 +496,11 @@ class Appearance(metaclass=MetaAppearance):
     def is_animated(self, value):
         self._is_animated = value
 
-    def animate(self):
+    def animate(self, loop=False):
         """Animates the costume
 
+        Args:
+            loop: If loop = True, the animation will be processed as loop. (you can stop this with self.loop)
 
         .. code-block:: python
 
@@ -521,6 +522,8 @@ class Appearance(metaclass=MetaAppearance):
         """
         self._animation_start_frame = self.board.frame
         self.is_animated = True
+        if loop:
+            self.loop = True
 
     def after_animation(self):
         """

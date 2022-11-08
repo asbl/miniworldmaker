@@ -45,39 +45,14 @@ class Board(board_base.BaseBoard):
     * Two tokens collide when their sprites overlap.
 
     .. image:: ../_images/asteroids.jpg
-        :width: 100%
         :alt: Asteroids
 
-    Creating a Board:
+    **Other Boards:**
 
-    .. code-block:: python
-
-        from miniworldmaker import *
-
-        myboard = Board()
-
-    *Tiledboard*
-
-    A Board for Games based on Tiles (Like Rogue-Like RPGs).
-
-    * Every token on a TiledBoard has the size of exactly on one Tile.
-      (If your tile_size is 40, every token has the size 40x40)
-
-    * The `position` of a token (`mytoken.position`) corresponds to the tile on which it is placed.
-
-    * Two tokens **collide** when they are on the same tile.
-
-    .. image:: ../_images/tiled_board.jpg
-        :width: 100%
-        :alt: TiledBoard
-
-    Creating a TiledBoard:
-
-    .. code-block:: python
-
-        from miniworldmaker import *
-
-        myboard = TiledBoard()
+    * TiledBoard: For Boards using Tiles, like rogue-like rpgs, see
+      :doc:`TiledBoard <../api/board.tiledboard>`)
+    * PhysicsBoard: For Boards using the PhysicsEngine, see
+      :doc:`PhysicsBoard <../api/board_physicsboard>`)
 
     Examples:
 
@@ -87,10 +62,10 @@ class Board(board_base.BaseBoard):
 
             from miniworldmaker import *
 
-            myboard = TiledBoard()
-            myboard.columns = 30
-            myboard.rows = 20
-            myboard.tile_size = 20
+            my_board = TiledBoard()
+            my_board.columns = 30
+            my_board.rows = 20
+            my_board.tile_size = 20
 
 
         Creating a TiledBoard-Subclass.
@@ -112,9 +87,9 @@ class Board(board_base.BaseBoard):
 
             from miniworldmaker import *
 
-            myboard = Board()
-            myboard.columns = 300
-            myboard.rows = 200
+            my_board = Board()
+            my_board.columns = 300
+            my_board.rows = 200
 
         Creating a Board Subclass
 
@@ -169,9 +144,10 @@ class Board(board_base.BaseBoard):
         self._fps: int = 60
         self._key_pressed: bool = False
         self._animated: bool = False
+        self._is_filled: bool = False
         self._orientation: int = 0
         self._static: bool = False
-        self._speed: int = 1  # All tokens are acting on n'th frame with n = self.speed
+        self._speed: int = 1  # All tokens are acting on n:th frame with n = self.speed
         self._default_is_filled = False
         self._default_fill_color = None
         self._default_border_color = None
@@ -208,18 +184,18 @@ class Board(board_base.BaseBoard):
         """Checks if position is on the board.
 
         Returns:
-            True, if Position is on the the board.
+            True, if Position is on the board.
         """
         if 0 <= pos[0] < self.boundary_x and 0 <= pos[1] < self.boundary_y:
             return True
         else:
             return False
 
-    def contains_rect(self, rect):
-        """
-        Detects if rect is completly on the board.
-        :param rect: A rect
-        :return: True, if rect is on the board.
+    def contains_rect(self, rect: Union[tuple, pygame.Rect]):
+        """Detects if rect is completely on the board.
+        
+        Args:
+            rect: A rectangle as tuple (top, left, width, height)
         """
         rect = board_rect.Rect.create(rect)
         topleft_on_the_board = self.contains_position(rect.topleft)
@@ -419,7 +395,7 @@ class Board(board_base.BaseBoard):
         """Tile size of each tile, if board has tiles
 
         Returns:
-            int: The tile-size in pixels.
+            The tile-size in pixels.
         """
         return self._tile_size
 
@@ -572,16 +548,17 @@ class Board(board_base.BaseBoard):
         return self._tokens
 
     @property
-    def backgrounds(self):
-        """Returns the background of board."""
+    def backgrounds(self) -> list:
+        """Returns all backgrounds of the board as list."""
         return self.backgrounds_manager.backgrounds
 
     @property
-    def background(self):
-        """Returns the background of board."""
+    def background(self) -> "background_mod.Background":
+        """Returns the current background"""
         return self.get_background()
 
-    def get_background(self):
+    def get_background(self) -> "background_mod.Background":
+        """Returns the current background"""
         return self.backgrounds_manager.background
 
     @background.setter
@@ -592,11 +569,11 @@ class Board(board_base.BaseBoard):
             self.backgrounds_manager.add_background(source)
 
     def switch_background(self, background: Union[int, Type["appearance.Appearance"]]) -> "background_mod.Background":
-        """Switches the background of board
+        """Switches the background
 
         Args:
             background: The index of the new background or an Appearance.
-            If index=-1, the next background will be selected
+                If index = -1, the next background will be selected
 
         Examples:
 
@@ -648,22 +625,26 @@ class Board(board_base.BaseBoard):
         return self.backgrounds_manager.remove_appearance(background)
 
     def add_background(self, source: Union[str, tuple]) -> "background_mod.Background":
-        """
-        Adds a new background to the board
+        """Adds a new background to the board
+
+        If multiple backgrounds are added, the last adds background will be set as active background.
 
         Args:
-            source: The path to the first image of the background or a color
+            source: The path to the first image of the background or a color (e.g. (255,0,0) for red or
+                    "images/my_background.png" as path to a background.
 
         Examples:
 
-            Multiple Backgrounds:
+            Add multiple Backgrounds:
 
             .. code-block:: python
 
-                board = miniworldmaker.TiledBoard()
-                ...
-                board.add_background("images/soccer_green.jpg")
-                board.add_background("images/space.jpg")
+                from miniworldmaker import *
+
+                board = Board()
+                board.add_background((255, 0 ,0)) # red
+                board.add_background((0, 0 ,255)) # blue
+                board.run() # Shows a blue board.
 
         Returns:
             The new created background.
@@ -733,7 +714,7 @@ class Board(board_base.BaseBoard):
 
     def run(self, fullscreen: bool = False, fit_desktop: bool = False, replit: bool = False, event=None, data=None):
         """
-        The method show() should always called at the end of your program.
+        The method show() should always be called at the end of your program.
         It starts the mainloop.
 
         Examples:
@@ -863,7 +844,7 @@ class Board(board_base.BaseBoard):
     def send_message(self, message, data=None):
         """Sends broadcast message
 
-        A message can received by the board or any token on board
+        A message can be received by the board or any token on board
         """
         self.app.event_manager.to_event_queue("message", message)
 
@@ -1062,7 +1043,7 @@ class Board(board_base.BaseBoard):
         if self.is_running or self.frame == 0:
             # Acting for all actors@static
             if self.frame > 0 and self.frame % self.speed == 0:
-                self.act_all()
+                self._act_all()
             self.collision_manager.handle_all_collisions()
             self.mouse_manager.update_positions()
             if self.frame == 0:
@@ -1075,7 +1056,7 @@ class Board(board_base.BaseBoard):
         self.clock.tick(self.fps)
         self.event_manager.executed_events.clear()
 
-    def act_all(self):
+    def _act_all(self):
         """Overwritten in subclasses, e.g. physics_board"""
         self.event_manager.act_all()
 
@@ -1122,8 +1103,8 @@ class Board(board_base.BaseBoard):
     def direction(self, point1, point2):
         pass
 
-    def distance_to(self,
-                    pos1: "board_position.Position",
+    @staticmethod
+    def distance_to(pos1: "board_position.Position",
                     pos2: "board_position.Position"):
         pos1 = board_position.Position.create(pos1)
         pos2 = board_position.Position.create(pos2)
@@ -1132,7 +1113,7 @@ class Board(board_base.BaseBoard):
         elif type(pos2) == tuple:
             return math.sqrt((pos1.x - pos2[0]) ** 2 + (pos1.y - pos2[1]) ** 2)
 
-    def direction_to(self,
-                     pos1: "board_position.Position",
+    @staticmethod
+    def direction_to(pos1: "board_position.Position",
                      pos2: "board_position.Position") -> "board_direction.Direction":
         return board_direction.Direction.from_two_points(pos1, pos2)

@@ -118,7 +118,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         .. image:: ../_images/sensing_on_board.png
 
         Args:
-            distance: Specifies the distance in front of the actuator to which the sensor reacts.
+            distance: Specifies the distance in front of the actuator to which the sensors reacts.
 
         Returns:
             True if token is on board

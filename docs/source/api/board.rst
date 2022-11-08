@@ -1,4 +1,4 @@
-Boards: Board
+Board
 *************
 
 ```Board`` is the base class for boards.

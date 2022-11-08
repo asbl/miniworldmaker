@@ -130,7 +130,7 @@ class SoundManager:
             for key, sound_effect in self.sound_effects.items():
                 sound_effect.set_volume(volume / 100)
 
-    def stop(self, volume, path: str = None):
+    def stop(self, path: str = None):
         """Sets volume (max: 100, min: 0)
         """
         if path:
