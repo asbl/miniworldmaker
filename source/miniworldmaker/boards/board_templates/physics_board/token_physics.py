@@ -1,10 +1,10 @@
 import math
 import sys
+from typing import Optional
 from typing import Union
 
 import pymunk as pymunk_engine
 import pymunk.pygame_util
-
 from miniworldmaker.tokens import token as token
 from miniworldmaker.tokens.token_plugins.shapes import shapes
 
@@ -43,7 +43,10 @@ class TokenPhysics:
         self._stable: bool = False
         self._can_move: bool = True
         self._density: float = 10
-        self._friction: float = 10
+        self.moment: Optional[float] = None
+        self.damping = 1
+        self.max_velocity_x = math.inf
+        self._friction: float = 0.5
         self._velocity_x: float = 0
         self._velocity_y: float = 0
         self._elasticity: float = 0.5
@@ -56,6 +59,15 @@ class TokenPhysics:
         self._update_from_physics: bool = False  # is position/direction updated from physics_engine?
         self.size = (1, 1)  # scale factor for physics box model
         self.joints = []
+
+    @staticmethod
+    def velocity_function(body, gravity, damping, dt):
+        pymunk.Body.update_velocity(body, gravity, body.physics_property.damping * damping, dt)
+        if body.physics_property.max_velocity_x != math.inf and body.velocity[0] > body.physics_property.max_velocity_x:
+            body.velocity = body.physics_property.max_velocity_x, body.velocity[1]
+        if body.physics_property.max_velocity_x != math.inf and body.velocity[
+            0] < - body.physics_property.max_velocity_x:
+            body.velocity = - body.physics_property.max_velocity_x, body.velocity[1]
 
     def join(self, other: "token.Token"):
         """joins two tokens at their center points
@@ -180,10 +192,14 @@ class TokenPhysics:
             # create body
             self.has_physics = False
             self._body = pymunk_engine.Body(body_type=self.body_type)
+            self._body.physics_property = self
             self._body.moment = math.inf
+            self._body.velocity_func = self.velocity_function
+            # self._body.damping = self.damping
             self._set_pymunk_position()
             self._set_pymunk_direction()
             self._body.size = (self.size[0] * self.token.width, self.size[1] * self.token.height)
+
             # disable velocity for tokens if token has no gravity
             if self.simulation == "static":
                 self._body.velocity_func = lambda body, gravity, damping, dt: None
@@ -199,6 +215,8 @@ class TokenPhysics:
                 self._shape.collision_type = hash(
                     self.token.__class__.__name__) % ((sys.maxsize + 1) * 2)
                 self.board.space.add(self._body, self._shape)
+            if self.moment is not None:
+                self._body.moment = self.moment
             if self.simulation == "static":
                 self.board.space.reindex_static()
             self.dirty = 1

@@ -29,6 +29,7 @@ from miniworldmaker.tokens.token_plugins.text_token.number_token import Number
 from miniworldmaker.tokens.token_plugins.text_token.text_token import TextToken
 from miniworldmaker.tokens.token_plugins.text_token.number_token import NumberToken
 from miniworldmaker.tokens.token_plugins.sensors.sensor import Sensor
+from miniworldmaker.tokens.token_plugins.sensors.circle_sensor import CircleSensor
 
 from miniworldmaker.tokens.token_plugins.shapes.shapes import Point
 from miniworldmaker.tokens.token_plugins.shapes.shapes import Rectangle
@@ -113,6 +114,7 @@ __all__.append(Arc.__name__)
 __all__.append(Circle.__name__)
 
 __all__.append(Sensor.__name__)
+__all__.append(CircleSensor.__name__)
 
 __all__.append(Appearance.__name__)
 __all__.append(Background.__name__)
