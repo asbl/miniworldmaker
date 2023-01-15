@@ -1,5 +1,5 @@
-import miniworldmaker.tokens.token_plugins.text_token.text_costume as text_costume
 import miniworldmaker.tokens.token as token
+import miniworldmaker.tokens.token_plugins.text_token.text_costume as text_costume
 
 
 class Text(token.Token):
@@ -18,19 +18,16 @@ class Text(token.Token):
         Create a new text_token::
 
             self.text = TextToken((1,1), "Hello World")
-
-
     """
 
-    def __init__(self, position=None, text=" "):
+    def __init__(self, position=None, text: str = " "):
+        self._max_width = 0
         super().__init__(position)
-        self.costume = text_costume.TextCostume(self)
-        self.costume.font_size = 24
+        self.font_size = 24
         self.costume.is_scaled = True
-        self.costume.text = ""
         self.is_static: bool = True
-        self.set_text(text)
         self.fixed_size = False
+        self.set_text(text)
 
     def new_costume(self):
         return text_costume.TextCostume(self)
@@ -41,9 +38,10 @@ class Text(token.Token):
 
     @font_size.setter
     def font_size(self, value):
-        self.costume.font_size = value
-        self.costume._update_draw_shape()
-        self.costume.set_dirty("write_text", self.costume.RELOAD_ACTUAL_IMAGE)
+        if self.costume:
+            self.costume.font_size = value
+            self.costume._update_draw_shape()
+            self.costume.set_dirty("write_text", self.costume.RELOAD_ACTUAL_IMAGE)
 
     def set_text(self, text):
         """
@@ -54,9 +52,29 @@ class Text(token.Token):
         """
         self.costume.text = text
         self.costume._update_draw_shape()
+        self.costume.set_dirty("write_text", self.costume.RELOAD_ACTUAL_IMAGE)
+
+    def font_by_size(self, width=None, height=None):
+        self.font_size = self.costume.scale_to_size(width, height)
+
+    @property
+    def max_width(self):
+        return self._max_width
+
+    @max_width.setter
+    def max_width(self, value):
+        self._max_width = value
+        self.costume._update_draw_shape()
+        self.costume.set_dirty("write_text", self.costume.RELOAD_ACTUAL_IMAGE)
+
+    def get_text_width(self):
+        return self.costume.get_text_width()
+
+    def get_text_width(self):
+        return self.costume.get_text_width()
 
     def get_text(self):
-        """Gets the currently displayed tex
+        """Gets the currently displayed text
 
         Returns:
             The currently displayed text
@@ -75,6 +93,9 @@ class Text(token.Token):
             value = " "
         self.set_text(value)
         self.costume.set_dirty("all", self.costume.RELOAD_ACTUAL_IMAGE)
+
+    def on_shape_change(self):
+        self.costume._update_draw_shape()
 
 
 class TextToken(Text):

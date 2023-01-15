@@ -35,7 +35,7 @@ class Shape(token.Token):
             position = (0, 0)
         super().__init__(position)
 
-    def new_cotume(self):
+    def new_costume(self):
         return shape_costume.ShapeCostume(self)
 
 
@@ -70,7 +70,6 @@ class Circle(Shape):
     def __init__(self, position=(0, 0), radius: float = 10):
         self._radius = radius
         super().__init__(position)
-        self.costume = shape_costume.CircleCostume(self)
         self.position_manager.set_size((self._radius * 2, self._radius * 2), scale=False)
         self.center = position
 
@@ -107,6 +106,8 @@ class Circle(Shape):
         self.physics.can_move = True
         self.physics.stable = False
 
+    def new_costume(self):
+        return shape_costume.CircleCostume(self)
 
 class Point(Circle):
     """A point is a Circle with Radius 1"""

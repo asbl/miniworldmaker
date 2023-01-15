@@ -13,7 +13,7 @@ class FontManager:
     def _get_font_object(self):
         font_size = self.font_size
         if self.font_path is None:
-            font = pygame.font.SysFont(self.font_style, font_size)
+            font = pygame.font.SysFont(self.font_style, int(font_size))
         else:
             font = pygame.font.Font(self.font_path, font_size)
         return font
@@ -21,6 +21,10 @@ class FontManager:
     def get_text_width(self):
         font = self._get_font_object()
         return font.size(self.text)[0]
+
+    def get_text_height(self):
+        font = self._get_font_object()
+        return font.size(self.text)[1]
 
     def transformation_write_text(self, image: pygame.Surface, parent, color) -> pygame.Surface:
         # called from write_text in transformations_manager

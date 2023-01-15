@@ -50,7 +50,6 @@ class Test147(unittest.TestCase):
            
         @board.register
         def init_test(self):
-            print("setup test")
             board.test_frame = 0
         
         @board.register

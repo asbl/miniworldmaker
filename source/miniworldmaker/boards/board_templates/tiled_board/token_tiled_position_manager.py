@@ -3,9 +3,12 @@ from typing import Tuple, Union
 
 import miniworldmaker.boards.board_templates.tiled_board.tile_elements as tile_elements
 import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
-from miniworldmaker.positions import position as board_position
-from miniworldmaker.positions import direction as board_direction
-from miniworldmaker.appearances import costume
+import miniworldmaker.positions.position as board_position
+import miniworldmaker.positions.direction as board_direction
+import miniworldmaker.appearances.costume as costume
+import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
+import miniworldmaker.boards.board_templates.tiled_board.corner as corner_mod
+import miniworldmaker.boards.board_templates.tiled_board.edge as edge_mod
 
 
 class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
@@ -16,13 +19,13 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
     def get_global_rect(self):
         rect = super().get_global_rect()
         if self.token.board.is_tile(self.token.position):
-            rect.topleft = tile_elements.Tile.from_position(self.token.position, self.token.board).to_pixel()
+            rect.topleft = tile_mod.Tile.from_position(self.token.position, self.token.board).to_pixel()
             return rect
         elif self.token.board.is_corner(self.token.position):
-            rect.center = tile_elements.Corner.from_position(self.token.position, self.token.board).to_pixel()
+            rect.center = corner_mod.Corner.from_position(self.token.position, self.token.board).to_pixel()
             return rect
         elif self.token.board.is_edge(self.token.position):
-            rect.center = tile_elements.Edge.from_position(self.token.position, self.token.board).to_pixel()
+            rect.center = edge_mod.Edge.from_position(self.token.position, self.token.board).to_pixel()
             return rect
         else:
             rect.topleft = (-self.size[0], -self.size[1])
@@ -42,11 +45,13 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
             return 0
 
     def set_size(self, value: Union[int, Tuple], scale=True):
+        print("set size to value", value)
         if type(value) == int or type(value) == float:  # convert int to tuple
             value = (value, value)
-        if scale and value != self._scaled_size:
+        if scale and value != self._scaled_size and self.token.costume:
             self._scaled_size = value
             self.token.costume.set_dirty("scale", costume.Costume.RELOAD_ACTUAL_IMAGE)
+        print("size was set to to value", value, self._scaled_size)
 
     def set_center(self, value):
         self.position = value

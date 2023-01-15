@@ -1,10 +1,9 @@
-import pymunk as pymunk_engine
-
 import miniworldmaker.boards.board_templates.physics_board.physics_board_connector as physics_board_connector
 import miniworldmaker.boards.board_templates.pixel_board.board as board
 import miniworldmaker.tools.token_inspection as token_inspection
-from miniworldmaker.tokens.token_plugins.shapes import shapes as shapes_mod
+import pymunk as pymunk_engine
 from miniworldmaker.boards.board_templates.physics_board import physicsboard_event_manager
+from miniworldmaker.tokens.token_plugins.shapes import shapes as shapes_mod
 
 
 class PhysicsBoard(board.Board):
@@ -71,12 +70,12 @@ class PhysicsBoard(board.Board):
                or method_name.startswith("on_separation_from_")
         ]
 
-    def remove_token_from_board(self, token):
+    def remove_token_from_board(self):
         """Removes token from board and removes pymunk body and shapes.
         """
-        connector = physics_board_connector.PhysicsBoardConnector(self, token)
-        connector.remove_token_from_board(token)
-        self.physics_tokens.remove(token)
+        connector = physics_board_connector.PhysicsBoardConnector(self)
+        connector.remove_token_from_board()
+        self.physics_tokens.remove()
 
     def _act_all(self):
         """Handles acting of tokens - Calls the physics-simulation in each frame.

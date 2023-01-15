@@ -3,8 +3,11 @@ from collections import OrderedDict
 from typing import Union
 
 import miniworldmaker.base.app as app
-import miniworldmaker.positions.position as board_position
+import miniworldmaker.boards.board_templates.tiled_board.tile as tile
+import miniworldmaker.boards.board_templates.tiled_board.corner as corner
+import miniworldmaker.boards.board_templates.tiled_board.edge as edge
 import miniworldmaker.boards.board_templates.tiled_board.tile_elements as tile_elements
+import miniworldmaker.positions.position as board_position
 from miniworldmaker.boards.board_templates.hex_board import cube_coord
 
 
@@ -22,7 +25,8 @@ class HexBase(tile_elements.TileBase, ABC):
     def _external_coordinates(self):
         return cube_coord.CubeCoord
 
-class HexTile(HexBase, tile_elements.Tile):
+
+class HexTile(HexBase, tile.Tile):
     tile_vectors = {
         "w": (+1, 0, -1),
         "nw": (+1, -1, 0),
@@ -110,7 +114,7 @@ class HexTile(HexBase, tile_elements.Tile):
         )
 
 
-class HexCorner(HexBase, tile_elements.Corner):
+class HexCorner(HexBase, corner.Corner):
     angles = {"n": 2, "no": 3, "so": 4, "s": 5, "sw": 0, "nw": 1}
     direction_angles = {"n": 0, "no": 0, "so": 0, "s": 0, "sw": 0, "nw": 0}
 
@@ -155,7 +159,7 @@ class HexCorner(HexBase, tile_elements.Corner):
         return HexTile.corner_vectors
 
 
-class HexEdge(HexBase, tile_elements.Edge):
+class HexEdge(HexBase, edge.Edge):
     tile_vectors = {
         "w": [(-1, 0.5, 0), (0, 0.5, -1)],
         "sw": [(-0.5, 1, 0), (-0.5, 0, 1)],
@@ -205,4 +209,3 @@ class HexEdge(HexBase, tile_elements.Edge):
 
     def _external_coordinates(self):
         return cube_coord.CubeCoord
-

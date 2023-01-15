@@ -1,13 +1,12 @@
 import math
 from typing import Union, List
 
-import pygame
-
 import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.rect as board_rect
 import miniworldmaker.positions.vector as board_vector
 import miniworldmaker.tokens.managers.token_boardsensor as boardsensor
+import pygame
 from miniworldmaker.tokens import token as token_mod
 
 
@@ -44,7 +43,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
     def get_destination_rect(self, distance: int) -> "board_rect.Rect":
         destination_pos = self.get_destination(self.token.position, self.token.direction, distance)
         destination_pos = board_position.Position.create(destination_pos)
-        rect = board_rect.Rect.from_position(destination_pos, dimensions=self.token.size)
+        rect = board_rect.Rect.from_position(destination_pos, dimensions=self.token.size, board=self.board)
         return rect
 
     def get_line_in_direction(self, start, direction: Union[int, float], distance: int):

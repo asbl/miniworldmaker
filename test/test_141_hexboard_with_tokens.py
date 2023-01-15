@@ -30,8 +30,8 @@ class Test141(unittest.TestCase):
         for x in range(board.columns):
             for y in range(board.rows):
                 t = Token((x,y))
-                t.static = True
                 t.add_costume(f"images/grass_08.png")
+                t.static = True
 
         token = Token((0,1)) # move right to (1,0)
         token.size = 1
@@ -62,37 +62,44 @@ class Test141(unittest.TestCase):
         # Edge
 
         edge = HexEdge.from_tile((0,5), "nw")
-        token = edge.create_token()
+        token = Token()
+        token.center = edge.position
         token.size = (0.2, 0.4)
         token.color = (10,10,10,100)
         token.direction = edge.get_direction()
+        print("First edge", edge, edge.position, token, token.position)
 
         edge = HexEdge.from_tile((0,5), "w")
-        token = edge.create_token()
+        token = Token()
+        token.center = edge.position
         token.size = (0.2, 0.4)
         token.color = (40,40,40,100)
         token.direction = edge.get_direction()
 
         edge = HexEdge.from_tile((0,5), "sw")
-        token = edge.create_token()
+        token = Token()
+        token.center = edge.position
         token.size = (0.2, 0.4)
         token.color = (90,90,90,100)
         token.direction = edge.get_direction()
 
         edge = HexEdge.from_tile((0,5), "so")
-        token = edge.create_token()
+        token = Token()
+        token.center = edge.position
         token.size = (0.2, 0.4)
         token.color = (140,140,140,100)
         token.direction = edge.get_direction()
 
         edge = HexEdge.from_tile((0,5), "o")
-        token = edge.create_token()
+        token = Token()
+        token.center = edge.position
         token.size = (0.2, 0.4)
         token.color = (180,180,180,100)
         token.direction = edge.get_direction()
 
         edge = HexEdge.from_tile((0,5), "no")
-        token = edge.create_token()
+        token = Token()
+        token.center = edge.position
         token.size = (0.2, 0.4)
         token.color = (220,220,220,100)
         token.direction = edge.get_direction()
@@ -100,29 +107,44 @@ class Test141(unittest.TestCase):
         """
         # CORNERS
         """
-        token = HexCorner.from_tile((2,3), "no").create_token()
+        corner = HexCorner.from_tile((2,3), "no")
+        token = Token()
+        token.center = corner.position
+
         token.size = (0.2, 0.2)
         token.fill_color = (40,40,40,100)
 
-        token = HexCorner.from_tile((2,3), "so").create_token()
+        corner = HexCorner.from_tile((2,3), "so")
+        token = Token()
+        token.center = corner.position
         token.size = (0.2, 0.2)
         token.fill_color = (120,120,120,255)
 
-        token = HexCorner.from_tile((2,3), "s").create_token()
+        corner = HexCorner.from_tile((2,3), "s")
+        token = Token()
+        token.center = corner.position
         token.size = (0.2, 0.2)
         token.fill_color = (140,140,140,255)
 
-        token = HexCorner.from_tile((2,3), "sw").create_token()
+        corner = HexCorner.from_tile((2,3), "sw")
+        token = Token()
+        token.center = corner.position
         token.size = (0.2, 0.2)
         token.fill_color = (170,170,170,255)
 
-        token = HexCorner.from_tile((2,3), "nw").create_token()
+        corner = HexCorner.from_tile((2,3), "nw")
+        token = Token()
+        token.center = corner.position
         token.size = (0.2, 0.2)
         token.fill_color = (200,200,200,255)
 
-        token = HexCorner.from_tile((2,3), "n").create_token()
+        corner = HexCorner.from_tile((2,3), "n")
+        token = Token()
+        token.center = corner.position
         token.fill_color = (255,255,255)
         token.size = (0.2, 0.2)
+
+
         
         """ additional code """
         @board.register

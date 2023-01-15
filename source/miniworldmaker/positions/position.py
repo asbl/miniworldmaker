@@ -1,18 +1,18 @@
 from __future__ import annotations
 
 import collections
-import math
 from abc import ABC
 from typing import TYPE_CHECKING
 from typing import Union, Tuple
 
-import pygame
-
 import miniworldmaker.base.app as app
+import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
+import pygame
 from miniworldmaker.exceptions.miniworldmaker_exception import NoValidBoardPositionError
 
 if TYPE_CHECKING:
-    from miniworldmaker.positions import vector as board_vector
+    import miniworldmaker.positions.vector as board_vector
+
 
 
 class PositionBase(ABC):
@@ -77,6 +77,9 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
             return value
         elif type(value) == pygame.Rect:
             return cls(value.topleft)
+        elif type(value) == tile_mod.Tile:
+            pos =  cls.create(value.position)
+            return pos
         else:
             raise NoValidBoardPositionError(value)
 
@@ -118,7 +121,6 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         """
         return Position(self.x + other[0], self.y + other[1])
 
-
     def __sub__(self, other: Union[Tuple, "Position", "board_vector.Vector"]):
         return Position(self.x - other[0], self.y - other[1])
 
@@ -158,6 +160,7 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
 
     def is_on_the_board(self):
         return app.App.running_board.position_is_in_container(self)
+
 
 class BoardPosition(Position):
     # legacy

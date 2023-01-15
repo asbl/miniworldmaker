@@ -55,6 +55,7 @@ class ContainerManager:
         Returns:
             container.Container: The container
         """
+        
         if container not in self.containers:
             self.app.window.recalculate_dimensions()
             container.docking_position = dock
@@ -65,8 +66,8 @@ class ContainerManager:
             self.app.window.resize()
             for ct in self.containers:
                 ct.dirty = 1
-            if app.App.running_board:
-                for token in self.app.running_board.tokens:
+            for board in self.app.running_boards:
+                for token in board.tokens:
                     token.dirty = 1
         else:
             raise MiniworldMakerError("Container already in board.containers")
@@ -74,7 +75,11 @@ class ContainerManager:
 
     def switch_board(self, new_board):
         old_board = self.app.running_board
+        app.App.running_boards.remove(old_board)
         app.App.running_board = new_board
+        app.App.running_boards.append(new_board)
+        new_board._app = old_board._app
+
         self.app.image = new_board.image
         self.switch_container(old_board, new_board)
         for container in self.containers:

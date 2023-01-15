@@ -1,7 +1,6 @@
-import pygame
-
 import miniworldmaker.appearances.costume as costume
-
+import pygame
+import math
 
 class TextCostume(costume.Costume):
     def __init__(self, token):
@@ -24,11 +23,29 @@ class TextCostume(costume.Costume):
     def _update_draw_shape(self):
         super()._update_draw_shape()
         """Sets self.size by costume.font_size"""
-        if not self.token.board.tokens_fixed_size:  # fixed size e.g. on TiledBoards
-            self.token.position_manager.set_size((self.get_text_width(), self.font_size))
+        if not self.token.board.tokens_fixed_size or (
+                hasattr(self.token, "fixed_size") and self.token.fixed_size):  # fixed size e.g. on TiledBoards
+            if self.token.max_width != 0:
+                width = min(self.get_text_width(), self.token.max_width)
+            else:
+                width = self.get_text_width()
+            height = self.get_text_height()
+            self.token.set_size((width, height))
         if self.token.board.tokens_fixed_size:
-            _font_size = 0
+            self.scale_to_size()
+
+    def scale_to_size(self, width=None, height=None):
+        if not width:
+            width = self.token.size[0]
+        if width == 0:
+            width = math.inf
+        if not height:
+            height = self.token.size[1]
+        if height == 0:
+            height = math.inf
+        _font_size = 0
+        self.font_manager.set_font_size(_font_size, update=False)
+        while self.get_text_width() < width and self.get_text_height() < height:
+            _font_size += 1
             self.font_manager.set_font_size(_font_size, update=False)
-            while self.font_manager.get_text_width() < self.token.size[0] and self.font_size < self.token.size[1]:
-                _font_size += 1
-                self.font_manager.set_font_size(_font_size, update=False)
+        return _font_size

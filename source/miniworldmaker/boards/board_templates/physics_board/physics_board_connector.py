@@ -35,6 +35,10 @@ class PhysicsBoardConnector(pixelboard_connector.PixelBoardConnector):
         if hasattr(self.token, "on_begin_simulation"):
             self.token.on_begin_simulation()
 
+    def remove_token_from_board(self):
+        super().remove_token_from_board()
+        self.board.physics_tokens.remove(self.token)
+
     def register_all_physics_collision_managers_for_token(self):
         """Registers on__touching and on_separation-Methods to token.
         If new_class is set, only methods with new class (e.g. on_touching_new_class are set)

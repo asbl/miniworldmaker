@@ -2,10 +2,10 @@ import math
 from typing import Union
 
 import miniworldmaker.positions.position as board_position
-from miniworldmaker.boards.board_templates.tiled_board import tiled_board as board_module, tile_elements
-from miniworldmaker.tokens import token as token_module
-from miniworldmaker.tokens.managers import token_boardsensor as boardsensor
-
+import miniworldmaker.boards.board_templates.tiled_board.tiled_board as board_module
+import miniworldmaker.tokens.token as token_module
+import miniworldmaker.tokens.managers.token_boardsensor as boardsensor
+import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
 
 class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
     """
@@ -65,7 +65,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         target_position = self.token.position
         token_list: list = list()
         if self.board and self.board.contains_position(target_position):
-            token_list = self.board.get_tokens_at_position(target_position)
+            token_list = self.board.detect_tokens(target_position)
         if not token_list:
             token_list = []
         token_list = self._remove_self_from_token_list(token_list)
@@ -91,8 +91,7 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
             return token_list[0]
 
     def remove_from_board(self) -> None:
-        """
-        Removes a token from board
+        """Removes a token from board
         """
         if self.token in self.board.dynamic_tokens:
             self.board.dynamic_tokens.remove(self.token)
@@ -114,9 +113,9 @@ class TokenTiledBoardSensor(boardsensor.TokenBoardSensor):
         return self.board.background.get_color(destination)
 
     def get_distance_to(self, obj: Union["token_module.Token", "board_position.Position"]) -> float:
-        tile1 = tile_elements.Tile.from_token(self.token)
+        tile1 = tile_mod.Tile.from_token(self.token)
         if isinstance(obj, token_module.Token):
-            tile2 = tile_elements.Tile.from_token(obj)
+            tile2 = tile_mod.Tile.from_token(obj)
         else:
             tile2 = self.token.board.get_tile(obj)
         return tile1.distance_to(tile2)

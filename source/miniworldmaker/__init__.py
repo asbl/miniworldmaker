@@ -20,6 +20,8 @@ from miniworldmaker.boards.board_templates.pixel_board.pixel_board import PixelB
 from miniworldmaker.boards.board_templates.tiled_board.tiled_board import TiledBoard
 from miniworldmaker.boards.board_templates.physics_board.physics_board import PhysicsBoard as PhysicsBoard
 from miniworldmaker.boards.board_templates.hex_board.hex_board import HexBoard
+from miniworldmaker.boards.board_templates.toolbar.toolbar import Toolbar
+from miniworldmaker.boards.board_templates.console.console import Console
 
 from miniworldmaker.tokens.token_base import BaseToken
 from miniworldmaker.tokens.token import Token
@@ -50,8 +52,9 @@ from miniworldmaker.tools.timer import ActionTimer
 from miniworldmaker.tools.timer import LoopActionTimer
 from miniworldmaker.tools.timer import Timer
 
-from miniworldmaker.containers.toolbar import Toolbar
 
+
+"""
 from miniworldmaker.containers.widgets import Widget
 from miniworldmaker.containers.widgets import Button
 from miniworldmaker.containers.widgets import Label
@@ -60,13 +63,23 @@ from miniworldmaker.containers.widgets import ToolbarButton
 from miniworldmaker.containers.widgets import YesNoButton
 from miniworldmaker.containers.widgets import CounterLabel
 from miniworldmaker.containers.widgets import SimplePagination
+"""
+
+from miniworldmaker.tokens.token_plugins.widgets.button import Button
+from miniworldmaker.tokens.token_plugins.widgets.button import ToolbarButton
+from miniworldmaker.tokens.token_plugins.widgets.label import Label
+from miniworldmaker.tokens.token_plugins.widgets.label import ToolbarLabel
+from miniworldmaker.tokens.token_plugins.widgets.yesno import YesNoButton
+
 
 from miniworldmaker.containers.actionbar import ActionBar
+"""
 from miniworldmaker.containers.console import Console
 from miniworldmaker.containers.event_console import EventConsole
 from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
 from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
 from miniworldmaker.containers.color_toolbar import ColorToolbar
+"""
 
 from miniworldmaker.positions.vector import Vector
 from miniworldmaker.positions.position import Position
@@ -84,9 +97,9 @@ from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexCorn
 from miniworldmaker.boards.board_templates.hex_board.cube_coord import CubeCoord
 
 from miniworldmaker.boards.board_templates.tiled_board.tile_elements import TileBase
-from miniworldmaker.boards.board_templates.tiled_board.tile_elements import Edge
-from miniworldmaker.boards.board_templates.tiled_board.tile_elements import Tile
-from miniworldmaker.boards.board_templates.tiled_board.tile_elements import Corner
+from miniworldmaker.boards.board_templates.tiled_board.edge import Edge
+from miniworldmaker.boards.board_templates.tiled_board.tile import Tile
+from miniworldmaker.boards.board_templates.tiled_board.corner import Corner
 
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
 
@@ -127,19 +140,23 @@ __all__.append(Direction.__name__)
 
 __all__.append(Toolbar.__name__)
 __all__.append(ActionBar.__name__)
+
 __all__.append(Console.__name__)
+"""
 __all__.append(EventConsole.__name__)
 __all__.append(InspectActorToolbar.__name__)
 __all__.append(LevelDesignerToolbar.__name__)
 __all__.append(ColorToolbar.__name__)
+"""
 __all__.append(ToolbarLabel.__name__)
 __all__.append(ToolbarButton.__name__)
 __all__.append(YesNoButton.__name__)
+"""
 __all__.append(CounterLabel.__name__)
-__all__.append(SimplePagination.__name__)
+
+__all__.append(SimplePagination.__name__)"""
 __all__.append(Label.__name__)
 __all__.append(Button.__name__)
-__all__.append(Widget.__name__)
 
 __all__.append(TileFactory.__name__)
 __all__.append(HexTileFactory.__name__)

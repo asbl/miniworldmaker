@@ -5,11 +5,11 @@ from typing import Union, Tuple, List
 import miniworldmaker.appearances.managers.font_manager as font_manager
 import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.appearances.managers.transformations_manager as transformations_manager
+import miniworldmaker.boards.board_templates.pixel_board.board as board
 import miniworldmaker.tools.binding as binding
 import miniworldmaker.tools.color as color_mod
 import numpy
 import pygame
-from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -253,7 +253,6 @@ class Appearance(metaclass=MetaAppearance):
                 @token.register
                 def act(self):
                     if self.board.frame % 100 == 0:
-                        print("flip")
                         if self.costume.is_flipped:
                             self.costume.is_flipped = False
                         else:
@@ -413,6 +412,9 @@ class Appearance(metaclass=MetaAppearance):
     def get_text_width(self):
         return self.font_manager.get_text_width()
 
+    def get_text_height(self):
+        return self.font_manager.get_text_height()
+
     def remove_last_image(self):
         self.image_manager.remove_last_image()
 
@@ -461,7 +463,7 @@ class Appearance(metaclass=MetaAppearance):
     def add_images(self, sources: list):
         """Adds multiple images to background/costume. 
         
-        Each source in sources parameter must be a valid parameter for :py:attr:`Appearance.add_image`
+        Each source in sources parameter must be a valid parameter for :py:attr:`Appearance.cimage`
         """
         assert type(sources) == list
         for source in sources:
@@ -597,7 +599,6 @@ class Appearance(metaclass=MetaAppearance):
 
                 board = Board()
                 arr = board.background.to_colors_array()
-                print(arr)
                 for x in range(len(arr)):
                     for y in range(len(arr[0])):
                         arr[x][y][0] = ((x +1 ) / board.width) * 255
@@ -796,8 +797,9 @@ class Appearance(metaclass=MetaAppearance):
     def update(self):
         """Loads the next image,
         called 1/frame"""
-        self._load_image()
-        return 1
+        if self.parent:
+            self._load_image()
+            return 1
 
     def _load_image(self):
         """Loads the image,
@@ -857,10 +859,10 @@ class Appearance(metaclass=MetaAppearance):
 
     def _update_draw_shape(self) -> None:
         self.draw_shapes = []
-        if self._inner_shape() and self.image_manager:
+        if self.parent and self._inner_shape() and self.image_manager:
             if self.is_filled and not self.image_manager.is_image():
                 self.draw_shape_append(self._inner_shape()[0], self._inner_shape_arguments())
-        if self._outer_shape() and self.border:
+        if self.parent and self._outer_shape() and self.border:
             self.draw_shape_append(self._outer_shape()[0], self._outer_shape_arguments())
 
     def _inner_shape(self) -> tuple:

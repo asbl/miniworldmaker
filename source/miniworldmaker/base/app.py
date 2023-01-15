@@ -5,6 +5,7 @@ import warnings
 
 import pkg_resources
 import pygame
+from typing import List
 
 import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.base.app_event_manager as event_manager
@@ -24,6 +25,7 @@ class App:
     """
 
     running_board: "board_mod.Board" = None
+    running_boards: List["board_mod.Board"] = []
     path: str = None
     running_app: "App" = None
     init: bool = False
@@ -32,6 +34,7 @@ class App:
     @staticmethod
     def reset(unittest=False, file=None):
         App.running_board = None
+        App.running_boards = []
         App.path = None
         App.running_app = None
         App.init = False  # is pygame.init called?
@@ -93,8 +96,9 @@ class App:
         if not self._mainloop_started:
             self.start_mainloop()
         else:
-            self.running_board.dirty = 1
-            self.running_board.background.set_dirty("all", 2)
+            for board in self.running_boards:
+                board.dirty = 1
+                board.background.set_dirty("all", 2)
 
     def init_app(self):
         image_manager.ImageManager.cache_images_in_image_folder()
@@ -102,8 +106,9 @@ class App:
     def prepare_mainloop(self):
         self.window.recalculate_dimensions()
         self.window.display_update()
-        self.running_board.dirty = 1
-        self.running_board.background.set_dirty("all", 2)
+        for board in self.running_boards:
+            board.dirty = 1
+            board.background.set_dirty("all", 2)
 
     def start_mainloop(self):
         self._mainloop_started = True

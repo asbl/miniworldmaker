@@ -3,7 +3,7 @@ from typing import Union, List, cast
 import miniworldmaker.appearances.appearance as appearance_mod
 import miniworldmaker.appearances.appearances_manager as appearances_manager
 import miniworldmaker.appearances.costume as costume_mod
-from miniworldmaker.tokens import token as token_mod
+import miniworldmaker.tokens.token as token_mod
 
 
 class CostumesManager(appearances_manager.AppearancesManager):
@@ -71,3 +71,9 @@ class CostumesManager(appearances_manager.AppearancesManager):
 
     def get_board(self):
         return self.token.board
+
+    def remove_from_board(self):
+        for costume in self.appearances_list:
+            costume.parent = None
+            costume.token = None
+            del costume

@@ -234,7 +234,7 @@ With `on_detecting_not_on_board` it an detect, if Bullet is on the board.
 
 ## Complete Code:
 
-![Red Baron](../_images/redbaron.png)
+![Red Baron](/_images/redbaron.png)
 
 ``` python
 from miniworldmaker import *

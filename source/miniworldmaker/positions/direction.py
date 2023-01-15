@@ -4,7 +4,7 @@ from typing import Union, Tuple
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.vector as board_vector
 from miniworldmaker.exceptions.miniworldmaker_exception import MoveInDirectionTypeError
-from miniworldmaker.tokens import token as token_mod
+import miniworldmaker.tokens.token as token_mod
 
 
 class Direction(float):

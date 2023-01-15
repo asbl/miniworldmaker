@@ -29,7 +29,7 @@ class Window:
             surface = pygame.image.load(path)
             pygame.display.set_icon(surface)
         except Exception as e:
-            print("Error on creating window: " + str(e))
+            raise Exception("Error on creating window: " + str(e))
 
     @property
     def fullscreen(self):

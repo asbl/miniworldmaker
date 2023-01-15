@@ -110,11 +110,11 @@ class TokenBoardSensor(ABC):
     def detect_tokens(self, token_filter) -> List["token_mod.Token"]:
         raise NotImplementedOrRegisteredError(self.detect_tokens)
 
-    def detect_point(self, pixel_position):
-        return self.token.get_global_rect().collidepoint(pixel_position)
+    def detect_point(self, pixel_position) -> bool:
+        return self.token.position_manager.get_global_world_rect().collidepoint(pixel_position)
 
     def detect_rect(self, rect):
-        return self.token.get_global_rect().colliderect(rect)
+        return self.token.position_manager.get_global_world_rect().colliderect(rect)
 
     def is_token_on_the_board(self, distance: int) -> bool:
         raise NotImplementedOrRegisteredError(self.is_token_on_the_board)

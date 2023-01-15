@@ -4,7 +4,7 @@ from typing import List, Union, Tuple, Dict
 
 import pygame
 
-from miniworldmaker.base import file_manager
+import miniworldmaker.base.file_manager as file_manager
 from miniworldmaker.exceptions.miniworldmaker_exception import ImageIndexNotExistsError
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 

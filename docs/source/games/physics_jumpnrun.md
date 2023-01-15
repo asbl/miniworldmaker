@@ -112,7 +112,7 @@ Expand the `on_setup`-Method:
 
 The sensor ist set to `visible` for demonstration and debugging purposes - You can delete this line later.
 
-![Maze Game - First step](../_images/sensor1.png)      
+![Maze Game - First step](/_images/sensor1.png)      
 
 The player should only be able to jump when the sensor touches a token. Extend the event method for this:
 

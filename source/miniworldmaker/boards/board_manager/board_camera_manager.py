@@ -17,6 +17,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         self.viewport = view_x, view_y
         self._tokens_in_last_frame: set = set()
         self._cached_tokens: tuple = (-1, set())
+        self._resize = True  # Should app be resized?
         self._strict = True
 
     @property
@@ -30,6 +31,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         if value > self.boundary_x:
             self._boundary_x = value
         self.viewport = (value, self.viewport[1])
+        self._resize = True
         self.reload_camera()
 
     @property
@@ -43,6 +45,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         if value > self.boundary_y:
             self._boundary_y = value
         self.viewport = (self.viewport[0], value)
+        self._resize = True
         self.reload_camera()
 
     def get_viewport_width(self):
@@ -83,7 +86,9 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     def reload_camera(self):
         self.clear_camera_cache()
-        self.board.app.window.resize()
+        if self._resize:
+            self.board.app.window.resize()
+            self._resize = False
         self.board.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)
 
     def clear_camera_cache(self):
@@ -92,10 +97,15 @@ class BoardCameraManager(pygame.sprite.Sprite):
     def get_local_position(self, pos):
         return pos[0] - self.topleft[0], pos[1] - self.topleft[1]
 
+    def get_global_coordinates_for_board(self, pos):
+        """
+        Gets global coordinates for window
+        """
+        return pos[0] + self.topleft[0], pos[1] + self.topleft[1]
+
     @property
     def x(self):
-        """
-        Sets the x-position of camera
+        """Sets the x-position of camera
         """
         return self.topleft[0]
 
@@ -115,10 +125,6 @@ class BoardCameraManager(pygame.sprite.Sprite):
         self.topleft = self._topleft[0], value
         self.reload_tokens_in_viewport()
 
-    @property
-    def topleft(self):
-        return self._topleft
-
     def _limit_y(self, value):
         if value < 0:
             return 0
@@ -127,13 +133,9 @@ class BoardCameraManager(pygame.sprite.Sprite):
         else:
             return value
 
-    def _limit_x(self, value):
-        if value < 0:
-            return 0
-        elif value >= self.boundary_x - self.viewport_width:
-            return self.boundary_x - self.viewport_width
-        else:
-            return value
+    @property
+    def topleft(self):
+        return self._topleft[0], self._topleft[1]
 
     @topleft.setter
     def topleft(self, value):
@@ -146,6 +148,14 @@ class BoardCameraManager(pygame.sprite.Sprite):
         if old_topleft != self._topleft:
             self.reload_tokens_in_viewport()
 
+    def _limit_x(self, value):
+        if value < 0:
+            return 0
+        elif value >= self.boundary_x - self.viewport_width:
+            return self.boundary_x - self.viewport_width
+        else:
+            return value
+
     @property
     def rect(self):
         return self.get_rect()
@@ -155,6 +165,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
                            self.get_viewport_height_in_pixels())
 
     def reload_tokens_in_viewport(self):
+        """called, when camera is moved"""
         tokens_in_viewport = self.get_tokens_in_viewport()
         for token in tokens_in_viewport:
             token.dirty = 1

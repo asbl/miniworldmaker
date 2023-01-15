@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Union, Tuple
 
-import pygame
-
 import miniworldmaker.positions.direction as board_direction
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.rect as board_rect
 import miniworldmaker.positions.vector as board_vector
+import pygame
 from miniworldmaker.appearances import costume
 from miniworldmaker.boards.board_templates.pixel_board import board
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
@@ -26,6 +25,7 @@ class TokenPositionManager(ABC):
         self._position = (0, 0)
         self._direction = 0
         self._initial_direction = 0
+        self.sticky = False  #
         self._position = board_position.Position.create((0, 0))
 
     def move_vector(self, vector: "board_vector.Vector") -> "token_mod.Token":
@@ -38,16 +38,32 @@ class TokenPositionManager(ABC):
     def rect(self):
         return self.get_local_rect()
 
+    @abstractmethod
     def get_global_rect(self) -> "board_rect.Rect":
-        # if costume is set, get rect coordinates from costume.
+        """ Defines size of global rect (pixel coordinates)
+
+        Rect-Position is set in subclasses
+        """
         if self.token.costume:
             _rect = self.token.costume.get_rect()
         else:
-            _rect = pygame.Rect(0, 0, self.token.size[0], self.token.size[1])
+            _rect = pygame.Rect(0, 0,
+                                self.token.size[0], self.token.size[1])
+        return _rect
+
+    def get_global_world_rect(self):
+        """Transforms global rect to window coordinates
+        """
+        _rect = self.get_global_rect()
+        x = _rect[0] + self.token.board.topleft[0]
+        y = _rect[1] + self.token.board.topleft[1]
+        _rect.topleft = (x, y)
         return _rect
 
     @abstractmethod
     def get_local_rect(self) -> "board_rect.Rect":
+        """Rect in local board coordinates (e.g. tiles in TiledBoard
+        """
         pass
 
     @classmethod
@@ -402,3 +418,6 @@ class TokenPositionManager(ABC):
         direction = board_direction.Direction.create((self.token.center, destination))
         self.set_direction(direction.value)
         return self.direction
+
+    def remove_from_board(self):
+        pass

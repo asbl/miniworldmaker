@@ -9,8 +9,7 @@ class Container:
     def __init__(self):
         self.dirty = 1
         self.is_listening = True
-        self.surface = pygame.Surface((1, 1))
-        self.background_color = (255, 255, 255)
+        self._surface = pygame.Surface((1, 1))
         self.default_size = 100
         self.container_size = self.default_size
         self.registered_events = {"mouse_left", "mouse_right"}
@@ -25,12 +24,34 @@ class Container:
         self._image = None
 
     @property
+    def surface(self):
+        return self._surface
+
+    @surface.setter
+    def surface(self, value):
+        self._surface = value
+
+    @property
     def container_width(self):
         return self._container_width
+
+    @container_width.setter
+    def container_width(self, value):
+        self._container_width = value
+        self.on_change()
+
+    def on_change(self):
+        """implemented in subclasses"""
+        pass
 
     @property
     def container_height(self):
         return self._container_height
+
+    @container_height.setter
+    def container_height(self, value):
+        self._container_height = value
+        self.on_change()
 
     @property
     def window(self):
@@ -52,16 +73,16 @@ class Container:
             self.container_top_left_y = 0
         elif self.docking_position == "right":
             self.container_top_left_y = 0
-            self._container_height = self._app.window.height
-            self._container_width = self.container_size
+            self.container_height = self._app.window.height
+            self.container_width = self.container_size
         elif self.docking_position == "bottom":
             self.container_top_left_x = 0
-            self._container_width = self._app.window.width
-            self._container_height = self.container_size
+            self.container_width = self._app.window.width
+            self.container_height = self.container_size
 
     @property
     def size(self):
-        return self._container_width, self._container_height
+        return self.container_width, self.container_height
 
     def repaint(self):
         """
@@ -87,7 +108,11 @@ class Container:
         """
         pass
 
-    def is_in_container(self, x, y) -> bool:
+    def is_in_container(self, x, y = None) -> bool:
+        if not y:
+            pos = x
+            x = pos[0]
+            y = pos[1]
         if self.rect.collidepoint((x, y)):
             return True
         else:
@@ -95,10 +120,14 @@ class Container:
 
     def position_is_in_container(self, pos: tuple) -> bool:
         return self.is_in_container(pos[0], pos[1])
-    
+
     @property
     def rect(self):
         return pygame.Rect(self.container_top_left_x, self.container_top_left_y, self.width, self.height)
+
+    @property
+    def topleft(self):
+        return self.container_top_left_x, self.container_top_left_y
 
     @property
     def window_docking_position(self):
@@ -112,11 +141,11 @@ class Container:
 
     @property
     def width(self):
-        return self._container_width
+        return self.container_width
 
     @property
     def height(self):
-        return self._container_height
+        return self.container_height
 
     def get_local_position(self, position: tuple) -> tuple:
         x = position[0] - self.container_top_left_x

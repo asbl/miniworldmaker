@@ -1,7 +1,8 @@
+import collections
 import inspect
 from collections import defaultdict
 from typing import Any
-
+import pygame
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.keys as keys
@@ -50,13 +51,17 @@ class BoardEventManager:
             "mouse": ["on_mouse_left",
                       "on_mouse_right",
                       "on_mouse_motion",
-                      "on_mouse_left_release",
+                      "on_mouse_left_released",
                       "on_mouse_right_released"
                       ],
             "clicked_on_token": ["on_clicked",
                                  "on_clicked_left",
-                                 "on_clicked_right"],
-            "mouse_over": ["on_mouse_over"],
+                                 "on_clicked_right",
+                                 "on_pressed_left"
+                                 ],
+            "mouse_over": ["on_mouse_over",
+                           "on_mouse_leave",
+                           "on_mouse_enter"],
             "key": ["on_key_down",
                     "on_key_pressed",
                     "on_key_up",
@@ -84,12 +89,9 @@ class BoardEventManager:
             "mouse": ["on_mouse_left",
                       "on_mouse_right",
                       "on_mouse_motion",
-                      "on_mouse_left_release",
+                      "on_mouse_left_released",
                       "on_mouse_right_released"
                       ],
-            "clicked_on_token": ["on_clicked",
-                                 "on_clicked_left",
-                                 "on_clicked_right"],
             "key": ["on_key_down",
                     "on_key_pressed",
                     "on_key_up",
@@ -118,9 +120,6 @@ class BoardEventManager:
                 cls.class_events_set.add(event)
 
     def __init__(self, board):
-        """Events are registered here in multiple event lists.
-        The lists are merged into ``self.events``.
-        """
         self.__class__.setup_event_list()  # setup static event set/dict
         self.executed_events: set = set()
         self.board = board
@@ -170,6 +169,7 @@ class BoardEventManager:
             if member in self.__class__.board_class_events_set:  # static
                 self.register_event(member, board)
 
+
     def register_events_for_token(self, token):
         """Registers all Board events."""
         for member in self._get_members_for_instance(token):
@@ -198,11 +198,13 @@ class BoardEventManager:
             for event in self.__class__.class_events_set:
                 if member == event:
                     self.registered_events[event].add(method)
-                    return
-            for event in self.__class__.class_events_set:  # Todo: Maybe not needed anymore...
+                    return event, method
+            # needed for detecting_CLASS_Y methods @TODO: Maybe nod needed anymore
+            for event in self.__class__.class_events_set:
                 if member.startswith(event):
                     self.registered_events[event].add(method)
-                    return
+                    return event, method
+        return
 
     def handle_event(self, event: str, data: Any):
         """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
@@ -218,48 +220,111 @@ class BoardEventManager:
             self.handle_click_on_token_event(event, data)
         if event in ["mouse_motion"]:
             self.handle_mouse_over_event(event, data)
+            self.handle_mouse_enter_event(event, data)
+            self.handle_mouse_leave_event(event, data)
         event = "on_" + event
         if event in self.registered_events:
             registered_events = self.registered_events[event].copy()
             for method in registered_events:
                 if type(data) in [list, str, tuple, board_position.Position]:
+                    if type(data) == board_position.Position and not self.board.rect.collidepoint(data):
+                        return
                     data = [data]
                 method_caller.call_method(method, data, allow_none=False)
             registered_events.clear()
             del registered_events
 
-    def unregister_instance(self, instance):
-        awaiting_remove = defaultdict()
+    def unregister_instance(self, instance) -> collections.defaultdict:
+        """unregisteres an instance (e.g. a Token) from
+        event manager.
+        """
+        unregister_methods_dict = defaultdict()
         for event, method_set in self.registered_events.items():
             for method in method_set:
                 if method.__self__ == instance:
-                    awaiting_remove[event] = method
-        for event, method in awaiting_remove.items():
+                    unregister_methods_dict[event] = method
+        for event, method in unregister_methods_dict.items():
             self.registered_events[event].remove(method)
+        return unregister_methods_dict
 
     def act_all(self):
         registered_act_methods = self.registered_events["act"].copy()
         # acting
         for method in registered_act_methods:
+            # act method
             method_caller.call_method(method, None, False)
+        mouse_pos = pygame.mouse.get_pos()
+        self.handle_mouse_pressed("on_pressed_left", mouse_pos)
         del registered_act_methods
 
+
     def handle_click_on_token_event(self, event, data):
+        if not self.board.is_in_container(data):
+            return False
+        pos = self.board.camera.get_global_coordinates_for_board(data)
+        # get window mouse pos
         if event == "mouse_left":
             on_click_methods = self.registered_events["on_clicked_left"].union(
                 self.registered_events["on_clicked"]).copy()
         else:
-            on_click_methods = self.registered_events["on_clicked_right"].copy()
+            on_click_methods = self.registered_events["on_clicked_right"].union(
+                self.registered_events["on_clicked"]).copy()
         for method in on_click_methods:
             token = method.__self__
-            if token.detect_point(data):
+            if token.detect_point(pos):
                 method_caller.call_method(method, (data,))
         del on_click_methods
 
     def handle_mouse_over_event(self, event, data):
+        if not self.board.is_in_container(data):
+            return False
+        pos = self.board.camera.get_global_coordinates_for_board(data) # get global mouse pos by window
         mouse_over_methods = self.registered_events["on_mouse_over"].copy()
         for method in mouse_over_methods:
             token = method.__self__
-            if token.detect_point(data):
+            if token.detect_point(pos):
                 method_caller.call_method(method, (data,))
         del mouse_over_methods
+
+    def handle_mouse_leave_event(self, event, data):
+        if not self.board.is_in_container(data):
+            return False
+        pos = self.board.camera.get_global_coordinates_for_board(data)
+        mouse_over_methods = self.registered_events["on_mouse_leave"].copy()
+        for method in mouse_over_methods:
+            token = method.__self__
+            if not hasattr(token, "_mouse_over"):
+                token._mouse_over = False
+            if not token.detect_point(pos) and token._mouse_over:
+                method_caller.call_method(method, (data,))
+                token._mouse_over = False
+            else:
+                token._mouse_over = True
+        del mouse_over_methods
+
+    def handle_mouse_enter_event(self, event, data):
+        if not self.board.is_in_container(data):
+            return False
+        pos = self.board.camera.get_global_coordinates_for_board(data)
+        mouse_over_methods = self.registered_events["on_mouse_enter"].copy()
+        for method in mouse_over_methods:
+            token = method.__self__
+            if not hasattr(token, "_mouse_over"):
+                token._mouse_over = False
+            if token.detect_point(pos) and not token._mouse_over:
+                method_caller.call_method(method, (data,))
+                token._mouse_over = True
+            else:
+                token._mouse_over = False
+        del mouse_over_methods
+
+    def handle_mouse_pressed(self, event, data):
+        if not self.board.is_in_container(data):
+            return False
+        pos = self.board.camera.get_global_coordinates_for_board(data)
+        mouse_pressed_methods = self.registered_events["on_pressed_left"].copy()
+        for method in mouse_pressed_methods:
+            token = method.__self__
+            if token.detect_point(pos) and pygame.mouse.get_pressed()[0]:
+                method_caller.call_method(method, (pos,))
+        del mouse_pressed_methods

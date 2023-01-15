@@ -1,28 +1,28 @@
 import math
-from typing import Tuple, Union, Type, Optional
-
-import pygame
+from typing import Tuple, Union, Type, Optional, List, cast
 
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.background as background_mod
 import miniworldmaker.appearances.backgrounds_manager as backgrounds_manager
+import miniworldmaker.base.app as app
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.boards.board_manager.board_collision_manager as coll_manager
 import miniworldmaker.boards.board_manager.board_event_manager as event_manager
 import miniworldmaker.boards.board_manager.board_mouse_manager as mouse_manager
+import miniworldmaker.boards.board_manager.board_music_manager as board_music_manager
+import miniworldmaker.boards.board_manager.board_sound_manager as board_sound_manager
 import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.positions.direction as board_direction
+import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.rect as board_rect
+import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.tools.board_inspection as board_inspection
 import miniworldmaker.tools.color as color
 import miniworldmaker.tools.timer as timer
-from miniworldmaker.base import app
+import pygame
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     BoardArgumentsError,
 )
-from miniworldmaker.positions import position as board_position
-from miniworldmaker.boards.board_manager import board_music_manager
-from miniworldmaker.boards.board_manager import board_sound_manager
 
 
 class Board(board_base.BaseBoard):
@@ -161,6 +161,7 @@ class Board(board_base.BaseBoard):
             self.app: "app.App" = app.App("miniworldmaker")
             app.App.running_app = self.app
             app.App.running_board = self
+            app.App.running_boards.append(self)
         else:
             self.app = app.App.running_app
         self.music: "board_music_manager.BoardMusicManager" = board_music_manager.BoardMusicManager(self.app)
@@ -173,14 +174,14 @@ class Board(board_base.BaseBoard):
         self.dynamic_tokens = pygame.sprite.Group()
         self._registered_methods = []
         self.tokens_fixed_size = False
-        self._container_width = self.camera.get_viewport_width_in_pixels()
-        self._container_height = self.camera.get_viewport_height_in_pixels()
+        self.container_width = self.camera.get_viewport_width_in_pixels()
+        self.container_height = self.camera.get_viewport_height_in_pixels()
         self.app.container_manager.add_topleft(self)
 
     def _create_event_manager(self):
         return event_manager.BoardEventManager(self)
 
-    def contains_position(self, pos):
+    def is_position_on_the_board(self, pos):
         """Checks if position is on the board.
 
         Returns:
@@ -190,6 +191,9 @@ class Board(board_base.BaseBoard):
             return True
         else:
             return False
+
+    is_position_on_board = is_position_on_the_board
+    contains_position = is_position_on_the_board
 
     def contains_rect(self, rect: Union[tuple, pygame.Rect]):
         """Detects if rect is completely on the board.
@@ -201,14 +205,6 @@ class Board(board_base.BaseBoard):
         topleft_on_the_board = self.contains_position(rect.topleft)
         bottom_right_on_the_board = self.contains_position(rect.bottomright)
         return topleft_on_the_board or bottom_right_on_the_board
-
-    def is_position_on_the_board(self, position: "board_position.Position") -> bool:
-        """Returns True if a position is on the board.
-        """
-        position = board_position.Position.create(position)
-        return self.is_in_container(position.x, position.y)
-
-    is_position_on_board = is_position_on_the_board
 
     def setup_board(self):
         # Implemented in TiledBoards
@@ -242,7 +238,6 @@ class Board(board_base.BaseBoard):
                     
                 @board.register
                 def act(self):
-                    print(board.frame)
 
                 board.run()
 
@@ -279,7 +274,6 @@ class Board(board_base.BaseBoard):
                 def act(self):
                     nonlocal i
                     i = i + 1
-                    print(board.frame, i)
                     if board.frame == 120:
                         test_instance.assertEqual(i, 13)
                         test_instance.assertEqual(board.frame, 120)
@@ -624,6 +618,33 @@ class Board(board_base.BaseBoard):
         """
         return self.backgrounds_manager.remove_appearance(background)
 
+    def set_background(self, source: Union[str, tuple]) -> "background_mod.Background":
+        """Adds a new background to the board
+
+        If multiple backgrounds are added, the last adds background will be set as active background.
+
+        Args:
+            source: The path to the first image of the background or a color (e.g. (255,0,0) for red or
+                    "images/my_background.png" as path to a background.
+
+        Examples:
+
+            Add multiple Backgrounds:
+
+            .. code-block:: pythonlist
+
+                from miniworldmaker import *
+
+                board = Board()
+                board.add_background((255, 0 ,0)) # red
+                board.add_background((0, 0 ,255)) # blue
+                board.run() # Shows a blue board.
+
+        Returns:
+            The new created background.
+        """
+        return self.backgrounds_manager.set_background(source)
+
     def add_background(self, source: Union[str, tuple]) -> "background_mod.Background":
         """Adds a new background to the board
 
@@ -637,7 +658,7 @@ class Board(board_base.BaseBoard):
 
             Add multiple Backgrounds:
 
-            .. code-block:: python
+            .. code-block:: pythonlist
 
                 from miniworldmaker import *
 
@@ -914,16 +935,13 @@ class Board(board_base.BaseBoard):
 
             .. image:: ../_images/get_color.png
                 :width: 100px
-        from __future__ import annotations
-
-        :alt: get color of red screen
-
-
+                :alt: get color of red screen
 
         Args:
             position: The position to search for
 
-        Returns: The color
+        Returns:
+            The color
 
         """
         position = board_position.Position.create(position)
@@ -973,11 +991,28 @@ class Board(board_base.BaseBoard):
         return self.camera.get_viewport_width_in_pixels()
 
     @property
+    def container_width(self) -> int:
+        """
+        The width of the container
+        """
+        return self.camera.get_viewport_width_in_pixels()
+
+    @container_width.setter
+    def container_width(self, value):
+        self._container_width = value
+        self.on_change()
+
+    @property
     def container_height(self) -> int:
         """
         The height of the container
         """
         return self.camera.get_viewport_height_in_pixels()
+
+    @container_height.setter
+    def container_height(self, value):
+        self._container_height = value
+        self.on_change()
 
     @property
     def has_background(self) -> bool:
@@ -1001,11 +1036,11 @@ class Board(board_base.BaseBoard):
         """
         self.get_token_connector(token).add_token_to_board()
 
-    def get_tokens_from_pixel(self, pixel: tuple) -> list:
-        """Gets all tokens by Pixel.
+    def detect_tokens(self, position: Union["board_position.Position", Tuple[float, float]]) -> List["token_mod.Token"]:
+        """Gets all tokens which are found at a specific position.
 
         Args:
-            pixel: the pixel-coordinates
+            position: Position, where tokens should be searched.
 
         Returns:
             A list of tokens
@@ -1020,12 +1055,14 @@ class Board(board_base.BaseBoard):
               tokens = board.get_tokens_by_pixel(position)
 
         """
-        return [token for token in self.tokens if token.board_sensor.detect_point(pixel)]
+        # overwritten in tiled_board_sensor
+        return cast(List["token_mod.Token"],
+                    [token for token in self.tokens if token.board_sensor.detect_point(position)])
 
-    def get_tokens_at_position(self, position) -> list:
-        """Alias for ``get_tokens_from_pixel``
-        """
-        return self.get_tokens_from_pixel(position)
+    get_tokens_at_position = detect_tokens
+
+    def get_tokens_from_pixel(self, pixel: Union["board_position.Position", Tuple[float, float]]):
+        return self.detect_tokens(pixel)  # overwritten in tiled_board
 
     @property
     def image(self) -> pygame.Surface:
@@ -1038,7 +1075,7 @@ class Board(board_base.BaseBoard):
     def update(self):
         """The mainloop, called once per frame.
 
-        Called in app.update() when update() vom all containers is called.
+        Called in app.update() when update() from all containers is called.
         """
         if self.is_running or self.frame == 0:
             # Acting for all actors@static

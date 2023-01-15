@@ -1,26 +1,26 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import Union, List, Tuple, Optional, cast
-
-import pygame.rect
-import inspect
 
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.appearances.costumes_manager as costumes_manager
 # from miniworldmaker.tokens.sensors import token_boardsensor - @todo not imported because of circular import
 import miniworldmaker.dialogs.ask as ask
+import miniworldmaker.positions.direction as board_direction
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
 import miniworldmaker.tokens.token_base as token_base
 import miniworldmaker.tools.token_inspection as token_inspection
+import pygame.rect
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     MiniworldMakerError,
     NotImplementedOrRegisteredError,
     NoBoardError,
-    RegisterError
+    RegisterError,
+    NoValidBoardPositionError
 )
-from miniworldmaker.positions import direction as board_direction
 
 
 class Meta(type):
@@ -126,23 +126,38 @@ class Token(token_base.BaseToken):
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0)):
-        super().__init__()
-        if position == None:
-            position = board_position.Position(0, 0)
-        if type(position) is not tuple and not isinstance(position, board_position.PositionBase):
-            raise MiniworldMakerError(f"Wrong type for Token.init() - Expected Tuple or Position, got {type(position)}")
+    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0), board=None):
+        super().__init__(board)
+        if position is None:
+            self._position = (0, 0)
+            position = (0, 0)
+        else:
+            self._position = position
         self._collision_type: str = "mask"
         self._dirty = 0
         self._layer: int = 0
         self._inner = 0
         self._size = (0, 0)
         self._static = False
-        self._position: Union["board_position.Position", "board_position.PositionBase"] = position
+        self.children = []
+        # self._position: Union["board_position.Position", "board_position.PositionBase"] = position
         self.token_id: int = Token.token_count + 1
-        self._board_sensor: "token_boardsensor.TokenBoardSensor" = self._init_board_sensor()
-        self._position_manager: "token_position_manager.TokenPositionManager" = self._init_position_manager()
-        self._costume_manager: "costumes_manager.CostumesManager" = self._init_costume_manager()
+        self._board_sensor: "token_boardsensor.Boardsensor" = None
+        self._position_manager: "token_position_manager.TokenPositionManager" = None
+        self._costume_manager: "costumes_manager.CostumesManager" = None
+        self._has_position_manager = False
+        self._has_board_sensor = False
+        self._has_costume_manager = False
+        try:
+            self.board.get_token_connector(
+                self).init_managers(position)
+        except AttributeError:
+            raise AttributeError("Token could not be created on a Board - Did you created a board instance before?")
+        try:
+            self._position = board_position.Position.create(position)
+        except NoValidBoardPositionError:
+            raise NoValidBoardPositionError(position)
+
         if not self.board:
             raise NoBoardError()
         pygame.sprite.DirtySprite.__init__(self)
@@ -150,6 +165,14 @@ class Token(token_base.BaseToken):
         self.speed: int = 1
         self.ask: "ask.Ask" = ask.Ask(self.board)
         self._dirty = 1
+
+    @classmethod
+    def create_on_board(cls, board):
+        """Creates a token to a specific board
+
+        overwritten in subclasses
+        """
+        return cls((0, 0), board)
 
     @property
     def collision_type(self) -> str:
@@ -172,6 +195,14 @@ class Token(token_base.BaseToken):
         else:
             return self._collision_type
 
+    @property
+    def sticky(self):
+        return self._position_manager.sticky
+
+    @sticky.setter
+    def sticky(self, value):
+        self._position_manager.sticky = value
+
     @collision_type.setter
     def collision_type(self, value: str):
         self._collision_type = value
@@ -184,7 +215,7 @@ class Token(token_base.BaseToken):
     @layer.setter
     def layer(self, value: int):
         self._layer = value
-        self.board._tokens.change_layer(self, value)
+        self.board._tokens.change_layer(self, value) # changes layer in DirtySpriteGroup.
 
     @property
     def last_position(self) -> "board_position.Position":
@@ -311,7 +342,6 @@ class Token(token_base.BaseToken):
                 @fish.register
                 def act(self):
                     self.move()
-                    print(fish.position)
 
                 @fish.register
                 def on_not_detecting_board(self):
@@ -463,7 +493,15 @@ class Token(token_base.BaseToken):
         """
         return self.costume_manager.switch_costume(source)
 
-    set_costume = switch_costume
+    def set_costume(self, costume: Union[str, tuple, int, "appearance.Appearance"]):
+        if type(costume) == int or isinstance(costume, appearance.Appearance):
+            self.switch_costume(costume)
+        elif type(costume) in [str, tuple]:
+            costume = self.add_costume(costume)
+            self.switch_costume(costume)
+
+    def set_background_color(self, color: tuple):
+        self.set_costume(color)
 
     def next_costume(self):
         """Switches to the next costume of token
@@ -824,6 +862,7 @@ class Token(token_base.BaseToken):
     @width.setter
     def width(self, value):
         self.position_manager.set_width(value)
+        self.on_shape_change()
 
     def scale_width(self, value):
         old_width = self.size[0]
@@ -870,6 +909,7 @@ class Token(token_base.BaseToken):
     @height.setter
     def height(self, value):
         self.position_manager.set_height(value)
+        self.on_shape_change()
 
     def scale_height(self, value):
         old_width = self.size[0]
@@ -884,7 +924,7 @@ class Token(token_base.BaseToken):
 
     @x.setter
     def x(self, value: float):
-        self.position_manager.x = value
+        self.set_position((value, self.y))
 
     @property
     def y(self) -> float:
@@ -893,7 +933,8 @@ class Token(token_base.BaseToken):
 
     @y.setter
     def y(self, value: float):
-        self.position_manager.y = value
+        self.set_position((self.x, value))
+
 
     @property
     def class_name(self) -> str:
@@ -1080,7 +1121,7 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.move_to(position)
 
-    def remove(self):
+    def remove(self, kill=True):
         """
         Removes this token from board
 
@@ -1098,8 +1139,12 @@ class Token(token_base.BaseToken):
                    self.remove()
                    other.remove()
         """
-        if hasattr(self, "board") and self.board:
-            self.board.get_token_connector(self).remove_token_from_board(self)
+        if kill is True:
+            if hasattr(self, "board") and self.board:
+                self.board.get_token_connector(self).delete_token()
+        else:
+            if hasattr(self, "board") and self.board:
+                self.board.get_token_connector(self).remove_token_from_board()
 
     @property
     def is_rotatable(self) -> bool:
@@ -1652,6 +1697,12 @@ class Token(token_base.BaseToken):
         """
         raise NotImplementedOrRegisteredError(self.on_mouse_over)
 
+    def on_mouse_leave(self, position):
+        """on_mouse_over is called, when mouse is moved over token
+        :param position: The mouse position
+        """
+        raise NotImplementedOrRegisteredError(self.on_mouse_over)
+
     def on_mouse_left(self, position: tuple):
         """on_mouse_left is called when left mouse button was pressed.
         You must *register* or *implement* this method as an event.
@@ -1971,8 +2022,6 @@ class Token(token_base.BaseToken):
                 t7 = Ellipse((40, 40), 40, 40)
                 t7.fill_color = (255, 0, 255) 
 
-
-                print("is filled", t5.is_filled)
                 board.run()
 
             Output:
@@ -2111,7 +2160,8 @@ class Token(token_base.BaseToken):
         return bound_method
 
     def get_local_rect(self) -> pygame.Rect:
-        return self.position_manager.get_local_rect()
+        local_rect = self.position_manager.get_local_rect()
+        return local_rect
 
     def get_global_rect(self) -> pygame.Rect:
         if self.position_manager:
@@ -2123,7 +2173,10 @@ class Token(token_base.BaseToken):
         """The surrounding Rectangle as pygame.Rect.
         Warning: If the token is rotated, the rect vertices are not the vertices of the token image.
         """
-        return self.position_manager.get_local_rect()
+        local_rect = self.position_manager.get_local_rect()
+        # local_rect.topleft = self.board.container_top_left_x + local_rect.topleft[0], self.board.container_top_left_y + \
+        #                     local_rect.topleft[1]
+        return local_rect
 
     def get_rect(self) -> pygame.Rect:
         """Gets the rect of the token.
@@ -2177,6 +2230,9 @@ class Token(token_base.BaseToken):
 
     @position.setter
     def position(self, value: Union["board_position.Position", tuple]):
+        self.set_position(value)
+
+    def set_position(self, value: Union["board_position.Position", tuple]):
         self.position_manager.position = value
 
     def get_distance_to(self, obj: Union["Token", "board_position.Position", tuple]) -> float:
@@ -2189,3 +2245,6 @@ class Token(token_base.BaseToken):
             float: The distance between token (measured from token.center) to token or position.
         """
         return self.board_sensor.get_distance_to(obj)
+
+    def on_shape_change(self):
+        pass

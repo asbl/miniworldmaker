@@ -1,16 +1,14 @@
-import itertools
 from collections import OrderedDict
 from typing import Union
 
-import pygame
-
 import miniworldmaker.base.app as app_mod
-import miniworldmaker.containers.container as container
-import miniworldmaker.containers.widgets as widgets
+import miniworldmaker.boards.board_templates.pixel_board.board as board
+import miniworldmaker.tokens.token_plugins.widgets.pagination as pagination
+import miniworldmaker.tokens.token_plugins.widgets.widget_base as widget_base
 
 
-class Toolbar(container.Container):
-    """A Toolbar contains widgets (Buttons, Labels, ...)"""
+class Toolbar(board.Board):
+    """A Toolbar contains widgets (Buttopaginationns, Labels, ...)"""
 
     def __init__(self):
         """
@@ -56,19 +54,20 @@ class Toolbar(container.Container):
                 board.run()
         """
         super().__init__()
-        self.widgets: OrderedDict["widgets.Widget"] = OrderedDict()
+        self.widgets: OrderedDict["widget_base.BaseWidget"] = OrderedDict()
         self.timed_widgets = dict()
         self.position = "right"
-        self._margin_top = 10
-        self._margin_left = 10
-        self._margin_right = 10
+        self._padding_top = 10
+        self._padding_bottom = 0
+        self._padding_left = 10
+        self._padding_right = 10
+        self.row_height = 26
         self._background_color = (255, 255, 255, 255)
-        self.dirty = 1
-        self.repaint_all = True  # if True, the complete toolbar will be repainted
         self._first = 0
         self.max_widgets = 0
+        self.max_row_height = 0
         self._pagination = False
-        self._pagination_widget = None
+        self.pager = None
 
     @property
     def first(self):
@@ -77,7 +76,13 @@ class Toolbar(container.Container):
     @first.setter
     def first(self, value):
         self._first = value
-        self.repaint_all = True
+        self.reorder()
+
+    def on_change(self):
+        if hasattr(self, "widgets"):
+            for widget in self.widgets.values():
+                widget.width = self.width
+        self.reorder()
 
     @property
     def pagination(self):
@@ -85,53 +90,60 @@ class Toolbar(container.Container):
 
     @pagination.setter
     def pagination(self, value):
-        self._pagination = value
+        if value:
+            self._pagination = True
+            self.pager = self.add_widget(pagination.Pager())
 
     @property
     def background_color(self):
         """Background color as Tuple, e.g. (255,255,255) for white"""
-        return self._background_color
+        return self.background
 
     @background_color.setter
     def background_color(self, value):
-        self._background_color = value
-        self.dirty = 1
+        self.set_background(value)
 
     @property
-    def margin_left(self):
+    def padding_left(self):
         """Defines left margin"""
-        return self._margin_left
+        return self._padding_left
 
-    @margin_left.setter
-    def margin_left(self, value):
-        self._margin_left = value
+    @padding_left.setter
+    def padding_left(self, value):
+        self._padding_left = value
         self.dirty = 1
 
     @property
-    def margin_right(self):
+    def padding_right(self):
         """Defines right margin"""
-        return self._margin_right
+        return self._padding_right
 
-    @margin_right.setter
-    def margin_right(self, value):
-        self._margin_right = value
+    @padding_right.setter
+    def padding_right(self, value):
+        self._padding_right = value
         self.dirty = 1
 
     @property
-    def margin_top(self):
+    def padding_top(self):
         """Defines top margin"""
-        return self._margin_top
+        return self._padding_top
 
-    @margin_top.setter
-    def margin_top(self, value):
-        self._margin_top = value
+    @padding_top.setter
+    def padding_top(self, value):
+        self._padding_top = value
         self.dirty = 1
 
-    def add_widget(
-            self,
-            widget: widgets.Widget,
-            key: str = None,
-    ) -> widgets.Widget:
+    @property
+    def padding_bottom(self):
+        """Defines bottom margin"""
+        return self._padding_bottom
+
+    @padding_bottom.setter
+    def padding_bottom(self, value):
+        self._padding_bottom = value
+        self.dirty = 1
+
+    def add_widget(self, widget: "widget_base.BaseWidget", key: str = None, ) -> "widget_base.BaseWidget":
         """Adds a widget to the toolbar
 
         Args:
@@ -141,24 +153,30 @@ class Toolbar(container.Container):
         Returns:
             widgets.Widget: _description_
         """
+        widget.board = self
+        widget.width = self.width  # set to full board width
+        widget.row_height = self.row_height
+        widget.parent = self
         if key is None:
-            key = widget.text
+            key = widget.value
         if key in self.widgets:
             i = 0
             while i in self.widgets.keys():
                 i += 1
             key = i
-        widget.clear()
-        widget.parent = self
         self.widgets[key] = widget
-        self.dirty = 1
-        widget.dirty = 1
         if widget.timed:
             self.timed_widgets[widget.name] = widget
-        self.repaint_all = True
+        widget.resize()
+        """ Set position
+        """
+        self.reorder()
+        if widget.y + widget.height > self.camera.y + self.container_height:
+            self.camera.boundary_y = widget.y + widget.height
+            self.camera.y = widget.y + widget.height - self.container_height
         return widget
 
-    def remove_widget(self, item: Union[int, str, "widgets.Widget"]):
+    def remove_widget(self, item: Union[int, str, "widget_base.BaseWidget"]):
         """
         Removes a widget from the toolbar. Warning: Be careful when calling this method in a loop.
 
@@ -167,7 +185,7 @@ class Toolbar(container.Container):
         """
         if type(item) in [int, str]:
             self.widgets.pop(item)
-        elif isinstance(item, widgets.Widget):
+        elif isinstance(item, widget_base.BaseWidget):
             search_key = None
             for key, value in self.widgets.items():
                 if value == item:
@@ -176,10 +194,9 @@ class Toolbar(container.Container):
                 raise ValueError(f"{item} not found in Toolbar-Widgets")
             else:
                 self.widgets.pop(key)
+                value.remove()
         else:
             raise TypeError(f"item must be of type [int, str, Widget], found {type(item)}")
-        self.dirty = 1
-        self.repaint_all = True
 
     def has_widget(self, key: str):
         """Checks if self.widgets has key
@@ -192,7 +209,7 @@ class Toolbar(container.Container):
         else:
             return False
 
-    def get_widget(self, key: str) -> "widgets.Widget":
+    def get_widget(self, key: str) -> "widget_base.BaseWidget":
         """Gets widget by key
 
         Returns:
@@ -206,20 +223,25 @@ class Toolbar(container.Container):
     def remove_all_widgets(self):
         self.widgets = dict()
         self.dirty = 1
-        self.repaint_all = True
 
-    def repaint(self):
-        if self.dirty:
-            self.update_width_and_height()
-            self.surface = pygame.Surface((self.width, self.height))
-            self.surface.fill(self.background_color)
-            self._paint_widgets()
-        if self.repaint_all:
-            app_mod.App.running_app.window.repaint_areas.append(self.rect)
-            self.repaint_all = False
-        self.dirty = 1  # Always dirty so that timed widgets can run
+    def reorder(self):
+        self.update_width_and_height()
+        if hasattr(self, "widgets") and self.widgets:
+            actual_height = self.padding_top
+            for widget in self.widgets.values():
+                if widget.sticky:
+                    widget.stick()
+                else:
+                    actual_height += widget.margin_top
+                    self._set_widget_width(widget)
+                    widget.topleft = (self.padding_left + widget.margin_left, actual_height)
+                    if self.max_row_height != 0:
+                        widget.height = self.max_row_height
+                    actual_height += widget.height + widget.margin_bottom
 
-    def widget_iterator(self) -> list:
+    """def widget_iterator(self) -> list:
+        ""Iteration with pagination
+        ""
         if self.max_widgets == 0:
             return self.widgets.values()
         else:
@@ -228,68 +250,54 @@ class Toolbar(container.Container):
             else:
                 last_item = len(self.widgets)
         widgets = itertools.islice(self.widgets.values(), self.first, last_item)
-        if self.pagination:
-            widgets = [self.pagination] + list(widgets)
         return widgets
-
-    def _paint_widgets(self):
-        if self.widgets:
-            actual_height = self.margin_top
-            for widget in self.widget_iterator():
-                actual_height += widget.margin_top
-                if widget.dirty == 1:
-                    self._set_widget_width(widget)
-                    widget._repaint()
-                    widget._topleft = (self.rect.left + self.margin_left + widget.margin_left, actual_height)
-                    rect = pygame.Rect(widget._topleft[0], widget._topleft[1], widget.width, widget.height)
-                    app_mod.App.running_app.window.repaint_areas.append(rect)
-                self.surface.blit(widget.surface, (self.margin_left + widget.margin_left, actual_height))
-                actual_height += widget.height + widget.margin_bottom
+    """
 
     def _widgets_total_height(self):
-        height = self.margin_top
+        height = self.padding_top
         for name, widget in self.widgets.items():
             height += widget.margin_top
             height += widget.height + widget.margin_bottom
         return height
 
-    def get_event(self, event, data):
-        if event == "mouse_left":
-            widget = self.get_widget_by_position(data)
-            if widget:
-                return widget.on_mouse_left(data)
-
     def _set_widget_width(self, widget):
-        widget._width = (
-                self._container_width - self.margin_left - self.margin_right - widget.margin_left - widget.margin_right
-        )
-        if widget._width < 0:
-            widget._width = 0
+        new_width = self.container_width - self.padding_left - self.padding_right - widget.margin_left - widget.margin_right
+        if new_width < 0:
+            new_width = 0
+        widget.width = new_width
 
-    def get_widget_by_position(self, pos):
-        actual_height = self.margin_top
-        local_pos = self.get_local_position(pos)
-        if not self.position_is_in_container(pos) or local_pos[1] > self._widgets_total_height():
-            return None
-        # y pos
-        for widget in self.widget_iterator():
-            if actual_height + widget.margin_top < local_pos[1] < actual_height + widget.margin_top + widget.height:
-                # x pos
-                self._set_widget_width(widget)
-                internal_x = local_pos[0]
-                if (
-                        self.margin_left + widget.margin_left
-                        < internal_x
-                        < self.margin_left + widget.margin_left + widget.width
-                ):
-                    return widget
-                else:
-                    return None
-            actual_height += widget.margin_bottom + widget.height + widget.margin_top
+    def update_width_and_height(self):
+        super().container_width
 
     def update(self):
+        super().update()
         for widget in self.timed_widgets:
             widget.update()
 
     def send_message(self, text):
         app_mod.App.running_app.event_manager.to_event_queue("message", text)
+
+    def scroll_up(self, value):
+        if self.can_scroll_up(value):
+            self.camera_y -= value
+            self.camera_y = max(0, self.camera_y)
+            for key, widget in self.widgets.items():
+                widget.resize()
+
+    def scroll_down(self, value):
+        if self.can_scroll_down(value):
+            self.camera_y += value
+            for key, widget in self.widgets.items():
+                widget.resize()
+
+    def can_scroll_down(self, value):
+        if self.camera_y + value > self.boundary_y - self.viewport_height:
+            return False
+        else:
+            return True
+
+    def can_scroll_up(self, value):
+        if self.camera_y == 0:
+            return False
+        else:
+            return True

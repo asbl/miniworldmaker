@@ -1,10 +1,9 @@
 from typing import Union
 
-import pygame
-
 import miniworldmaker.appearances.appearance as appear
 import miniworldmaker.appearances.managers.transformations_costume_manager as transformations_costume_manager
-from miniworldmaker.boards.board_templates.pixel_board import board
+import pygame
+import miniworldmaker.boards.board_templates.pixel_board.board as board
 
 
 class Costume(appear.Appearance):
@@ -109,5 +108,5 @@ class Costume(appear.Appearance):
 
     def set_dirty(self, value="all", status=1):
         super().set_dirty(value, status)
-        if self.parent:
-            self.parent.mask = pygame.mask.from_surface(self.parent.image)
+        if hasattr(self, "token") and self.token and self.token.collision_type == "mask":
+            self.token.mask = pygame.mask.from_surface(self.token.image)

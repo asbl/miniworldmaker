@@ -16,10 +16,10 @@ class TiledBoardConnector(token_connector.TokenConnector):
     def get_position_manager_class():
         return tiledpositionmanager.TiledBoardPositionManager
 
-    def remove_token_from_board(self, token):
+    def remove_token_from_board(self):
         self.remove_static_token()
         self.remove_dynamic_token()
-        super().remove_token_from_board(token)
+        super().remove_token_from_board()
 
     def add_static_token(self):
         if self.token not in self.board.static_tokens_dict[self.token.position]:

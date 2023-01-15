@@ -1,11 +1,10 @@
 from abc import ABC
 from typing import List
 
-import pygame
-
 import miniworldmaker.boards.data.export_factory as export_factory
 import miniworldmaker.boards.data.import_factory as import_factory
 import miniworldmaker.containers.container as container_mod
+import pygame
 from miniworldmaker.base import app as app_mod
 from miniworldmaker.boards.board_manager import board_camera_manager
 from miniworldmaker.boards.board_templates.pixel_board import pixel_board_connector as pixel_board_connector
@@ -18,6 +17,7 @@ class BaseBoard(container_mod.Container, ABC):
 
     def __init__(self):
         super().__init__()
+        self.is_tiled = False
 
     @staticmethod
     def _get_camera_manager_class():
@@ -32,15 +32,40 @@ class BaseBoard(container_mod.Container, ABC):
         return self._get_token_connector_class()(self, token)
 
     def add_container(self, container: "container_mod.Container", dock: str, size=None):
+        if isinstance(container, BaseBoard):
+            if dock == "right":
+                new_board = container
+                new_board.rows = new_board.get_rows_by_height(self.container_height)
+                if size is not None:
+                    new_board.columns = size
+                else:
+                    size = new_board.width
+            if dock == "bottom":
+                new_board = container
+                new_board.columns = new_board.get_columns_by_width(self.container_width)
+                if size is not None:
+                    new_board.rows = size
+                else:
+                    size = new_board.height
+            new_board.viewport_height = new_board.height
+            new_board.viewport_width = new_board.width
         if self == self.app.running_board:
             _container = self.app.container_manager.add_container(container, dock, size)
+            if isinstance(container, BaseBoard):
+                app_mod.App.running_boards.append(new_board)
+                container.on_change()
             return _container
+
+    def add_board(self, position, board, width=None):
+        board = self.add_container(board, position, width)
+        return board
 
     def remove_container(self, container: "container_mod.Container"):
         return self.app.container_manager.remove_container(container)
 
-    def blit_surface_to_window_surface(self):
-        self.app.window.surface.blit(self.background.surface, self.rect)
+    @property
+    def surface(self):
+        return self.background.surface
 
     @property
     def class_name(self) -> str:
@@ -102,3 +127,9 @@ class BaseBoard(container_mod.Container, ABC):
     def get_background(self):
         """Implemented in subclass"""
         pass
+
+    def get_columns_by_width(self, width):
+        return width
+
+    def get_rows_by_height(self, height):
+        return height

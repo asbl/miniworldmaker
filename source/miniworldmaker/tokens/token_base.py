@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import List
 
-import pygame
-
 import miniworldmaker.base.app as app
-from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
+import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
+import pygame
 from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
 )
@@ -25,33 +24,35 @@ class Meta(type):
 
 class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
-    def __init__(self):
+    def __init__(self, board=None):
         self._dirty = 0  # must be set before calling __init__ of DirtySprite.
         self.is_display_initialized: bool = False
         super().__init__()
-        self.board: "board_mod.Board" = app.App.running_board
-        self._managers: list = list()
+        if not board:
+            self._board: "board_mod.Board" = app.App.running_board
+        else:
+            self.board = board
         self._position = (0, 0)
+
+    @property
+    def board(self):
+        return self._board
+
+    @board.setter
+    def board(self, new_board):
+        self.set_board(new_board)
+
+    def set_board(self, new_board):
+        if not self._board:
+            self._board = new_board
+        elif not new_board:
+            pass
+        else:
+            _token_connector = new_board.get_token_connector(self)
+            _token_connector.switch_board(new_board)
 
     def new_costume(self):
         return self.board.get_token_connector(self).create_costume()
-
-    def _init_board_sensor(self):
-        self._board_sensor = self.board.get_token_connector(self).create_board_sensor()
-        self._managers.append(self._board_sensor)
-        return self._board_sensor
-
-    def _init_costume_manager(self):
-        self._costume_manager = self.board.get_token_connector(self).create_costume_manager()
-        self._costume_manager._add_default_appearance()
-        self._managers.append(self._costume_manager)
-        return self._costume_manager
-
-    def _init_position_manager(self):
-        self._position_manager = self.board.get_token_connector(self).create_position_manager()
-        self._position_manager.position = self._position
-        self._managers.append(self._position_manager)
-        return self._position_manager
 
     @property
     def dirty(self) -> int:

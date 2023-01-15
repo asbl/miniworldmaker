@@ -1,12 +1,11 @@
 from typing import Union, Tuple
 
-import pygame
-
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.managers.image_background_manager as image_background_manager
 import miniworldmaker.appearances.managers.transformations_background_manager as transformations_background_manager
 import miniworldmaker.base.app as app
-from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
+import pygame
+import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
 
 
 class Background(appearance.Appearance):
@@ -63,10 +62,12 @@ class Background(appearance.Appearance):
 
     def set_dirty(self, value="all", status=1):
         super().set_dirty(value, status)
-        if self.parent and self.parent.is_display_initialized:
-            for token in self.parent.tokens:
+        self._blit_to_window_surface()
+        if self.board and self.board.is_display_initialized:
+            for token in self.board.tokens:
                 token.is_display_initialized = True
-                token.costume.set_dirty("all", self.LOAD_NEW_IMAGE)
+                if token.costume:
+                    token.costume.set_dirty("all", self.LOAD_NEW_IMAGE)
 
     @property
     def board(self) -> "board_mod.Board":
@@ -113,17 +114,23 @@ class Background(appearance.Appearance):
 
     def repaint(self):
         """Called 1/frame from board"""
-        if self.parent == app.App.running_board:
+        if self.board in app.App.running_boards:
             self.board.tokens.clear(self.surface, self.image)
             repaint_rects = self.board.tokens.draw(self.surface)
+            if self.board.container_top_left_x != 0 or self.board.container_top_left_y != 0:
+                new_repaint_rects = []
+                for rect in repaint_rects:
+                    rect.topleft = self.board.container_top_left_x + rect.topleft[0], self.board.container_top_left_y + rect.topleft[1]
+                    new_repaint_rects.append(rect)
+                repaint_rects = new_repaint_rects
             self.board.app.window.repaint_areas.extend(repaint_rects)
 
     def _update_all_costumes(self):
         """updates costumes for all tokens on board"""
-        [token.costume.update() for token in self.reload_costumes_queue]
+        [token.costume.update() for token in self.reload_costumes_queue if token.costume]
         self.reload_costumes_queue = []
         if hasattr(self.board, "dynamic_tokens"):
-            [token.costume.update() for token in self.board.dynamic_tokens]
+            [token.costume.update() for token in self.board.dynamic_tokens if token.costume]
 
     def _after_transformation_pipeline(self) -> None:
         self.surface = pygame.Surface((self.board.container_width, self.board.container_height))
@@ -134,18 +141,22 @@ class Background(appearance.Appearance):
 
     def _blit_to_window_surface(self):
         """Blits background to window surface"""
-        if self.parent == app.App.running_board:
-            self.parent.app.window.surface.blit(self.image, (0, 0))
-            self.parent.app.window.add_display_to_repaint_areas()
+        if self.board in app.App.running_boards:
+            self.board.app.window.surface.blit(self.image, (
+                self.board.container_top_left_x,
+                self.board.container_top_left_y))  # @DEBUG: Position changed from (0, 0)
+            self.board.app.window.add_display_to_repaint_areas()
             self.repaint()
 
     def add_image(self, source: Union[str, Tuple, pygame.Surface]) -> int:
         super().add_image(source)
         self._blit_to_window_surface()
-        if self.parent == app.App.running_board:
-            self.parent.app.window.surface.blit(self.image, (0, 0))
-            self.parent.app.window.add_display_to_repaint_areas()
-            return self.parent.app.window.display_update()
+        # if self.board in app.App.running_boards:
+        #    self.board.app.window.surface.blit(self.image, (
+        #        self.board.container_top_left_x,
+        #        self.board.container_top_left_y))  # @DEBUG: Position changed from (0, 0)
+        #    self.board.app.window.add_display_to_repaint_areas()
+        #    return self.board.app.window.display_update()
 
     def _inner_shape(self) -> tuple:
         """Returns inner shape of costume

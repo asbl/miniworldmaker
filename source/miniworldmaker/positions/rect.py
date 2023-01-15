@@ -19,7 +19,7 @@ class Rect(pygame.Rect):
 
     @classmethod
     def from_position(cls, position, dimensions=None, board=None):
-        if board == None:
+        if board is None:
             board = app.App.running_board
         if dimensions is None:
             new_rect = pygame.Rect(0, 0, board.tile_size, board.tile_size)

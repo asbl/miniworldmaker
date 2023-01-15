@@ -33,6 +33,10 @@ class BackgroundsManager(appearances_manager.AppearancesManager):
         new_background = self.add_new_appearance(source)
         return new_background
 
+    def set_background(self, source):
+        new_background = self.set_new_appearance(source)
+        return new_background
+
     def create_appearance(self) -> "background_mod.Background":
         new_background = background_mod.Background(self.board)
         return new_background

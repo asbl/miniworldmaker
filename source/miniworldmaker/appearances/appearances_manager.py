@@ -5,7 +5,7 @@ import pygame
 import miniworldmaker
 import miniworldmaker.appearances.appearance as appearance_mod
 import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
-from miniworldmaker.appearances import costume
+import miniworldmaker.appearances.costume as costume
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -44,6 +44,35 @@ class AppearancesManager:
             raise MiniworldMakerError(f"Wrong type in _create_appearance_from_source got {type(source)}", )
         return appearance
 
+    def add_new_appearance(
+            self, source: Union[str, pygame.Surface, "costume.Costume", Tuple, None]
+    ) -> "appearance_mod.Appearance":
+        """Adds a new Appearance (costume or background) to manager.
+
+        called by ``add_costume`` and ``add_background`` in subclasses.
+        """
+        appearance: "appearance_mod.Appearance" = self._create_appearance_from_source(source)
+        if not self.has_appearance and source:
+            self.has_appearance = True
+            return self._add_first_appearance(appearance)
+        elif not self.has_appearance and not source:
+            self.has_appearance = False
+            return self._add_default_appearance()
+        elif source:
+            return self._add_appearance_to_manager(appearance)
+        else:
+            raise MiniworldMakerError(
+                f"""Error: Got wrong type for appearance. 
+                Expected: str, pygame.Surface, Costume, tuple;  got {type(source)}, {source}"""
+            )
+
+    def set_new_appearance(
+            self, source: Union[str, pygame.Surface, "costume.Costume", Tuple, None]):
+        if not self.has_appearance:
+            return self.add_new_appearance(source)
+        else:
+            self.remove_appearance()
+            self.add_new_appearance(source)
     def add_new_appearances(self, sources: List) -> None:
         if type(sources) in [list]:
             for appearance in sources:
@@ -62,29 +91,6 @@ class AppearancesManager:
     def create_appearance(self) -> "appearance_mod.Appearance":
         """Returns a new appearance (Background instance or Costume instance)"""
         pass
-
-    def add_new_appearance(
-            self, source: Union[str, pygame.Surface, "costume.Costume", Tuple, None]
-    ) -> "appearance_mod.Appearance":
-        """Adds a new Appearance (costume or background) to manager.
-
-        called by ``add_costume`` and ``add_background`` in subclasses.
-        """
-
-        appearance: "appearance_mod.Appearance" = self._create_appearance_from_source(source)
-        if not self.has_appearance and source:
-            self.has_appearance = True
-            return self._add_first_appearance(appearance)
-        elif not self.has_appearance and not source:
-            self.has_appearance = False
-            return self._add_default_appearance()
-        elif source:
-            return self._add_appearance_to_manager(appearance)
-        else:
-            raise MiniworldMakerError(
-                f"""Error: Got wrong type for appearance. 
-                Expected: str, pygame.Surface, Costume, tuple;  got {type(source)}, {source}"""
-            )
 
     def _add_default_appearance(self) -> "appearance_mod.Appearance":
         appearance = self.create_appearance()

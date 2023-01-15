@@ -1,20 +1,21 @@
 from collections import defaultdict
-from typing import Union, Dict, Tuple, Optional
+from typing import Union, Dict, Tuple, Optional, cast, List
 
-import pygame
-
-import miniworldmaker.positions.position as board_position
-import miniworldmaker.boards.board_templates.tiled_board.tile_elements as tile_elements
-import miniworldmaker.boards.board_templates.tiled_board.tile_factory as tile_factory
+import miniworldmaker.boards.board_manager.board_camera_manager as board_camera_manager
 import miniworldmaker.boards.board_templates.pixel_board.board as board
+import miniworldmaker.boards.board_templates.tiled_board.corner as corner_mod
+import miniworldmaker.boards.board_templates.tiled_board.edge as edge_mod
+import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
+import miniworldmaker.boards.board_templates.tiled_board.tile_factory as tile_factory
 import miniworldmaker.boards.board_templates.tiled_board.tiled_board_connector as tiled_board_connector
-from miniworldmaker.boards.board_manager import board_camera_manager
+import miniworldmaker.positions.position as board_position
+import pygame
 from miniworldmaker.exceptions import miniworldmaker_exception
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
 
 
 class TiledBoard(board.Board):
-    """
+    """from typing
     A TiledBoard is a Board where each Token is placed in one Tile.
 
     With Tiled Board, you can realize RPGs and Boardgames.
@@ -36,15 +37,18 @@ class TiledBoard(board.Board):
             last_corner = None
 
             tile = Tile((1,1))
-            t1 = tile.create_token()
+            t1 = Token()
+            t1.center = tile.position
             t1.fill_color = (255,255,255)
 
             corner = Corner((3,1), "nw")
-            t2 = corner.create_token()
+            t2 = Token()
+            t2.center = corner.position
             t2.fill_color = (255,0,0)
 
             edge = Edge((5,1), "w")
-            t3 = edge.create_token()
+            t3 = Token()
+            t3.center = edge.position
             t3.fill_color = (0,0,255)
             t3.size = (0.2,1)
             t3.direction = edge.angle
@@ -81,6 +85,7 @@ class TiledBoard(board.Board):
         self.tokens_fixed_size = True
         self.rotatable_tokens = True
         self.setup_board()
+        self.is_tiled = True
 
     def _get_tile_factory(self):
         return tile_factory.TileFactory()
@@ -107,7 +112,8 @@ class TiledBoard(board.Board):
                         for y in range(self.rows):
                             if center.position.distance((x, y)) < 2:
                                 tile = self.add_tile_to_board((x, y))
-                                tile.create_token()
+                                tt = Token()
+                                t.center = tile.position
 
 
                 board.run()
@@ -153,7 +159,7 @@ class TiledBoard(board.Board):
 
     def _templates(self):
         """Returns Classes for Tile, Edge and Corner"""
-        return tile_elements.Tile, tile_elements.Edge, tile_elements.Corner
+        return tile_mod.Tile, edge_mod.Edge, corner_mod.Corner
 
     def add_tile_to_board(self, position):
         tile_cls, edge_cls, corner_cls = self._templates()
@@ -234,7 +240,8 @@ class TiledBoard(board.Board):
                 last_corner = None
 
                 tile = Tile((1,1))
-                t1 = tile.create_token()
+                t1 = Token()
+                t1.center = tile.position
                 t1.fill_color = (255,255,255)
 
                 tile=board.get_tile((1,1))
@@ -251,10 +258,14 @@ class TiledBoard(board.Board):
         else:
             raise miniworldmaker_exception.TileNotFoundError(position)
 
-    def get_tokens_at_position(self, position) -> list:
-        """Alias for ``get_tokens_from_pixel``
-        """
-        return [token for token in self.tokens if token.position == position]
+    def detect_tokens(self, position: Union["board_position.Position", Tuple[float, float]]) -> List["token_mod.Token"]:
+        return cast(List["token_mod.Token"], [token for token in self.tokens if token.position == position])
+
+    def get_tokens_from_pixel(self, position: Union["board_position.Position", Tuple[float, float]]) -> List[
+        "token_mod.Token"]:
+        tile = tile_mod.Tile.from_pixel(position)
+        return self.detect_tokens(tile.position)
+
     def get_corner(self, position: board_position.Position, direction: Optional[str] = None):
         """Gets Corner at Position.
 
@@ -280,7 +291,8 @@ class TiledBoard(board.Board):
                 last_corner = None
 
                 corner = Corner((3,1), "nw")
-                t2 = corner.create_token()
+                t2 = Token()
+                t1.center = corner.position
                 t2.fill_color = (255,0,0)
 
                 corner=board.get_corner((3,1),"nw")
@@ -288,9 +300,12 @@ class TiledBoard(board.Board):
 
                 board.run()
 
-        :param position: Position on Board
-        :param direction: if direction is not None, position is interpreted as tile-board-position
-        :return: Corner on Posiiton, if position exists
+        Args:
+            position: Position on Board
+            direction: if direction is not None, position is interpreted as tile-board-position
+
+        Returns
+            next corner, if position exists
         """
         corner_cls = self.tile_factory.corner_cls
         if direction is not None:
@@ -322,11 +337,6 @@ class TiledBoard(board.Board):
                 board.grid = True
                 last_corner = None
 
-                t3 = edge.create_token()
-                t3.fill_color = (0,0,255)
-                t3.size = (0.2,1)
-                t3.direction = edge.angle
-
                 edge=board.get_edge((5,1),"w")
                 assert(edge.get_tokens()[0] == t3)
 
@@ -351,14 +361,14 @@ class TiledBoard(board.Board):
         """Returns True if a position is on the board.
         """
         position = board_position.Position.create(position)
-        return self.position_manager.contains_position(position)
+        return super().is_position_on_the_board(position)
 
     def borders(self, value: Union[tuple, "board_position.Position", pygame.Rect]) -> list:
         """
         Returns the Board's borders, if token is near a Border.
         """
         position = board_position.Position.create(value)
-        return self.position_manager.get_borders_from_position(position)
+        return self.get_borders_from_position(position)
 
     def _update_token_positions(self):
         """Updates the dynamic_tokens_dict.
