@@ -4,7 +4,7 @@ import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.tokens.token_plugins.container_token as container_token
 import miniworldmaker.tokens.token_plugins.text_token.text_token as text_token
 import miniworldmaker.tokens.token_plugins.widgets.widget_base as widget_base
-
+import miniworldmaker.tokens.token_plugins.widgets.widget_parts as widget_parts
 
 class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
     def __init__(self, text="", image=""):
@@ -15,7 +15,7 @@ class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
 
         # text
         self._img = None
-        self._text = text_token.Text((0, 0), text)
+        self._text = widget_parts.WidgetText((0, 0), text)
         self._text.font_size = 15
         self._text_align = "left"
         # additional layout
@@ -33,7 +33,6 @@ class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
         # additional layout 2
         self.set_background_color((60, 60, 60))
         self.add_child(self._text)
-        print("layers", self._layer, self._text.layer)
 
     def set_image(self, _img_source: Union[str, tuple]):
         """sets image of widget
@@ -43,7 +42,7 @@ class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
         """
         if self._img and self._img in self.children:
             self.remove_child(self._img)
-        self._img = token_mod.Token()
+        self._img = widget_parts.WidgetImage()
         self._img.add_costume(_img_source)
         self._img.width = self._img_width
         self._img.height = self.text.height

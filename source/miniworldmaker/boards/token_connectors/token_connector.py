@@ -26,7 +26,15 @@ class TokenConnector(ABC):
         return self.get_position_manager_class()(self.token, self.board)
 
     def create_costume(self) -> "costume.Costume":
-        return self._get_token_costume_class()(self.token)
+        token_costume_class = self.token.get_costume_class()
+        if not token_costume_class:
+            return self.get_token_costume_class()(self.token)
+        else:
+            return token_costume_class(self.token)
+
+    @staticmethod
+    def get_token_costume_class() -> Type["costume.Costume"]:
+        return costume.Costume
 
     def create_costume_manager(self) -> "costumes_manager.CostumesManager":
         return self._get_token_costume_manager_class()(self.token)
@@ -35,9 +43,7 @@ class TokenConnector(ABC):
     def _get_token_costume_manager_class():
         return costumes_manager.CostumesManager
 
-    @staticmethod
-    def _get_token_costume_class():
-        return costume.Costume
+
 
     @staticmethod
     @abstractmethod
@@ -112,8 +118,9 @@ class TokenConnector(ABC):
         self.token.sticky = sticky
 
     def register_event_methods(self, method_dict: Dict[str, callable]):
-        for event, method in method_dict.items():
-            self.token.register(method)
+        if method_dict:
+            for event, method in method_dict.items():
+                self.token.register(method)
 
     def init_board_sensor(self):
         self.token._board_sensor = self.create_board_sensor()

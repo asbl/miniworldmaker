@@ -500,6 +500,9 @@ class Token(token_base.BaseToken):
             costume = self.add_costume(costume)
             self.switch_costume(costume)
 
+    def reset_costumes(self):
+        self.costume_manager.reset()
+
     def set_background_color(self, color: tuple):
         self.set_costume(color)
 

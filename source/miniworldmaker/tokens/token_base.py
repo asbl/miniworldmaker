@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import List
 
+import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.base.app as app
 import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
 import pygame
@@ -53,6 +54,9 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
 
     def new_costume(self):
         return self.board.get_token_connector(self).create_costume()
+
+    def get_costume_class(self) -> type["costume_mod.Costume"]:
+        return self.board.get_token_connector(self).get_token_costume_class()
 
     @property
     def dirty(self) -> int:

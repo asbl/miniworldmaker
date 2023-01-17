@@ -1,4 +1,5 @@
 import math
+from typing import Optional
 
 import miniworldmaker.base.app as app
 import miniworldmaker.boards.board_templates.tiled_board.tile as tile
@@ -30,7 +31,9 @@ class Corner(tile_elements.TileDelimiter):
         return board.get_corner(position)
 
     @classmethod
-    def from_pixel(cls, position, board: "tiled_board_mod.TiledBoard"):
+    def from_pixel(cls, position, board: Optional["tiled_board_mod.TiledBoard"] = None):
+        if not board:
+            board = app.App.window.container_manager.get_container_by_pixel(position[0], position[1])
         min_value = math.inf
         nearest_hex = None
         corner_points = board.get_corner_points()

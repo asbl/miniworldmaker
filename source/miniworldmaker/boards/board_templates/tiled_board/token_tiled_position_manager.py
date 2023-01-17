@@ -45,13 +45,11 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
             return 0
 
     def set_size(self, value: Union[int, Tuple], scale=True):
-        print("set size to value", value)
         if type(value) == int or type(value) == float:  # convert int to tuple
             value = (value, value)
         if scale and value != self._scaled_size and self.token.costume:
             self._scaled_size = value
             self.token.costume.set_dirty("scale", costume.Costume.RELOAD_ACTUAL_IMAGE)
-        print("size was set to to value", value, self._scaled_size)
 
     def set_center(self, value):
         self.position = value

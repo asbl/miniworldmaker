@@ -13,7 +13,7 @@ class HexBoardConnector(tiled_board_connector.TiledBoardConnector):
         return hexpositionmanager.HexBoardPositionManager
 
     @staticmethod
-    def _get_token_costume_class():
+    def get_token_costume_class():
         return hex_costume.HexCostume
 
     @staticmethod

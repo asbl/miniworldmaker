@@ -1,7 +1,7 @@
 from typing import Union
 
 import miniworldmaker.tokens.token as token_mod
-
+import miniworldmaker.tokens.token_plugins.widgets.widget_costume as widget_costume
 
 class BaseWidget(token_mod.Token):
     def __init__(self):
@@ -24,6 +24,9 @@ class BaseWidget(token_mod.Token):
         # additional
         self.timed = False  # e.g. for counters
         super().__init__((0, 0))
+
+    def new_costume(self):
+        return widget_costume.WidgetCostume(self)
 
     @property
     def value(self):

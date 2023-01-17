@@ -47,3 +47,8 @@ class ContainerToken(token_mod.Token):
         super().set_board(new_board)
         for child in self.children:
             child.set_board(new_board)
+
+    def reset_costumes(self):
+        super().reset_costumes()
+        for child in self.children:
+            child.reset_costumes()
