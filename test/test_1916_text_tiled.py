@@ -10,7 +10,7 @@ def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test117(unittest.TestCase):
+class Test1916(unittest.TestCase):
 
     def setUp(self):
         """ Programmcode here:

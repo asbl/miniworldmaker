@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import Union, List, Tuple, Optional, cast
 
 import miniworldmaker.appearances.appearance as appearance
@@ -19,7 +18,9 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
     NoBoardError,
     RegisterError,
-    NoValidBoardPositionError
+    NoValidBoardPositionError,
+    MissingBoardSensor,
+    MissingPositionManager
 )
 
 
@@ -148,6 +149,8 @@ class Token(token_base.BaseToken):
         self._has_position_manager = False
         self._has_board_sensor = False
         self._has_costume_manager = False
+        self._is_acting: bool = True  # is act method called?
+        self._is_deleted = False
         try:
             self.board.get_token_connector(
                 self).init_managers(position)
@@ -215,7 +218,7 @@ class Token(token_base.BaseToken):
     @layer.setter
     def layer(self, value: int):
         self._layer = value
-        self.board._tokens.change_layer(self, value) # changes layer in DirtySpriteGroup.
+        self.board._tokens.change_layer(self, value)  # changes layer in DirtySpriteGroup.
 
     @property
     def last_position(self) -> "board_position.Position":
@@ -937,7 +940,6 @@ class Token(token_base.BaseToken):
     @y.setter
     def y(self, value: float):
         self.set_position((self.x, value))
-
 
     @property
     def class_name(self) -> str:
@@ -2213,13 +2215,19 @@ class Token(token_base.BaseToken):
 
     @property
     def position_manager(self):
-        if not hasattr(self, "_position_manager") or not self._position_manager:
-            return None
-        return self._position_manager
+        # if not hasattr(self, "_position_manager") or not self._position_manager:
+        #    return None
+        try:
+            return self._position_manager
+        except:
+            MissingPositionManager()
 
     @property
     def board_sensor(self):
-        return self._board_sensor
+        try:
+            return self._board_sensor
+        except AttributeError:
+            raise MissingBoardSensor()
 
     @property
     def costume_manager(self):

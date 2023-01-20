@@ -105,7 +105,7 @@ class AppearancesManager:
         self.appearance = appearance
         self.appearances_list.append(appearance)
         appearance.set_defaults(self.is_rotatable, self.is_animated, self.animation_speed, self.is_upscaled,
-                                self.is_scaled_to_width, self.is_scaled_to_height, self.is_scaled, self.is_flipped)
+                                self.is_scaled_to_width, self.is_scaled_to_height, self.is_scaled, self.is_flipped, self.border)
         self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return appearance
 
@@ -157,6 +157,10 @@ class AppearancesManager:
         """Sets attribute for all appearance in manager."""
         for appearance in self.appearances_list:
             setattr(appearance, attribute, value)
+
+    def set_border(self, value):
+        self.is_animated = value
+        self._set_all("border", value)
 
     def set_animated(self, value):
         self.is_animated = value
@@ -310,5 +314,15 @@ class AppearancesManager:
         for appearance in self.appearances_list:
             appearance.is_flipped = value
 
+    @property
+    def border(self):
+        return self.appearance.border
+
+    @border.setter
+    def border(self, value):
+        for appearance in self.appearances_list:
+            appearance.border = value
+
     def get_actual_appearance(self):
         return self.appearance
+

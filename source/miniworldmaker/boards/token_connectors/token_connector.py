@@ -86,6 +86,7 @@ class TokenConnector(ABC):
 
         Returns:unregistered methods from event handler.
         """
+        self.token._is_acting = False
         self.board.camera.clear_camera_cache()
         unregistered_methods = self.board.event_manager.unregister_instance(self.token)
         if self in self.board.background.reload_costumes_queue:
@@ -137,13 +138,15 @@ class TokenConnector(ABC):
         return self.token._costume_manager
 
     def delete_token(self):
-        self.remove_token_from_board()
-        self.token._costume_manager.remove_from_board()
-        self.token._costume_manager = None
-        self.token._has_costume_manager = False
-        del self.token._costume_manager
-        self.token.kill()
-        del self.token
+        if not self.token._is_deleted:
+            self.token._is_deleted = True
+            self.remove_token_from_board()
+            self.token._costume_manager.remove_from_board()
+            self.token._costume_manager = None
+            self.token._has_costume_manager = False
+            del self.token._costume_manager
+            self.token.kill()
+            del self.token
 
     def set_static(self, value):
         self.token._static = value

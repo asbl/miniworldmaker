@@ -252,7 +252,9 @@ class BoardEventManager:
         # acting
         for method in registered_act_methods:
             # act method
-            method_caller.call_method(method, None, False)
+            instance = method.__self__
+            if instance._is_acting :
+                method_caller.call_method(method, None, False)
         mouse_pos = pygame.mouse.get_pos()
         self.handle_mouse_pressed("on_pressed_left", mouse_pos)
         del registered_act_methods
