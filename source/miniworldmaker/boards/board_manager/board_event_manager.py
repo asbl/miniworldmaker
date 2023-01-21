@@ -2,17 +2,19 @@ import collections
 import inspect
 from collections import defaultdict
 from typing import Any
-import pygame
+
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.keys as keys
 import miniworldmaker.tools.method_caller as method_caller
+import pygame
 from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
+from miniworldmaker.exceptions.miniworldmaker_exception import MissingTokenPartsError
 from miniworldmaker.positions import position as board_position
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens import token_base
 from miniworldmaker.tools import token_class_inspection
-
+import logging
 
 class BoardEventManager:
     """Processes Board Events
@@ -169,7 +171,6 @@ class BoardEventManager:
             if member in self.__class__.board_class_events_set:  # static
                 self.register_event(member, board)
 
-
     def register_events_for_token(self, token):
         """Registers all Board events."""
         for member in self._get_members_for_instance(token):
@@ -253,12 +254,11 @@ class BoardEventManager:
         for method in registered_act_methods:
             # act method
             instance = method.__self__
-            if instance._is_acting :
+            if instance._is_acting:
                 method_caller.call_method(method, None, False)
         mouse_pos = pygame.mouse.get_pos()
         self.handle_mouse_pressed("on_pressed_left", mouse_pos)
         del registered_act_methods
-
 
     def handle_click_on_token_event(self, event, data):
         if not self.board.is_in_container(data):
@@ -273,19 +273,26 @@ class BoardEventManager:
                 self.registered_events["on_clicked"]).copy()
         for method in on_click_methods:
             token = method.__self__
-            if token.detect_point(pos):
-                method_caller.call_method(method, (data,))
+            try:
+                if token.detect_point(pos):
+                    method_caller.call_method(method, (data,))
+            except MissingTokenPartsError:
+                logging.info("Warning: Token parts missing from: ", token.token_id)
+
         del on_click_methods
 
     def handle_mouse_over_event(self, event, data):
         if not self.board.is_in_container(data):
             return False
-        pos = self.board.camera.get_global_coordinates_for_board(data) # get global mouse pos by window
+        pos = self.board.camera.get_global_coordinates_for_board(data)  # get global mouse pos by window
         mouse_over_methods = self.registered_events["on_mouse_over"].copy()
         for method in mouse_over_methods:
             token = method.__self__
-            if token.detect_point(pos):
-                method_caller.call_method(method, (data,))
+            try:
+                if token.detect_point(pos):
+                    method_caller.call_method(method, (data,))
+            except MissingTokenPartsError:
+                logging.info("Warning: Token parts missing from: ", token.token_id)
         del mouse_over_methods
 
     def handle_mouse_leave_event(self, event, data):

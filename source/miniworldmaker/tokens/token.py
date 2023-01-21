@@ -2220,14 +2220,14 @@ class Token(token_base.BaseToken):
         try:
             return self._position_manager
         except:
-            MissingPositionManager()
+            MissingPositionManager(self)
 
     @property
     def board_sensor(self):
         try:
             return self._board_sensor
         except AttributeError:
-            raise MissingBoardSensor()
+            raise MissingBoardSensor(self)
 
     @property
     def costume_manager(self):
