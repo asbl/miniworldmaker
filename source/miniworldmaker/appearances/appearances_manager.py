@@ -6,7 +6,7 @@ import miniworldmaker.appearances.costume as costume
 import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
 import pygame
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
-
+import logging
 
 class AppearancesManager:
     def __init__(self, parent):
@@ -330,7 +330,6 @@ class AppearancesManager:
     @border.setter
     def border(self, value):
         self._border = value
-        print("set border", value, self, self._border)
         for appearance in self.appearances_list:
             appearance.border = value
 
