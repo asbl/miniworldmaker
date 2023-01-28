@@ -420,4 +420,5 @@ class TokenPositionManager(ABC):
         return self.direction
 
     def remove_from_board(self):
-        pass
+        for child in self.token.children:
+            child.remove()

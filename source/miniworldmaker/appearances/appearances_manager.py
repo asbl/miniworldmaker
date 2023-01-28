@@ -1,11 +1,10 @@
 from typing import Union, Tuple, List
 
-import pygame
-
 import miniworldmaker
 import miniworldmaker.appearances.appearance as appearance_mod
-import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
 import miniworldmaker.appearances.costume as costume
+import miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exception
+import pygame
 from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
 
 
@@ -24,6 +23,8 @@ class AppearancesManager:
         self.is_scaled_to_height = None
         self.has_appearance = False
         self._iter_index = 0
+        # defaults
+        self._border = None
 
     @property
     def image(self) -> pygame.Surface:
@@ -73,6 +74,7 @@ class AppearancesManager:
         else:
             self.remove_appearance()
             self.add_new_appearance(source)
+
     def add_new_appearances(self, sources: List) -> None:
         if type(sources) in [list]:
             for appearance in sources:
@@ -104,8 +106,15 @@ class AppearancesManager:
     def _add_appearance_to_manager(self, appearance: "appearance_mod.Appearance") -> "appearance_mod.Appearance":
         self.appearance = appearance
         self.appearances_list.append(appearance)
-        appearance.set_defaults(self.is_rotatable, self.is_animated, self.animation_speed, self.is_upscaled,
-                                self.is_scaled_to_width, self.is_scaled_to_height, self.is_scaled, self.is_flipped, self.border)
+        appearance.set_defaults(rotatable=self.is_rotatable,
+                                is_animated=self.is_animated,
+                                animation_speed=self.animation_speed,
+                                is_upscaled=self.is_upscaled,
+                                is_scaled_to_width=self.is_scaled_to_width,
+                                is_scaled_to_height=self.is_scaled_to_height,
+                                is_scaled=self.is_scaled,
+                                is_flipped=self.is_flipped,
+                                border=self._border)
         self.appearance.set_dirty("all", self.appearance.LOAD_NEW_IMAGE)
         return appearance
 
@@ -159,7 +168,7 @@ class AppearancesManager:
             setattr(appearance, attribute, value)
 
     def set_border(self, value):
-        self.is_animated = value
+        self._border = value
         self._set_all("border", value)
 
     def set_animated(self, value):
@@ -199,7 +208,7 @@ class AppearancesManager:
         return self.appearances_list
 
     def __str__(self):
-        return str(len(self.appearances_list)) + " Appearances: " + str(self.appearances_list)
+        return f"#Appearance-Manager : {str(len(self.appearances_list))} Appearances: {str(self.appearances_list)}, ID: {self.__hash__()}#"
 
     def _remove_appearance_from_manager(self, appearance: "appearance_mod.Appearance"):
         """Removes appearance from manager
@@ -316,13 +325,14 @@ class AppearancesManager:
 
     @property
     def border(self):
-        return self.appearance.border
+        return self._border
 
     @border.setter
     def border(self, value):
+        self._border = value
+        print("set border", value, self, self._border)
         for appearance in self.appearances_list:
             appearance.border = value
 
     def get_actual_appearance(self):
         return self.appearance
-

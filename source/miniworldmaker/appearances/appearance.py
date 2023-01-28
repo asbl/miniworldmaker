@@ -89,7 +89,8 @@ class Appearance(metaclass=MetaAppearance):
             self._is_scaled = is_scaled
         if is_flipped:
             self._is_flipped = is_flipped
-        if border:
+        print("set defaults border", border)
+        if border is not None:
             self._border = border
         self.set_dirty("all", self.LOAD_NEW_IMAGE)
         return self
