@@ -23,6 +23,7 @@ class ContainerToken(token_mod.Token):
 
     def add_child(self, token: "token_mod.Token"):
         self.children.append(token)
+        token._parent = self
         token.layer = self.layer + 1
 
     def remove_child(self, token: "token_mod.Token"):

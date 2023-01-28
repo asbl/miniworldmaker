@@ -52,22 +52,10 @@ from miniworldmaker.tools.timer import ActionTimer
 from miniworldmaker.tools.timer import LoopActionTimer
 from miniworldmaker.tools.timer import Timer
 
-
-
-"""
-from miniworldmaker.containers.widgets import Widget
-from miniworldmaker.containers.widgets import Button
-from miniworldmaker.containers.widgets import Label
-from miniworldmaker.containers.widgets import ToolbarLabel
-from miniworldmaker.containers.widgets import ToolbarButton
-from miniworldmaker.containers.widgets import YesNoButton
-from miniworldmaker.containers.widgets import CounterLabel
-from miniworldmaker.containers.widgets import SimplePagination
-"""
-
 from miniworldmaker.tokens.token_plugins.widgets.button import Button
 from miniworldmaker.tokens.token_plugins.widgets.button import ToolbarButton
 from miniworldmaker.tokens.token_plugins.widgets.label import Label
+from miniworldmaker.tokens.token_plugins.widgets.input import Input
 from miniworldmaker.tokens.token_plugins.widgets.label import ToolbarLabel
 from miniworldmaker.tokens.token_plugins.widgets.yesno import YesNoButton
 
@@ -155,6 +143,7 @@ __all__.append(YesNoButton.__name__)
 __all__.append(CounterLabel.__name__)
 
 __all__.append(SimplePagination.__name__)"""
+__all__.append(Input.__name__)
 __all__.append(Label.__name__)
 __all__.append(Button.__name__)
 

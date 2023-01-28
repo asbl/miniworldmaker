@@ -1,9 +1,10 @@
 from collections import deque
 from collections.abc import Sequence
-
-import pygame
+from typing import List, Optional
 
 import miniworldmaker.base.app as app_mod
+import pygame
+from pygame.event import Event
 from miniworldmaker.positions import position as board_position
 from miniworldmaker.tools import keys
 
@@ -41,15 +42,9 @@ class AppEventManager:
         
         Iterates over pygame.event.get() and puts events in event queue.
         """
-        if pygame.key.get_pressed().count(1) != 0:
-            keys_pressed: Sequence[bool] = pygame.key.get_pressed()
-            key_codes = keys.key_codes_to_keys(keys_pressed)
-            if "STRG" in key_codes and "Q" in key_codes:
-                self.app.quit()
-            self.to_event_queue("key_pressed", keys.key_codes_to_keys(keys_pressed))
-            keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
-            for key in keys_pressed:
-                self.to_event_queue("key_pressed_" + key, None)
+        keys_pressed = []
+        event = None
+        keys_pressed = self.get_keys()
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -64,13 +59,12 @@ class AppEventManager:
                 self.to_event_queue("mouse_motion", pos)
                 # key-events
             elif event.type == pygame.KEYUP:
-                keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
                 self.to_event_queue("key_up", keys_pressed)
                 for key in keys_pressed:
-                    if key.islower() and key == pygame.key.name(event.key):
+                    if type(key) == str and key.islower() and key == pygame.key.name(event.key):
                         self.to_event_queue("key_up_" + key, None)
             elif event.type == pygame.KEYDOWN:
-                keys_pressed = keys.key_codes_to_keys(pygame.key.get_pressed())
+                keys_pressed = self.get_keys(event)
                 self.to_event_queue("key_down", keys_pressed)
                 for key in keys_pressed:
                     if key.islower() and key == pygame.key.name(event.key):
@@ -79,7 +73,31 @@ class AppEventManager:
                 for container in self.app.container_manager.containers:
                     container.dirty = 1
                 self.app.window.add_display_to_repaint_areas()
+            # CHECK IF APP SHOULD QUIT
+            if "STRG" in keys_pressed and "Q" in keys_pressed:
+                self.app.quit()
+            # CALL KEY PRESSED EVENT
+        if event and pygame.key.get_pressed().count(1) != 0 and not keys_pressed:
+            keys_pressed = self.get_keys(event)
+        for key in keys_pressed:
+            if type(key) == str:
+                self.to_event_queue("key_pressed_" + key, None)
+
         return False
+
+    @staticmethod
+    def get_keys(event: Optional[Event] = None) -> List:
+        keys_pressed = []
+        if pygame.key.get_pressed().count(1) != 0:
+            pygame_keys_pressed: Sequence[bool] = pygame.key.get_pressed()
+            keys_pressed = keys.key_codes_to_keys(pygame_keys_pressed)
+            if event and hasattr(event, "key"):
+                key = keys.event_to_key(event.key, keys_pressed)
+                if str(key) and len(key) == 1:
+                    keys_pressed.append(key)
+                else:
+                    keys_pressed.append("")
+        return keys_pressed
 
     def put_mouse_down_in_event_queue(self, event):
         """function is called in 'pygame_events_to_event_queue
@@ -102,10 +120,3 @@ class AppEventManager:
             self.to_event_queue("mouse_left_released", pos)
         if event.button == 3:
             self.to_event_queue("mouse_right_released", pos)
-
-    def get_keys(self):
-        key_codes = None
-        if pygame.key.get_pressed().count(1) != 0:
-            keys_pressed = pygame.key.get_pressed()
-            key_codes = keys.key_codes_to_keys(keys_pressed)
-        return key_codes

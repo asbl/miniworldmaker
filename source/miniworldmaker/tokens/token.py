@@ -151,6 +151,10 @@ class Token(token_base.BaseToken):
         self._has_costume_manager = False
         self._is_acting: bool = True  # is act method called?
         self._is_deleted = False
+        self.is_focusable = False
+        self.has_focus = False
+        self._parent = None # For tokens in container
+        self.children: List["Token"] = []
         try:
             self.board.get_token_connector(
                 self).init_managers(position)
@@ -2227,7 +2231,7 @@ class Token(token_base.BaseToken):
         try:
             return self._board_sensor
         except AttributeError:
-            raise MissingBoardSensor(self)
+            raise MissingBoardSensor(selfb)
 
     @property
     def costume_manager(self):

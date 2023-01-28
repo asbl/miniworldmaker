@@ -1,6 +1,6 @@
 from typing import Union, Tuple, List, Optional, Type
 
-from miniworldmaker.tokens import token as token_mod
+import miniworldmaker.tokens.token as token_mod
 
 
 class Sensor:
@@ -11,6 +11,7 @@ class Sensor:
 
     def __init__(self, token: "token_mod.Token", relative_position=Union["position_mod.Position", Tuple[float, float]]):
         self.token = token
+        self.token._children.append(self)
         self.sensor = self._get_sensor_class()(self.token.center)
         self.sensor.__sensor_relative_position = relative_position
         self.sensor.__sensor_token = token

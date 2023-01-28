@@ -1,7 +1,8 @@
 import collections
 import inspect
+import logging
 from collections import defaultdict
-from typing import Any
+from typing import Any, Optional
 
 import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
@@ -14,7 +15,7 @@ from miniworldmaker.positions import position as board_position
 from miniworldmaker.tokens import token as token_mod
 from miniworldmaker.tokens import token_base
 from miniworldmaker.tools import token_class_inspection
-import logging
+
 
 class BoardEventManager:
     """Processes Board Events
@@ -84,7 +85,8 @@ class BoardEventManager:
                              "on_sensing_on_board",
                              "on_sensing_not_on_board"],
             "on_detecting": ["on_detecting", "on_detecting_"] + detecting_token_methods,
-            "on_not_detecting": ["on_not_detecting", "on_not_detecting_", ] + not_detecting_token_methods
+            "on_not_detecting": ["on_not_detecting", "on_not_detecting_", ] + not_detecting_token_methods,
+            "focus": ["on_focus", "on_focus_lost"]
         }
 
         cls.board_class_events = {
@@ -128,6 +130,8 @@ class BoardEventManager:
         self.registered_events = defaultdict(set)
         self.__class__.members = self._get_members_for_instance(board)
         self.register_events_for_board(board)
+        self.focus_token: Optional[token_mod.Token] = None
+        self._last_focus_token = None
 
     def _get_members_for_instance(self, instance) -> set:
         """Gets all members of an instance
@@ -264,6 +268,7 @@ class BoardEventManager:
         if not self.board.is_in_container(data):
             return False
         pos = self.board.camera.get_global_coordinates_for_board(data)
+
         # get window mouse pos
         if event == "mouse_left":
             on_click_methods = self.registered_events["on_clicked_left"].union(
@@ -278,8 +283,35 @@ class BoardEventManager:
                     method_caller.call_method(method, (data,))
             except MissingTokenPartsError:
                 logging.info("Warning: Token parts missing from: ", token.token_id)
-
         del on_click_methods
+        tokens = self.board.detect_tokens(pos)
+        self.call_focus_methods(tokens)
+
+    def set_new_focus(self, tokens):
+        self._last_focus_token = self.focus_token
+        if self._last_focus_token:
+            self._last_focus_token.has_focus = False
+        if tokens:
+            for token in tokens:
+                if token.is_focusable:
+                    self.focus_token = token
+                    token.has_focus = True
+                    return token
+        self.focus_token = None
+
+    def call_focus_methods(self, tokens: list):
+        focus_methods = self.registered_events["on_focus"].copy()
+        unfocus_methods = self.registered_events["on_focus_lost"].copy()
+        focus  = self.set_new_focus(tokens)
+        if self.focus_token:
+            for method in focus_methods:
+                if self.focus_token == method.__self__ and self.focus_token != self._last_focus_token:
+                    self.focus_token.focus = True
+                    method_caller.call_method(method, None)
+        for method in unfocus_methods:
+            if self._last_focus_token == method.__self__ and self.focus_token != self._last_focus_token:
+                self._last_focus_token.focus = False
+                method_caller.call_method(method, None)
 
     def handle_mouse_over_event(self, event, data):
         if not self.board.is_in_container(data):

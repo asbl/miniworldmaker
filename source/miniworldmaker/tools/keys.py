@@ -1,4 +1,7 @@
 from collections.abc import Sequence
+from typing import List
+
+import pygame
 
 KEYS = {20: "Q",
         26: "W",
@@ -47,10 +50,21 @@ KEYS = {20: "Q",
         67: "F10",
         68: "F11",
         41: "ESC",
+        42: "BACKSPACE"
         }
 
+mwm_aliases = {
+    "return": "ENTER",
+    "space": "SPACE",
+    "backspace": "BACKSPACE",
+}
 
-def key_codes_to_keys(key_pressed_list: Sequence):
+mwm_strings = {
+    "SPACE": " ",
+}
+
+
+def key_codes_to_keys(key_pressed_list: Sequence) -> List:
     keys = []
     for index, item in enumerate(key_pressed_list):
         if item:
@@ -58,3 +72,14 @@ def key_codes_to_keys(key_pressed_list: Sequence):
                 keys.append(KEYS.get(index))
                 keys.append(KEYS.get(index).lower())
     return keys
+
+
+def event_to_key(key_code, keys_pressed) -> str:
+    key = pygame.key.name(key_code)
+    if "L_SHIFT" in keys_pressed or "R_SHIFT" in keys_pressed:
+        key = key.upper()
+    if key in mwm_aliases:  # transform pygame to mwm, e.g. return->ENTER
+        key = mwm_aliases[key]
+    if key in mwm_strings:  # transform to string
+        key = mwm_strings[key]
+    return key
