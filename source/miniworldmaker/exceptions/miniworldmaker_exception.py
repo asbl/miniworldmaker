@@ -197,3 +197,20 @@ class RegisterError(MiniworldMakerError):
         self.message = f"You can't register {method} to the instance {instance}"
         super().__init__(self.message)
 
+
+class MissingTokenPartsError(MiniworldMakerError):
+    pass
+
+
+class MissingBoardSensor(MissingTokenPartsError):
+    def __init__(self, token):
+        self.message = f"INTERNAL ERROR: Missing board_sensor"
+        del token
+        super().__init__(self.message)
+
+
+class MissingPositionManager(MissingTokenPartsError):
+    def __init__(self, token):
+        self.message = f"INTERNAL ERROR: Missing position_manager"
+        del token
+        super().__init__(self.message)

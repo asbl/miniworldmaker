@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from collections import defaultdict
 from typing import Union, List, Tuple, Optional, cast
 
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.appearances.costumes_manager as costumes_manager
-# from miniworldmaker.tokens.sensors import token_boardsensor - @todo not imported because of circular import
 import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.positions.direction as board_direction
 import miniworldmaker.positions.position as board_position
+import \
+    miniworldmaker.tokens.managers.token_boardsensor as token_boardsensor  # - @todo not imported because of circular import
 import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
 import miniworldmaker.tokens.token_base as token_base
 import miniworldmaker.tools.token_inspection as token_inspection
@@ -19,7 +19,9 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     NotImplementedOrRegisteredError,
     NoBoardError,
     RegisterError,
-    NoValidBoardPositionError
+    NoValidBoardPositionError,
+    MissingBoardSensor,
+    MissingPositionManager
 )
 
 
@@ -127,6 +129,9 @@ class Token(token_base.BaseToken):
     class_image: str = ""
 
     def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0), board=None):
+        self._board_sensor: "token_boardsensor.Boardsensor" = None
+        self._position_manager: "token_position_manager.TokenPositionManager" = None
+        self._costume_manager: "costumes_manager.CostumesManager" = None
         super().__init__(board)
         if position is None:
             self._position = (0, 0)
@@ -142,12 +147,15 @@ class Token(token_base.BaseToken):
         self.children = []
         # self._position: Union["board_position.Position", "board_position.PositionBase"] = position
         self.token_id: int = Token.token_count + 1
-        self._board_sensor: "token_boardsensor.Boardsensor" = None
-        self._position_manager: "token_position_manager.TokenPositionManager" = None
-        self._costume_manager: "costumes_manager.CostumesManager" = None
         self._has_position_manager = False
         self._has_board_sensor = False
         self._has_costume_manager = False
+        self._is_acting: bool = True  # is act method called?
+        self._is_deleted = False
+        self.is_focusable = False
+        self.has_focus = False
+        self._parent = None  # For tokens in container
+        self.children: List["Token"] = []
         try:
             self.board.get_token_connector(
                 self).init_managers(position)
@@ -197,11 +205,11 @@ class Token(token_base.BaseToken):
 
     @property
     def sticky(self):
-        return self._position_manager.sticky
+        return self.position_manager.sticky
 
     @sticky.setter
     def sticky(self, value):
-        self._position_manager.sticky = value
+        self.position_manager.sticky = value
 
     @collision_type.setter
     def collision_type(self, value: str):
@@ -215,7 +223,7 @@ class Token(token_base.BaseToken):
     @layer.setter
     def layer(self, value: int):
         self._layer = value
-        self.board._tokens.change_layer(self, value) # changes layer in DirtySpriteGroup.
+        self.board._tokens.change_layer(self, value)  # changes layer in DirtySpriteGroup.
 
     @property
     def last_position(self) -> "board_position.Position":
@@ -937,7 +945,6 @@ class Token(token_base.BaseToken):
     @y.setter
     def y(self, value: float):
         self.set_position((self.x, value))
-
 
     @property
     def class_name(self) -> str:
@@ -2213,13 +2220,34 @@ class Token(token_base.BaseToken):
 
     @property
     def position_manager(self):
-        if not hasattr(self, "_position_manager") or not self._position_manager:
-            return None
-        return self._position_manager
+        # if not hasattr(self, "_position_manager") or not self._position_manager:
+        #    return None
+        try:
+            return self._position_manager
+        except AttributeError:
+            raise MissingPositionManager(self)
+
+    def _remove_position_manager(self):
+        if hasattr(self, "_board_sensor"):
+            self._position_manager.remove_from_board()
+            del self._position_manager
+            self._position_manager = None
+            self.has_position_manager = False
 
     @property
     def board_sensor(self):
-        return self._board_sensor
+        try:
+            return self._board_sensor
+        except AttributeError:
+            raise MissingBoardSensor(self)
+
+    def _remove_board_sensor(self):
+        if hasattr(self, "_board_sensor"):
+            self.board_sensor.remove_from_board()
+            del self._board_sensor
+            self._board_sensor = None
+            self.has_board_sensor = False
+
 
     @property
     def costume_manager(self):
@@ -2251,3 +2279,4 @@ class Token(token_base.BaseToken):
 
     def on_shape_change(self):
         pass
+

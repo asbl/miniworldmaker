@@ -1,6 +1,6 @@
-from typing import Union, Tuple, List, Optional
+from typing import Union, Tuple, List, Optional, Type
 
-from miniworldmaker.tokens import token as token_mod
+import miniworldmaker.tokens.token as token_mod
 
 
 class Sensor:
@@ -11,16 +11,25 @@ class Sensor:
 
     def __init__(self, token: "token_mod.Token", relative_position=Union["position_mod.Position", Tuple[float, float]]):
         self.token = token
-        self.sensor = self._get_sensor()
+        self.token.children.append(self)
+        self.sensor = self._get_sensor_class()(self.token.center)
         self.sensor.__sensor_relative_position = relative_position
         self.sensor.__sensor_token = token
         self.sensor.visible = False
         self.sensor.physics.simulation = None
         sensor = self.sensor
-
         @sensor.register
         def act(self):
-            self.center = self.__sensor_token.center + self.__sensor_relative_position
+            if not self.__sensor_token:
+                self.remove()
+            else:
+                self.center = self.__sensor_token.center + self.__sensor_relative_position
+
+    def remove(self):
+        """ Removes sensor and sensor class
+        """
+        self.sensor.remove()
+        del self
 
     @property
     def size(self):
@@ -38,8 +47,9 @@ class Sensor:
     def visible(self, value):
         self.sensor.visible = value
 
-    def _get_sensor(self) -> "token_mod.Token":
-        return token_mod.Token(self.token.center)
+    def _get_sensor_class(self) -> Type["token_mod.Token"]:
+
+        return token_mod.Token
 
     def detect_all(self) -> List["token_mod.Token"]:
         """Detects all token (but not self.token)

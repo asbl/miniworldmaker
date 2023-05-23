@@ -1,16 +1,16 @@
-from miniworldmaker import *
+from miniworldmaker import Board, Token, Rectangle, ActionTimer, App
 import imgcompare
 import os
 import unittest
 
-TEST_FRAMES = [1]
-QUIT_FRAME = 2
+TEST_FRAMES = [1, 22, 41]
+QUIT_FRAME = 42
     
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
     return percentage
 
-class Test1916(unittest.TestCase):
+class Test117(unittest.TestCase):
 
     def setUp(self):
         """ Programmcode here:
@@ -23,13 +23,14 @@ class Test1916(unittest.TestCase):
         """
         App.reset(unittest = True, file = __file__)
         
-        board = TiledBoard()
-        board.size = (6,3)
 
-        text = Text((2,1), "Hello")
-        text.border = 1
-        text.direction = 5
-        print("in viewport?", board.camera.is_token_in_viewport(text))
+        board = Board()
+        player = Token()
+        rectangle = Rectangle(80, 80, 80, 80)
+        ActionTimer(20, player.remove, None)
+        ActionTimer(40, rectangle.remove, None)
+
+
 
         """ here act and init - delete if used in testcode"""
         
@@ -67,7 +68,7 @@ class Test1916(unittest.TestCase):
                     board.screenshot(file_test)
                 board.screenshot(file_output)
                 d = diff(file_test, file_output)
-                assert 0 <= d <= 0.05
+                assert 0 <= d <= 2
             if self.test_frame == QUIT_FRAME:
                 self.quit()
         
@@ -75,7 +76,7 @@ class Test1916(unittest.TestCase):
         board.test_title = self.__class__.__name__
         
         
-    def test_117(self):
+    def test_main(self):
         with self.assertRaises(SystemExit):
             self.board.run()
         

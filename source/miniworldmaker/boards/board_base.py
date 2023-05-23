@@ -18,6 +18,7 @@ class BaseBoard(container_mod.Container, ABC):
     def __init__(self):
         super().__init__()
         self.is_tiled = False
+        self._is_acting = True
 
     @staticmethod
     def _get_camera_manager_class():

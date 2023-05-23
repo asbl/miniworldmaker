@@ -66,8 +66,6 @@ class CostumesManager(appearances_manager.AppearancesManager):
     def next_costume(self) -> "costume_mod.Costume":
         return cast("costume.Costume", self.next_appearance())
 
-
-
     def _add_appearance_to_manager(self, appearance):
         return super()._add_appearance_to_manager(appearance)
 

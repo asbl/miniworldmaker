@@ -15,7 +15,7 @@ class Pager(container_widget.ContainerWidget):
         down = self.down
         self.row_height = 60
         self.sticky = True
-        self.layer = 10
+        
         for child in self.children:
             child.set_background_color((20, 20, 20, 230))
 
@@ -29,11 +29,14 @@ class Pager(container_widget.ContainerWidget):
             self.board.scroll_down(self.parent.scroll_steps)
             self.parent.stick()
 
+    def on_setup(self):
+        self.layer = 10
+        
     def on_clicked_left(self, pos):
         self.stick()
 
     def stick(self):
-        self.set_y(self.board.camera.y + self.board.padding_top)
+        self.y = (self.board.camera.y + self.board.padding_top)
         if not self.board.can_scroll_down(self.scroll_steps):
             self.down.visible = False
         else:

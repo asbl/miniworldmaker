@@ -72,7 +72,7 @@ class Appearance(metaclass=MetaAppearance):
         self._animation_start_frame = 0
 
     def set_defaults(self, rotatable, is_animated, animation_speed, is_upscaled, is_scaled_to_width,
-                     is_scaled_to_height, is_scaled, is_flipped) -> "Appearance":
+                     is_scaled_to_height, is_scaled, is_flipped, border) -> "Appearance":
         if rotatable:
             self._is_rotatable = rotatable
         if is_animated:
@@ -89,6 +89,8 @@ class Appearance(metaclass=MetaAppearance):
             self._is_scaled = is_scaled
         if is_flipped:
             self._is_flipped = is_flipped
+        if border is not None:
+            self._border = border
         self.set_dirty("all", self.LOAD_NEW_IMAGE)
         return self
 

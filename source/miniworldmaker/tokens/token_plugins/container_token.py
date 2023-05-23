@@ -23,6 +23,7 @@ class ContainerToken(token_mod.Token):
 
     def add_child(self, token: "token_mod.Token"):
         self.children.append(token)
+        token._parent = self
         token.layer = self.layer + 1
 
     def remove_child(self, token: "token_mod.Token"):
@@ -37,11 +38,13 @@ class ContainerToken(token_mod.Token):
         self.set_layer(value)
 
     def set_layer(self, value):
+        actual_layer = self.board.tokens.get_layer_of_sprite(self)
         self._layer = value
+        if self in self.board.tokens.get_sprites_from_layer(actual_layer):
+            self.board._tokens.change_layer(self, value)
         for child in self.children:
             child.layer = self.layer + 1
         self.dirty = 1
-        self.board._tokens.change_layer(self, value)
 
     def set_board(self, new_board):
         super().set_board(new_board)

@@ -71,7 +71,7 @@ class Test124(unittest.TestCase):
                 if path != "":
                     path =  path + "/"
                 file_test = path + f'output/{self.test_title}_test_{self.test_frame}.png'
-                file_output = path + f"output/{self.test_title}_{self.test_frame.png"
+                file_output = path + f"output/{self.test_title}_{self.test_frame.png}"
                 if not os.path.isfile(file_test):
                     board.screenshot(file_test)
                 board.screenshot(file_output)

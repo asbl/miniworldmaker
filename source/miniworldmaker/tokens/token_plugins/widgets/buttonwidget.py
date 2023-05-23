@@ -1,14 +1,15 @@
 from typing import Union
 
-import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.tokens.token_plugins.container_token as container_token
 import miniworldmaker.tokens.token_plugins.text_token.text_token as text_token
 import miniworldmaker.tokens.token_plugins.widgets.widget_base as widget_base
 import miniworldmaker.tokens.token_plugins.widgets.widget_parts as widget_parts
 
+
 class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
     def __init__(self, text="", image=""):
         # constructors
+
         widget_base.BaseWidget.__init__(self)
         container_token.ContainerToken.__init__(self)
         # container_widget.ContainerWidget.__init__(self)
@@ -29,7 +30,10 @@ class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
         if image:
             self.set_image(image)
         # text attributes
-        self.set_text(text)
+        try:
+            self.set_text(text)
+        except TypeError:
+            raise TypeError("Argument 1 must be of type str, got", type(text) ,text)
         # additional layout 2
         self.set_background_color((60, 60, 60))
         self.add_child(self._text)
@@ -139,11 +143,15 @@ class ButtonWidget(container_token.ContainerToken, widget_base.BaseWidget):
         """
         if type(text) == int or type(text) == float:
             text = str(text)
+        if type(text) != str:
+            raise TypeError("text must be of type str, got", type(text), text)
         self.text.set_text(text)
         self.max_width = self.text.width
         self.max_height = self.text.height
         self.resize()
 
+    def get_text(self):
+        return self.text.text
     def remove(self, kill=True):
         self.text.remove()
         super().remove()

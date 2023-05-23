@@ -3,12 +3,13 @@ from abc import abstractmethod, ABC
 from typing import Optional, Dict
 from typing import Type
 
-from miniworldmaker.appearances import costume
-from miniworldmaker.appearances import costumes_manager
-from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
-from miniworldmaker.tokens import token as token_mod
-from miniworldmaker.tokens.managers import token_position_manager, token_boardsensor
-
+import miniworldmaker.appearances.costume as costume
+import miniworldmaker.appearances.costumes_manager as costumes_manager
+import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
+import miniworldmaker.tokens.token as token_mod
+import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
+import miniworldmaker.tokens.managers.token_boardsensor as token_boardsensor
+from miniworldmaker.exceptions.miniworldmaker_exception import MissingTokenPartsError, MissingBoardSensor, MissingPositionManager
 
 class TokenConnector(ABC):
     def __init__(self, board: "board_mod.Board", token: "token_mod.Token"):
@@ -86,7 +87,13 @@ class TokenConnector(ABC):
 
         Returns:unregistered methods from event handler.
         """
+        self.token._is_acting = False
         self.board.camera.clear_camera_cache()
+        try:
+            for colliding_token in self.token.detect_tokens():
+                colliding_token.dirty = 1
+        except MissingTokenPartsError:
+            pass
         unregistered_methods = self.board.event_manager.unregister_instance(self.token)
         if self in self.board.background.reload_costumes_queue:
             self.board.background.reload_costumes_queue.remove(self)
@@ -94,22 +101,16 @@ class TokenConnector(ABC):
             _token_connector = self.board.get_token_connector(self.token)
             _token_connector.remove_dynamic_token()
         self.board.tokens.remove(self.token)
-        for colliding_token in self.token.detect_tokens():
-            colliding_token.dirty = 1
-        self.token._board_sensor.remove_from_board()
-        self.token._board_sensor = None
-        self.token._has_board_sensor = False
-        del self.token._board_sensor
-        self.token._position_manager.remove_from_board()
-        self.token._position_manager = None
-        self.token._has_position_manager = False
-        del self.token._position_manager
         return unregistered_methods
+
 
     def switch_board(self, new_board):
         # Store some old values, which should be transported
         old_connector = self.token.board.get_token_connector(self.token)
-        sticky = self.token.sticky
+        try:
+            sticky = self.token.sticky
+        except MissingTokenPartsError:
+            sticky = False
         unregistered_methods = old_connector.remove_token_from_board()
         new_connector = new_board.get_token_connector(self.token)
         new_connector.add_token_to_board()
@@ -137,13 +138,15 @@ class TokenConnector(ABC):
         return self.token._costume_manager
 
     def delete_token(self):
-        self.remove_token_from_board()
-        self.token._costume_manager.remove_from_board()
-        self.token._costume_manager = None
-        self.token._has_costume_manager = False
-        del self.token._costume_manager
-        self.token.kill()
-        del self.token
+        if not self.token._is_deleted:
+            self.token._is_deleted = True
+            self.remove_token_from_board()
+            self.token._costume_manager.remove_from_board()
+            self.token._costume_manager = None
+            self.token._has_costume_manager = False
+            del self.token._costume_manager
+            self.token.kill()
+            del self.token
 
     def set_static(self, value):
         self.token._static = value

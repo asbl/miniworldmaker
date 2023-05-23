@@ -18,9 +18,11 @@ class FontManager:
             font = pygame.font.Font(self.font_path, font_size)
         return font
 
-    def get_text_width(self):
+    def get_text_width(self, text=None):
+        if not text:
+            text = self.text
         font = self._get_font_object()
-        return font.size(self.text)[0]
+        return font.size(text)[0]
 
     def get_text_height(self):
         font = self._get_font_object()
