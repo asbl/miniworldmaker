@@ -111,6 +111,7 @@ class BoardEventManager:
     def fill_event_sets(cls):
         cls.class_events = {**cls.token_class_events, **cls.board_class_events}
         cls.token_class_events_set = set()
+        # Iterate over all events in static dictionary cls.token_class_event (see above)
         for key in cls.token_class_events.keys():
             for event in cls.token_class_events[key]:
                 cls.token_class_events_set.add(event)
@@ -211,34 +212,6 @@ class BoardEventManager:
                     return event, method
         return
 
-    def handle_event(self, event: str, data: Any):
-        """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
-
-        Args:
-            event: A string-identifier for the event, e.g. `reset`, `setup`, `switch_board`
-            data: Data for the event, e.g. the mouse-position, the pressed key, ...
-        """
-        if event in self.executed_events:
-            return  # events shouldn't be called more than once per tick
-        self.executed_events.add(event)
-        if event in ["mouse_left", "mouse_right"]:
-            self.handle_click_on_token_event(event, data)
-        if event in ["mouse_motion"]:
-            self.handle_mouse_over_event(event, data)
-            self.handle_mouse_enter_event(event, data)
-            self.handle_mouse_leave_event(event, data)
-        event = "on_" + event
-        if event in self.registered_events:
-            registered_events = self.registered_events[event].copy()
-            for method in registered_events:
-                if type(data) in [list, str, tuple, board_position.Position]:
-                    if type(data) == board_position.Position and not self.board.rect.collidepoint(data):
-                        return
-                    data = [data]
-                method_caller.call_method(method, data, allow_none=False)
-            registered_events.clear()
-            del registered_events
-
     def unregister_instance(self, instance) -> collections.defaultdict:
         """unregisteres an instance (e.g. a Token) from
         event manager.
@@ -263,6 +236,62 @@ class BoardEventManager:
         mouse_pos = pygame.mouse.get_pos()
         self.handle_mouse_pressed("on_pressed_left", mouse_pos)
         del registered_act_methods
+
+    def handle_event(self, event: str, data: Any):
+        """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
+
+        Args:
+            event: A string-identifier for the event, e.g. `reset`, `setup`, `switch_board`
+            data: Data for the event, e.g. the mouse-position, the pressed key, ...
+        """
+        if event in self.executed_events:
+            return  # events shouldn't be called more than once per tick
+        event = "on_" + event
+        if event not in self.registered_events.keys() and not event.startswith("on_key_down_") and not event.startswith("on_key_pressed_") and not event.startswith("on_key_up_"):
+            return
+        # Handle different events
+        self.executed_events.add(event)
+        if event in ["on_mouse_left", "on_mouse_right"]:
+            return self.handle_click_on_token_event(event, data)
+        if event in ["on_mouse_motion"]:
+            self.handle_mouse_over_event(event, data)
+            self.handle_mouse_enter_event(event, data)
+            return self.handle_mouse_leave_event(event, data)
+        if event.startswith("on_key"):
+            return self.handle_key_event(event, data)
+
+        registered_events = self.registered_events[event].copy()
+
+        for method in registered_events:
+            if type(data) in [list, str, tuple, board_position.Position]:
+                if type(data) == board_position.Position and not self.board.rect.collidepoint(data):
+                    return
+                data = [data]
+            method_caller.call_method(method, data, allow_none=False)
+        registered_events.clear()
+        del registered_events
+
+
+    def handle_key_event(self, event, data):
+        key_methods = self.registered_events["on_key_down"].copy().union(self.registered_events["on_key_up"].copy()).union(self.registered_events["on_key_pressed"].copy())
+        # collect specific items:
+        specific_key_methods = set()
+        for e, values in self.registered_events.items():
+            if e.startswith("on_key_down_"):
+                specific_key_methods = specific_key_methods.union(values)
+            if e.startswith("on_key_pressed_"):
+                specific_key_methods = specific_key_methods.union(values)
+            if e.startswith("on_key_up_"):
+                specific_key_methods = specific_key_methods.union(values)
+        for method in key_methods:
+            # Handle on_key_down, on_key_pressed, ....
+            if event == method.__name__:
+                method_caller.call_method(method, (data,))
+        # Handle on_key_pressed_w, on_key_pressed_a, ....
+        for method in specific_key_methods:
+            method_key = method.__name__.split("_")[3]
+            if method.__name__ == event:
+                method_caller.call_method(method, None)
 
     def handle_click_on_token_event(self, event, data):
         if not self.board.is_in_container(data):

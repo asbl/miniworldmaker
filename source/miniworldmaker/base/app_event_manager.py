@@ -18,6 +18,7 @@ class AppEventManager:
             app (app.App): _description_
         """
         self.event_queue: deque = deque()
+        self.is_key_pressed : dict = {}
         self.app: "app_mod.App" = app
 
     def handle_event_queue(self):
@@ -42,9 +43,10 @@ class AppEventManager:
         
         Iterates over pygame.event.get() and puts events in event queue.
         """
+        pygame_pressed = pygame.key.get_pressed()
+        pressed_keys = list(self.is_key_pressed.values())
         keys_pressed = []
         event = None
-        keys_pressed = self.get_keys()
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -59,17 +61,21 @@ class AppEventManager:
                 self.to_event_queue("mouse_motion", pos)
                 # key-events
             elif event.type == pygame.KEYUP:
-                self.to_event_queue("key_up", keys_pressed)
-                for key in keys_pressed:
-                    if type(key) == str and key.islower() and key == pygame.key.name(event.key):
-                        self.to_event_queue("key_up_" + key, None)
+                self.to_event_queue("key_up", pressed_keys)
+                if event.unicode != "":
+                    self.to_event_queue("key_down_" + event.unicode, None)
+                key = keys.get_key(event.unicode, event.key)
+                if key and key in self.is_key_pressed.keys():
+                    self.is_key_pressed.pop(key)
             elif event.type == pygame.KEYDOWN:
-                keys_pressed = self.get_keys(event)
-                self.to_event_queue("key_down", keys_pressed)
-                for key in keys_pressed:
-                    if key.islower() and key == pygame.key.name(event.key):
-                        self.to_event_queue("key_down_" + key, None)
-            if event.type == pygame.VIDEORESIZE or event.type == pygame.VIDEOEXPOSE:
+                key = keys.get_key(event.unicode, event.key)
+                if key:
+                    self.is_key_pressed[key] = key
+                    pressed_keys = list(self.is_key_pressed.values())
+                self.to_event_queue("key_down", pressed_keys)
+                if event.unicode != "":
+                    self.to_event_queue("key_down_" + event.unicode, None)
+            elif event.type == pygame.VIDEORESIZE or event.type == pygame.VIDEOEXPOSE:
                 for container in self.app.container_manager.containers:
                     container.dirty = 1
                 self.app.window.add_display_to_repaint_areas()
@@ -77,27 +83,12 @@ class AppEventManager:
             if "STRG" in keys_pressed and "Q" in keys_pressed:
                 self.app.quit()
             # CALL KEY PRESSED EVENT
-        if event and pygame.key.get_pressed().count(1) != 0 and not keys_pressed:
-            keys_pressed = self.get_keys(event)
-        for key in keys_pressed:
-            if type(key) == str:
-                self.to_event_queue("key_pressed_" + key, None)
+        for key, value in self.is_key_pressed.items():
+            self.to_event_queue("key_pressed", value)
+            if value != "":
+                self.to_event_queue("key_pressed_" + value, None)
 
         return False
-
-    @staticmethod
-    def get_keys(event: Optional[Event] = None) -> List:
-        keys_pressed = []
-        if pygame.key.get_pressed().count(1) != 0:
-            pygame_keys_pressed: Sequence[bool] = pygame.key.get_pressed()
-            keys_pressed = keys.key_codes_to_keys(pygame_keys_pressed)
-            if event and hasattr(event, "key"):
-                key = keys.event_to_key(event.key, keys_pressed)
-                if str(key) and len(key) == 1:
-                    keys_pressed.append(key)
-                else:
-                    keys_pressed.append("")
-        return keys_pressed
 
     def put_mouse_down_in_event_queue(self, event):
         """function is called in 'pygame_events_to_event_queue

@@ -18,7 +18,7 @@ from miniworldmaker.base.app import App
 from miniworldmaker.boards.board_templates.pixel_board.board import Board
 from miniworldmaker.boards.board_templates.pixel_board.pixel_board import PixelBoard
 from miniworldmaker.boards.board_templates.tiled_board.tiled_board import TiledBoard
-from miniworldmaker.boards.board_templates.physics_board.physics_board import PhysicsBoard as PhysicsBoard
+
 from miniworldmaker.boards.board_templates.hex_board.hex_board import HexBoard
 from miniworldmaker.boards.board_templates.toolbar.toolbar import Toolbar
 from miniworldmaker.boards.board_templates.console.console import Console
@@ -94,7 +94,7 @@ from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBound
 __all__.append(App.__name__)
 __all__.append(Board.__name__)
 __all__.append(PixelBoard.__name__)
-__all__.append(PhysicsBoard.__name__)
+
 __all__.append(TiledBoard.__name__)
 __all__.append(HexBoard.__name__)
 __all__.append(BaseToken.__name__)
@@ -130,19 +130,9 @@ __all__.append(Toolbar.__name__)
 __all__.append(ActionBar.__name__)
 
 __all__.append(Console.__name__)
-"""
-__all__.append(EventConsole.__name__)
-__all__.append(InspectActorToolbar.__name__)
-__all__.append(LevelDesignerToolbar.__name__)
-__all__.append(ColorToolbar.__name__)
-"""
 __all__.append(ToolbarLabel.__name__)
 __all__.append(ToolbarButton.__name__)
 __all__.append(YesNoButton.__name__)
-"""
-__all__.append(CounterLabel.__name__)
-
-__all__.append(SimplePagination.__name__)"""
 __all__.append(Input.__name__)
 __all__.append(Label.__name__)
 __all__.append(Button.__name__)

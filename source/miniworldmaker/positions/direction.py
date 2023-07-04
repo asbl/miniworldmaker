@@ -33,7 +33,7 @@ class Direction(float):
 
     @classmethod
     def from_token_towards_direction(cls, token, direction):
-        if type(direction) in [int, str]:
+        if type(direction) in [int, float, str]:
             direction = cls._value_from_token_to_direction(token, direction)
             return cls(direction)
         elif isinstance(direction, Direction):

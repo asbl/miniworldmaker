@@ -136,6 +136,8 @@ class Token(token_base.BaseToken):
         if position is None:
             self._position = (0, 0)
             position = (0, 0)
+        elif type(position) in [int, float]:
+            raise NoValidBoardPositionError(position)
         else:
             self._position = position
         self._collision_type: str = "mask"
@@ -1073,8 +1075,10 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.undo_move()
 
-    def move_towards(self, position):
-        return self.position_manager.move_towards_position(position)
+    def move_towards(self, target: Union["board_position.Position", "Token"]):
+        if isinstance (target, Token):
+            target = target.position
+        return self.position_manager.move_towards_position(target)
 
     def move_in_direction(self,
                           direction: Union[int, str, tuple, "board_direction.Direction", "board_position.Position"],
@@ -2279,3 +2283,4 @@ class Token(token_base.BaseToken):
 
     def on_shape_change(self):
         pass
+

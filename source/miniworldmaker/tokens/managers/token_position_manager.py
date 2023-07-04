@@ -264,7 +264,7 @@ class TokenPositionManager(ABC):
             return self
 
     def move_in_direction(self, direction: Union[int, str, "board_direction.Direction"], distance=1):
-        if type(direction) in [int, str]:
+        if type(direction) in [int, float, str]:
             direction = board_direction.Direction.from_token_towards_direction(self.token, direction).value
             self.set_direction(direction)
             self.move(distance)
