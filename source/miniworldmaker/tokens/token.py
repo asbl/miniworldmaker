@@ -1530,6 +1530,7 @@ class Token(token_base.BaseToken):
         return self.board_sensor.detect_point(position)
 
     sensing_point = detect_point
+    detecting_point = detect_point
 
     def detect_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
         """Is the token colliding with a static rect?"""

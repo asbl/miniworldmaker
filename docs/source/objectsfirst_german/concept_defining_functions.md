@@ -13,9 +13,9 @@ du möchtest vier rote Kreise erstellen, so wie im folgenden Bild dargestellt:
 Dies geht z.B. so:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(80, 80)
+board = mwm.Board(80, 80)
 
 c1 = Circle((20,20), 20)
 c1.color = (255, 0, 0)
@@ -37,12 +37,12 @@ Stellen verändern.
 Stattdessen kann man das Erstellen des Kreises und das festlegen der Farbe in Unterprogramme auslagern:
 
 ```python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
 board = Board(80, 80)
 
 def create_circle(x, y):
-    c = Circle((x, y), 20)
+    c = mwm.Circle((x, y), 20)
     c.color = (255, 0, 0)
     
 create_circle(20, 20)
@@ -114,15 +114,15 @@ Hier wird ein Token an der Position `x=4` und `y=2` angelegt.
 Mit  Hilfe von Funktionen kannst du komplexe Figuren zeichnen:
 
 ```python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(400, 220)
+board = mwm.Board(400, 220)
 
 def create_face(x, y):
-    c = Circle((x, y), 40)
+    c = mwm.Circle((x, y), 40)
     c.color = (255,255,0)
-    c = Circle((x + 15, y - 10), 10)
-    c = Circle((x - 15, y - 10), 10)
+    c = mwm.Circle((x + 15, y - 10), 10)
+    c = mwm.Circle((x - 15, y - 10), 10)
     a = Arc((x, y + 20), 40, 20, 180, 360)
     a.center = a.position
     a.color = (255, 0, 0)
@@ -147,9 +147,9 @@ Mit Hilfe von Funktionen kannst du das erstellen von Tokens abkürzen:
 Es werden hier 10 Tokens mit 10 Befehlen angelegt. Ohne Funktionen hättest du 30 Befehle benötigt.
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = TiledBoard()
+board = mwm.TiledBoard()
 board.rows = 8
 
 def create_token(x, y):
@@ -187,13 +187,13 @@ Das folgende Programm erstellt automatisch "Regentropfen".
 In der funktion raindrop werden nicht nur Eigenschaften für jeden Tropfen festgelegt, sondern auch Methoden registriert.
 
 ```python
-from miniworldmaker import *
+import miniworldmaker as mwm
 import random
 
-board = Board()
+board = mwm.Board()
 board.add_background((80,180,255))
 def raindrop(x,y):
-    c = Circle((x, y), random.randint(10, 20))
+    c = mwm.Circle((x, y), random.randint(10, 20))
     speed = random.randint(1,5)
     c.color = (0,0,random.randint(100,255), 100)
     c.static = True
@@ -244,10 +244,10 @@ Das folgende Programm erstelllt zufällig Kreise. Wenn diese links von der Mitte
 werden sie rot eingefärbt, ansonsten weiß.
 
 ``` python 
-from miniworldmaker import *
+import miniworldmaker as mwm
 import random
 
-board = Board(400, 50)
+board = mwm.Board(400, 50)
         
 
 def is_left(obj):
@@ -259,7 +259,7 @@ def is_left(obj):
 for i in range(20):
     x = random.randint(0,400)
     y = 25
-    c = Circle((x, y), 10)
+    c = mwm.Circle((x, y), 10)
     if is_left(c):
         c.color = (255,0,0)
 

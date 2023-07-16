@@ -40,9 +40,9 @@ Der ActionTimer ruft nach einer vorgegebenen Zeit eine Methode mit
 Argumenten auf und entfernt sich danach selbst.
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-ActionTimer(24, player.move, None)
+mwm.ActionTimer(24, player.move, None)
 ```
 
 Nach 24 Frames wird der Timer aufgerufen und führt dann einmalig die Funktion
@@ -65,9 +65,9 @@ Alle 24 Frames wird die Funktion `move` des Objekts `player` aufgerufen.
 So kannst du einen LoopActionTimer wieder entfernen:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 ...
-loopactiontimer = LoopActionTimer(24, player.move)
+loopactiontimer = mwm.LoopActionTimer(24, player.move)
 ...
 loopactiontimer.unregister()
 ```

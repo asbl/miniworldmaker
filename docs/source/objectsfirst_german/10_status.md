@@ -25,9 +25,9 @@ Auf einem Tiledboard wird dieser komplett innerhalb einer Kachel angezeigt
 #### Beispiel:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = PixelBoard(400,400)
+board = mwm.Board(400,400)
 hallo_welt = Text((100,100), "Hallo Welt!")
 
 board.run()
@@ -44,7 +44,7 @@ Das folgende Programm zeigt immer den zuletzt gedrückten Button an:
 ``` python
 from miniworldmaker import *
 
-board = PixelBoard(400,400)
+board = mwm.Board(400,400)
 key = Text((100,100), "")
 
 @key.register
@@ -67,7 +67,7 @@ jedesmal wenn eine Taste gedrückt wird die angezeigt Zahl um 1:
 ``` python
 from miniworldmaker import *
 
-board = PixelBoard(400,400)
+board = mwm.Board(400,400)
 show_number = Number((100,100), 1)
 
 @show_number.register

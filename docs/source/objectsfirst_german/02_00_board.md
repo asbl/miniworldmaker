@@ -8,14 +8,15 @@ Wir erstellen eine erste Welt. Diese kann mit folgendem Code erzeugt
 werden:
 
 ```{code-block} python
-from miniworldmaker import *
-board = Board(600, 300)
+import miniworldmaker as mwm
+
+board = mwm.Board(600, 300)
 board.run()
 ```
 
 Was passiert hier?
 
-* In der ersten Zeile wird die miniworldmaker-Bibliothek importiert.
+* In der ersten Zeile wird die miniworldmaker-Bibliothek unter dem Namen ``mwm`` importiert. Mit ``mwm.`` kann man anschließend auf die Bestandteile der Bibliothek zugreifen.
 * In der zweiten Zeile wird ein neues ``Board`` erstellt. Dieses ist 600 Pixel breit und 300 Pixel hoch.
 * In der 3. Zeile wird das Board erstellt. Später wirst du noch genauer erfahren, was diese Zeile bedeutet. 
 * Für jetzt reicht es zu wissen, dass diese Zeile immer am Ende deiner Programme stehen muss.
@@ -38,11 +39,11 @@ project
 Mit der Methode ``add_background`` kannst du nun das Bild als Hintergrund zu dem Spielfeld hinzufügen:
 
 ``` python
-from miniworldmaker import *
-
-board = Board(600, 300)
+import miniworldmaker as mwm
+board = mwm.Board(600, 300)
 board.add_background("images/grass.png")
 board.run()
+
 ```
 
 [--> Open in repl.it](https://replit.com/@a_siebel/mwm-background?v=1)
@@ -51,14 +52,13 @@ board.run()
 
 :::{note}
 
-Es gibt verschiedene Arten von Boards im miniworldmaker. Das `TiledBoard` ist speziell für Spiele auf gekachelten Flächen gedacht
-und das `PhysicsBoard` ist speziell für Spiele mit einer Physikengine gedacht.
+Es gibt verschiedene Arten von Boards im miniworldmaker. Das `TiledBoard` ist speziell für Spiele auf gekachelten Flächen gedacht, z.B. Top-Down RPGs. 
 :::
 
 :::{seealso}
-[Koncept: Naming und Variablen](concept_naming)
+[Konzept: Naming und Variablen](concept_naming)
 :::
 
 :::{seealso}
-[Koncept: Importe](concept_imports)
+[Konzept: Importe](concept_imports)
 :::

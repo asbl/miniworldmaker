@@ -53,6 +53,7 @@ class BoardEventManager:
         cls.token_class_events = {
             "mouse": ["on_mouse_left",
                       "on_mouse_right",
+                      "on_mouse_middle",
                       "on_mouse_motion",
                       "on_mouse_left_released",
                       "on_mouse_right_released"
@@ -60,7 +61,6 @@ class BoardEventManager:
             "clicked_on_token": ["on_clicked",
                                  "on_clicked_left",
                                  "on_clicked_right",
-                                 "on_pressed_left"
                                  ],
             "mouse_over": ["on_mouse_over",
                            "on_mouse_leave",
@@ -93,6 +93,7 @@ class BoardEventManager:
             "mouse": ["on_mouse_left",
                       "on_mouse_right",
                       "on_mouse_motion",
+                      "on_mouse_middle",
                       "on_mouse_left_released",
                       "on_mouse_right_released"
                       ],
@@ -234,7 +235,6 @@ class BoardEventManager:
             if instance._is_acting:
                 method_caller.call_method(method, None, False)
         mouse_pos = pygame.mouse.get_pos()
-        self.handle_mouse_pressed("on_pressed_left", mouse_pos)
         del registered_act_methods
 
     def handle_event(self, event: str, data: Any):
@@ -247,21 +247,30 @@ class BoardEventManager:
         if event in self.executed_events:
             return  # events shouldn't be called more than once per tick
         event = "on_" + event
-        if event not in self.registered_events.keys() and not event.startswith("on_key_down_") and not event.startswith("on_key_pressed_") and not event.startswith("on_key_up_"):
+        registered_event_keys = self.registered_events.keys()
+        if event not in registered_event_keys \
+                and not event.startswith("on_key_down_") \
+                and not event.startswith("on_key_pressed_") \
+                and not event.startswith("on_key_up_") \
+                and not event.startswith("on_mouse_left_") and "on_clicked_left" in registered_event_keys \
+                and not event.startswith("on_mouse_right_") and "on_clicked_right" in registered_event_keys \
+                and not event.startswith("on_mouse_motion") and "on_mouse enter" in registered_event_keys \
+                and not event.startswith("on_mouse_motion") and "on_mouse_leave" in registered_event_keys:
             return
         # Handle different events
         self.executed_events.add(event)
-        if event in ["on_mouse_left", "on_mouse_right"]:
-            return self.handle_click_on_token_event(event, data)
-        if event in ["on_mouse_motion"]:
-            self.handle_mouse_over_event(event, data)
-            self.handle_mouse_enter_event(event, data)
-            return self.handle_mouse_leave_event(event, data)
+        if event in ["on_mouse_left",
+                     "on_mouse_right",
+                     "on_mouse_left_released",
+                     "on_mouse_right_released",
+                     "on_mouse_motion",
+                     "on_clicked_left",
+                     "on_clicked_right",
+                     "on_mouse_leave"]:
+            return self.handle_mouse_event(event, data)
         if event.startswith("on_key"):
             return self.handle_key_event(event, data)
-
         registered_events = self.registered_events[event].copy()
-
         for method in registered_events:
             if type(data) in [list, str, tuple, board_position.Position]:
                 if type(data) == board_position.Position and not self.board.rect.collidepoint(data):
@@ -271,9 +280,9 @@ class BoardEventManager:
         registered_events.clear()
         del registered_events
 
-
     def handle_key_event(self, event, data):
-        key_methods = self.registered_events["on_key_down"].copy().union(self.registered_events["on_key_up"].copy()).union(self.registered_events["on_key_pressed"].copy())
+        key_methods = self.registered_events["on_key_down"].copy().union(
+            self.registered_events["on_key_up"].copy()).union(self.registered_events["on_key_pressed"].copy())
         # collect specific items:
         specific_key_methods = set()
         for e, values in self.registered_events.items():
@@ -293,18 +302,76 @@ class BoardEventManager:
             if method.__name__ == event:
                 method_caller.call_method(method, None)
 
-    def handle_click_on_token_event(self, event, data):
+    def handle_mouse_event(self, event, data):
         if not self.board.is_in_container(data):
             return False
-        pos = self.board.camera.get_global_coordinates_for_board(data)
+        mouse_methods = set()
+        for e, values in self.registered_events.items():
+            if e == event:
+                mouse_methods = mouse_methods.union(values)
+        for method in mouse_methods:
+            method_caller.call_method(method, (data,))
+        # Handle additional events like clicked on token or mouse mouse over
+        if event in ["on_mouse_motion"]:
+            return self.handle_mouse_over_event(event, data)
+        if event in ["on_mouse_left", "on_mouse_right"]:
+            self.handle_click_on_token_event(event, data)
 
-        # get window mouse pos
-        if event == "mouse_left":
+    def handle_mouse_over_event(self, event, data):
+        if not self.board.is_in_container(data):
+            return False
+        pos = self.board.camera.get_global_coordinates_for_board(data)  # get global mouse pos by window
+        all_mouse_over_methods = self.registered_events["on_mouse_over"].union( self.registered_events["on_mouse_enter"]).union( self.registered_events["on_mouse_leave"].copy())
+        mouse_over_methods = self.registered_events["on_mouse_over"]
+        if not all_mouse_over_methods:
+            return
+        for method in all_mouse_over_methods:
+            break # get the first method
+        token = method.__self__
+
+        if not hasattr(token, "_mouse_over"):
+            token._mouse_over = False
+        # Store state in token._mouse over -> Call handle_mouse_enter and mouse_levent methods
+        is_detecting_point = token.detect_point(pos)
+        if is_detecting_point and not token._mouse_over:
+            self.handle_mouse_enter_event(event, data)
+            token._mouse_over = True
+        elif not is_detecting_point and token._mouse_over:
+            self.handle_mouse_leave_event(event, data)
+            token._mouse_over = False
+        elif is_detecting_point:
+            token._mouse_over = True
+        else:
+            token._mouse_over = False
+        # Handle the mouse over
+        if token._mouse_over:
+            for method in mouse_over_methods:
+                  method_caller.call_method(method, (data,))
+        del mouse_over_methods
+
+    def handle_mouse_enter_event(self, event, data):
+        mouse_over_methods = self.registered_events["on_mouse_enter"].copy()
+        for method in mouse_over_methods:
+              method_caller.call_method(method, (data,))
+
+    def handle_mouse_leave_event(self, event, data):
+        mouse_over_methods = self.registered_events["on_mouse_leave"].copy()
+        for method in mouse_over_methods:
+            method_caller.call_method(method, (data,))
+
+    def handle_click_on_token_event(self, event, data):
+        """handles specific methods ``on_clicked_left``,``on_clicked_left``,
+        which are called, if token is detecting mouse position
+        """
+        pos = self.board.camera.get_global_coordinates_for_board(data)
+        if event == "on_mouse_left":
             on_click_methods = self.registered_events["on_clicked_left"].union(
                 self.registered_events["on_clicked"]).copy()
-        else:
+        elif event == "on_mouse_right":
             on_click_methods = self.registered_events["on_clicked_right"].union(
                 self.registered_events["on_clicked"]).copy()
+        else:
+            return
         for method in on_click_methods:
             token = method.__self__
             try:
@@ -331,7 +398,7 @@ class BoardEventManager:
     def call_focus_methods(self, tokens: list):
         focus_methods = self.registered_events["on_focus"].copy()
         unfocus_methods = self.registered_events["on_focus_lost"].copy()
-        focus  = self.set_new_focus(tokens)
+        focus = self.set_new_focus(tokens)
         if self.focus_token:
             for method in focus_methods:
                 if self.focus_token == method.__self__ and self.focus_token != self._last_focus_token:
@@ -341,60 +408,3 @@ class BoardEventManager:
             if self._last_focus_token == method.__self__ and self.focus_token != self._last_focus_token:
                 self._last_focus_token.focus = False
                 method_caller.call_method(method, None)
-
-    def handle_mouse_over_event(self, event, data):
-        if not self.board.is_in_container(data):
-            return False
-        pos = self.board.camera.get_global_coordinates_for_board(data)  # get global mouse pos by window
-        mouse_over_methods = self.registered_events["on_mouse_over"].copy()
-        for method in mouse_over_methods:
-            token = method.__self__
-            try:
-                if token.detect_point(pos):
-                    method_caller.call_method(method, (data,))
-            except MissingTokenPartsError:
-                logging.info("Warning: Token parts missing from: ", token.token_id)
-        del mouse_over_methods
-
-    def handle_mouse_leave_event(self, event, data):
-        if not self.board.is_in_container(data):
-            return False
-        pos = self.board.camera.get_global_coordinates_for_board(data)
-        mouse_over_methods = self.registered_events["on_mouse_leave"].copy()
-        for method in mouse_over_methods:
-            token = method.__self__
-            if not hasattr(token, "_mouse_over"):
-                token._mouse_over = False
-            if not token.detect_point(pos) and token._mouse_over:
-                method_caller.call_method(method, (data,))
-                token._mouse_over = False
-            else:
-                token._mouse_over = True
-        del mouse_over_methods
-
-    def handle_mouse_enter_event(self, event, data):
-        if not self.board.is_in_container(data):
-            return False
-        pos = self.board.camera.get_global_coordinates_for_board(data)
-        mouse_over_methods = self.registered_events["on_mouse_enter"].copy()
-        for method in mouse_over_methods:
-            token = method.__self__
-            if not hasattr(token, "_mouse_over"):
-                token._mouse_over = False
-            if token.detect_point(pos) and not token._mouse_over:
-                method_caller.call_method(method, (data,))
-                token._mouse_over = True
-            else:
-                token._mouse_over = False
-        del mouse_over_methods
-
-    def handle_mouse_pressed(self, event, data):
-        if not self.board.is_in_container(data):
-            return False
-        pos = self.board.camera.get_global_coordinates_for_board(data)
-        mouse_pressed_methods = self.registered_events["on_pressed_left"].copy()
-        for method in mouse_pressed_methods:
-            token = method.__self__
-            if token.detect_point(pos) and pygame.mouse.get_pressed()[0]:
-                method_caller.call_method(method, (pos,))
-        del mouse_pressed_methods

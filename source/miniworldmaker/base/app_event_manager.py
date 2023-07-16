@@ -96,6 +96,8 @@ class AppEventManager:
         pos = board_position.Position.create(pygame.mouse.get_pos())
         if event.button == 1:
             self.to_event_queue("mouse_left", pos)
+        if event.button == 2:
+            self.to_event_queue("mouse_middle", pos)
         if event.button == 3:
             self.to_event_queue("mouse_right", pos)
         if event.button == 4:

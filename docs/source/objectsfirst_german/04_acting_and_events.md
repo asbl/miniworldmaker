@@ -7,7 +7,7 @@ Für dynamische Programme sind mehrere Funktionen besonders relevant:
 
 * Die `on_setup()`-Methode wird ganz am Anfang aufgerufen. Hier wird dein Board eingerichtet und konfiguriert.
 * Die `act`-Methode wird in jedem `Frame` genau einmal aufgerufen. 
-* Es gibt verschiedene Event-Methoden, wie z.B.`on_key_pressed`, `on_clicked_left`, ..., mit denen du auf bestimmte Ereignisse reagieren kannst.
+* Es gibt verschiedene Event-Methoden, wie z.B.`on_key_pressed`, `on_mouse_left`, `on_clicked_left`, ..., mit denen du auf bestimmte Ereignisse reagieren kannst.
 
 ## Die act()-Methode
 
@@ -23,11 +23,11 @@ eine `act()`-Methode zum Spielfeld oder zu deinen Token hinzufügen:
 Beispiel:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token((90,90))
+player = mwm.Token((90,90))
 player.add_costume("images/player.png")
 @player.register
 def act(self):
@@ -52,11 +52,11 @@ Man sieht hier ein Problem: Die Standard-Ausrichtung des Tokens ist nach *oben*,
 Mit Hilfe von `token.costume.orientation` (oder `token.orientation`) kannst du die Orientierung korrigieren:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token((90,90))
+player = mwm.Token((90,90))
 player.add_costume("images/player.png")
 player.costume.orientation = -90 
 @player.register
@@ -112,11 +112,11 @@ Schritt nach vorne.
 Beispiel:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token((90,90))
+player = mwm.Token((90,90))
 player.add_costume("images/player.png")
 player.costume.orientation = -90 
 @player.register
@@ -136,9 +136,9 @@ innerhalb der Methode auf Attribute und Methoden des Objekts zugreifen, siehe da
 ### Beispiel
 
 ``` python
-import miniworldmaker
+import miniworldmaker as mwm
 
-board = miniworldmaker.TiledBoard()
+board = mwm.TiledBoard()
 board.columns = 20
 board.rows = 8
 board.tile_size = 42
@@ -179,18 +179,18 @@ Es gibt die beiden Funktionen `on_key_down(self, key)` und
 Beispiel:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token((90,90))
+player = mwm.Token((90,90))
 player.add_costume("images/player.png")
 player.costume.orientation = -90 
 @player.register
 def on_key_down_w(self):
     player.y = player.y - 1
 
-player2 = Token((180,180))
+player2 = mwm.Token((180,180))
 player2.add_costume("images/player.png")
 player2.costume.orientation = -90 
 @player2.register
@@ -206,10 +206,10 @@ board.run()
 </video> 
 
 ```{note}
-Beide Funktionen gibt es sowohl in der Variante `on_key_down_b(self)`, 
-`on_key_pressed_c(self)` um das betätigen einer konkreten Taste
-abzufragen als auch in der Variante `on_key_down(self, key)` 
-`on_key_pressed(self, key)` um alle Tastaturabfragen zu verarbeiten.
+Beide Funktionen gibt es sowohl in der Variante ``on_key_down_b(self)``, 
+``on_key_pressed_c(self)`` um das betätigen einer konkreten Taste
+abzufragen als auch in der Variante ``on_key_down(self, key)`` 
+``on_key_pressed(self, key)`` um alle Tastaturabfragen zu verarbeiten.
 ```
 
 ## Nachrichten senden
