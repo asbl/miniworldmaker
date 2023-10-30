@@ -4,7 +4,7 @@ from pathlib import Path
 translator = deepl.Translator(os.getenv("DEEPL_AUTH_KEY"))
 path = os.getcwd()
 
-for root, dirs, files in os.walk("./source/objectsfirst_german/"):
+for root, dirs, files in os.walk("./source/processing_german/"):
     for name in files:
         file = os.path.join(root, name)
         print(file)

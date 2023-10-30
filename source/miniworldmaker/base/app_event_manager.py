@@ -1,10 +1,6 @@
 from collections import deque
-from collections.abc import Sequence
-from typing import List, Optional
-
 import miniworldmaker.base.app as app_mod
 import pygame
-from pygame.event import Event
 from miniworldmaker.positions import position as board_position
 from miniworldmaker.tools import keys
 
@@ -43,10 +39,8 @@ class AppEventManager:
         
         Iterates over pygame.event.get() and puts events in event queue.
         """
-        pygame_pressed = pygame.key.get_pressed()
         pressed_keys = list(self.is_key_pressed.values())
         keys_pressed = []
-        event = None
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -83,8 +77,9 @@ class AppEventManager:
             if "STRG" in keys_pressed and "Q" in keys_pressed:
                 self.app.quit()
             # CALL KEY PRESSED EVENT
+        if self.is_key_pressed:
+            self.to_event_queue("key_pressed", list(self.is_key_pressed.values()))
         for key, value in self.is_key_pressed.items():
-            self.to_event_queue("key_pressed", value)
             if value != "":
                 self.to_event_queue("key_pressed_" + value, None)
 

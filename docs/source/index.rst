@@ -114,13 +114,6 @@ Links
   :titlesonly:
   
   examples
-
-.. toctree::
-  :maxdepth: 1
-  :caption: Tutorial (English)
-  :titlesonly:
-  
-  objectsfirst_english/index
   
 .. toctree::
   :maxdepth: 1

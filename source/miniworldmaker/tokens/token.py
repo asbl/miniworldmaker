@@ -1446,8 +1446,8 @@ class Token(token_base.BaseToken):
 
     sensing_color = detect_color
 
-    def detect_colosr(self, color: List = None) -> bool:
-        """Senses colors in board-background at token center-position
+    def detect_color(self, color: List = None) -> bool:
+        """Detects colors in board-background at token center-position
 
         Args:
             color: A list of colors

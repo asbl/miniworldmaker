@@ -13,7 +13,7 @@ class BoardMusicManager:
         self.sound_manager.pause_music()
 
     def is_playing(self) -> bool:
-        """returns True, if board is playing a music (and music ist not paused")
+        """returns True, if board is playing a music (and music ist not paused)
         """
         return self.sound_manager.is_music_playing()
 

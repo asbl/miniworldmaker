@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath('../../miniworldmaker'))
 # -- Project information -----------------------------------------------------
 
 project = 'miniworldmaker'
-copyright = '2021, Andreas Siebel'
+copyright = '2023, Andreas Siebel'
 author = 'Andreas Siebel'
 
 # The short X.Y version
-version = '1.5'
+version = '2'
 # The full version, including alpha/beta/rc tags
-release = '2021'
+release = '2023'
 
 # -- General configuration ---------------------------------------------------
 

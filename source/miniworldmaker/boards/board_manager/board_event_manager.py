@@ -283,6 +283,7 @@ class BoardEventManager:
     def handle_key_event(self, event, data):
         key_methods = self.registered_events["on_key_down"].copy().union(
             self.registered_events["on_key_up"].copy()).union(self.registered_events["on_key_pressed"].copy())
+
         # collect specific items:
         specific_key_methods = set()
         for e, values in self.registered_events.items():
@@ -298,7 +299,6 @@ class BoardEventManager:
                 method_caller.call_method(method, (data,))
         # Handle on_key_pressed_w, on_key_pressed_a, ....
         for method in specific_key_methods:
-            method_key = method.__name__.split("_")[3]
             if method.__name__ == event:
                 method_caller.call_method(method, None)
 
