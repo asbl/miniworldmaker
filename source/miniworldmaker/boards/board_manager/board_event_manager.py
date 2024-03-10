@@ -237,56 +237,6 @@ class BoardEventManager:
         mouse_pos = pygame.mouse.get_pos()
         del registered_act_methods
 
-<<<<<<< HEAD
-    def handle_click_on_token_event(self, event, data):
-        if not self.board.is_in_container(data):
-            return False
-        pos = self.board.camera.get_global_coordinates_for_board(data)
-
-        # get window mouse pos
-        if event == "mouse_left":
-            on_click_methods = self.registered_events["on_clicked_left"].union(
-                self.registered_events["on_clicked"]).copy()
-        else:
-            on_click_methods = self.registered_events["on_clicked_right"].union(
-                self.registered_events["on_clicked"]).copy()
-        for method in on_click_methods:
-            token = method.__self__
-            try:
-                if token.detect_point(pos):
-                    method_caller.call_method(method, (data,))
-            except MissingTokenPartsError:
-                logging.info("Warning: Token parts missing from: ", token.token_id)
-        del on_click_methods
-        tokens = self.board.detect_tokens(pos)
-        self.call_focus_methods(tokens)
-
-    def set_new_focus(self, tokens):
-        self._last_focus_token = self.focus_token
-        if self._last_focus_token:
-            self._last_focus_token.has_focus = False
-        if tokens:
-            for token in tokens:
-                if token.is_focusable:
-                    self.focus_token = token
-                    token.has_focus = True
-                    return token
-        self.focus_token = None
-
-    def call_focus_methods(self, tokens: list):
-        focus_methods = self.registered_events["on_focus"].copy()
-        unfocus_methods = self.registered_events["on_focus_lost"].copy()
-        focus  = self.set_new_focus(tokens)
-        if self.focus_token:
-            for method in focus_methods:
-                if self.focus_token == method.__self__ and self.focus_token != self._last_focus_token:
-                    self.focus_token.focus = True
-                    method_caller.call_method(method, None)
-        for method in unfocus_methods:
-            if self._last_focus_token == method.__self__ and self.focus_token != self._last_focus_token:
-                self._last_focus_token.focus = False
-                method_caller.call_method(method, None)
-=======
     def handle_event(self, event: str, data: Any):
         """Call specific event handlers (e.g. "on_mouse_left", "on_mouse_right", ...) for tokens
 
@@ -366,23 +316,11 @@ class BoardEventManager:
             return self.handle_mouse_over_event(event, data)
         if event in ["on_mouse_left", "on_mouse_right"]:
             self.handle_click_on_token_event(event, data)
->>>>>>> development
 
     def handle_mouse_over_event(self, event, data):
         if not self.board.is_in_container(data):
             return False
         pos = self.board.camera.get_global_coordinates_for_board(data)  # get global mouse pos by window
-<<<<<<< HEAD
-        mouse_over_methods = self.registered_events["on_mouse_over"].copy()
-        for method in mouse_over_methods:
-            token = method.__self__
-            try:
-                if token.detect_point(pos):
-                    method_caller.call_method(method, (data,))
-            except MissingTokenPartsError:
-                logging.info("Warning: Token parts missing from: ", token.token_id)
-        del mouse_over_methods
-=======
         all_mouse_over_methods = self.registered_events["on_mouse_over"].union( self.registered_events["on_mouse_enter"]).union( self.registered_events["on_mouse_leave"].copy())
         mouse_over_methods = self.registered_events["on_mouse_over"]
         if not all_mouse_over_methods:
@@ -390,7 +328,6 @@ class BoardEventManager:
         for method in all_mouse_over_methods:
             break # get the first method
         token = method.__self__
->>>>>>> development
 
         if not hasattr(token, "_mouse_over"):
             token._mouse_over = False

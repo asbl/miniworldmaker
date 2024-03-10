@@ -43,14 +43,7 @@ class AppEventManager:
         
         Iterates over pygame.event.get() and puts events in event queue.
         """
-<<<<<<< HEAD
-        pygame_pressed = pygame.key.get_pressed()
         pressed_keys = list(self.is_key_pressed.values())
-        keys_pressed = []
-        event = None
-=======
-        pressed_keys = list(self.is_key_pressed.values())
->>>>>>> development
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -67,15 +60,9 @@ class AppEventManager:
             elif event.type == pygame.KEYUP:
                 self.to_event_queue("key_up", pressed_keys)
                 if event.unicode != "":
-<<<<<<< HEAD
-                    self.to_event_queue("key_down_" + event.unicode, None)
-                key = keys.get_key(event.unicode, event.key)
-                if key:
-=======
                     self.to_event_queue("key_up_" + event.unicode, None)
                 key = keys.get_key(event.unicode, event.key)
                 if key and key in self.is_key_pressed.keys():
->>>>>>> development
                     self.is_key_pressed.pop(key)
             elif event.type == pygame.KEYDOWN:
                 key = keys.get_key(event.unicode, event.key)
@@ -85,22 +72,11 @@ class AppEventManager:
                 self.to_event_queue("key_down", pressed_keys)
                 if event.unicode != "":
                     self.to_event_queue("key_down_" + event.unicode, None)
-<<<<<<< HEAD
-            if event.type == pygame.VIDEORESIZE or event.type == pygame.VIDEOEXPOSE:
-=======
             elif event.type == pygame.VIDEORESIZE or event.type == pygame.VIDEOEXPOSE:
->>>>>>> development
                 for container in self.app.container_manager.containers:
                     container.dirty = 1
                 self.app.window.add_display_to_repaint_areas()
             # CHECK IF APP SHOULD QUIT
-<<<<<<< HEAD
-            if "STRG" in keys_pressed and "Q" in keys_pressed:
-                self.app.quit()
-            # CALL KEY PRESSED EVENT
-        for key, value in self.is_key_pressed.items():
-            self.to_event_queue("key_pressed", pressed_keys)
-=======
             if "\x11" in pressed_keys:
                 self.app.quit()
             # CALL KEY PRESSED EVENT
@@ -108,7 +84,6 @@ class AppEventManager:
             # print(self.is_key_pressed.values())
             self.to_event_queue("key_pressed", list(self.is_key_pressed.values()))
         for key, value in self.is_key_pressed.items():
->>>>>>> development
             if value != "":
                 self.to_event_queue("key_pressed_" + value, None)
 
