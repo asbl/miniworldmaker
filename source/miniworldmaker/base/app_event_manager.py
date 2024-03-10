@@ -40,7 +40,6 @@ class AppEventManager:
         Iterates over pygame.event.get() and puts events in event queue.
         """
         pressed_keys = list(self.is_key_pressed.values())
-        keys_pressed = []
         for event in pygame.event.get():
             # Event: Quit
             if event.type == pygame.QUIT:
@@ -57,7 +56,7 @@ class AppEventManager:
             elif event.type == pygame.KEYUP:
                 self.to_event_queue("key_up", pressed_keys)
                 if event.unicode != "":
-                    self.to_event_queue("key_down_" + event.unicode, None)
+                    self.to_event_queue("key_up_" + event.unicode, None)
                 key = keys.get_key(event.unicode, event.key)
                 if key and key in self.is_key_pressed.keys():
                     self.is_key_pressed.pop(key)
@@ -74,10 +73,11 @@ class AppEventManager:
                     container.dirty = 1
                 self.app.window.add_display_to_repaint_areas()
             # CHECK IF APP SHOULD QUIT
-            if "STRG" in keys_pressed and "Q" in keys_pressed:
+            if "\x11" in pressed_keys:
                 self.app.quit()
             # CALL KEY PRESSED EVENT
         if self.is_key_pressed:
+            # print(self.is_key_pressed.values())
             self.to_event_queue("key_pressed", list(self.is_key_pressed.values()))
         for key, value in self.is_key_pressed.items():
             if value != "":

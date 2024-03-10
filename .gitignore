@@ -8,6 +8,8 @@ __pycache__/
 # editor
 .vscode
 */.vscode
+.idea
+*/.idea
 
 # Distribution / packaging
 bin/
@@ -85,3 +87,5 @@ source/miniworldmaker/.vscode/
 source/miniworldmaker/.vscode/*
 source/dist
 source/dist/*
+env
+env/*

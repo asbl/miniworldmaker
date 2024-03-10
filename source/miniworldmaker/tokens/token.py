@@ -27,10 +27,6 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
-        if len(args) >= 2 and type(args[0]) == int and type(args[1]) == int:
-            first = (args[0], args[1])
-            last_args = [args[n] for n in range(2, len(args))]
-            args = [first] + last_args
         instance = type.__call__(cls, *args, **kwargs)  # create a new Token
         _token_connector = instance.board.get_token_connector(instance)
         _token_connector.add_token_to_board()
@@ -218,8 +214,32 @@ class Token(token_base.BaseToken):
         self._collision_type = value
 
     @property
+    def is_blockable(self, value):
+        """
+        A token with the property ``is_blockable`` cannot move through tokens with the property ``is_blocking``.
+        """
+        self.position_manager.is_blockable = value
+
+    @is_blockable.setter
+    def is_blockable(self, value: bool):
+        self.position_manager.is_blockable = value
+        
+    @property
+    def is_blocking(self):
+        """
+        A token with the property ``is_blockable`` cannot move through tokens with the property ``is_blocking``.
+        """
+        return self.position_manager.is_blocking
+
+    @is_blocking.setter
+    def is_blocking(self, value: bool):
+        self.position_manager.is_blocking = value
+
+        
+    @property
     def layer(self) -> int:
-        """defines layer the token is drawn, if multiple tokens overlap."""
+        """Defines the layer on which the token is drawn if several tokens overlap.
+        """
         return self._layer
 
     @layer.setter
@@ -244,7 +264,7 @@ class Token(token_base.BaseToken):
         """
         Creates a token with center at center_position
 
-        Args:
+        Arg`s:
             center_position: Center of token
         """
         obj = cls(position=(0, 0))  # temp position
@@ -278,8 +298,8 @@ class Token(token_base.BaseToken):
     @property
     def is_flipped(self) -> bool:
         """
-        If a token is flipped, it is mirrored via the y-axis. You can use this property in 2d-plattformers
-        to change the direction of token.
+        When a token is mirrored, it is mirrored across the y-axis.
+        You can use this property in 2D platformer games to change the direction of token.
 
         .. note::
 
@@ -1535,6 +1555,10 @@ class Token(token_base.BaseToken):
     def detect_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
         """Is the token colliding with a static rect?"""
         return self.board_sensor.detect_rect(rect)
+
+    def detect_board(self):
+        """Is the token colliding with a static rect?"""
+        return self.board_sensor.detect_rect(self.board.rect)
 
     is_touching_rect = detect_rect
 

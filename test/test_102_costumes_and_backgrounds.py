@@ -3,13 +3,10 @@ import imgcompare
 import os
 import unittest
 import random
+from helper import diff
 
 TEST_FRAMES = [1]
 QUIT_FRAME = 1
-    
-def diff(ia, ib):
-    percentage = imgcompare.image_diff_percent(ia, ib)
-    return percentage
 
 class Test102(unittest.TestCase):
 
