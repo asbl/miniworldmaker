@@ -9,21 +9,32 @@ class Sensor:
     The sensors is not visible and will not detect the token itself.
     """
 
-    def __init__(self, token: "token_mod.Token", relative_position=Union["position_mod.Position", Tuple[float, float]]):
+    def __init__(self, token: "token_mod.Token", position=Union["position_mod.Position", Tuple[float, float]]):
         self.token = token
         self.token.children.append(self)
         self.sensor = self._get_sensor_class()(self.token.center)
-        self.sensor.__sensor_relative_position = relative_position
+        self.sensor.sensor_position = position
         self.sensor.__sensor_token = token
         self.sensor.visible = False
-        self.sensor.physics.simulation = None
+        if hasattr(self.sensor, "physics"):
+            self.sensor.physics.simulation = None
         sensor = self.sensor
+        # Register act Method to sensor-Object
         @sensor.register
         def act(self):
             if not self.__sensor_token:
                 self.remove()
             else:
-                self.center = self.__sensor_token.center + self.__sensor_relative_position
+                self.center = self.__sensor_token.center + self.sensor_position
+
+    def set_position(self, position):
+        """
+        Sets the position of the sensor object
+
+        Args:
+            position: The position where the sensor should be placed.
+        """
+        self.sensor.position = position
 
     def remove(self):
         """ Removes sensor and sensor class
@@ -48,7 +59,6 @@ class Sensor:
         self.sensor.visible = value
 
     def _get_sensor_class(self) -> Type["token_mod.Token"]:
-
         return token_mod.Token
 
     def detect_all(self) -> List["token_mod.Token"]:

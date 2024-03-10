@@ -45,9 +45,9 @@ class BoardCollisionManager:
                 token = method.__self__
                 if method.__name__ == "on_detecting":
                     self._handle_on_detecting_all_tokens(token, method)
-                    return
+                    continue
                 elif len(method.__name__.split("_")) != 3:
-                    return
+                    continue
                 else:
                     token_filter = method.__name__.split("_")[2]
                 self._handle_on_detetecting_tokens_by_filter(token, method, token_filter)
@@ -64,13 +64,13 @@ class BoardCollisionManager:
                 found_tokens_for_token_type = token.detect_tokens(token_filter=token_type_of_target)
                 if found_tokens_for_token_type:
                     method_caller.call_method(method, None)
-                    return
+                    continue
                 if token in found_tokens_for_token_type:
                     found_tokens_for_token_type.remove(token)
                 for found_token in found_tokens_for_token_type:
                     subclasses = token_class_inspection.TokenClassInspection(token).get_all_token_classes()
                     if found_token.__class__ in subclasses:
-                        return
+                        continue
                 method_caller.call_method(method, None)
 
     def _handle_token_detecting_border_methods(self):

@@ -164,8 +164,19 @@ class Appearance(metaclass=MetaAppearance):
 
     @is_textured.setter
     def is_textured(self, value):
+        self.set_textured(value)
+
+
+    def set_textured(self, value: bool):
+        """
+        bool: If True, the image is tiled over the background.
+
+        Args:
+            value: True, if image should be displayed as textured.
+        """
         self._is_textured = value
         self.set_dirty("texture", Appearance.RELOAD_ACTUAL_IMAGE)
+
 
     @property
     def is_rotatable(self):
@@ -175,6 +186,18 @@ class Appearance(metaclass=MetaAppearance):
 
     @is_rotatable.setter
     def is_rotatable(self, value):
+        self.set_rotatable(value)
+
+    def set_rotatable(self, value: bool):
+        """
+        If set to True, costume will be rotated with token direction
+
+        Args:
+            value: True, if image should be rotated with Token direction
+
+        Returns:
+
+        """
         self._is_rotatable = value
         self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
 
@@ -272,20 +295,43 @@ class Appearance(metaclass=MetaAppearance):
 
     @is_flipped.setter
     def is_flipped(self, value):
+        self.set_flipped(value)
+
+    def set_flipped(self, value: bool):
+        """
+        Flips the costume or background. The image is mirrored over the y-axis of costume/background.
+
+        Args:
+            value: True, if Appearance should be displayed as flipped.
+
+        Returns:
+
+        """
         self._is_flipped = value
         self.set_dirty("all", Appearance.RELOAD_ACTUAL_IMAGE)
+
+
 
     def flip(self, value):
         self.is_flipped = value
 
     @property
     def is_scaled(self):
-        """Scales the actor to parent-size without remaining aspect-ratio.
+        """Scales the token to parent-size without remaining aspect-ratio.
         """
         return self._is_scaled
 
     @is_scaled.setter
     def is_scaled(self, value):
+        self.set_scaled(value)
+
+    def set_scaled(self, value: bool):
+        """
+        Sets the token to parenz-size **without** remaining aspect-ratio.
+
+        Args:
+            value: True or False
+        """
         if value:
             self._is_upscaled = False
             self._is_scaled_to_height = False
@@ -301,6 +347,15 @@ class Appearance(metaclass=MetaAppearance):
 
     @is_upscaled.setter
     def is_upscaled(self, value):
+        self.set_upscaled(value)
+
+    def set_upscaled(self, value: bool):
+        """
+        If set to True, the image will be upscaled remaining aspect-ratio.
+
+        Args:
+            value: True or False
+        """
         if value:
             self._is_scaled = False
             self._is_scaled_to_height = False
@@ -314,6 +369,10 @@ class Appearance(metaclass=MetaAppearance):
 
     @is_scaled_to_width.setter
     def is_scaled_to_width(self, value):
+        self.set_scaled_to_width(value)
+
+
+    def set_scaled_to_width(self, value: bool):
         if value:
             self._is_upscaled = False
             self.is_scaled = False
@@ -322,12 +381,16 @@ class Appearance(metaclass=MetaAppearance):
         self._is_scaled_to_width = value
         self.set_dirty("scale", Appearance.RELOAD_ACTUAL_IMAGE)
 
+
     @property
     def is_scaled_to_height(self):
         return self._is_scaled_to_height
 
     @is_scaled_to_height.setter
     def is_scaled_to_height(self, value):
+        self.set_scaled_to_width(value)
+
+    def set_scaled_to_height(self, value):
         if value:
             self._is_upscaled = False
             self.is_scaled = False
@@ -894,8 +957,8 @@ class Appearance(metaclass=MetaAppearance):
 
         color = self.fill_color
         return [
-                   color,
-               ] + self._inner_shape()[1]
+            color,
+        ] + self._inner_shape()[1]
 
     def _outer_shape_arguments(self) -> List:
         """Gets arguments for outer shape
@@ -905,5 +968,5 @@ class Appearance(metaclass=MetaAppearance):
         """
         color = self.border_color
         return [
-                   color,
-               ] + self._outer_shape()[1]
+            color,
+        ] + self._outer_shape()[1]

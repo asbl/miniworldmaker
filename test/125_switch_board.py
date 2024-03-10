@@ -2,7 +2,7 @@ from miniworldmaker import *
 import imgcompare
 import os
 import unittest
-
+print(os.system())
 TEST_FRAMES = [41, 81, 161]
 QUIT_FRAME = 1
     

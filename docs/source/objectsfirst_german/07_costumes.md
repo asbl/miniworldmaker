@@ -79,11 +79,11 @@ oben).
 Anschließend kannst du das Kostüm folgendermaßen animieren:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(80,80)
+board = mwm.Board(80,80)
 
-robot =  Token()
+robot =  mwm.Token()
 robot.size = (80,80)
 robot.add_costume("images/drive1.png")
 robot.costume.add_image("images/drive2.png")

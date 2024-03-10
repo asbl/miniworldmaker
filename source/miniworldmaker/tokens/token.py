@@ -27,10 +27,6 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
-        if len(args) >= 2 and type(args[0]) == int and type(args[1]) == int:
-            first = (args[0], args[1])
-            last_args = [args[n] for n in range(2, len(args))]
-            args = [first] + last_args
         instance = type.__call__(cls, *args, **kwargs)  # create a new Token
         _token_connector = instance.board.get_token_connector(instance)
         _token_connector.add_token_to_board()
@@ -136,6 +132,8 @@ class Token(token_base.BaseToken):
         if position is None:
             self._position = (0, 0)
             position = (0, 0)
+        elif type(position) in [int, float]:
+            raise NoValidBoardPositionError(position)
         else:
             self._position = position
         self._collision_type: str = "mask"
@@ -216,8 +214,32 @@ class Token(token_base.BaseToken):
         self._collision_type = value
 
     @property
+    def is_blockable(self, value):
+        """
+        A token with the property ``is_blockable`` cannot move through tokens with the property ``is_blocking``.
+        """
+        self.position_manager.is_blockable = value
+
+    @is_blockable.setter
+    def is_blockable(self, value: bool):
+        self.position_manager.is_blockable = value
+        
+    @property
+    def is_blocking(self):
+        """
+        A token with the property ``is_blockable`` cannot move through tokens with the property ``is_blocking``.
+        """
+        return self.position_manager.is_blocking
+
+    @is_blocking.setter
+    def is_blocking(self, value: bool):
+        self.position_manager.is_blocking = value
+
+        
+    @property
     def layer(self) -> int:
-        """defines layer the token is drawn, if multiple tokens overlap."""
+        """Defines the layer on which the token is drawn if several tokens overlap.
+        """
         return self._layer
 
     @layer.setter
@@ -242,7 +264,7 @@ class Token(token_base.BaseToken):
         """
         Creates a token with center at center_position
 
-        Args:
+        Arg`s:
             center_position: Center of token
         """
         obj = cls(position=(0, 0))  # temp position
@@ -276,8 +298,8 @@ class Token(token_base.BaseToken):
     @property
     def is_flipped(self) -> bool:
         """
-        If a token is flipped, it is mirrored via the y-axis. You can use this property in 2d-plattformers
-        to change the direction of token.
+        When a token is mirrored, it is mirrored across the y-axis.
+        You can use this property in 2D platformer games to change the direction of token.
 
         .. note::
 
@@ -1073,8 +1095,10 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.undo_move()
 
-    def move_towards(self, position):
-        return self.position_manager.move_towards_position(position)
+    def move_towards(self, target: Union["board_position.Position", "Token"]):
+        if isinstance (target, Token):
+            target = target.position
+        return self.position_manager.move_towards_position(target)
 
     def move_in_direction(self,
                           direction: Union[int, str, tuple, "board_direction.Direction", "board_position.Position"],
@@ -1442,8 +1466,8 @@ class Token(token_base.BaseToken):
 
     sensing_color = detect_color
 
-    def detect_colosr(self, color: List = None) -> bool:
-        """Senses colors in board-background at token center-position
+    def detect_color(self, color: List = None) -> bool:
+        """Detects colors in board-background at token center-position
 
         Args:
             color: A list of colors
@@ -1526,10 +1550,15 @@ class Token(token_base.BaseToken):
         return self.board_sensor.detect_point(position)
 
     sensing_point = detect_point
+    detecting_point = detect_point
 
     def detect_rect(self, rect: Union[Tuple, pygame.rect.Rect]):
         """Is the token colliding with a static rect?"""
         return self.board_sensor.detect_rect(rect)
+
+    def detect_board(self):
+        """Is the token colliding with a static rect?"""
+        return self.board_sensor.detect_rect(self.board.rect)
 
     is_touching_rect = detect_rect
 

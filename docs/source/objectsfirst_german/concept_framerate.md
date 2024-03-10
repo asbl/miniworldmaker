@@ -14,9 +14,9 @@ Man kann einstellen, wie oft `act()` aufgerufen wird, indem man die Attribute `b
 
 
 ``` python
-  from miniworldmaker import *
+  import miniworldmaker as mwm
 
-  board = PixelBoard()
+  board = mwm.Board()
   board.size = (120,210)
 
   @board.register

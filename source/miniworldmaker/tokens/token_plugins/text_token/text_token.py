@@ -6,7 +6,7 @@ class Text(token.Token):
     """
     A Text-Token is a token which contains a Text.
 
-    You have to set the sget_tokens_atize of the token with self.size() manually so that
+    You have to set the size of the token with self.size() manually so that
     the complete text can be seen.
 
     Args:
@@ -31,6 +31,16 @@ class Text(token.Token):
 
     def new_costume(self):
         return text_costume.TextCostume(self)
+
+
+    """Set font size to a value, e.g. 10, 12, ...
+
+    Examples:
+
+    Sets size of token to 10::
+
+        text.font_size = 10
+    """
 
     @property
     def font_size(self):

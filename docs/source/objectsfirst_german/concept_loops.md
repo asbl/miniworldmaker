@@ -65,12 +65,12 @@ Man kann jeweils angeben wie oft die Schleife durchlaufen wird oder bestimmte Be
 Mit Schleifen kann man zeichnen:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(200, 200)
+board = mwm.Board(200, 200)
 
 for i in range(4):
-    Circle((20 + 50 * i, 50), 20)
+    mwm.Circle((20 + 50 * i, 50), 20)
     
 board.run()
 ```

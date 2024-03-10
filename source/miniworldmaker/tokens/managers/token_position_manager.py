@@ -1,17 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import Union, Tuple
+import pygame
 
 import miniworldmaker.positions.direction as board_direction
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.rect as board_rect
 import miniworldmaker.positions.vector as board_vector
-import pygame
-from miniworldmaker.appearances import costume
-from miniworldmaker.boards.board_templates.pixel_board import board
-from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
-from miniworldmaker.exceptions.miniworldmaker_exception import NoCostumeSetError
-from miniworldmaker.tokens import token as token_mod
-
+import  miniworldmaker.appearances.costume as costume
+import  miniworldmaker.boards.board_templates.pixel_board.board as board
+import  miniworldmaker.exceptions.miniworldmaker_exception as miniworldmaker_exceptions
+import  miniworldmaker.tokens.token as token_mod
+import miniworldmaker.tokens.token_plugins.sensors.sensor as sensor_mod
 
 class TokenPositionManager(ABC):
     def __init__(self, token: "token_mod.Token", board: "board.Board"):
@@ -26,6 +25,8 @@ class TokenPositionManager(ABC):
         self._direction = 0
         self._initial_direction = 0
         self.sticky = False  #
+        self.is_blockable = False
+        self.is_blocking = False
         self._position = board_position.Position.create((0, 0))
 
     def move_vector(self, vector: "board_vector.Vector") -> "token_mod.Token":
@@ -213,7 +214,7 @@ class TokenPositionManager(ABC):
     @center_y.setter
     def center_y(self, value):
         if self.token.costume is None:
-            raise NoCostumeSetError(self.token)
+            raise miniworldmaker_exceptions.NoCostumeSetError(self.token)
         self.set_center((self.center_x, value))
 
     @center.setter
@@ -229,7 +230,7 @@ class TokenPositionManager(ABC):
 
     def set_center(self, value: Union[tuple, "board_position.Position"]) -> "token_mod.Token":
         if self.token.costume is None:
-            raise NoCostumeSetError(self.token)
+            raise miniworldmaker_exceptions.NoCostumeSetError(self.token)
         new_center = board_position.Position.create(value)
         self.last_position = self.position
         rect = pygame.Rect.copy(self.get_global_rect())
@@ -250,7 +251,19 @@ class TokenPositionManager(ABC):
         if distance == 0:
             distance = self.token.speed
         destination = self.token.board_sensor.get_destination(self.position, self.direction, distance)
-        self.position = destination
+        if self.is_blockable:
+            sensor = sensor_mod.Sensor(self.token, destination)
+            sensor.set_position(destination)
+            found_blocking = False
+            for token in sensor.detect_all():
+                if token.is_blocking:
+                    found_blocking = True
+                    break
+            if not found_blocking:
+                self.position = destination
+            sensor.remove()
+        else:
+            self.position = destination
         return self
 
     def move_towards_position(self, position, distance=1):
@@ -264,7 +277,7 @@ class TokenPositionManager(ABC):
             return self
 
     def move_in_direction(self, direction: Union[int, str, "board_direction.Direction"], distance=1):
-        if type(direction) in [int, str]:
+        if type(direction) in [int, float, str]:
             direction = board_direction.Direction.from_token_towards_direction(self.token, direction).value
             self.set_direction(direction)
             self.move(distance)
@@ -272,7 +285,7 @@ class TokenPositionManager(ABC):
         elif type(direction) in [tuple, board_position.Position]:
             return self.move_towards_position(direction)
         else:
-            raise MiniworldMakerError(
+            raise miniworldmaker_exceptions.MiniworldMakerError(
                 f"No valid type in method move_in_direction - Expected int, str, Position or tuple, got {type(direction)}"
             )
 

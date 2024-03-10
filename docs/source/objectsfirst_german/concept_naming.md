@@ -5,7 +5,7 @@
 Im ersten Kapitel hast du Anweisungen der folgenden Art gesehen:
 
 ``` python
-board = Board()
+board = mwm.Board()
 ```
 
 Das `=` Zeichen hat hier eine andere Funktion als in der Mathematik. 

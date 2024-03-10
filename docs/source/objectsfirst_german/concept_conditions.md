@@ -101,11 +101,11 @@ Ein Rechteck soll sich von rechts nach links bewegen. Wenn es die linke Seite er
 Die erste Variante sieht so aus:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(300, 200)
+board = mwm.Board(300, 200)
 
-rect = Rectangle((280,120), 20, 80)
+rect = mwm.Rectangle((280,120), 20, 80)
 
 @rect.register
 def act(self):
@@ -124,11 +124,11 @@ Diesen kann man so formulieren:
 Dies kann man direkt in Python übersetzen:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(300, 200)
+board = mwm.Board(300, 200)
 
-rect = Rectangle((280,120), 20, 80)
+rect = mwm.Rectangle((280,120), 20, 80)
 
 @rect.register
 def act(self):
@@ -147,12 +147,12 @@ Unser Hauptcharakter soll ein Ball sein, der bei Tastendruck sich nach oben bewe
 Dies können wir wie folgt realisieren:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(300, 200)
+board = mwm.Board(300, 200)
 
-rect = Rectangle((280,120), 20, 80)
-ball = Circle((20,50),20)
+rect = mwm.Rectangle((280,120), 20, 80)
+ball = mwm.Circle((20,50),20)
 velocity = 1
 @rect.register
 def act(self):
@@ -183,12 +183,12 @@ wird die Geschwindigkeit erhöht, mit der der Ball fällt.
 Im ersten Schritt soll sich der Ball nach oben bewegen können, wenn eine Taste gedrückt wird.
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(300, 200)
+board = mwm.Board(300, 200)
 
-rect = Rectangle((280,120), 20, 80)
-ball = Circle((20,50),20)
+rect = mwm.Rectangle((280,120), 20, 80)
+ball = mwm.Circle((20,50),20)
 velocity = 1
 @rect.register
 def act(self):
@@ -219,12 +219,12 @@ Dafür können wir verschiedene `sensor`-Methoden verwenden.
 Dies geht z.B. so:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(300, 200)
+board = mwm.Board(300, 200)
 
-rect = Rectangle((280,120), 20, 80)
-ball = Circle((20,50),20)
+rect = mwm.Rectangle((280,120), 20, 80)
+ball = mwm.Circle((20,50),20)
 velocity = 1
 @rect.register
 def act(self):

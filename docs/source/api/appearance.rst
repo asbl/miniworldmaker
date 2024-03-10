@@ -16,24 +16,6 @@ All actions performed on the images can be found in the class ImageRenderer
     * If you work with the board, you use the child class **Background**.
 
 
-.. mermaid::
-
-   classDiagram
-      Appearance <|-- Costume
-      Appearance <|-- Background
-      Token o-- Appearance
-      class Token{
-          +add_costume()
-      }
-      class Appearance{
-          +add_image(str)
-      }
-      class Costume{
-      }
-      class Background{
-
-      }
-
 Appearance
 ==========
 

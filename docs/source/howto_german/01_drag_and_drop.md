@@ -16,16 +16,16 @@ Dann benötigt man eine Variable (z.B. `dragged`), in der man den Zustand speich
 Kreise verschieben:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker
 
-board = Board(200, 200)
-circle = Circle((30, 30), 60)
+board = miniworldmaker.Board(200, 200)
+circle = miniworldmaker.Circle((30, 30), 60)
 circle.direction = 90
 circle.dragged = False
 
 @circle.register
 def on_mouse_left(self, mouse_pos):
-    if self.detecting_point(mouse_pos):
+    if self.detect_point(mouse_pos):
         self.dragged = True
         
 @circle.register
@@ -40,15 +40,14 @@ board.run()
 Drag and Drop auf einem TiledBoard:
 
 ``` python
-from miniworldmaker import *
-board = TiledBoard()
-t1 = Token((0,0))
-t2 = Token((3,4))
+import miniworldmaker as mwm
+board = mwm.TiledBoard()
+t1 = mwm.Token((0,0))
+t2 = mwm.Token((3,4))
 t2.dragged = False
 
 @t2.register
 def on_mouse_left(self, mouse_pos):
-    print(self.detecting_point(mouse_pos))
     if self.detecting_point(mouse_pos):
         self.dragged = True
         print("start drag")
@@ -56,10 +55,8 @@ def on_mouse_left(self, mouse_pos):
 @t2.register
 def on_mouse_left_released(self, mouse_pos):
     tile = board.get_board_position_from_pixel(mouse_pos)
-    print("released")
     if self.dragged:
         self.position = tile
-        print("end drag")
     self.dragged = False
         
 board.run()

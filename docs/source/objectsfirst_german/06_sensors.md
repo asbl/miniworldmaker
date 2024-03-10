@@ -9,12 +9,12 @@ Du kannst Objekte aufspüren, indem du die entsprechenden Sensoren direkt aufruf
 Dies geht z.B. so:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(200, 100)
+board = mwm.Board(200, 100)
 
-r = Rectangle((10,10),50,100)
-c = Circle((200,50),20)
+r = mwm.Rectangle((10,10),50,100)
+c = mwm.Circle((200,50),20)
 
 @c.register
 def act(self):
@@ -54,10 +54,10 @@ Das letzte Programm kann mit Hilfe von Ereignissen so programmiert werden:
 ``` python
 from miniworldmaker import *
 
-board = Board(200, 100)
+board = mwm.Board(200, 100)
 
-r = Rectangle((10,10),50,100)
-c = Circle((200,50),20)
+r = mwm.Rectangle((10,10),50,100)
+c = mwm.Circle((200,50),20)
 
 @c.register
 def act(self):
@@ -83,14 +83,14 @@ Mit Hilfe von Sensoren und if-else Verzweigungen kannst du herausfinden, was gen
 Dies geht z.B. so:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
 board = Board(200, 100)
 
 r = Rectangle((10,10),50,100)
 
-c1 = Circle((200,50),20)
-c2 = Circle((120,50),20)
+c1 = mwm.ircle((200,50),20)
+c2 = mwm.Circle((120,50),20)
 
 @c1.register
 def act(self):
@@ -137,16 +137,16 @@ Der folgende Code zeigt, wie du verhindern kannst, dass sich Objekte durch Wänd
 Auch dies lässt sich mit Hilfe von Sensoren ermöglichen:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = TiledBoard()
+board = mwm.TiledBoard()
 board.columns = 8
 board.rows = 2
 board.speed = 30
-player = Token()
+player = mwm.Token()
 player.add_costume("images/player_1.png")
 
-wall = Token((4,0))
+wall = mwm.Token((4,0))
 wall.add_costume("images/wall.png")
 
 @player.register
@@ -189,13 +189,13 @@ Beispiel:
 Das folgende Programm simuliert einen umherschwimmenden Fisch:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board=TiledBoard()
+board = TiledBoard()
 board.columns = 4
 board.rows = 1
 board.add_background("images/water.png")
-fish = Token((0,0))
+fish = mwm.Token((0,0))
 fish.add_costume("images/fish.png")
 fish.costume.orientation = - 90
 fish.direction = "right"

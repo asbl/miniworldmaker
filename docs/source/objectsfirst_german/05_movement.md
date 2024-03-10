@@ -25,12 +25,12 @@ def act(self):
 In diesem Beispiel wird das Token immer wieder (Alle 50 Frames) an eine zufällige Position bewegt:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 import random
 
-board = Board(400, 400)
+board = mwm.Board(400, 400)
 board.add_background("images/grass.jpg")
-player = Token((100, 100))
+player = mwm.Token((100, 100))
 player.add_costume("images/target.png")
 player.orientation = -90
 
@@ -60,18 +60,18 @@ def act(self):
 **Beispiel:**
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token((90,90))
+player = mwm.Token((90,90))
 player.add_costume("images/player.png")
 player.costume.orientation = -90 
 @player.register
 def on_key_down_w(self):
     player.y = player.y - 1
 
-player2 = Token((180,180))
+player2 = mwm.Token((180,180))
 player2.add_costume("images/player.png")
 player2.costume.orientation = -90 
 @player2.register
@@ -105,11 +105,11 @@ def act(self):
 Das Token schaut nach rechts und bewegt sich dann einen Schritt vor:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token()
+player = mwm.Token()
 player.add_costume("images/player.png")
 player.orientation = -90 # correct image orientation
 @player.register
@@ -134,11 +134,11 @@ Du kannst das `Token` aber auch direkt in eine Richtung bewegen lassen. Dies geh
 Das Programm oben würde so aussehen:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token()
+player = mwm.Token()
 player.add_costume("images/player.png")
 player.orientation = -90 # correct image orientation
 @player.register
@@ -155,11 +155,11 @@ Alternativ kannst du das Token mit `move_in_direction()` auch in eine beliebige 
 Beispiel: Das Token bewegt sich schräg nach oben
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board()
+board = mwm.Board()
 board.add_background("images/grass.jpg")
-player = Token((100,100))
+player = mwm.Token((100,100))
 player.add_costume("images/player.png")
 player.orientation = -90 # correct image orientation
 @player.register
@@ -180,11 +180,11 @@ board.run()
 Das folgende Programm steuert mit Hilfe der Funktion `move_in_direction()` das Token in Richtung des Mauszeigers:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(400, 400)
+board = mwm.Board(400, 400)
 board.add_background("images/grass.jpg")
-player = Token()
+player = mwm.Token()
 player.add_costume("images/player.png")
 player.orientation = -90
 
@@ -211,11 +211,11 @@ Mit `turn_left()` und `turn_right` kannst du das Token in eine Richtung drehen.
 Beispiel:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(400, 400)
+board = mwm.Board(400, 400)
 board.add_background("images/grass.jpg")
-player = Token((100, 100))
+player = mwm.Token((100, 100))
 player.add_costume("images/player.png")
 player.orientation = -90
 
@@ -253,11 +253,11 @@ Beispiel:
 Im folgenden Beispiel bewegt sich das Token im Kreis:
 
 ``` python
-from miniworldmaker import *
+import miniworldmaker as mwm
 
-board = Board(400,400)
+board = mwm.Board(400,400)
 board.add_background("images/grass.jpg")
-player = Token()
+player = mwm.Token()
 player.add_costume("images/player.png")
 player.orientation = -90
 player.position = (200, 200)
