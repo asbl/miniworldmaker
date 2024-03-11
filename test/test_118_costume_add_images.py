@@ -36,6 +36,5 @@ class Test118(unittest.TestCase):
         with self.assertRaises(SystemExit):
             self.board.run()
 
-
 if __name__ == "__main__":
     unittest.main()

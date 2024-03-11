@@ -1,18 +1,18 @@
-from miniworldmaker import App, Board, Token, Position, CostumeOutOfBoundsError
+from miniworldmaker import App, Board, Token, Position, CostumeOutOfBoundsError, timer
 from .screenshot_tester import ScreenshotTester
 import unittest
 import os
 import random
 
 
-class Test123(unittest.TestCase):
+class Test125(unittest.TestCase):
 
     def setUp(self):
         App.reset(unittest=True, file=__file__)
         board = self.test_code()
         """ Setup screenshot tester"""
-        TEST_FRAMES = [1]
-        QUIT_FRAME = 1
+        TEST_FRAMES = [1,21, 41, 61]
+        QUIT_FRAME = 62
         tester = ScreenshotTester(TEST_FRAMES, QUIT_FRAME, self)
         tester.setup(board)
         if hasattr(board, "setup_environment"):
@@ -23,7 +23,24 @@ class Test123(unittest.TestCase):
         # Here comes your code
         @board.register
         def setup_environment(self, test):
-            board.background = (255,0,0)
+            token = Token()
+
+            board.add_background("images/1.png")
+            board.add_background((255, 0, 0, 255))
+            board.add_background("images/2.png")
+
+            @timer(frames = 20)
+            def switch():
+                board.switch_background(0)
+
+            @timer(frames = 40)
+            def switch():
+                board.switch_background(1)
+                
+            @timer(frames = 60)
+            def switch():
+                board.switch_background(2)
+
 
         return board
 
@@ -34,3 +51,4 @@ class Test123(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
