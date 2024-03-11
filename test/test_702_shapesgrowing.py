@@ -47,14 +47,7 @@ class Test702(unittest.TestCase):
             l.end_position = (l.end_position[0], l.end_position[1]+1)
             e.height = e.height + 1
 
-
-
-
-
-
-
-
-        """ here act and init - delete if used in testcode"""
+        """ here are predefined act() and init() methods - delete if used in your testcode"""
         
         @board.register
         def on_setup(self):
@@ -64,7 +57,7 @@ class Test702(unittest.TestCase):
         def act(self):
             self.test()
             
-        """ end of setUp - code up here""" 
+        """ here are init_test() and test() methods - They must access the board, so self.board = board is set first""" 
         
         self.board = board
            
@@ -77,24 +70,15 @@ class Test702(unittest.TestCase):
         def test(self):
             global TEST_FRAMES
             global QUIT_FRAME
-            
             self.test_frame = self.test_frame + 1
-            if self.test_frame in TEST_FRAMES:
-                print("screenshot test at frame",  self.test_frame)
-                path = os.path.dirname(__file__)
-                if path != "":
-                    path =  path + "/"
-                file_test = path + f'output/{self.test_title}_test_{self.test_frame}.png'
-                file_output = path + f"output/{self.test_title}_{self.test_frame}.png"
-                if not os.path.isfile(file_test):
-                    board.screenshot(file_test)
-                board.screenshot(file_output)
-                d = diff(file_test, file_output)
-                assert 0 <= d <= 0.05
-            if self.test_frame == QUIT_FRAME:
-                self.quit()
+            screenshot_test(self.test_frame, 
+                            QUIT_FRAME, 
+                            TEST_FRAMES, 
+                            board.test_title,
+                            board,
+                            self)
         
-        #in TESTXYZ setup:
+        #in setUp-Method of Test (not Board!):
         board.test_title = self.__class__.__name__
         
         

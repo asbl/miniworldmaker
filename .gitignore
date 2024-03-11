@@ -89,3 +89,8 @@ source/dist
 source/dist/*
 env
 env/*
+test/output/*tmp_output*.png
+test/output
+test/testfiles/*
+test/outputfiles*
+*tmp_output*
