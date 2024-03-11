@@ -22,7 +22,7 @@ class Test108(unittest.TestCase):
         board = Board(200, 400)
         # Here comes your code
         @board.register
-        def act(self):
+        def setup_environment(self, test):
             board.add_background((100, 0, 0, 255))
             a = Token()
             a.position = (0,0)
