@@ -21,6 +21,9 @@ class Test000(unittest.TestCase):
     def test_code(self):
         board = Board(200, 400)
         # Here comes your code
+        @board.register
+        def setup_environment(self, test):
+            pass
 
         return board
 
