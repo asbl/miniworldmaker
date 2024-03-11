@@ -206,10 +206,6 @@ class Board(board_base.BaseBoard):
         bottom_right_on_the_board = self.contains_position(rect.bottomright)
         return topleft_on_the_board or bottom_right_on_the_board
 
-    def setup_board(self):
-        # Implemented in TiledBoards
-        pass
-
     @property
     def speed(self) -> int:
         """speed defines how often the method ``act()`` will be called.  
@@ -341,21 +337,24 @@ class Board(board_base.BaseBoard):
 
     @columns.setter
     def columns(self, value: int):
-        self.setup_board()
+        self.set_columns(value)
+
+    def set_columns(self, value: int):
         self.camera.viewport_width = value
         self.boundary_x = value
-
+        
     @property
     def rows(self) -> int:
-
         return self.camera.viewport_height
 
     @rows.setter
     def rows(self, value: int):
-        self.setup_board()
+        self.set_rows(value)
+
+    def set_rows(self, value: int):
         self.viewport_height = value
         self.boundary_y = value
-
+        
     def borders(self, value: Union[tuple, "board_position.Position", pygame.Rect]) -> list:
         """Gets all borders from a source (`Position` or `Rect`).
 

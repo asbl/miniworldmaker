@@ -2,28 +2,29 @@ from miniworldmaker import *
 import imgcompare
 import os
 import unittest
-
-def diff(ia, ib):
-    percentage = imgcompare.image_diff_percent(ia, ib)
-    return percentage
+from .screenshot_tester import ScreenshotTester
 
 class Test104(unittest.TestCase):
+    
     def setUp(self):
-        App.reset(unittest = True, file = __file__)
+        App.reset(unittest=True, file=__file__)
+        board = self.test_code()
+        """ Setup screenshot tester"""
+        TEST_FRAMES = [1]
+        QUIT_FRAME = 1
+        tester = ScreenshotTester(TEST_FRAMES, QUIT_FRAME, self)
+        tester.setup(board)
+        if (hasattr(board, "setup_environment")):
+            board.setup_environment()
         
+    def test_code(self):
         board = PixelBoard(400,300)
         self.board = board
         path = os.path.dirname(__file__)
-        print("register ", path)
         board.app.register_path(path)
-        
-        @board.register
-        def init_test(self):
-            board.test_frame = 0
             
-        
         @board.register
-        def setup_environment(self, test):
+        def setup_environment(self):
             board.add_background("images/stone")
 
             token1 = Token()
@@ -35,35 +36,12 @@ class Test104(unittest.TestCase):
                 token2.add_costume("images/player.gif")
             except Exception as e:
                 print(e)
-                                    
-        @board.register
-        def on_setup(self):
-            self.init_test()
-    
-        @board.register
-        def test(self):
-            self.test_frame = self.test_frame + 1
-            if self.test_frame == 1:
-                print("Screenshot")
-                path = os.path.dirname(__file__)
-                if path != "":
-                    path =  path + "/"
-                file_test = path + f'output/{self.test_title}_test.png'
-                file_output = path + f"output/{self.test_title}.png"
-                if not os.path.isfile(file_test):
-                    board.screenshot(file_test)
-                board.screenshot(file_output)
-                d = diff(file_test, file_output)
-                assert 0 <= d <= 0.05
-                self.quit()
+        return board
 
-        @board.register 
-        def act(self):
-            self.test()
-        
-        #in setup
-        board.test_title = self.__class__.__name__
-        board.setup_environment(self)
+    def test_main(self):
+        with self.assertRaises(SystemExit):
+            self.board.run()
+
         
         
     def test_102(self):

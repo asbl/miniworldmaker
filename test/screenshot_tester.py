@@ -26,7 +26,6 @@ class ScreenshotTester:
 
         @board.register
         def init_test(self):
-            print("setup test")
             board.test_frame = 0
 
         @board.register
@@ -52,7 +51,7 @@ class ScreenshotTester:
     
     def screenshot(self, frame, test_frames, test_title):
         if not frame in test_frames:
-            return false
+            return False
         path = os.path.dirname(__file__)
         if path != "":
             path =  path + "/"
@@ -66,6 +65,7 @@ class ScreenshotTester:
         return file_test, file_output
             
     def check_quit(self, frame, ):
+        print("FRAME, frame, self.quit_frame", frame, self.quit_frame)
         if frame == self.quit_frame:
             self.board.quit()
         

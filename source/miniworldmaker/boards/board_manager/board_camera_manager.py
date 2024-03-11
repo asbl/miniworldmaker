@@ -5,8 +5,7 @@ from miniworldmaker.tokens import token as token_mod
 
 
 class BoardCameraManager(pygame.sprite.Sprite):
-    """Defines a camera which shows specific parts of a Board.
-    """
+    """Defines a camera which shows specific parts of a Board."""
 
     def __init__(self, view_x, view_y, board):
         super().__init__()
@@ -22,8 +21,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def viewport_width(self):
-        """Maximum viewport width. Can't be greater than board-boundary_x
-        """
+        """Maximum viewport width. Can't be greater than board-boundary_x"""
         return self.get_viewport_width()
 
     @viewport_width.setter
@@ -36,8 +34,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def viewport_height(self):
-        """Maximum viewport width. Can't be greater than board-boundary_y
-        """
+        """Maximum viewport width. Can't be greater than board-boundary_y"""
         return self.get_viewport_height()
 
     @viewport_height.setter
@@ -55,8 +52,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         return self.viewport[1]
 
     def get_viewport_width_in_pixels(self):
-        """overwritten in TiledCameraManager
-        """
+        """overwritten in TiledCameraManager"""
         return self.viewport[0]
 
     def get_viewport_height_in_pixels(self):
@@ -89,7 +85,9 @@ class BoardCameraManager(pygame.sprite.Sprite):
         if self._resize:
             self.board.app.window.resize()
             self._resize = False
-        self.board.background.set_dirty("all", background.Background.RELOAD_ACTUAL_IMAGE)
+        self.board.background.set_dirty(
+            "all", background.Background.RELOAD_ACTUAL_IMAGE
+        )
 
     def clear_camera_cache(self):
         self._cached_tokens = (-1, set())
@@ -105,8 +103,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def x(self):
-        """Sets the x-position of camera
-        """
+        """Sets the x-position of camera"""
         return self.topleft[0]
 
     @x.setter
@@ -116,8 +113,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
 
     @property
     def y(self):
-        """Sets the y-position of camera
-        """
+        """Sets the y-position of camera"""
         return self.topleft[1]
 
     @y.setter
@@ -161,8 +157,12 @@ class BoardCameraManager(pygame.sprite.Sprite):
         return self.get_rect()
 
     def get_rect(self):
-        return pygame.Rect(self.topleft[0], self.topleft[1], self.get_viewport_width_in_pixels(),
-                           self.get_viewport_height_in_pixels())
+        return pygame.Rect(
+            self.topleft[0],
+            self.topleft[1],
+            self.get_viewport_width_in_pixels(),
+            self.get_viewport_height_in_pixels(),
+        )
 
     def reload_tokens_in_viewport(self):
         """called, when camera is moved"""
@@ -187,13 +187,15 @@ class BoardCameraManager(pygame.sprite.Sprite):
         return found_tokens
 
     def from_token(self, token: "token_mod.Token") -> None:
-        """Gets camera from token center-position
-        """
+        """Gets camera from token center-position"""
         if token.center:
             center = token.center
             width = self.board.width // 2
             height = self.board.height // 2
-            self.topleft = (center[0] - width - token.width // 2, center[1] - height - token.height // 2)
+            self.topleft = (
+                center[0] - width - token.width // 2,
+                center[1] - height - token.height // 2,
+            )
         else:
             self.topleft = (0, 0)
 
@@ -225,8 +227,14 @@ class TiledCameraManager(BoardCameraManager):
 class HexCameraManager(BoardCameraManager):
     def get_viewport_width_in_pixels(self) -> int:
         """The width of the container"""
-        return self.get_viewport_width() * self.board.get_tile_width() + 1 / 2 * self.board.get_tile_width()
+        return (
+            self.get_viewport_width() * self.board.get_tile_width()
+            + 1 / 2 * self.board.get_tile_width()
+        )
 
     def get_viewport_height_in_pixels(self) -> int:
         """The height of the container"""
-        return self.get_viewport_height() * self.board.get_tile_height() * 3 / 4 + self.board.get_tile_height() / 4
+        return (
+            self.get_viewport_height() * self.board.get_tile_height() * 3 / 4
+            + self.board.get_tile_height() / 4
+        )

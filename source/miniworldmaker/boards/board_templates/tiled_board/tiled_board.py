@@ -472,3 +472,15 @@ class TiledBoard(board.Board):
         x = position[0] * self.tile_size + origin[0]
         y = position[1] * self.tile_size + origin[1]
         return board_position.Position(x, y)
+
+    def set_columns(self, value: int):
+        self.setup_board()
+        self.camera.viewport_width = value * self.tile_size
+        self.boundary_x = value
+        # self.background.set_dirty("all", background_mod.Background.RELOAD_ACTUAL_IMAGE)
+        
+    def set_rows(self, value: int):
+        self.setup_board()
+        self.camera.viewport_height = value * self.tile_size
+        self.boundary_y = value
+        print("set rows")
