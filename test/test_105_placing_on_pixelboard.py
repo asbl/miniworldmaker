@@ -2,6 +2,7 @@ from miniworldmaker import *
 import imgcompare
 import os
 import unittest
+from .screenshot_tester import ScreenshotTester
 
 def diff(ia, ib):
     percentage = imgcompare.image_diff_percent(ia, ib)
@@ -9,7 +10,17 @@ def diff(ia, ib):
 
 class Test105(unittest.TestCase):
     def setUp(self):
-        App.reset(unittest = True, file = __file__)
+        App.reset(unittest=True, file=__file__)
+        board = self.test_code()
+        """ Setup screenshot tester"""
+        TEST_FRAMES = [1]
+        QUIT_FRAME = 1
+        tester = ScreenshotTester(TEST_FRAMES, QUIT_FRAME, self)
+        tester.setup(board)
+        if (hasattr(board, "setup_environment")):
+            board.setup_environment(self)
+        
+    def test_code(self):
         board = PixelBoard(400,300)
         self.board = board
         path = os.path.dirname(__file__)
@@ -64,9 +75,7 @@ class Test105(unittest.TestCase):
         def act(self):
             self.test()
         
-        #in setup
-        board.test_title = self.__class__.__name__
-        board.setup_environment(self)
+        return board
         
         
     def test_main(self):
