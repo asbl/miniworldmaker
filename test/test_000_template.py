@@ -5,7 +5,7 @@ import os
 import random
 
 
-class Test108(unittest.TestCase):
+class Test000(unittest.TestCase):
 
     def setUp(self):
         App.reset(unittest=True, file=__file__)
@@ -21,18 +21,7 @@ class Test108(unittest.TestCase):
     def test_code(self):
         board = Board(200, 400)
         # Here comes your code
-        @board.register
-        def act(self):
-            board.add_background((100, 0, 0, 255))
-            a = Token()
-            a.position = (0,0)
-            b = Token()
-            b.topleft = (100,100)
-            c = Token()
-            c.position = (200,200)
-            d = Token()
-            d.center = (250,250)
-        """ here act and init - delete if used in testcode"""
+
         return board
 
     def test_main(self):
