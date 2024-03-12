@@ -1,4 +1,4 @@
-from miniworldmaker import App, Board, Token, Position, CostumeOutOfBoundsError
+from miniworldmaker import App, Board, Token, Position, Text, Number
 from .screenshot_tester import ScreenshotTester
 import unittest
 import os
@@ -8,8 +8,28 @@ import random
 class Test112(unittest.TestCase):
 
     def setUp(self):
+        def test_code():
+            board = Board(200, 200)
+            # Here comes your code
+            @board.register
+            def setup_environment(self, test):
+                board.default_fill_color = (0,255,255,255)
+
+            token = Text((0,0), "Hello World!")
+            token.auto_size = "font"
+
+            token2 = Text((0,60))
+            token2.set_text("Hello!")
+            token2.auto_size = "token"
+            token2.font_size = 32
+
+            token3 = Number((0,150))
+            token3.auto_size = None
+            token3.font_size=64
+
+            return board
         App.reset(unittest=True, file=__file__)
-        board = self.test_code()
+        board = test_code()
         """ Setup screenshot tester"""
         TEST_FRAMES = [1]
         QUIT_FRAME = 1
@@ -18,26 +38,7 @@ class Test112(unittest.TestCase):
         if hasattr(board, "setup_environment"):
             board.setup_environment(self)
 
-    def test_code(self):
-        board = Board(200, 200)
-        # Here comes your code
-        @board.register
-        def setup_environment(self, test):
-            board.default_fill_color = (0,255,255,255)
-
-        token = Text((0,0), "Hello World!")
-        token.auto_size = "font"
-
-        token2 = Text((0,60))
-        token2.set_text("Hello!")
-        token2.auto_size = "token"
-        token2.font_size = 32
-
-        token3 = Number((0,150))
-        token3.auto_size = None
-        token3.font_size=64
-
-        return board
+    
 
     def test_main(self):
         with self.assertRaises(SystemExit):

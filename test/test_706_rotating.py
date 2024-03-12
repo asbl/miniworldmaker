@@ -11,14 +11,14 @@ class Test706(unittest.TestCase):
 
     def setUp(self):
         App.reset(unittest = True, file = __file__)
-        board = self.test_code()
+        board = test_code()
         """ Setup screenshot tester"""
         TEST_FRAMES = [1,2,3,4,5,6,7,8]
         QUIT_FRAME = 8
         tester = ScreenshotTester(TEST_FRAMES, QUIT_FRAME, self)
         tester.setup(board)
 
-    def test_code(self):
+    def test_code():
         """ Should return board """
         App.reset(unittest = True, file = __file__)
         shapes = []

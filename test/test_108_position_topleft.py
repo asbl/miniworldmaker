@@ -8,8 +8,23 @@ import random
 class Test108(unittest.TestCase):
 
     def setUp(self):
+        def test_code():
+            board = Board(200, 400)
+            # Here comes your code
+            @board.register
+            def setup_environment(self, test):
+                board.add_background((100, 0, 0, 255))
+                a = Token()
+                a.position = (0,0)
+                b = Token()
+                b.topleft = (100,100)
+                c = Token()
+                c.position = (200,200)
+                d = Token()
+                d.center = (250,250)
+            return board
         App.reset(unittest=True, file=__file__)
-        board = self.test_code()
+        board = test_code()
         """ Setup screenshot tester"""
         TEST_FRAMES = [1]
         QUIT_FRAME = 1
@@ -18,22 +33,7 @@ class Test108(unittest.TestCase):
         if hasattr(board, "setup_environment"):
             board.setup_environment(self)
 
-    def test_code(self):
-        board = Board(200, 400)
-        # Here comes your code
-        @board.register
-        def setup_environment(self, test):
-            board.add_background((100, 0, 0, 255))
-            a = Token()
-            a.position = (0,0)
-            b = Token()
-            b.topleft = (100,100)
-            c = Token()
-            c.position = (200,200)
-            d = Token()
-            d.center = (250,250)
-        """ here act and init - delete if used in testcode"""
-        return board
+
 
     def test_main(self):
         with self.assertRaises(SystemExit):

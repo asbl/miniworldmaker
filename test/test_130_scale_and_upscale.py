@@ -8,8 +8,32 @@ import random
 class Test130(unittest.TestCase):
 
     def setUp(self):
+        def test_code():
+            board = Board(800,400)
+            # Here comes your code
+            @board.register
+            def setup_environment(self, test):
+                def create_player(x, y):
+                    t = Token()
+                    t.position = (x, y)
+                    t.add_costume("images/player.png")
+                    t.border = 1
+                    return t
+
+                t = create_player(0,180)
+                t.size=(80,80)
+
+                t = create_player(80,180)
+                t.costume.is_upscaled = True
+                t.size=(80,80)
+
+                t = create_player(160,180)
+                t.costume.is_scaled = True
+                t.size=(80,80)
+
+            return board
         App.reset(unittest=True, file=__file__)
-        board = self.test_code()
+        board = test_code()
         """ Setup screenshot tester"""
         TEST_FRAMES = [1]
         QUIT_FRAME = 1
@@ -17,31 +41,6 @@ class Test130(unittest.TestCase):
         tester.setup(board)
         if hasattr(board, "setup_environment"):
             board.setup_environment(self)
-
-    def test_code(self):
-        board = Board(800,400)
-        # Here comes your code
-        @board.register
-        def setup_environment(self, test):
-            def create_player(x, y):
-                t = Token()
-                t.position = (x, y)
-                t.add_costume("images/player.png")
-                t.border = 1
-                return t
-
-            t = create_player(0,180)
-            t.size=(80,80)
-
-            t = create_player(80,180)
-            t.costume.is_upscaled = True
-            t.size=(80,80)
-
-            t = create_player(160,180)
-            t.costume.is_scaled = True
-            t.size=(80,80)
-
-        return board
 
     def test_main(self):
         with self.assertRaises(SystemExit):

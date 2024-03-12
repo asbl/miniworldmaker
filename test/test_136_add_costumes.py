@@ -8,8 +8,25 @@ import random
 class Test136(unittest.TestCase):
 
     def setUp(self):
+        def test_code():
+            board = Board((100,60))
+            # Here comes your code
+            @board.register
+            def setup_environment(self, test):
+                token = Token((10,10))
+                board.speed = 30
+                costume1 = token.add_costume((255,255,0))
+                costume2 = token.add_costume((255,0,255))
+                @token.register
+                def act(self):
+                    print(costume1, costume2)
+                    if self.costume == costume1:
+                        self.switch_costume(costume2)
+                    else:
+                        self.switch_costume(costume1)
+            return board
         App.reset(unittest=True, file=__file__)
-        board = self.test_code()
+        board = test_code()
         """ Setup screenshot tester"""
         TEST_FRAMES = [1, 2, 3, 4, 5, 6]
         QUIT_FRAME = 7
@@ -17,25 +34,6 @@ class Test136(unittest.TestCase):
         tester.setup(board)
         if hasattr(board, "setup_environment"):
             board.setup_environment(self)
-
-    def test_code(self):
-        board = Board((100,60))
-        # Here comes your code
-        @board.register
-        def setup_environment(self, test):
-            token = Token((10,10))
-            board.speed = 30
-            costume1 = token.add_costume((255,255,0))
-            costume2 = token.add_costume((255,0,255))
-            @token.register
-            def act(self):
-                print(costume1, costume2)
-                if self.costume == costume1:
-                    self.switch_costume(costume2)
-                else:
-                    self.switch_costume(costume1)
-
-        return board
 
     def test_main(self):
         with self.assertRaises(SystemExit):
