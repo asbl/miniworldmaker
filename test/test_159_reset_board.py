@@ -27,8 +27,8 @@ class Test159(unittest.TestCase):
         App.reset(unittest=True, file=__file__)
         board = test_code()
         """ Setup screenshot tester"""
-        TEST_FRAMES = [1]
-        QUIT_FRAME = 1
+        TEST_FRAMES = [1,20,21, 40, 41]
+        QUIT_FRAME = 80
         tester = ScreenshotTester(TEST_FRAMES, QUIT_FRAME, self)
         tester.setup(board)
         if hasattr(board, "setup_environment"):
