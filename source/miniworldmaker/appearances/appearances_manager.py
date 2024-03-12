@@ -212,21 +212,31 @@ class AppearancesManager:
 
     def _remove_appearance_from_manager(self, appearance: "appearance_mod.Appearance"):
         """Removes appearance from manager
+        If self.length == 1, the last costume is removed and a default appearance will be added.
 
-        If length == 1, default appearance will be added.
-        """
+        Args:
+            appearance (appearance_mod.Appearance): _description_
+
+        Returns:
+            bool: True, if an appearance was removed
+        """     
+        print("----< remove appearance",  self.length() )
         if self.has_appearance and self.length() > 0:
             if appearance == self.appearance:
                 if self.length() == 1:
                     self.appearances_list.remove(appearance)
                     del appearance
                     self._add_default_appearance()
+                    print("------------------>add default appearance")
                     self.has_appearance = False
+                    return True
                 else:
                     first_appearance = self.get_appearance_at_index(0)
                     self.switch_appearance(first_appearance)
                     self.appearances_list.remove(appearance)
                     del appearance
+                    return True
+        return False
 
     def remove_appearance(self, source: Union[int, "appearance_mod.Appearance"] = -1):
         """Removes an appearance (costume or background) from manager
@@ -241,7 +251,7 @@ class AppearancesManager:
         if type(source) == int:
             source = self.get_appearance_at_index(source)
         if source and isinstance(source, appearance_mod.Appearance):
-            self._remove_appearance_from_manager(source)
+            return self._remove_appearance_from_manager(source)
         else:
             raise MiniworldMakerError(f"Expected type int or Appearance (Costume or Background), got {type(source)}")
 

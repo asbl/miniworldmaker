@@ -19,8 +19,9 @@ class CostumesManager(appearances_manager.AppearancesManager):
     def get_costume_at_index(self, index):
         return super().get_appearance_at_index(index)
 
-    def add_new_appearance(self,
-                           source: Union[str, List[str], "appearance_mod.Appearance"] = None) -> "costume_mod.Costume":
+    def add_new_appearance(
+        self, source: Union[str, List[str], "appearance_mod.Appearance"] = None
+    ) -> "costume_mod.Costume":
         """
         Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
@@ -37,7 +38,7 @@ class CostumesManager(appearances_manager.AppearancesManager):
         return cast("costume.Costume", new_costume)
 
     def create_appearance(self) -> "costume_mod.Costume":
-        """Creates a new costume 
+        """Creates a new costume
 
         Returns:
             _type_: _description_
