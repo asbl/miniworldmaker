@@ -27,13 +27,14 @@ class Test614(unittest.TestCase):
                         print(self.event_manager.registered_events)
                         
                     def act(self):
+                        self.test()
                         if self.frame < 60:
                             self.token.move()
                         else:
                             print("board 1 is running", self.frame)
                             board2 = Board2((400, 600))
+                            board2.test = board1.test
                             self.switch_board(board2)
-                        self.test.process_test()
                             
                     
                 class Board2(PixelBoard):
@@ -51,10 +52,11 @@ class Test614(unittest.TestCase):
                         self.test = Test.from_running()
                         
                     def act(self):
+                        print("act of board 2")
+                        self.test()
                         if self.frame > 80:
                             self.token.move()
                             print("token rect", self.token.get_local_rect())
-                        self.test.process_test()
                         
                 board = Board1(400,600)
             return board

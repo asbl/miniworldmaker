@@ -8,8 +8,7 @@ import miniworldmaker.appearances.costumes_manager as costumes_manager
 import miniworldmaker.dialogs.ask as ask
 import miniworldmaker.positions.direction as board_direction
 import miniworldmaker.positions.position as board_position
-import \
-    miniworldmaker.tokens.managers.token_boardsensor as token_boardsensor  # - @todo not imported because of circular import
+import miniworldmaker.tokens.managers.token_boardsensor as token_boardsensor  # - @todo not imported because of circular import
 import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
 import miniworldmaker.tokens.token_base as token_base
 import miniworldmaker.tools.token_inspection as token_inspection
@@ -21,7 +20,7 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
     RegisterError,
     NoValidBoardPositionError,
     MissingBoardSensor,
-    MissingPositionManager
+    MissingPositionManager,
 )
 
 
@@ -124,7 +123,11 @@ class Token(token_base.BaseToken):
     token_count: int = 0
     class_image: str = ""
 
-    def __init__(self, position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0), board=None):
+    def __init__(
+        self,
+        position: Optional[Union[Tuple, "board_position.Position"]] = (0, 0),
+        board=None,
+    ):
         self._board_sensor: "token_boardsensor.Boardsensor" = None
         self._position_manager: "token_position_manager.TokenPositionManager" = None
         self._costume_manager: "costumes_manager.CostumesManager" = None
@@ -155,10 +158,11 @@ class Token(token_base.BaseToken):
         self._parent = None  # For tokens in container
         self.children: List["Token"] = []
         try:
-            self.board.get_token_connector(
-                self).init_managers(position)
+            self.board.get_token_connector(self).init_managers(position)
         except AttributeError:
-            raise AttributeError("Token could not be created on a Board - Did you created a board instance before?")
+            raise AttributeError(
+                "Token could not be created on a Board - Did you created a board instance before?"
+            )
         try:
             self._position = board_position.Position.create(position)
         except NoValidBoardPositionError:
@@ -223,7 +227,7 @@ class Token(token_base.BaseToken):
     @is_blockable.setter
     def is_blockable(self, value: bool):
         self.position_manager.is_blockable = value
-        
+
     @property
     def is_blocking(self):
         """
@@ -235,17 +239,17 @@ class Token(token_base.BaseToken):
     def is_blocking(self, value: bool):
         self.position_manager.is_blocking = value
 
-        
     @property
     def layer(self) -> int:
-        """Defines the layer on which the token is drawn if several tokens overlap.
-        """
+        """Defines the layer on which the token is drawn if several tokens overlap."""
         return self._layer
 
     @layer.setter
     def layer(self, value: int):
         self._layer = value
-        self.board._tokens.change_layer(self, value)  # changes layer in DirtySpriteGroup.
+        self.board._tokens.change_layer(
+            self, value
+        )  # changes layer in DirtySpriteGroup.
 
     @property
     def last_position(self) -> "board_position.Position":
@@ -392,7 +396,9 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.flip_x()
 
-    def add_costume(self, source: Union[None, Tuple, str, List] = None) -> "costume_mod.Costume":
+    def add_costume(
+        self, source: Union[None, Tuple, str, List] = None
+    ) -> "costume_mod.Costume":
         """Adds a new costume to token.
         The costume can be switched with self.switch_costume(index)
 
@@ -473,13 +479,17 @@ class Token(token_base.BaseToken):
         if not source or type(source) in [str, tuple]:
             return self.costume_manager.add_new_appearance(source)
         elif type(source) == list:
-            return cast("costume.Costume", self.costume_manager.add_new_appearance_from_list(source))
+            return cast(
+                "costume.Costume",
+                self.costume_manager.add_new_appearance_from_list(source),
+            )
         else:
-            raise MiniworldMakerError(f"Wrong type for appearance. Expected: list, tuple or str, got {type(source)}")
+            raise MiniworldMakerError(
+                f"Wrong type for appearance. Expected: list, tuple or str, got {type(source)}"
+            )
 
     def add_costumes(self, sources: list) -> "costume_mod.Costume":
-        """Adds multiple costumes
-        """
+        """Adds multiple costumes"""
         return self.costume_manager.add_new_appearances(sources)
 
     def remove_costume(self, source: Union[int, "costume_mod.Costume"] = None):
@@ -492,7 +502,9 @@ class Token(token_base.BaseToken):
             source = self.costume
         return self.costume_manager.remove_appearance(source)
 
-    def switch_costume(self, source: Union[int, "appearance.Appearance"]) -> "costume_mod.Costume":
+    def switch_costume(
+        self, source: Union[int, "appearance.Appearance"]
+    ) -> "costume_mod.Costume":
         """Switches the costume of token
 
         Args:
@@ -546,8 +558,7 @@ class Token(token_base.BaseToken):
 
     @property
     def costume(self) -> costume_mod.Costume:
-        """Gets the costume of token
-        """
+        """Gets the costume of token"""
         if hasattr(self, "costume_manager") and self.costume_manager is not None:
             return self.costume_manager.get_actual_appearance()
 
@@ -558,7 +569,7 @@ class Token(token_base.BaseToken):
     @property
     def costumes(self) -> "costumes_manager.CostumesManager":
         """Gets the costume manager
-        
+
         The costume manager can be iterated to get all costumes
         """
         return self.costume_manager
@@ -632,7 +643,7 @@ class Token(token_base.BaseToken):
                 def act(self):
                     c.direction = 45
                     c.move()
-                        
+
                 board.run()
 
 
@@ -656,7 +667,7 @@ class Token(token_base.BaseToken):
                 def act(self):
                     c.direction = -45
                     c.move()
-                        
+
                 board.run()
 
             .. raw:: html
@@ -674,8 +685,7 @@ class Token(token_base.BaseToken):
 
     @property
     def direction_at_unit_circle(self) -> int:
-        """Gets the direction as value in unit circle (0° right, 90° top, 180° left...)
-        """
+        """Gets the direction as value in unit circle (0° right, 90° top, 180° left...)"""
         return self.position_manager.dir_to_unit_circle(self.direction)
 
     @direction_at_unit_circle.setter
@@ -708,13 +718,13 @@ class Token(token_base.BaseToken):
                 @t.register
                 def act(self):
                     t.turn_left(1)
-                    
+
                 board.run()
 
             Output:
 
             .. raw:: html
-       
+
                 <video loop autoplay muted width=400>
                 <source src="../_static/turnleft.webm" type="video/webm">
                 Your browser does not support the video tag.
@@ -748,13 +758,13 @@ class Token(token_base.BaseToken):
                 @t.register
                 def act(self):
                     t.turn_left(1)
-                    
+
                 board.run()
 
         Output:
-       
+
         .. raw:: html
-        
+
             <video loop autoplay muted width=400>
             <source src="../_static/turnright.webm" type="video/webm">
             Your browser does not support the video tag.
@@ -772,7 +782,9 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.turn_right(degrees)
 
-    def point_in_direction(self, direction: Union[str, int, float]) -> "board_direction.Direction":
+    def point_in_direction(
+        self, direction: Union[str, int, float]
+    ) -> "board_direction.Direction":
         """Token points in given direction.
 
         You can use a integer or a string to describe the direction
@@ -807,7 +819,9 @@ class Token(token_base.BaseToken):
         """
         return self.position_manager.point_in_direction(direction)
 
-    def point_towards_position(self, destination: Union[tuple, "board_position.BoardPosition"]) -> Union[int, float]:
+    def point_towards_position(
+        self, destination: Union[tuple, "board_position.BoardPosition"]
+    ) -> Union[int, float]:
         """
         Token points towards a given position
 
@@ -1096,13 +1110,17 @@ class Token(token_base.BaseToken):
         return self.position_manager.undo_move()
 
     def move_towards(self, target: Union["board_position.Position", "Token"]):
-        if isinstance (target, Token):
+        if isinstance(target, Token):
             target = target.position
         return self.position_manager.move_towards_position(target)
 
-    def move_in_direction(self,
-                          direction: Union[int, str, tuple, "board_direction.Direction", "board_position.Position"],
-                          distance=1):
+    def move_in_direction(
+        self,
+        direction: Union[
+            int, str, tuple, "board_direction.Direction", "board_position.Position"
+        ],
+        distance=1,
+    ):
         """Moves token *distance* steps into a *direction* or towards a position
 
         .. image:: ../_images/move_in_direction.png
@@ -1128,7 +1146,9 @@ class Token(token_base.BaseToken):
         elif type(direction) == tuple or isinstance(direction, board_position.Position):
             return self.position_manager.move_towards_position(direction, distance)
         else:
-            raise MiniworldMakerError(f"Expected direction or position, got f{type(direction)}, ({direction})")
+            raise MiniworldMakerError(
+                f"Expected direction or position, got f{type(direction)}, ({direction})"
+            )
 
     def move_to(self, position: "board_position.Position"):
         """Moves token *distance* to a specific board_posiition
@@ -1301,7 +1321,9 @@ class Token(token_base.BaseToken):
         """
         raise NotImplementedOrRegisteredError(self.on_not_detecting_board())
 
-    def detect_all(self, token_filter: str = None, direction: int = 0, distance: int = 0) -> List["Token"]:
+    def detect_all(
+        self, token_filter: str = None, direction: int = 0, distance: int = 0
+    ) -> List["Token"]:
         """Detects if tokens are on token position.
         Returns a list of tokens.
 
@@ -1324,8 +1346,12 @@ class Token(token_base.BaseToken):
     detect_tokens = detect_all  #: Alias of :meth:`Token.detect_all`
     sensing_tokens = detect_tokens  #: Alias of :meth:`Token.sensing_tokens`
 
-    def detect(self, token_filter: Union[str, type] = None, direction: int = 0, distance: int = 0) -> Union[
-        "Token", None]:
+    def detect(
+        self,
+        token_filter: Union[str, type] = None,
+        direction: int = 0,
+        distance: int = 0,
+    ) -> Union["Token", None]:
         """Senses if tokens are on token position.
         Returns the first found token.
 
@@ -1384,7 +1410,10 @@ class Token(token_base.BaseToken):
     detect_token = detect
     sensing_token = detect  #: Alias of :meth:`Token.detect`
 
-    def detect_borders(self, distance: int = 0, ) -> List:
+    def detect_borders(
+        self,
+        distance: int = 0,
+    ) -> List:
         """
         Senses borders
 
@@ -1413,7 +1442,9 @@ class Token(token_base.BaseToken):
         return "left" in self.board_sensor.detect_borders(0)
 
     sensing_left_border = detect_left_border
-    is_sensing_left_border = sensing_left_border  #: Alias of :meth:`Token.sensing_left_border`
+    is_sensing_left_border = (
+        sensing_left_border  #: Alias of :meth:`Token.sensing_left_border`
+    )
 
     def detect_right_border(self) -> bool:
         """Does the token touch the right border?
@@ -1425,7 +1456,9 @@ class Token(token_base.BaseToken):
         return "right" in self.board_sensor.detect_borders(0)
 
     sensing_right_border = detect_right_border
-    is_sensing_right_border = sensing_right_border  #: Alias of :meth:`Token.sensing_right_border`
+    is_sensing_right_border = (
+        sensing_right_border  #: Alias of :meth:`Token.sensing_right_border`
+    )
 
     def detect_top_border(self) -> bool:
         """Does the token touch the lower border?
@@ -1437,7 +1470,9 @@ class Token(token_base.BaseToken):
         return "top" in self.board_sensor.detect_borders(0)
 
     sensing_top_border = detect_top_border
-    is_sensing_top_border = sensing_top_border  #: Alias of :meth:`Token.sensing_top_border`
+    is_sensing_top_border = (
+        sensing_top_border  #: Alias of :meth:`Token.sensing_top_border`
+    )
 
     def sensing_bottom_border(self) -> bool:
         """Does the token touch the lower border?
@@ -1448,20 +1483,26 @@ class Token(token_base.BaseToken):
         """
         return "bottom" in self.board_sensor.detect_borders(0)
 
-    is_sensing_bottom_border = sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
-    is_touching_bottom_border = sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
+    is_sensing_bottom_border = (
+        sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
+    )
+    is_touching_bottom_border = (
+        sensing_bottom_border  #: Alias of :meth:`Token.sensing_bottom_border`
+    )
 
     def detect_color(self, color: Tuple = None) -> bool:
         """Senses colors in board-background at token center-position
 
         Args:
             color: color as tuple
-            
+
         Returns:
             True, if color was found
 
         """
-        color = self.board_sensor.detect_color(color, )
+        color = self.board_sensor.detect_color(
+            color,
+        )
         return color
 
     sensing_color = detect_color
@@ -1476,10 +1517,14 @@ class Token(token_base.BaseToken):
             True, if any color was found
 
         """
-        color = self.board_sensor.detect_colors(color, )
+        color = self.board_sensor.detect_colors(
+            color,
+        )
         return color
 
-    def detect_color_at(self, direction: int = None, distance: int = 0) -> Union[Tuple, List]:
+    def detect_color_at(
+        self, direction: int = None, distance: int = 0
+    ) -> Union[Tuple, List]:
         """Detects colors in board-background at token-position
 
         Args:
@@ -1529,15 +1574,29 @@ class Token(token_base.BaseToken):
     sensing_tokens_at = detect_tokens  #: Alias of :meth:`Token.sensing_tokens_at`
 
     def detect_token_at(self, direction=None, distance=0, token_filter=None) -> "Token":
-        found_tokens = self.board_sensor.detect_tokens_at(token_filter, direction, distance)
+        found_tokens = self.board_sensor.detect_tokens_at(
+            token_filter, direction, distance
+        )
         if found_tokens:
             return found_tokens[0]
 
-    def detect_tokens_in_front(self, token_filter=None, distance=1, ) -> list:
-        return self.board_sensor.detect_tokens_at(token_filter, self.direction, distance)
+    def detect_tokens_in_front(
+        self,
+        token_filter=None,
+        distance=1,
+    ) -> list:
+        return self.board_sensor.detect_tokens_at(
+            token_filter, self.direction, distance
+        )
 
-    def detect_token_in_front(self, token_filter=None, distance=1, ) -> "Token":
-        found_tokens = self.board_sensor.detect_tokens_at(token_filter, self.direction, distance)
+    def detect_token_in_front(
+        self,
+        token_filter=None,
+        distance=1,
+    ) -> "Token":
+        found_tokens = self.board_sensor.detect_tokens_at(
+            token_filter, self.direction, distance
+        )
         if found_tokens:
             return found_tokens[0]
 
@@ -1596,7 +1655,7 @@ class Token(token_base.BaseToken):
         self.costume_manager.animate(speed)
 
     def stop_animation(self):
-        """Stops current animation. 
+        """Stops current animation.
         Costume ``is_animated`` is set to False
 
 
@@ -1795,7 +1854,7 @@ class Token(token_base.BaseToken):
         Examples:
 
             See: :py:meth:`Token.on_mouse_left`.
-        
+
         Args:
             position (tuple): Actual mouse position as tuple (x,y)
 
@@ -1842,7 +1901,7 @@ class Token(token_base.BaseToken):
         raise NotImplementedOrRegisteredError(self.on_mouse_motion)
 
     def on_mouse_left_released(self, position: tuple):
-        """Method is called when left mouse key is released. 
+        """Method is called when left mouse key is released.
 
         Examples:
 
@@ -1861,13 +1920,13 @@ class Token(token_base.BaseToken):
                 def on_mouse_left(self, mouse_pos):
                     if self.sensing_point(mouse_pos):
                         self.dragged = True
-                        
+
                 @circle.register
                 def on_mouse_left_released(self, mouse_pos):
                     if not board.is_mouse_pressed():
                         self.dragged = False
                         self.center = mouse_pos
-                        
+
                 board.run()
 
             Output:
@@ -2013,61 +2072,61 @@ class Token(token_base.BaseToken):
     @property
     def fill_color(self):
         """The fill color of token as rgba value, e.g. (255, 0, 0) for red.
-        
-        When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume
-        (See: :py:attr:.appearances.appearance.Appearance.is_filled`) is set to ``True``.
-        
-        .. note::
 
-            Aliases: :py:attr:`Token.color`
+               When ``fill_color`` is set to a color, the attribute ``is_filled`` of costume
+               (See: :py:attr:.appearances.appearance.Appearance.is_filled`) is set to ``True``.
 
-        .. warning:: 
-        
-            If you fill a costume with an image, the image will be completely overwritten,
-            even if `fill_color` is transparent.
-        
-            This behaviour may change in later releases!
+               .. note::
 
-        Examples:
+                   Aliases: :py:attr:`Token.color`
 
-            .. code-block:: python
+               .. warning::
 
-                from miniworldmaker import *
+                   If you fill a costume with an image, the image will be completely overwritten,
+                   even if `fill_color` is transparent.
 
-                board = Board(200,80)
-                board.default_fill_color = (0,0, 255)
+                   This behaviour may change in later releases!
 
-                t = Token()
+               Examples:
 
-                t2 = Token((40,0))
-                t2.is_filled = (0, 255, 0)
+                   .. code-block:: python
 
-                t3 = Token((80, 0))
-                t3.fill_colorimport miniworldmaker.tokens.token as token
- = (255, 0, 0)
+                       from miniworldmaker import *
 
-                t4 = Token((120, 0))
-                t4.add_costume((0,0,0))
-                t4.fill_color = (255, 255, 0)
+                       board = Board(200,80)
+                       board.default_fill_color = (0,0, 255)
 
-                t5 = Token((160, 0))
-                t5.add_costume("images/player.png")
-                t5.fill_color = (255, 255, 0, 100) # image is overwritten
+                       t = Token()
 
-                t6 = Circle((0, 40), 20)
-                t6.position = t6.center
-                t6.fill_color = (255, 255, 255)
+                       t2 = Token((40,0))
+                       t2.is_filled = (0, 255, 0)
 
-                t7 = Ellipse((40, 40), 40, 40)
-                t7.fill_color = (255, 0, 255) 
+                       t3 = Token((80, 0))
+                       t3.fill_colorimport miniworldmaker.tokens.token as token
+        = (255, 0, 0)
 
-                board.run()
+                       t4 = Token((120, 0))
+                       t4.add_costume((0,0,0))
+                       t4.fill_color = (255, 255, 0)
 
-            Output:
+                       t5 = Token((160, 0))
+                       t5.add_costume("images/player.png")
+                       t5.fill_color = (255, 255, 0, 100) # image is overwritten
 
-            .. image:: ../_images/fill_color.png
-                :width: 200px
-                :alt: Set borders
+                       t6 = Circle((0, 40), 20)
+                       t6.position = t6.center
+                       t6.fill_color = (255, 255, 255)
+
+                       t7 = Ellipse((40, 40), 40, 40)
+                       t7.fill_color = (255, 0, 255)
+
+                       board.run()
+
+                   Output:
+
+                   .. image:: ../_images/fill_color.png
+                       :width: 200px
+                       :alt: Set borders
         """
         return self.costume.fill_color
 
@@ -2102,7 +2161,7 @@ class Token(token_base.BaseToken):
           * 255: No transparency
 
 
-        .. note:: 
+        .. note::
 
             You must also set :py:attr:`Token.border` to a value > 0
 
@@ -2173,13 +2232,11 @@ class Token(token_base.BaseToken):
         self.costume.border = value
 
     def hide(self):
-        """Hides a token (the token will be invisible)
-        """
+        """Hides a token (the token will be invisible)"""
         self.visible = False
 
     def show(self):
-        """Displays a token ( an invisible token will be visible)
-        """
+        """Displays a token ( an invisible token will be visible)"""
         self.visible = True
 
     def register(self, method: callable, force=False, name=None):
@@ -2190,7 +2247,10 @@ class Token(token_base.BaseToken):
             force: Should register forced, even if method is not handling a valid event?
             name: Registers method with specific name
         """
-        if not force and method.__name__ not in self.board.event_manager.token_class_events_set:
+        if (
+            not force
+            and method.__name__ not in self.board.event_manager.token_class_events_set
+        ):
             raise RegisterError(method.__name__, self)
         bound_method = token_inspection.TokenInspection(self).bind_method(method, name)
         if method.__name__ == "on_setup":
@@ -2219,7 +2279,7 @@ class Token(token_base.BaseToken):
 
     def get_rect(self) -> pygame.Rect:
         """Gets the rect of the token.
-        
+
         If a camera is used, the local rect is written.
 
         Returns:
@@ -2233,7 +2293,9 @@ class Token(token_base.BaseToken):
                 self.__class__.__name__, self.token_id, self.position, self.size
             )
         else:
-            return "**Token: {0} ; ID: {1}**".format(self.__class__.__name__, self.token_id)
+            return "**Token: {0} ; ID: {1}**".format(
+                self.__class__.__name__, self.token_id
+            )
 
     @property
     def image(self) -> pygame.Surface:
@@ -2277,15 +2339,13 @@ class Token(token_base.BaseToken):
             self._board_sensor = None
             self.has_board_sensor = False
 
-
     @property
     def costume_manager(self):
         return self._costume_manager
 
     @property
     def position(self) -> "board_position.Position":
-        """The position of the token as Position(x, y)
-        """
+        """The position of the token as Position(x, y)"""
         return self.position_manager.position
 
     @position.setter
@@ -2295,7 +2355,9 @@ class Token(token_base.BaseToken):
     def set_position(self, value: Union["board_position.Position", tuple]):
         self.position_manager.position = value
 
-    def get_distance_to(self, obj: Union["Token", "board_position.Position", tuple]) -> float:
+    def get_distance_to(
+        self, obj: Union["Token", "board_position.Position", tuple]
+    ) -> float:
         """Gets the distance to another token or a position
 
         Args:
@@ -2308,4 +2370,3 @@ class Token(token_base.BaseToken):
 
     def on_shape_change(self):
         pass
-

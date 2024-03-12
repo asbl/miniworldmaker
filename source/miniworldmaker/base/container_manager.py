@@ -31,7 +31,9 @@ class ContainerManager:
                 ct.repaint()
                 ct.blit_surface_to_window_surface()
 
-    def add_topleft(self, new_container: "container_mod.Container") -> "container_mod.Container":
+    def add_topleft(
+        self, new_container: "container_mod.Container"
+    ) -> "container_mod.Container":
         """Adds the topleft corner if it does not exist."""
         for container in self.containers:
             if container.docking_position == "top_left":
@@ -40,8 +42,9 @@ class ContainerManager:
         self.add_container(new_container, "top_left")
         return new_container
 
-    def add_container(self, container: "container_mod.Container", dock: str,
-                      size: int = None) -> "container_mod.Container":
+    def add_container(
+        self, container: "container_mod.Container", dock: str, size: int = None
+    ) -> "container_mod.Container":
         """Adds a new container
 
         Args:
@@ -55,7 +58,7 @@ class ContainerManager:
         Returns:
             container.Container: The container
         """
-        
+
         if container not in self.containers:
             self.app.window.recalculate_dimensions()
             container.docking_position = dock
@@ -87,8 +90,11 @@ class ContainerManager:
                 self.remove_container(container)
         self.app.prepare_mainloop()
 
-    def switch_container(self, container: "container_mod.Container",
-                         new_container: "container_mod.Container") -> "container_mod.Container":
+    def switch_container(
+        self,
+        container: "container_mod.Container",
+        new_container: "container_mod.Container",
+    ) -> "container_mod.Container":
         """Switches a container (e.g. replace a board with another board)
 
         Args:
@@ -114,18 +120,19 @@ class ContainerManager:
         raise MiniworldMakerError("Container top_left is missing!")
 
     def containers_right(self):
-        """List of all containers with docking_position "right", ordered by display-position
-        """
-        return [self.topleft] + [ct for ct in self.containers if ct.docking_position == "right"]
+        """List of all containers with docking_position "right", ordered by display-position"""
+        return [self.topleft] + [
+            ct for ct in self.containers if ct.docking_position == "right"
+        ]
 
     def containers_bottom(self):
-        """List of all containers with docking_position "bottom", ordered by display-position
-        """
-        return [self.topleft] + [ct for ct in self.containers if ct.docking_position == "bottom"]
+        """List of all containers with docking_position "bottom", ordered by display-position"""
+        return [self.topleft] + [
+            ct for ct in self.containers if ct.docking_position == "bottom"
+        ]
 
     def remove_container(self, container):
-        """Removes a container and updates window.
-        """
+        """Removes a container and updates window."""
         if container in self.containers:
             self.containers.remove(container)
         for ct in self.containers:
@@ -147,8 +154,7 @@ class ContainerManager:
                 top_left += ct.container_height
 
     def recalculate_containers_width(self) -> int:
-        """Recalculates container width
-        """
+        """Recalculates container width"""
         containers_width: int = 0
         for container in self.containers:
             if container.window_docking_position == "top_left":
