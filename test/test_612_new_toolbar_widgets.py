@@ -13,9 +13,9 @@ class Test612(unittest.TestCase):
             # Here comes your code
             @board.register
             def setup_environment(self, test):
-                board = Board()
-
                 toolbar = Toolbar()
+                board.add_container(toolbar, "right", size = 300)
+                
                 toolbar.margin_left =  20
                 toolbar.margin_right = 10
                 toolbar.background_color = (0,0,255)
@@ -27,7 +27,7 @@ class Test612(unittest.TestCase):
                 toolbar.add_widget(button)
                 button2 = Button("test")
                 toolbar.add_widget(button2)
-                board.add_container(toolbar, "right", size = 300)
+                
                 @board.register
                 def on_message(self, message):
                     print(message)

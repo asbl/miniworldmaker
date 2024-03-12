@@ -5,25 +5,30 @@ import os
 import random
 
 
-class Test1206(unittest.TestCase):
+class Test1917a(unittest.TestCase):
 
     def setUp(self):
         def test_code():
-            board = TiledBoard(6,6)
+            board = TiledBoard()
             # Here comes your code
             @board.register
             def setup_environment(self, test):
-                assert board.rows == 6
-                assert board.columns == 6
-                for x in range(board.rows):
-                    for y in range(board.columns):
-                        color = (x * y) / (board.rows * board.columns) * 255
-                        board.background.draw((color, color, color), (x * board.tile_size,y * board.tile_size), 40,40)
-                token = Token((3,3))
-                print(token.sensing_color((63,63,63)))
-                print(token.sense_color_at(distance = 1, direction = 90))
-                assert(token.sensing_color((63,63,63)) is True)
-                assert(token.sense_color_at(distance = 1, direction = 90) == (85,85,85,255) )
+                board.add_background("images/soccer_green.jpg")
+                board.columns=20
+                board.rows=8
+                board.tile_size=40
+                board.background.grid = True
+
+                player = Token(position=(3, 4))
+                player.add_costume("images/char_blue.png")
+                player.border = 1
+                print(player.size)
+                print(player.position, player.direction)
+                print(player.image)
+                player.orientation = -90
+                @player.register
+                def on_key_down(self, key):
+                    self.move()
             return board
         App.reset(unittest=True, file=__file__)
         board = test_code()

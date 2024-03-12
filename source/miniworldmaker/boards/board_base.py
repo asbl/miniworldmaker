@@ -7,7 +7,9 @@ import miniworldmaker.containers.container as container_mod
 import pygame
 from miniworldmaker.base import app as app_mod
 from miniworldmaker.boards.board_manager import board_camera_manager
-from miniworldmaker.boards.board_templates.pixel_board import pixel_board_connector as pixel_board_connector
+from miniworldmaker.boards.board_templates.pixel_board import (
+    pixel_board_connector as pixel_board_connector,
+)
 from miniworldmaker.boards.token_connectors import token_connector as token_connector
 from miniworldmaker.tokens import token as token_module
 
@@ -89,7 +91,9 @@ class BaseBoard(container_mod.Container, ABC):
         """
         return import_factory.ImportBoardFromDB(file, self.__class__).load()
 
-    def load_tokens_from_db(self, file: str, token_classes: list) -> List["token_module.Token"]:
+    def load_tokens_from_db(
+        self, file: str, token_classes: list
+    ) -> List["token_module.Token"]:
         """Loads all tokens from db. Usually you load the tokens in __init__() or in on_setup()
 
         Args:

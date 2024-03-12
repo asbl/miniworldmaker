@@ -1,32 +1,29 @@
-from miniworldmaker import App, Board, Token, Position, Text, Line
+from miniworldmaker import App, Board, Token, Position, CostumeOutOfBoundsError
 from .screenshot_tester import ScreenshotTester
 import unittest
 import os
 import random
 
 
-class Test1501(unittest.TestCase):
+class Test1917(unittest.TestCase):
 
     def setUp(self):
         def test_code():
-            board = Board(640, 500)
+            board = Board(200, 400)
             # Here comes your code
             @board.register
             def setup_environment(self, test):
-                Line((320,0), (320, 500))
+                board.add_background("images/grass.jpg")
+                board.columns=20
+                board.rows=8
+                board.tile_size=40
 
-                t1 = Text((100,100), "Test1")
-                print(t1.width)
-                t1.text = "Test1: " + str(t1.width)
-                print(t1.width)
-                t1.x = (board.width - t1.width) / 2
-                t1.border = 1
-
-                t2 = Text((100,150), "Test2")
-                t2.text = "Test2: " + str(t2.width)
-                t2.font_size = 50
-                t2.x = (board.width - t2.width) / 2
-                t2.border = 1
+                player = Token(position=(3, 4))
+                player.add_costume("images/char_blue.png")
+                test.assertEquals(player.position, Position(3, 4))
+                test.assertEquals(player.direction, 0)
+                player.orientation = -90
+                test.assertEquals(player.direction, 0)
             return board
         App.reset(unittest=True, file=__file__)
         board = test_code()
@@ -47,5 +44,3 @@ class Test1501(unittest.TestCase):
             self.board.run()
 
 
-if __name__ == "__main__":
-    unittest.main()

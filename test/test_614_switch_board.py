@@ -13,7 +13,6 @@ class Test614(unittest.TestCase):
             # Here comes your code
             @board.register
             def setup_environment(self, test):
-                
                 class Board1(PixelBoard):
                     def on_setup(self):
                         self.rows = 100
@@ -56,8 +55,6 @@ class Test614(unittest.TestCase):
                             self.token.move()
                             print("token rect", self.token.get_local_rect())
                         self.test.process_test()
-                        
-                        
                         
                 board = Board1(400,600)
             return board
