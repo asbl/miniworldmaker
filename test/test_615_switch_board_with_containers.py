@@ -23,6 +23,7 @@ class Test615(unittest.TestCase):
                         print("board 1 is running", self.frame)
                         board2 = Board2((400, 600))
                         self.remove_container(self.console)
+                        self.attach_board(board2)
                         self.switch_board(board2)
                         
                 
@@ -30,10 +31,10 @@ class Test615(unittest.TestCase):
                 def on_setup(self):
                     self.add_background((0,0,100,255))
                     token = Token((40,40))
-                    print("board 2 was created")
+                    print("board 2 was created")  
                     
-                def act_test(self):
-                    self.test.process_test()                
+                def act(self):
+                    self.test()           
             board = Board1(400,600)
             return board
         

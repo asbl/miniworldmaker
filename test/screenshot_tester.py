@@ -33,8 +33,6 @@ class ScreenshotTester:
 
         @board.register
         def test(self):
-            global TEST_FRAMES
-            global QUIT_FRAME
             self.tester.test_frame = self.tester.test_frame + 1
             self.tester.screenshot_test(
                 self.tester.test_frame,
@@ -43,6 +41,22 @@ class ScreenshotTester:
                 self.test_title,
                 self.tester,
             )
+            
+        @board.register
+        def attach_board(self, board2):
+            board2.tester = self.tester
+            board2.test_title = self.test_title
+            
+            @board2.register
+            def test(self):
+                self.tester.test_frame = self.tester.test_frame + 1
+                self.tester.screenshot_test(
+                    self.tester.test_frame,
+                    self.tester.quit_frame,
+                    self.tester.test_frames,
+                    self.test_title,
+                    self.tester,
+                )
 
     def diff(self, ia, ib):
         percentage = imgcompare.image_diff_percent(ia, ib)
