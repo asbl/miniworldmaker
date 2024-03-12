@@ -22,6 +22,8 @@ class ScreenshotTester:
         @board.register
         def act(self):
             self.test()
+            if hasattr(self, "act_test"):
+                self.act_test()
 
         self.unittest.board = board
 
