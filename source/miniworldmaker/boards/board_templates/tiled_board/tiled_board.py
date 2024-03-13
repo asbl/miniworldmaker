@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Union, Dict, Tuple, Optional, cast, List
+from typing import Union, Dict, Tuple, Optional, cast, List, Set
 
 import miniworldmaker.boards.board_manager.board_camera_manager as board_camera_manager
 import miniworldmaker.boards.board_templates.pixel_board.board as board
@@ -9,6 +9,7 @@ import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
 import miniworldmaker.boards.board_templates.tiled_board.tile_factory as tile_factory
 import miniworldmaker.boards.board_templates.tiled_board.tiled_board_connector as tiled_board_connector
 import miniworldmaker.positions.position as board_position
+import miniworldmaker.tokens.token as token_mod
 import pygame
 from miniworldmaker.exceptions import miniworldmaker_exception
 from miniworldmaker.exceptions.miniworldmaker_exception import TiledBoardTooBigError
@@ -56,7 +57,7 @@ class TiledBoard(board.Board):
             board.run()
 
 
-        .. image:: /_images/tilecorneredge.png
+        .. image:: /_images/tile_corner_edge.png
             :alt: Placing Tokens on a Tile, on a Corner or in a Edge
     """
 
@@ -71,16 +72,16 @@ class TiledBoard(board.Board):
         self.default_token_speed: int = 1
         self.empty = empty
         self.tile_factory = self._get_tile_factory()
-        self.tiles = defaultdict()
-        self.corners = defaultdict()
-        self.edges = defaultdict()
+        self.tiles : defaultdict = defaultdict()
+        self.corners : defaultdict= defaultdict()
+        self.edges  : defaultdict = defaultdict()
         if view_x > 1000 or view_y > 1000:
             raise TiledBoardTooBigError(view_x, view_y, 40)
         super().__init__(view_x=view_x, view_y=view_y, tile_size=tile_size)
         self._tile_size = 40
         self.speed = 20
         self.dynamic_tokens_dict: defaultdict = defaultdict(list)  # the dict is regularly updated
-        self.dynamic_tokens: set = set()  # Set with all dynamic actors
+        self.dynamic_tokens : "pygame.sprite.Group" = pygame.sprite.Group()  # Set with all dynamic actors
         self.static_tokens_dict: defaultdict = defaultdict(list)
         self.tokens_fixed_size = True
         self.rotatable_tokens = True
@@ -91,7 +92,7 @@ class TiledBoard(board.Board):
         return tile_factory.TileFactory()
 
     def clear_tiles(self):
-        """Removes all tiles, coners and edges from Board
+        """Removes all tiles, corners and edges from Board
 
         Instead of clearing the board, you can add the parameter empty to Board to create a new Board from scratch.
 
@@ -200,7 +201,6 @@ class TiledBoard(board.Board):
         Merges identical corners for different Tiles
         """
         tile_cls = self.tile_factory.tile_cls
-        corner_cls = self.tile_factory.corner_cls
         for position, tile in self.tiles.items():
             for direction in tile_cls.corner_vectors:
                 self.add_corner_to_board(tile.position, direction)
@@ -211,12 +211,11 @@ class TiledBoard(board.Board):
         Merges identical edges for different tiles
         """
         tile_cls = self.tile_factory.tile_cls
-        edge_cls = self.tile_factory.edge_cls
         for position, tile in self.tiles.items():
             for direction in tile_cls.edge_vectors:
                 self.add_edge_to_board(tile.position, direction)
 
-    def get_tile(self, position: board_position):
+    def get_tile(self, position: "board_position.BoardPosition"):
         """Gets Tile at Position.
 
         Raises TileNotFoundError, if Tile does not exists.
@@ -250,7 +249,7 @@ class TiledBoard(board.Board):
                 board.run()
 
         :param position: Position on Board
-        :return: Tile on Posiiton, if position exists
+        :return: Tile on Position, if position exists
         """
         if self.is_tile(position):
             position = board_position.Position.create(position)
@@ -343,7 +342,7 @@ class TiledBoard(board.Board):
                 board.run()
 
         :param position: Position on Board
-        :return: Edge on Posiiton, if position exists
+        :return: Edge on Position, if position exists
         """
         edge_cls = self.tile_factory.edge_cls
         if direction is not None:
@@ -474,13 +473,13 @@ class TiledBoard(board.Board):
         return board_position.Position(x, y)
 
     def set_columns(self, value: int):
-        self.setup_board()
+        self._columns = value
         self.camera.viewport_width = value * self.tile_size
         self.boundary_x = value
-        # self.background.set_dirty("all", background_mod.Background.RELOAD_ACTUAL_IMAGE)
+        self.setup_board()
         
     def set_rows(self, value: int):
-        self.setup_board()
+        self._rows = value
         self.camera.viewport_height = value * self.tile_size
         self.boundary_y = value
-        print("set rows")
+        self.setup_board()

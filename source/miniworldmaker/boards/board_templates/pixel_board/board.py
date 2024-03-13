@@ -1,5 +1,5 @@
 import math
-from typing import Tuple, Union, Type, Optional, List, cast
+from typing import Tuple, Union, Optional, List, cast, Callable
 
 import miniworldmaker.appearances.appearance as appearance
 import miniworldmaker.appearances.background as background_mod
@@ -118,21 +118,22 @@ class Board(board_base.BaseBoard):
 
     def __init__(
             self,
-            view_x: Union[int, Tuple[int]] = 400,
+            view_x: Union[int, Tuple[int, int]] = 400,
             view_y: int = 400,
             tile_size: int = 1,
     ):
-        if type(view_x) != int or type(view_y) != int:
-            # If first param is tuple, generate board from tuple-data
-            if type(view_x) == tuple:
-                size = view_x
-                view_x = size[0]
-                view_y = size[1]
-            else:
-                raise BoardArgumentsError(view_x, view_y)
+        if isinstance(view_x, int) and isinstance(view_y, int):
+            pass
+        elif isinstance(view_x, tuple) and isinstance(view_y, int):
+            size : tuple = cast(tuple, view_x)
+            view_x = size[0]
+            view_y = size[1]
+            tile_size = view_y
+        else:
+            raise BoardArgumentsError(view_x, view_y)
         self._tile_size = tile_size
         self.camera = self._get_camera_manager_class()(view_x, view_y, self)
-        self._tokens = pygame.sprite.LayeredDirty()
+        self._tokens : "pygame.sprite.LayeredDirty" = pygame.sprite.LayeredDirty()
         self.event_manager: event_manager.BoardEventManager = self._create_event_manager()
         super().__init__()
         self.backgrounds_manager: "backgrounds_manager.BackgroundsManager" = backgrounds_manager.BackgroundsManager(
@@ -171,8 +172,8 @@ class Board(board_base.BaseBoard):
         self.collision_manager: "coll_manager.BoardCollisionManager" = coll_manager.BoardCollisionManager(self)
         self.timed_objects: list = []
         self.app.event_manager.to_event_queue("setup", None)
-        self.dynamic_tokens = pygame.sprite.Group()
-        self._registered_methods = []
+        self.dynamic_tokens : "pygame.sprite.Group" = pygame.sprite.Group()
+        self._registered_methods : List[Callable] = []
         self.tokens_fixed_size = False
         self.container_width = self.camera.get_viewport_width_in_pixels()
         self.container_height = self.camera.get_viewport_height_in_pixels()
@@ -201,9 +202,9 @@ class Board(board_base.BaseBoard):
         Args:
             rect: A rectangle as tuple (top, left, width, height)
         """
-        rect = board_rect.Rect.create(rect)
-        topleft_on_the_board = self.contains_position(rect.topleft)
-        bottom_right_on_the_board = self.contains_position(rect.bottomright)
+        rectangle = board_rect.Rect.create(rect)
+        topleft_on_the_board = self.contains_position(rectangle.topleft)
+        bottom_right_on_the_board = self.contains_position(rectangle.bottomright)
         return topleft_on_the_board or bottom_right_on_the_board
 
     @property
@@ -365,7 +366,7 @@ class Board(board_base.BaseBoard):
             A list of borders, e.g. ["left", "top"], if rect is touching the left a top border.
 
         """
-        pass
+        return []
 
     @property
     def camera_x(self):
@@ -550,18 +551,20 @@ class Board(board_base.BaseBoard):
         """Returns the current background"""
         return self.get_background()
 
-    def get_background(self) -> "background_mod.Background":
-        """Returns the current background"""
-        return self.backgrounds_manager.background
-
     @background.setter
     def background(self, source):
         if isinstance(source, appearance.Appearance):
             self.backgrounds_manager.background = source
         else:
             self.backgrounds_manager.add_background(source)
+            
+    def get_background(self) -> "background_mod.Background":
+        """Returns the current background"""
+        return self.backgrounds_manager.background
 
-    def switch_background(self, background: Union[int, Type["appearance.Appearance"]]) -> "background_mod.Background":
+
+
+    def switch_background(self, background: Union[int,"appearance.Appearance"]) -> "background_mod.Background":
         """Switches the background
 
         Args:
@@ -606,8 +609,8 @@ class Board(board_base.BaseBoard):
         Returns:
             The new background
 
-        """
-        return self.backgrounds_manager.switch_appearance(background)
+        """  
+        return cast(background_mod.Background, self.backgrounds_manager.switch_appearance(background))
 
     def remove_background(self, background=None):
         """Removes a background from board
@@ -989,13 +992,6 @@ class Board(board_base.BaseBoard):
         """
         return self.camera.get_viewport_width_in_pixels()
 
-    @property
-    def container_width(self) -> int:
-        """
-        The width of the container
-        """
-        return self.camera.get_viewport_width_in_pixels()
-
     @container_width.setter
     def container_width(self, value):
         self._container_width = value
@@ -1109,7 +1105,7 @@ class Board(board_base.BaseBoard):
         """
         self.event_manager.handle_event(event, data)
 
-    def register(self, method: callable) -> callable:
+    def register(self, method: Callable) -> Callable:
         """
         Used as decorator
         e.g.
@@ -1121,7 +1117,7 @@ class Board(board_base.BaseBoard):
         self.event_manager.register_event(method.__name__, self)
         return bound_method
 
-    def unregister(self, method: callable):
+    def unregister(self, method: Callable):
         self._registered_methods.remove(method)
         board_inspection.BoardInspection(self).unbind_method(method)
 

@@ -1,8 +1,6 @@
-from miniworldmaker import App, Board, Token, Position, CostumeOutOfBoundsError
+from miniworldmaker import App, Board
 from .screenshot_tester import ScreenshotTester
 import unittest
-import os
-import random
 
 
 class Test000(unittest.TestCase):
@@ -14,6 +12,7 @@ class Test000(unittest.TestCase):
             @board.register
             def setup_environment(self, test):
                 pass
+            return board
         App.reset(unittest=True, file=__file__)
         board = test_code()
         """ Setup screenshot tester"""

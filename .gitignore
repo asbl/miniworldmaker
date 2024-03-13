@@ -94,3 +94,5 @@ test/output
 test/testfiles/*
 test/outputfiles*
 *tmp_output*
+venv
+venv/*

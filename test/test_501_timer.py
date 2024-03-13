@@ -22,7 +22,7 @@ class Test501(unittest.TestCase):
 
                 player = Token(position=(3, 4))
                 player.add_costume("images/char_blue.png")
-                player.costume.orientation = - 90s
+                player.costume.orientation = - 90
                 LoopActionTimer(48, player.move, 1)
             return board
         App.reset(unittest=True, file=__file__)

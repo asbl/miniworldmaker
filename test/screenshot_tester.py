@@ -1,4 +1,4 @@
-import imgcompare
+import imgcompare # type: ignore
 import os
 
 
@@ -67,17 +67,15 @@ class ScreenshotTester:
         assert 0 <= d <= 0.05
 
     def screenshot(self, frame, test_frames, test_title):
-        if not frame in test_frames:
+        if frame not in test_frames:
             return False
         path = os.path.dirname(__file__)
         if path != "":
             path = path + "/"
         file_test = path + f"testfiles/{test_title}_testfile_{frame}.png"
         file_output = path + f"outputfiles/{test_title}_tmp_outputfile{frame}.png"
-        print("screenshot test at frame", frame, file_output)
         if not os.path.isfile(file_test):
             self.board.screenshot(file_test)
-            print("created new testimage")
         self.board.screenshot(file_output)
         return file_test, file_output
 
@@ -85,7 +83,6 @@ class ScreenshotTester:
         self,
         frame,
     ):
-        print("FRAME, frame, self.quit_frame", frame, self.quit_frame)
         if frame == self.quit_frame:
             self.board.quit()
 

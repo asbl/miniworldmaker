@@ -1,7 +1,5 @@
-from miniworldmaker import *
-import os
+from miniworldmaker import TiledBoard, Token, App
 import unittest
-import random
 from .screenshot_tester import ScreenshotTester
 
 class Test103(unittest.TestCase):

@@ -1,18 +1,7 @@
 import inspect
 import os
 import sys
-
 import pygame
-
-pygame.init()
-
-# __import__('pkg_resources').declare_namespace(__name__)
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
-
-__all__ = []
-
 from miniworldmaker.base.app import App
 
 from miniworldmaker.boards.board_templates.pixel_board.board import Board
@@ -61,21 +50,15 @@ from miniworldmaker.tokens.token_plugins.widgets.yesno import YesNoButton
 
 
 from miniworldmaker.containers.actionbar import ActionBar
-"""
-from miniworldmaker.containers.console import Console
-from miniworldmaker.containers.event_console import EventConsole
-from miniworldmaker.containers.inspect_actor_toolbar import InspectActorToolbar
-from miniworldmaker.containers.level_designer_toolbar import LevelDesignerToolbar
-from miniworldmaker.containers.color_toolbar import ColorToolbar
-"""
-
 from miniworldmaker.positions.vector import Vector
 from miniworldmaker.positions.position import Position
 from miniworldmaker.positions.direction import Direction
 from miniworldmaker.positions.rect import Rect
 
 from miniworldmaker.boards.board_templates.tiled_board.tile_factory import TileFactory
-from miniworldmaker.boards.board_templates.tiled_board.tile_factory import HexTileFactory
+from miniworldmaker.boards.board_templates.tiled_board.tile_factory import (
+    HexTileFactory,
+)
 
 from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexBase
 from miniworldmaker.boards.board_templates.hex_board.hex_elements import HexEdge
@@ -90,6 +73,17 @@ from miniworldmaker.boards.board_templates.tiled_board.tile import Tile
 from miniworldmaker.boards.board_templates.tiled_board.corner import Corner
 
 from miniworldmaker.exceptions.miniworldmaker_exception import CostumeOutOfBoundsError
+
+pygame.init()
+
+current_frame = inspect.currentframe()
+if current_frame:
+    current_dir = os.path.dirname(os.path.abspath(inspect.getfile(current_frame)))
+    parent_dir = os.path.dirname(current_dir)
+    sys.path.insert(0, parent_dir)
+
+__all__ = []
+
 
 __all__.append(App.__name__)
 __all__.append(Board.__name__)

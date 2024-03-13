@@ -2,7 +2,8 @@ from typing import List
 
 import miniworldmaker.base.app as app
 import miniworldmaker.containers.container as container_mod
-from miniworldmaker.exceptions.miniworldmaker_exception import MiniworldMakerError
+from miniworldmaker.exceptions.miniworldmaker_exception \
+    import MiniworldMakerError
 
 
 class ContainerManager:
@@ -11,7 +12,7 @@ class ContainerManager:
         self.total_width: int = 0
         self.total_height: int = 0
         self.app: "app.App" = miniworldmaker_app
-        self.topleft = None
+        self.topleft : container_mod.Container|None  = None
 
     def get_container_by_pixel(self, pixel_x: int, pixel_y: int):
         """Gets container by pixel coordinates."""
@@ -43,17 +44,19 @@ class ContainerManager:
         return new_container
 
     def add_container(
-        self, container: "container_mod.Container", dock: str, size: int = None
+        self, container: "container_mod.Container", dock: str, size: int|None = None
     ) -> "container_mod.Container":
         """Adds a new container
 
         Args:
             container (container.Container): The container
             dock (str): The position: "top_left", "right" or "bottom"
-            size (int, optional): Size in pixels. Defaults to attribute `default_size`of container
+            size (int, optional): Size in pixels. Defaults to attribute
+            `default_size`of container
 
         Raises:
-            MiniworldMakerError: Raises error if container is already in board containers.
+            MiniworldMakerError: Raises error if container is already in
+            board containers.
 
         Returns:
             container.Container: The container
@@ -120,13 +123,15 @@ class ContainerManager:
         raise MiniworldMakerError("Container top_left is missing!")
 
     def containers_right(self):
-        """List of all containers with docking_position "right", ordered by display-position"""
+        """List of all containers with docking_position "right", 
+        ordered by display-position"""
         return [self.topleft] + [
             ct for ct in self.containers if ct.docking_position == "right"
         ]
 
     def containers_bottom(self):
-        """List of all containers with docking_position "bottom", ordered by display-position"""
+        """List of all containers with docking_position "bottom",
+        ordered by display-position"""
         return [self.topleft] + [
             ct for ct in self.containers if ct.docking_position == "bottom"
         ]

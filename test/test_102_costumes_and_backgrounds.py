@@ -2,7 +2,6 @@ from miniworldmaker import App, Board, Token, Position, CostumeOutOfBoundsError
 from .screenshot_tester import ScreenshotTester
 import unittest
 import os
-import random
 
 
 class Test102(unittest.TestCase):
@@ -56,7 +55,7 @@ class Test102(unittest.TestCase):
                     self.add_costume("images/1")
                     self.add_costume("images/2")
 
-            token6 = SwitchBackground(position=(60, 250))
+            SwitchBackground(position=(60, 250))
 
             # Token 7: Like 6, but switches to costume 1 (remember, counting from 0)
             token7 = SwitchBackground(position=(67, 307))
@@ -78,7 +77,7 @@ class Test102(unittest.TestCase):
         QUIT_FRAME = 1
         tester = ScreenshotTester(TEST_FRAMES, QUIT_FRAME, self)
         tester.setup(board)
-
+        
 
     def test_main(self):
         with self.assertRaises(SystemExit):

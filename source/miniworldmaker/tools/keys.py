@@ -72,11 +72,13 @@ def key_codes_to_keys(key_pressed_list: Sequence) -> List:
     for index, item in enumerate(key_pressed_list):
         if item:
             if index in KEYS:
-                keys.append(KEYS.get(index))
-                keys.append(KEYS.get(index).lower())
+                key = KEYS.get(index)
+                keys.append(key)
+                if key:
+                    keys.append(key.lower())
     return keys
 
-def key_code_to_key(key_code) -> str:
+def key_code_to_key(key_code) -> str|None:
     if key_code in KEYS:
         return KEYS[key_code]
     else:

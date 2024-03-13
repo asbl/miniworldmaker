@@ -48,23 +48,23 @@ class TokenBoardSensor(ABC):
         if detected_tokens:
             detected_tokens = self._filter_token_list(detected_tokens, token_filter)
         if detected_tokens and len(detected_tokens) >= 1:
-            rvalue = detected_tokens[0]
+            return_value = detected_tokens[0]
             del detected_tokens
-            return rvalue
+            return return_value
         else:
             return []
 
     def _filter_token_list(
             self, token_list: Union[List["token_mod.Token"], None],
             token_filter: Union[str, "token_mod.Token", Type["token_mod.Token"]]
-    ) -> List["token_mod.Token"]:
+    ) -> List["token_mod.Token"]|None:
         # if token_list is None, return empty list
         if token_list is None:
             return []
         # Filter tokens by class name
         if not token_filter:
             return token_list
-        if type(token_filter) == str:
+        if isinstance(token_filter, str):
             token_list = self._filter_tokens_by_classname(token_list, token_filter)
         elif isinstance(token_filter, token_mod.Token):
             token_list = self._filter_tokens_by_instance(token_list, token_filter)
@@ -145,7 +145,7 @@ class TokenBoardSensor(ABC):
         return self.board.background.get_color(destination)
 
     @classmethod
-    def get_token_destination(cls, token: "tkn.Token", direction: float, distance: float) -> "board_position.Position":
+    def get_token_destination(cls, token: "token_mod.Token", direction: float, distance: float) -> "board_position.Position":
         return cls.get_destination(token.position, direction, distance)
 
     @staticmethod
