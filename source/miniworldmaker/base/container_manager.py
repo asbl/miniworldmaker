@@ -1,6 +1,7 @@
-from typing import List
+from typing import List, cast
 
 import miniworldmaker.base.app as app
+import miniworldmaker.base.window as window_mod
 import miniworldmaker.containers.container as container_mod
 from miniworldmaker.exceptions.miniworldmaker_exception \
     import MiniworldMakerError
@@ -61,15 +62,15 @@ class ContainerManager:
         Returns:
             container.Container: The container
         """
-
+        window = cast(window_mod.Window, self.app.window)
         if container not in self.containers:
-            self.app.window.recalculate_dimensions()
+            window.recalculate_dimensions()
             container.docking_position = dock
             self.containers.append(container)
             if size is None:
                 size = container.default_size
             container.add_to_window(self.app, dock, size)
-            self.app.window.resize()
+            window.resize()
             for ct in self.containers:
                 ct.dirty = 1
             for board in self.app.running_boards:
@@ -113,7 +114,8 @@ class ContainerManager:
                     self.topleft = new_container
                 break
         self.update_containers()
-        self.app.window.resize()
+        window = cast(window_mod.Window, self.app.window)
+        window.resize()
         return new_container
 
     def get_topleft(self) -> "container_mod.Container":

@@ -1,10 +1,7 @@
 from collections import deque
-from collections.abc import Sequence
-from typing import List, Optional
 
 import miniworldmaker.base.app as app_mod
 import pygame
-from pygame.event import Event
 from miniworldmaker.positions import position as board_position
 from miniworldmaker.tools import keys
 

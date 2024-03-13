@@ -1,12 +1,14 @@
 import math
 from abc import ABC
-from typing import List, Union, Type
+from typing import List, Union, Type, Optional
 
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.rect as board_rect
 import miniworldmaker.tools.token_class_inspection as token_class_inspection
 from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
-from miniworldmaker.exceptions.miniworldmaker_exception import NotImplementedOrRegisteredError
+from miniworldmaker.exceptions.miniworldmaker_exception import (
+    NotImplementedOrRegisteredError,
+)
 from miniworldmaker.tokens import token as token_mod
 
 
@@ -30,7 +32,11 @@ class TokenBoardSensor(ABC):
         """
         pass
 
-    def filter_tokens(self, detected_tokens, token_filter: list):
+    def filter_tokens(
+        self,
+        detected_tokens: List["token_mod.Token"],
+        token_filter: Union[str, "token_mod.Token", Type["token_mod.Token"]],
+    ):
         """
         Filters a list of tokens
         :param detected_tokens: a list of tokens
@@ -44,7 +50,11 @@ class TokenBoardSensor(ABC):
         else:
             return []
 
-    def filter_first_token(self, detected_tokens: list, token_filter):
+    def filter_first_token(
+        self,
+        detected_tokens: List["token_mod.Token"],
+        token_filter: Union[str, "token_mod.Token", Type["token_mod.Token"]],
+    ):
         if detected_tokens:
             detected_tokens = self._filter_token_list(detected_tokens, token_filter)
         if detected_tokens and len(detected_tokens) >= 1:
@@ -55,9 +65,10 @@ class TokenBoardSensor(ABC):
             return []
 
     def _filter_token_list(
-            self, token_list: Union[List["token_mod.Token"], None],
-            token_filter: Union[str, "token_mod.Token", Type["token_mod.Token"]]
-    ) -> List["token_mod.Token"]|None:
+        self,
+        token_list: Optional[List["token_mod.Token"]],
+        token_filter: Union[str, "token_mod.Token", Type["token_mod.Token"]],
+    ) -> List["token_mod.Token"]:
         # if token_list is None, return empty list
         if token_list is None:
             return []
@@ -70,26 +81,34 @@ class TokenBoardSensor(ABC):
             token_list = self._filter_tokens_by_instance(token_list, token_filter)
         elif issubclass(token_filter, token_mod.Token):
             token_list = self._filter_tokens_by_class(token_list, token_filter)
+        if token_list is None:
+            return []
         return token_list
 
     def _filter_tokens_by_class(
-            self, token_list: List["token_mod.Token"], token_filter: Union[Type["token_mod.Token"], None]
+        self,
+        token_list: List["token_mod.Token"],
+        token_filter: Union[Type["token_mod.Token"], None],
     ) -> List["token_mod.Token"]:
         if token_filter is None:
             return token_list
         if token_filter:
-            token_list = [token for token in token_list if
-                          token.__class__ == token_filter or issubclass(token.__class__, token_filter)]
+            token_list = [
+                token
+                for token in token_list
+                if token.__class__ == token_filter
+                or issubclass(token.__class__, token_filter)
+            ]
             return token_list
         else:
             return token_list
 
     def _filter_tokens_by_classname(
-            self, token_list: List["token_mod.Token"], token_filter: str
+        self, token_list: List["token_mod.Token"], token_filter: str
     ) -> List["token_mod.Token"]:
-        token_type = token_class_inspection.TokenClassInspection(self.token).find_token_class_by_classname(
-            token_filter
-        )
+        token_type = token_class_inspection.TokenClassInspection(
+            self.token
+        ).find_token_class_by_classname(token_filter)
         return self._filter_tokens_by_class(token_list, token_type)
 
     @staticmethod
@@ -111,7 +130,9 @@ class TokenBoardSensor(ABC):
         raise NotImplementedOrRegisteredError(self.detect_tokens)
 
     def detect_point(self, pixel_position) -> bool:
-        return self.token.position_manager.get_global_world_rect().collidepoint(pixel_position)
+        return self.token.position_manager.get_global_world_rect().collidepoint(
+            pixel_position
+        )
 
     def detect_rect(self, rect):
         return self.token.position_manager.get_global_world_rect().colliderect(rect)
@@ -131,7 +152,9 @@ class TokenBoardSensor(ABC):
                 return True
         return False
 
-    def detect_tokens_at(self, token_filter=None, direction: int = 0, distance: int = 1) -> list:
+    def detect_tokens_at(
+        self, token_filter=None, direction: int = 0, distance: int = 1
+    ) -> list:
         if direction is None:
             direction = self.token.direction
         destination = self.get_token_destination(self.token, direction, distance)
@@ -141,12 +164,14 @@ class TokenBoardSensor(ABC):
     def detect_color_at(self, direction: int = 0, distance: int = 1) -> tuple:
         if direction is None:
             direction = self.token.direction
-        destination = self.get_token_destination(self.token.center, direction, distance)
+        destination = self.get_token_destination(self.token, direction, distance)
         return self.board.background.get_color(destination)
 
     @classmethod
-    def get_token_destination(cls, token: "token_mod.Token", direction: float, distance: float) -> "board_position.Position":
-        return cls.get_destination(token.position, direction, distance)
+    def get_token_destination(
+        cls, token: "token_mod.Token", direction: float, distance: float
+    ) -> "board_position.Position":
+        return cls.get_destination(token.center, direction, distance)
 
     @staticmethod
     def get_destination(start, direction, distance) -> "board_position.Position":
@@ -175,7 +200,7 @@ class TokenBoardSensor(ABC):
         return borders
 
     def get_color(self, position):
-        """ Returns the board-color at the current board-position
+        """Returns the board-color at the current board-position
 
         Returns: The board-color at the current board position as tuple
         with r,g,b value and transparency (e.g. (255, 0, 0, 100)
@@ -186,7 +211,8 @@ class TokenBoardSensor(ABC):
         else:
             return ()
 
-    def get_distance_to(self, obj: Union["token_mod.Token", "board_position.Position", tuple]) -> float:
-        """ Implemented in subclasses
-        """
-        pass
+    def get_distance_to(
+        self, obj: Union["token_mod.Token", "board_position.Position", tuple]
+    ) -> float:
+        """Implemented in subclasses"""
+        return 0

@@ -1,23 +1,27 @@
+from typing import List
 import os
-
 import pygame
-
 import miniworldmaker.base.container_manager as container_manager_mod
 import miniworldmaker.base.app_event_manager as event_manager_mod
 
 
 class Window:
-
-    def __init__(self, title, container_manager: "container_manager_mod.ContainerManager",
-                 event_manager: "event_manager_mod.AppEventManager"):
+    def __init__(
+        self,
+        title,
+        container_manager: "container_manager_mod.ContainerManager",
+        event_manager: "event_manager_mod.AppEventManager",
+    ):
         self._containers_height = None
         self._containers_width = None
         self.title: str = title
-        self.container_manager: "container_manager_mod.ContainerManager" = container_manager
+        self.container_manager: "container_manager_mod.ContainerManager" = (
+            container_manager
+        )
         self.event_manager: "event_manager_mod.AppEventManager" = event_manager
         self.default_size: int = 200
         self.dirty: int = 1
-        self.repaint_areas = []
+        self.repaint_areas: List = []
         self._surface: pygame.Surface = pygame.Surface((0, 0))
         self._fullscreen: bool = False
         self._fit_desktop = False
@@ -33,8 +37,7 @@ class Window:
 
     @property
     def fullscreen(self):
-        """toggles fullscreen mode
-        """
+        """toggles fullscreen mode"""
         return self._fullscreen
 
     @fullscreen.setter
@@ -48,16 +51,14 @@ class Window:
 
     @fit_desktop.setter
     def fit_desktop(self, value):
-        """fits to desktop
-        """
+        """fits to desktop"""
         self._fit_desktop = value
         self.dirty = 1
         # self.display_update()
 
     @property
     def replit(self):
-        """Scales display to 800x600 for replit
-        """
+        """Scales display to 800x600 for replit"""
         return self._replit
 
     @replit.setter
@@ -67,8 +68,7 @@ class Window:
         # self.display_update()
 
     def display_repaint(self):
-        """Called 1/frame - Draws all repaint rects and resets the repaint areas.
-        """
+        """Called 1/frame - Draws all repaint rectangles and resets the repaint areas."""
         pygame.display.update(self.repaint_areas)
         self.repaint_areas = []
 
@@ -78,13 +78,15 @@ class Window:
 
     def update_surface(self):
         """Updates the surface of window. Everything is drawn and scaled to the surface
-        
+
         Defaults to containers_width/height
-        
+
         Depends on the values of self.fullscreen, self.fit_desktop and self.replit
         """
         if self.fullscreen:
-            self._surface = pygame.display.set_mode((self.width, self.height), pygame.SCALED)
+            self._surface = pygame.display.set_mode(
+                (self.width, self.height), pygame.SCALED
+            )
             pygame.display.toggle_fullscreen()
         elif self.fit_desktop:
             self._surface = pygame.display.set_mode((0, 0))
@@ -92,8 +94,11 @@ class Window:
             self._surface = pygame.display.set_mode((800, 600), pygame.SCALED)
         else:
             info = pygame.display.Info()
-            x, y = max((info.current_w - self.width) / 2, 0), max((info.current_h - self.height) / 2, 0)
-            os.environ['SDL_VIDEO_WINDOW_POS'] = '%d,%d' % (x, y)
+            x, y = (
+                max((info.current_w - self.width) / 2, 0),
+                max((info.current_h - self.height) / 2, 0),
+            )
+            os.environ["SDL_VIDEO_WINDOW_POS"] = "%d,%d" % (x, y)
             self._surface = pygame.display.set_mode((self.width, self.height))
         self._surface.set_alpha(None)
 
@@ -117,18 +122,19 @@ class Window:
         containers_height = self.container_manager.recalculate_containers_height()
         self.dirty = 1
         self.repaint_areas.append(pygame.Rect(0, 0, self.width, self.height))
-        self._containers_width, self._containers_height = containers_width, containers_height
+        self._containers_width, self._containers_height = (
+            containers_width,
+            containers_height,
+        )
 
     @property
     def width(self) -> int:
-        """Gets total width from container manager
-        """
+        """Gets total width from container manager"""
         return self.container_manager.total_width
 
     @property
     def height(self) -> int:
-        """Gets total height from container manager
-        """
+        """Gets total height from container manager"""
         return self.container_manager.total_height
 
     def resize(self):

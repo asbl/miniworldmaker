@@ -3,16 +3,16 @@ import os
 import sys
 import warnings
 
-import pkg_resources
+import pkg_resources # type: ignore
 import pygame
-from typing import List
+from typing import List, cast, Optional
 
 import miniworldmaker.appearances.managers.image_manager as image_manager
 import miniworldmaker.base.app_event_manager as event_manager
 import miniworldmaker.base.container_manager as container_manager
 import miniworldmaker.base.music_manager as music_manager
 import miniworldmaker.base.sound_manager as sound_manager
-import miniworldmaker.base.window as window
+import miniworldmaker.base.window as window_mod
 from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 
 
@@ -24,12 +24,12 @@ class App:
             If it does not contain a run() method (e.g. board.run()), this error is raised.
     """
 
-    running_board: "board_mod.Board" = None
+    running_board: Optional["board_mod.Board"] = None
     running_boards: List["board_mod.Board"] = []
-    path: str = None
-    running_app: "App" = None
+    path: str = ""
+    running_app: Optional["App"] = None
     init: bool = False
-    window: "window.Window" = None
+    window: Optional["window_mod.Window"] = None
 
     @staticmethod
     def reset(unittest=False, file=None):
@@ -70,7 +70,7 @@ class App:
         self.event_manager: "event_manager.AppEventManager" = event_manager.AppEventManager(self)
         self.sound_manager: "sound_manager.SoundManager" = sound_manager.SoundManager(self)
         self.music_manager: "music_manager.MusicManager" = music_manager.MusicManager(self)
-        self.window: "window.Window" = window.Window(title, self.container_manager, self.event_manager)
+        self.window: "window_mod.Window" = window_mod.Window(title, self.container_manager, self.event_manager)
         App.running_app = self
         App.window = self.window
         self._exit_code: int = 0
@@ -87,6 +87,7 @@ class App:
             replit: True or false
         """
         self.image = image
+        self.window = cast(window_mod.Window, self.window)
         self.window.fullscreen = fullscreen
         self.window.fit_desktop = fit_desktop
         self.window.replit = replit

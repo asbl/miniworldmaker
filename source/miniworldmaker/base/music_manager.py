@@ -9,7 +9,6 @@ class MusicManager:
         self.path = None
         pygame.mixer.init()
 
-
     def change_music(self, path):
         self.stop_music()
         self.path = path
@@ -29,7 +28,6 @@ class MusicManager:
 
     def is_playing(self):
         return pygame.mixer.music.get_busy()
-
 
     def stop_music(self):
         """stops current music

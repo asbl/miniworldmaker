@@ -1,7 +1,7 @@
 import pygame
 
 import miniworldmaker.base.app as app_mod
-from typing import Dict, Optional
+from typing import Dict
 from miniworldmaker.base import channel as channel_mod
 
 
@@ -11,7 +11,6 @@ class SoundManager:
         self.app: "app_mod.App" = app
         self.volume = 100
         self._has_music = False
-
         pygame.mixer.init()
         pygame.mixer.set_reserved(2)
         pygame.mixer.set_num_channels(64)
@@ -71,7 +70,7 @@ class SoundManager:
             channel = channel_mod.Channel(pygame_channel, path)
             return channel
 
-    def set_volume(self, volume, path: str = None):
+    def set_volume(self, volume, path: str = ""):
         """Sets volume (max: 100, min: 0)
         """
         if path:
@@ -80,7 +79,7 @@ class SoundManager:
             for key, sound_effect in self.sound_effects.items():
                 sound_effect.set_volume(volume / 100)
 
-    def stop(self, path: str = None):
+    def stop(self, path: str = ""):
         """Sets volume (max: 100, min: 0)
         """
         if path:
