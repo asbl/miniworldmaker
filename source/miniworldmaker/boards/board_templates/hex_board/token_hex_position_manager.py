@@ -47,7 +47,7 @@ class HexBoardPositionManager(tiled_positionmanager.TiledBoardPositionManager):
 
     @size.setter
     def size(self, value):
-        if type(value) == int or type(value) == float:  # convert int to tuple
+        if isinstance(value, int) or isinstance(value, float):  # convert int to tuple
             value = (value, value)
         self._scaled_size = value
         self.token.costume.set_dirty("all", costume.Costume.RELOAD_ACTUAL_IMAGE)

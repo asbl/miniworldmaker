@@ -10,7 +10,6 @@ import miniworldmaker.positions.position as board_position
 if TYPE_CHECKING:
     import miniworldmaker.boards.board_templates.tiled_board.corner as corner
     import miniworldmaker.boards.board_templates.tiled_board.tiled_board as tiled_board_mod
-    import miniworldmaker.positions.vector as board_vector
 
 
 

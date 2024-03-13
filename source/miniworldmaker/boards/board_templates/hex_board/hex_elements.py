@@ -75,12 +75,12 @@ class HexTile(HexBase, tile.Tile):
                 return False
         return True
 
-    def get_corner(self, direction: Union[str, tuple]) -> "CubeCoord":
+    def get_corner(self, direction: Union[str, tuple]) -> "cube_coord.CubeCoord":
         """Gets corner by direction
         :param direction: A string (e.g. nw, for north-west corner) or a direction-vector
         :return: The corner.
         """
-        if type(direction) == str:
+        if isinstance(direction, str):
             vector = self.corner_vectors[direction]
         else:
             vector = direction

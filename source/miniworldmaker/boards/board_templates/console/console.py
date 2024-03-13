@@ -1,6 +1,6 @@
 import miniworldmaker.boards.board_templates.toolbar.toolbar as toolbar
 import miniworldmaker.tokens.token_plugins.widgets.label as label
-
+import miniworldmaker.containers.widgets as widgets
 
 class Console(toolbar.Toolbar):
     """
@@ -21,7 +21,7 @@ class Console(toolbar.Toolbar):
         if len(self.widgets) > self.max_widgets:
             self.first += 1
 
-    def add_widget(self, widget: "widget.ButtonWidget", key: str = None, ) -> "widget.ButtonWidget":
+    def add_widget(self, widget: "widgets.ButtonWidget", key: str = None, ) -> "widgets.ButtonWidget":
         widget.margin_bottom = self.row_margin
         widget.margin_top = 0
         super().add_widget(widget, key)

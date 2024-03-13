@@ -1,6 +1,7 @@
 from typing import Union, Tuple, List, Optional, Type
 
 import miniworldmaker.tokens.token as token_mod
+import miniworldmaker.positions.position as position_mod
 
 
 class Sensor:

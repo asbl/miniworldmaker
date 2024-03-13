@@ -1,5 +1,4 @@
 import easygui
-from easygui.boxes.fileopen_box import fileopenbox
 
 
 class Ask:
@@ -35,11 +34,14 @@ class Ask:
         reply = easygui.buttonbox(message, self.board.app.window.title)
         # needed for repl.it
         self.board.app.window.add_display_to_repaint_areas()
+        return reply
 
     def file(self):
         reply = easygui.fileopenbox()
         # needed for repl.it
         self.board.app.window.add_display_to_repaint_areas()
+        return reply
 
     def file_save(self):
         reply = easygui.filesavebox()
+        return reply

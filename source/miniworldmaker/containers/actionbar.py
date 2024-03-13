@@ -94,7 +94,7 @@ class ActionBarWidget():
     """
 
     def __init__(self, board):
-        self.myfont = pygame.font.SysFont("monospace", 15)
+        self.myFont = pygame.font.SysFont("monospace", 15)
         self.background_color = (240, 240, 240)
         self.event = "no event"
         self.width = 0  # Set in Toolbar repaint

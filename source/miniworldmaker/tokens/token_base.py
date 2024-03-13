@@ -4,6 +4,7 @@ from typing import List
 
 import miniworldmaker.appearances.costume as costume_mod
 import miniworldmaker.base.app as app
+import miniworldmaker.tokens.token as token_mod
 import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
 import pygame
 from miniworldmaker.exceptions.miniworldmaker_exception import (
@@ -13,7 +14,7 @@ from miniworldmaker.exceptions.miniworldmaker_exception import (
 
 class Meta(type):
     def __call__(cls, *args, **kwargs):
-        if len(args) >= 2 and type(args[0]) == int and type(args[1]) == int:
+        if len(args) >= 2 and isinstance(args[0], int) and isinstance(args[1], int):
             first = (args[0], args[1])
             last_args = [args[n] for n in range(2, len(args))]
             args = [first] + last_args
@@ -91,7 +92,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         return self.costume_manager.image
 
-    def on_detecting_token(self, token: "Token"):
+    def on_detecting_token(self, token: "token_mod.Token"):
         """*on_sensing_token* is called, when token is sensing a token on same position
 
         Args:
@@ -114,7 +115,7 @@ class BaseToken(pygame.sprite.DirtySprite, metaclass=Meta):
         """
         raise NotImplementedOrRegisteredError(self.on_detecting_token)
 
-    # on_touching_token = on_sensing_token @todo: replace or add listeneer
+    # on_touching_token = on_sensing_token @todo: replace or add listener
 
     def is_detecting_board(self, distance: int = 0) -> bool:
         """

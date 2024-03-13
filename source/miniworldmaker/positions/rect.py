@@ -6,7 +6,6 @@ from typing import Union
 
 
 class Rect(pygame.Rect):
-
     @classmethod
     def create(cls, rect: Union[tuple, pygame.Rect]):
         if type(rect) == tuple:

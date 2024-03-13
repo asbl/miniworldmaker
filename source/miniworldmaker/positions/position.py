@@ -14,7 +14,6 @@ if TYPE_CHECKING:
     import miniworldmaker.positions.vector as board_vector
 
 
-
 class PositionBase(ABC):
     pass
 
@@ -78,7 +77,7 @@ class Position(collections.namedtuple("Position", ["x", "y"]), PositionBase):
         elif type(value) == pygame.Rect:
             return cls(value.topleft)
         elif type(value) == tile_mod.Tile:
-            pos =  cls.create(value.position)
+            pos = cls.create(value.position)
             return pos
         else:
             raise NoValidBoardPositionError(value)

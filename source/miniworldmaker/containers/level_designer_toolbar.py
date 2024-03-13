@@ -5,7 +5,6 @@ from miniworldmaker.positions import rect as board_rect
 from miniworldmaker.positions import position as board_position
 from miniworldmaker.containers import toolbar
 from miniworldmaker.containers import widgets
-from miniworldmaker.exceptions import miniworldmaker_exception
 
 
 class LevelDesignerToolbar(toolbar.Toolbar):
@@ -109,7 +108,7 @@ class LevelDesignerToolbar(toolbar.Toolbar):
 
     def get_event(self, event, data):
         super().get_event(event, data)
-        if type(data) == tuple and self.bboard.is_in_container(data[0], data[1]):
+        if type(data) == tuple and self.board.is_in_container(data[0], data[1]):
             self.handle_board_event(event, data)
 
 

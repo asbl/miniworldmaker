@@ -27,7 +27,7 @@ class BoardCollisionManager:
         for found_token in found_tokens_for_token_type:  # found other token
             method_caller.call_method(method, found_token, found_token.__class__)
 
-    def _handle_on_detetecting_tokens_by_filter(self, token, method, token_filter):
+    def _handle_on_detecting_tokens_by_filter(self, token, method, token_filter):
         found_tokens_for_token_type = token.board_sensor.detect_tokens(token_filter=token_filter)
         if not found_tokens_for_token_type:  # found nothing
             found_tokens_for_token_type = []
@@ -50,7 +50,7 @@ class BoardCollisionManager:
                     continue
                 else:
                     token_filter = method.__name__.split("_")[2]
-                self._handle_on_detetecting_tokens_by_filter(token, method, token_filter)
+                self._handle_on_detecting_tokens_by_filter(token, method, token_filter)
             del registered_events_copy
 
     def _handle_token_not_detecting_token_methods(self):

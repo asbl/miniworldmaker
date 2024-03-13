@@ -8,7 +8,6 @@ import miniworldmaker.boards.board_base as board_base
 import miniworldmaker.tools.inspection as inspection
 import miniworldmaker.tools.keys as keys
 import miniworldmaker.tools.method_caller as method_caller
-import pygame
 from miniworldmaker.boards.board_templates.pixel_board import board as board_mod
 from miniworldmaker.exceptions.miniworldmaker_exception import MissingTokenPartsError
 from miniworldmaker.positions import position as board_position
@@ -214,7 +213,7 @@ class BoardEventManager:
         return
 
     def unregister_instance(self, instance) -> collections.defaultdict:
-        """unregisteres an instance (e.g. a Token) from
+        """unregister an instance (e.g. a Token) from
         event manager.
         """
         unregister_methods_dict = defaultdict()
@@ -234,7 +233,6 @@ class BoardEventManager:
             instance = method.__self__
             if instance._is_acting:
                 method_caller.call_method(method, None, False)
-        mouse_pos = pygame.mouse.get_pos()
         del registered_act_methods
 
     def handle_event(self, event: str, data: Any):
@@ -331,7 +329,7 @@ class BoardEventManager:
 
         if not hasattr(token, "_mouse_over"):
             token._mouse_over = False
-        # Store state in token._mouse over -> Call handle_mouse_enter and mouse_levent methods
+        # Store state in token._mouse over -> Call handle_mouse_enter and mouse_event methods
         is_detecting_point = token.detect_point(pos)
         if is_detecting_point and not token._mouse_over:
             self.handle_mouse_enter_event(event, data)
@@ -398,7 +396,7 @@ class BoardEventManager:
     def call_focus_methods(self, tokens: list):
         focus_methods = self.registered_events["on_focus"].copy()
         unfocus_methods = self.registered_events["on_focus_lost"].copy()
-        focus = self.set_new_focus(tokens)
+        self.set_new_focus(tokens)
         if self.focus_token:
             for method in focus_methods:
                 if self.focus_token == method.__self__ and self.focus_token != self._last_focus_token:

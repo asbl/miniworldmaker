@@ -1,7 +1,6 @@
 import math
 from typing import Tuple, Union
 
-import miniworldmaker.boards.board_templates.tiled_board.tile_elements as tile_elements
 import miniworldmaker.tokens.managers.token_position_manager as token_position_manager
 import miniworldmaker.positions.position as board_position
 import miniworldmaker.positions.direction as board_direction
@@ -45,7 +44,7 @@ class TiledBoardPositionManager(token_position_manager.TokenPositionManager):
             return 0
 
     def set_size(self, value: Union[int, Tuple], scale=True):
-        if type(value) == int or type(value) == float:  # convert int to tuple
+        if isinstance(value, int) or isinstance(value, float):  # convert int to tuple
             value = (value, value)
         if scale and value != self._scaled_size and self.token.costume:
             self._scaled_size = value

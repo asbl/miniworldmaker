@@ -478,9 +478,9 @@ class Token(token_base.BaseToken):
 
         if not source or type(source) in [str, tuple]:
             return self.costume_manager.add_new_appearance(source)
-        elif type(source) == list:
+        elif isinstance(source, list):
             return cast(
-                "costume.Costume",
+                "costume_mod.Costume",
                 self.costume_manager.add_new_appearance_from_list(source),
             )
         else:
@@ -536,7 +536,7 @@ class Token(token_base.BaseToken):
         return self.costume_manager.switch_costume(source)
 
     def set_costume(self, costume: Union[str, tuple, int, "appearance.Appearance"]):
-        if type(costume) == int or isinstance(costume, appearance.Appearance):
+        if isinstance(costume, int) or isinstance(costume, appearance.Appearance):
             self.switch_costume(costume)
         elif type(costume) in [str, tuple]:
             costume = self.add_costume(costume)

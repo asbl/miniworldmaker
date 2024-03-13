@@ -12,7 +12,7 @@ from miniworldmaker.boards.board_templates.hex_board import cube_coord
 
 class HexBoard(tiled_board.TiledBoard):
     """
-    A hexboard is a board that consists of hexagonal tiles.
+    A HexBoard is a board that consists of hexagonal tiles.
 
     Each token can be positioned either at a tile, at an edge or at a corner.
     """

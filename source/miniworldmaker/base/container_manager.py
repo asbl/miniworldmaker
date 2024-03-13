@@ -8,7 +8,7 @@ from miniworldmaker.exceptions.miniworldmaker_exception \
 
 
 class ContainerManager:
-    def __init__(self, miniworldmaker_app: "app.App"):
+    def __init__(self, miniworldmaker_app: "app.App") -> None:
         self.containers: List["container_mod.Container"] = []
         self.total_width: int = 0
         self.total_height: int = 0

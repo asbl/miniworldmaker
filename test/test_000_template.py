@@ -7,7 +7,7 @@ class Test000(unittest.TestCase):
 
     def setUp(self):
         def test_code():
-            board = Board(200, 400)
+            board = Board(1, 1)
             # Here comes your code
             @board.register
             def setup_environment(self, test):

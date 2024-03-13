@@ -9,7 +9,7 @@ class OffsetPosition(board_position.Position):
     ODD = -1
 
     def to_cube(self):
-        if type(self.x) != int or type(self.y) != int:
+        if not isinstance(self.x, int) or not isinstance(self.y, int):
             raise ValueError(f"x and y must be int. Found: {self.x}, {self.y} ; {type(self.x)}, {type(self.y)}")
         if self.y % 2 == 0:
             offset = OffsetPosition.EVEN

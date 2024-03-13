@@ -12,14 +12,14 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
         self._size = (40, 40)
 
     def get_local_rect(self) -> pygame.Rect:
-        """Pixelboard-Rects are positioned at center of position
+        """PixelBoard-Rectangles are positioned at center of position
         """
         _rect = self.get_global_rect()
         _rect.topleft = self.token.board.camera.get_local_position(_rect)
         return _rect
 
     def get_global_rect(self) -> pygame.Rect:
-        """Pixelboard-Rects are positioned at center of position
+        """PixelBoard-Rectangles are positioned at center of position
         """
         _rect = super().get_global_rect()
         _rect_center = self.center
@@ -53,7 +53,7 @@ class PixelBoardPositionManager(token_positionmanager.TokenPositionManager):
         self.set_center((self.center_x, value))
 
     def set_position(self, value):
-        """Because Pixelboard-Rects are positioned at center of position, newly created Objects are shifted down right.
+        """Because PixelBoard-Rectangles are positioned at center of position, newly created Objects are shifted down right.
 
         """
         if value:

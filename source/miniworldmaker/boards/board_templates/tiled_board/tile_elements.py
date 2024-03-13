@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 
 import miniworldmaker.base.app as app
 import miniworldmaker.positions.position as board_position
-
+import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
 if TYPE_CHECKING:
     import miniworldmaker.boards.board_templates.pixel_board.board as board_mod
 
@@ -86,7 +86,7 @@ class TileBase(abc.ABC):
     def add_token(self, token):
         token.position = self.position
 
-    def get_neighbour_tiles(self) -> List["Tile"]:
+    def get_neighbour_tiles(self) -> List["tile_mod.Tile"]:
         if hasattr(self, "_tiles") and self._neighbour_tiles:  # cached at end of this function
             return self._neighbour_tiles
         neighbours = []

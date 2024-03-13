@@ -41,13 +41,13 @@ class Vector:
 
             board.run()
 
-        .. raw:: html 
+        .. raw:: html
 
              <video loop autoplay muted width=240>
             <source src="../_static/mp4/vector_1.mp4" type="video/mp4">
             <source src="../_static/vector_1.webm" type="video/webm">
             Your browser does not support the video tag.
-            </video> 
+            </video>
 
     """
 
@@ -67,7 +67,7 @@ class Vector:
 
     @property
     def x(self) -> float:
-        """the x compoonent of the vector"""
+        """the x component of the vector"""
         return self.vec[0]
 
     @x.setter
@@ -84,10 +84,14 @@ class Vector:
         self.vec = np.array([self.vec[0], value])
 
     @classmethod
-    def from_positions(cls, p1: Union["board_position.Position",tuple], p2: Union["board_position.Position",tuple]) -> "Vector":
+    def from_positions(
+        cls,
+        p1: Union["board_position.Position", tuple],
+        p2: Union["board_position.Position", tuple],
+    ) -> "Vector":
         """Create a vector from token and position
 
-        The vector desribes is generated from:
+        The vector describes is generated from:
         token2.center - position
         """
         p1 = board_position.Position.create(p1)
@@ -100,7 +104,7 @@ class Vector:
     def from_token_and_position(cls, t1: "token_mod.Token", pos) -> "Vector":
         """Create a vector from token and position
 
-        The vector desribes is generated from:
+        The vector describes is generated from:
         token2.center - position
         """
         x = pos[0] - t1.center.x
@@ -111,7 +115,7 @@ class Vector:
     def from_tokens(cls, t1: "token_mod.Token", t2: "token_mod.Token") -> "Vector":
         """Create a vector from two tokens.
 
-        The vector desribes is generated from:
+        The vector describes is generated from:
         token2.center - token1.center
         """
         x = t2.center.x - t1.center.x
@@ -119,7 +123,9 @@ class Vector:
         return cls(x, y)
 
     @classmethod
-    def from_direction(cls, direction: Union[str, int, float, str, "board_direction.Direction"]) -> "Vector":
+    def from_direction(
+        cls, direction: Union[str, int, float, str, "board_direction.Direction"]
+    ) -> "Vector":
         """Creates a vector from miniworldmaker direction."""
         if direction >= 90:
             x = 0 + math.sin(math.radians(direction)) * 1
@@ -155,13 +161,13 @@ class Vector:
 
                 board.run()
 
-        .. raw:: html 
+        .. raw:: html
 
              <video loop autoplay muted width="400">
             <source src="../_static/mp4/rotating_rectangle.mp4" type="video/mp4">
             <source src="../_static/rotating_rectangle.webm" type="video/webm">
             Your browser does not support the video tag.
-            </video> 
+            </video>
         """
         return Vector.from_direction(token.direction)
 
@@ -176,7 +182,9 @@ class Vector:
         """rotates Vector by theta degrees"""
         theta_deg = theta % 360
         theta = np.deg2rad(theta_deg)
-        rot = np.array([[math.cos(theta), -math.sin(theta)], [math.sin(theta), math.cos(theta)]])
+        rot = np.array(
+            [[math.cos(theta), -math.sin(theta)], [math.sin(theta), math.cos(theta)]]
+        )
         self.vec = np.dot(rot, self.vec)
         return self
 
@@ -197,7 +205,7 @@ class Vector:
             return angle + 180
 
     def get_normal(self):
-        self.vec = np.array([- self.vec[1], self.vec[0]])
+        self.vec = np.array([-self.vec[1], self.vec[0]])
         return self
 
     def normalize(self) -> "Vector":
@@ -300,9 +308,13 @@ class Vector:
         self.vec = np.dot(self.vec, other.vec)
         return self
 
-    def add_to_position(self, position: "board_position.Position") -> "board_position.Position":
+    def add_to_position(
+        self, position: "board_position.Position"
+    ) -> "board_position.Position":
         position = board_position.Position.create(position)
-        return board_position.Position.create((self.x + position.x, self.y + position.y))
+        return board_position.Position.create(
+            (self.x + position.x, self.y + position.y)
+        )
 
     def __str__(self):
         return f"({round(self.x, 3)},{round(self.y, 3)})"

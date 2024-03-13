@@ -35,7 +35,7 @@ class TokenPixelBoardSensor(boardsensor.TokenBoardSensor):
                 return []
 
     def detect_color_at(self, direction: int = 0, distance: int = 1) -> list:
-        if direction == None:
+        if not direction:
             direction = self.token.direction
         destination = self.get_destination(self.token.center, direction, distance)
         return self.board.background.get_color(destination)

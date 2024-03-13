@@ -51,7 +51,7 @@ class WrongArgumentsError(MiniworldMakerError):
 
 class CostumeIsNoneError(MiniworldMakerError):
     def __init__(self):
-        self.message = f"Costume must not be none"
+        self.message = "Costume must not be none"
         super().__init__(self.message)
 
 
@@ -75,7 +75,7 @@ class FirstArgumentShouldBeSelfError(MiniworldMakerError):
 
 class ColorException(MiniworldMakerError):
     def __init__(self):
-        self.message = f"color should be a 4-tuple (r, g, b, alpha"
+        self.message = "color should be a 4-tuple (r, g, b, alpha"
         super().__init__(self.message)
 
 
@@ -105,19 +105,19 @@ class NoCostumeSetError(MiniworldMakerError):
 
 class SizeOnTiledBoardError(MiniworldMakerError):
     def __init__(self):
-        self.message = f"You can't set size for tokens on a tiled board (size is always (1,1)"
+        self.message = "You can't set size for tokens on a tiled board (size is always (1,1)"
         super().__init__(self.message)
 
 
 class TokenArgumentShouldBeTuple(MiniworldMakerError):
     def __init__(self):
-        self.message = f"First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets?"
+        self.message = "First argument to create a Token [position] should be a Tuple. Maybe you forgot brackets?"
         super().__init__(self.message)
 
 
 class PhysicsSimulationTypeError(MiniworldMakerError):
     def __init__(self):
-        self.message = f"Physics simulation should be `None`, `static`, `manual` or `simulated`(default)"
+        self.message = "Physics simulation should be `None`, `static`, `manual` or `simulated`(default)"
         super().__init__(self.message)
 
 
@@ -129,7 +129,7 @@ class TokenClassNotFound(MiniworldMakerError):
 
 class CantSetAutoFontSize(MiniworldMakerError):
     def __init__(self):
-        self.message = f"Can't set font-size because auto_font_size is set. Use token.auto_size = False or token.auto_size = 'token'"
+        self.message = "Can't set font-size because auto_font_size is set. Use token.auto_size = False or token.auto_size = 'token'"
         super().__init__(self.message)
 
 
@@ -140,7 +140,7 @@ class NotImplementedOrRegisteredError(MiniworldMakerError):
 
 class EllipseWrongArgumentsError(MiniworldMakerError):
     def __init__(self):
-        self.message = f"Wrong arguments for Ellipse (position: tuple, width: float, height: float"
+        self.message = "Wrong arguments for Ellipse (position: tuple, width: float, height: float"
         super().__init__(self.message)
 
 
@@ -164,7 +164,7 @@ class LineSecondArgumentError(MiniworldMakerError):
 
 class NoBoardError(MiniworldMakerError):
     def __init__(self):
-        self.message = f"Error: Create a board befor you place Tokens"
+        self.message = "Error: Create a board before you place Tokens"
         super().__init__(self.message)
 
 
@@ -204,13 +204,13 @@ class MissingTokenPartsError(MiniworldMakerError):
 
 class MissingBoardSensor(MissingTokenPartsError):
     def __init__(self, token):
-        self.message = f"INTERNAL ERROR: Missing board_sensor"
+        self.message = "INTERNAL ERROR: Missing board_sensor"
         del token
         super().__init__(self.message)
 
 
 class MissingPositionManager(MissingTokenPartsError):
     def __init__(self, token):
-        self.message = f"INTERNAL ERROR: Missing position_manager"
+        self.message = "INTERNAL ERROR: Missing position_manager"
         del token
         super().__init__(self.message)

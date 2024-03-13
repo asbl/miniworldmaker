@@ -177,7 +177,7 @@ class BoardCameraManager(pygame.sprite.Sprite):
         else:
             found_tokens = set()
             for token in self.board.tokens:
-                # token.rect is the _local(!) rect, so pygame.sprite.collidecrect can't be used
+                # token.rect is the _local(!) rect, so pygame.sprite.colliderect can't be used
                 if token.position_manager.get_global_rect().colliderect(self.rect):
                     found_tokens.add(token)
             self._tokens_in_last_frame = self._cached_tokens[1]

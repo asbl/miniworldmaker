@@ -1,5 +1,4 @@
 import miniworldmaker.boards.board_templates.hex_board.hex_elements as hex_elements
-import miniworldmaker.boards.board_templates.tiled_board.tile_elements as tile_elements
 import miniworldmaker.boards.board_templates.tiled_board.tile as tile_mod
 import miniworldmaker.boards.board_templates.tiled_board.corner as corner_mod
 import miniworldmaker.boards.board_templates.tiled_board.edge as edge_mod

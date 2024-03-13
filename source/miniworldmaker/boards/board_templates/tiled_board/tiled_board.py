@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Union, Dict, Tuple, Optional, cast, List, Set
+from typing import Union, Dict, Tuple, Optional, cast, List
 
 import miniworldmaker.boards.board_manager.board_camera_manager as board_camera_manager
 import miniworldmaker.boards.board_templates.pixel_board.board as board

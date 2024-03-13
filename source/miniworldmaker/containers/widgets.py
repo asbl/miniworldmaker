@@ -15,7 +15,7 @@ class Widget:
     """
 
     def __init__(self):
-        self.myfont = pygame.font.SysFont("monospace", 15)
+        self.myFont = pygame.font.SysFont("monospace", 15)
         self.event = "no event"
         self.parent = None
         self._text = ""
@@ -116,7 +116,7 @@ class Widget:
     @property
     def img_width(self) -> float:
         """Width of image.
-        (Height will be autoset by padding-left, padding-top and padding.right)
+        (Height will be automatically set by padding-left, padding-top and padding.right)
         """
         return self._img_width
 
@@ -218,7 +218,7 @@ class Widget:
             self.clear()
             self.surface.fill(self.background_color)
             if self._img_source is not None:
-                if type(self._img_source) == str:
+                if isinstance(self._img_source, str):
                     source = file_manager.FileManager.get_image_path(self._img_source)
                     image = pygame.image.load(source)
                 elif type(self._img_source) == tuple:
@@ -234,7 +234,7 @@ class Widget:
                 border_rect = pygame.Rect(0, 0, self.width, self.height)
                 pygame.draw.rect(self.surface, self._border_color, border_rect, self._border_width)
             # Blit text to surface
-            label = self.myfont.render(self._text, True, (0, 0, 0))
+            label = self.myFont.render(self._text, True, (0, 0, 0))
             if self.text_align == "img" or self.text_align == "image":
                 self.surface.blit(
                     label,
@@ -263,7 +263,7 @@ class Widget:
 
         int and float values are converted to string.
         """
-        if type(text) == int or type(text) == float:
+        if isinstance(text, int) or isinstance(text, float):
             text = str(text)
         self._text = text
         self.dirty = 1

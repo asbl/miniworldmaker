@@ -40,7 +40,7 @@ class InspectActorToolbar(toolbar.Toolbar):
                 i = i + 1
         if not tokens:
             return None
-        if not self.active_token in tokens:
+        if self.active_token not in tokens:
             return tokens[0]
 
     def add_to_window(self, window, dock, size=None):
